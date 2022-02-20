@@ -576,8 +576,8 @@ float fuzzy_pid_control(float real, float idea, struct PID *pid) {
     fuzzy_control(pid->current_error / pid->error_max * 3.0f, delta_error / pid->delta_error_max * 3.0f,
                   pid->fuzzy_struct);
 
-    //（由 模糊pid得到的输出 除以系数3归一化  再乘最大值得到实际值）+加上原kp
-    pid->delta_kp = pid->fuzzy_struct->output[0] / 3.0f * pid->delta_kp_max + pid->kp;
+    //（由 模糊pid得到的输出 除以系数3归一化  再乘最大值得到实际值）
+    pid->delta_kp = pid->fuzzy_struct->output[0] / 3.0f * pid->delta_kp_max ;
 
     //输出个数大于1时 即有Ki时 继续输出
     if (pid->fuzzy_struct->output_num >= 2)
@@ -594,8 +594,13 @@ float fuzzy_pid_control(float real, float idea, struct PID *pid) {
 #endif
 
     //以下部分计算PID结果
+    pid->kp=pid->kp + pid->delta_kp;
+    pid->ki=pid->ki + pid->delta_ki;
+    pid->kd=pid->kd + pid->delta_kd;
+
     //计算Ki部分的计算结果
-    pid->intergral += (pid->ki + pid->delta_ki) * pid->current_error;
+    pid->intergral += pid->ki * pid->current_error;
+
 #ifdef fuzzy_pid_integral_limit //对Ki部分乘积做出上限值规定  没有启用，可在.h中取消注释启用
     if (pid->intergral > pid->intergral_limit)
         pid->intergral = pid->intergral_limit;
@@ -606,8 +611,7 @@ float fuzzy_pid_control(float real, float idea, struct PID *pid) {
 #endif
 
     //将各部分相加
-    pid->output = (pid->kp + pid->delta_kp) * pid->current_error + pid->intergral +
-                  (pid->kd + pid->delta_kd) * (pid->current_error - pid->last_error);
+    pid->output = pid->kp * pid->current_error + pid->intergral + pid->kd * (pid->current_error - pid->last_error);
 
     //将上一步得到的和经反馈后输出
     pid->output += pid->feed_forward * (float) idea;
