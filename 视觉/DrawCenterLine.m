@@ -219,10 +219,10 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
         end
     % 对于十字路口，可以采用，特征是
     elseif strcmp(class_Name,'十字路口')
+        full_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         search_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         
-        start_Row = 1;%标记当前在处理哪一行，从第一行开始
-        Col_Center = -2*ones(1,search_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
+        Col_Center = -2*ones(1,full_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
         Conv_Core(1).core = [1 1 -1
                              1 1 -1
                             -1 -1 -1]; 
@@ -235,7 +235,7 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
         Conv_Score_max = -9*ones(1,2);
         Conv_Score_max_i = ones(1,2);
         Conv_Score_max_j = ones(1,2);
-        for i=2:search_Lines-1%从第一行开始逐行扫描
+        for i=2:full_Lines-1%从第一行开始逐行扫描
             for j=2:size(image,2)-1
                 % 对于每个中心点(i,j)，计算2类卷积值，分别取最大值保留
                 Conv_Score = zeros(1,2);%存储2类卷积结果
@@ -281,6 +281,41 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
         %拐点取2（稍暗），中心线取3（最亮）
         image_withLine(Conv_Score_max_i(1),Conv_Score_max_j(1)) = 2;
         image_withLine(Conv_Score_max_i(2),Conv_Score_max_j(2)) = 2;
+        
+        
+        %存储底部中点坐标
+        for  i=1:search_Lines %寻找视野底部
+            if image(search_Lines +1-i,ceil(size(image,2)/2)) ~= 255
+                Col_Center( i ) =  ceil(size(image,2)/2);
+                break
+            end
+        end
+        
+        firsti= i;
+        
+        %补全拐点间中线和底部中线之间的连线
+        k = ( ( Conv_Score_max_j(1) + Conv_Score_max_j(2))/2  - ceil(size(image,2)/2) )/(search_Lines-firsti+1 - (Conv_Score_max_i(1) + Conv_Score_max_i(2))/2 );
+        
+        for i=1:search_Lines - firsti
+            Col_Center( i+firsti ) = round( ceil(size(image,2)/2) + k*i );
+        end
+        
+        
+        %下面是把中心线画到image_withLine图里
+        %中心线取3（最亮）
+        for i=1:search_Lines
+          
+            if round(Col_Center(i))~=-2
+                if round(Col_Center(i))>=1 && round(Col_Center(i)) <= size(image,2)
+                    image_withLine(size(image,1)+1-i,round(Col_Center(i))) = 3;
+                end
+            end            
+        end
+        
+        
+        
+       
+        
     % 对于三岔路口可以采用，特征是滤波是较大正数，且始终靠右行驶
     elseif strcmp(class_Name,'三岔路口')
         flag=1;
