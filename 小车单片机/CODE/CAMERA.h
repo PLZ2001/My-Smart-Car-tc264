@@ -43,6 +43,7 @@ void Set_CameraThetaDown(uint8 val);
 void Set_RatioOfMaxDisToHG(uint8 val);
 void Set_RatioOfPixelToHG(uint8 val);
 uint8 Classification(void);
+void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 int Check_Straight(void);
 void DrawCenterLine(void);
 void DrawCenterLinewithConfig(float filter);
