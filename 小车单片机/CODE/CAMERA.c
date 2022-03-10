@@ -9,6 +9,7 @@
 IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
 uint8 classification_Result;
 
+
 int search_Lines_Straight;//指直线检测的有效扫描行数
 float Col_Center[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
@@ -391,6 +392,26 @@ uint8 Classification(void)
         }
     }
     return classification_Result_temp;
+}
+
+void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
+{
+    static uint8 Classification_counter=0;
+    static uint8 last_classification_Result;
+
+    if(classification_Result_tmp == last_classification_Result)
+    {
+        Classification_counter++;
+        if(Classification_counter>=check_counter){
+            classification_Result = classification_Result_tmp;
+            Classification_counter =0;
+        }
+    }
+    else
+    {
+        last_classification_Result = classification_Result_tmp;
+        Classification_counter=0;
+    }
 }
 
 

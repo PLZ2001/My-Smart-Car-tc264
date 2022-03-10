@@ -93,6 +93,7 @@ void core1_main(void)
                     {
                         classification_Result = Classification();
                     }
+                    Check_Classification(classification_Result,2);
                 }
                 if (Check_Straight())
                 {
@@ -102,6 +103,7 @@ void core1_main(void)
                 {
                     classification_Result = Classification();
                 }
+                Check_Classification(classification_Result,2);
             }
 
             DrawCenterLine();
