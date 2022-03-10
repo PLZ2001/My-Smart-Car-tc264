@@ -5,8 +5,9 @@
 #include "MOTOR.h"
 #include "STEERING.h"
 #include "fuzzy_PID.h"
+#include "TIME.h"
 
-enum OLEDPage OLED_Page = Speed_Page;
+enum OLEDPage OLED_Page = Timer_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -58,6 +59,17 @@ void Update_OLED_per16ms(void)
                {
                    OLED_PRINTF(0,0,"OLED: OFF");
                }
+               break;
+           case Timer_Page:
+               if (Read_Timer_Status() == PAUSED)
+               {
+                   OLED_PRINTF(0,0,"Timer Status: PAUSED ");
+               }
+               else
+               {
+                   OLED_PRINTF(0,0,"Timer Status: RUNNING");
+               }
+               OLED_PRINTF(0,1,"Time Now: %.3f s   ",Read_Timer());
                break;
            default:
                oled_fill(0x00);

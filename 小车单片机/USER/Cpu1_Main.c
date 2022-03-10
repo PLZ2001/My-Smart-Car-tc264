@@ -25,6 +25,7 @@
 #include "STEERING.h"//舵机相关
 #include "UART.h"
 #include "fastlz.h"
+#include "TIME.h"
 
 
 #pragma section all "cpu1_dsram"
@@ -56,24 +57,66 @@ void core1_main(void)
 
             Get_Thresholding_Image();
             Get_Inverse_Perspective_Image();
-            if (Check_Straight())
+
+            static uint8 flag_For_Circle = 1;
+            //如果是3右环岛中心，且定时器没有再计时，就开定时
+            if (Read_Timer_Status() == PAUSED && (classification_Result == 3))
             {
-                classification_Result = 12;
+                Start_Timer();
             }
-            else
+            //如果在计时，根据以前分类结果来判断计时是否达到要求时间
+            if (Read_Timer_Status() == RUNNING)
             {
-                classification_Result = Classification();
+                switch (classification_Result)
+                {
+                    case 3:
+                        if (Read_Timer()>3.0f) //3右环岛中心计时3s
+                        {
+                            Reset_Timer();
+                            flag_For_Circle = 1;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
+            //如果不在计时，继续分类
+            if (Read_Timer_Status() == PAUSED)
+            {
+                if (flag_For_Circle == 1)
+                {
+                    if (Check_Straight())
+                    {
+                        classification_Result = 12;
+                    }
+                    else
+                    {
+                        classification_Result = Classification();
+                    }
+                }
+                if (Check_Straight())
+                {
+                    classification_Result = 12;
+                }
+                else
+                {
+                    classification_Result = Classification();
+                }
+            }
+
             DrawCenterLine();
+
+            //由处理后的图像等信息，获取速度、转向角度的目标值
+            Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+            Cal_Speed_Target();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
+
             if (UART_EN == TRUE)
             {
                 UART_Flag_TX = TRUE;
             }
         }
 
-        //由处理后的图像等信息，获取速度、转向角度的目标值
-        Cal_Steering_Error();//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义），待完成
-        Cal_Speed_Target();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
+
 
         //低速目标且低速时，开环
         if (speed_Target < 0.5 && speed_Target > -0.5 && speed_Measured < 0.5 && speed_Measured > -0.5)

@@ -53,6 +53,8 @@ void UART(enum UARTstate state)
             //发送增量式PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
             UART_PID();
 
+            //发送中线结果，数据头00-FF-09-01，数据长度512字节，数据尾00-FF-09-02
+            UART_ColCenter();
 
 
 
