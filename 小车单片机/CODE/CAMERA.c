@@ -9,7 +9,6 @@
 IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
 uint8 classification_Result;
 
-
 int search_Lines_Straight;//指直线检测的有效扫描行数
 float Col_Center[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
@@ -43,7 +42,7 @@ float BayesTable[13][CLASS_NUM] = {{-3.420,-2.854,-4.667,-5.363,-2.945,-4.882,1.
         {169.243,179.710,166.997,176.743,203.214,169.881,156.108,176.459,157.122,179.855,166.889,163.575},
         {179.710,169.243,176.459,157.122,179.855,166.889,156.108,166.997,176.743,203.214,169.881,163.575},
         {-152.679,-152.679,-158.761,-165.717,-197.104,-158.416,-147.119,-158.761,-165.717,-197.104,-158.416,-166.916}};
-char *class_Name_Group[CLASS_NUM+1] = {"0左弯", "1右弯", "2发现右环岛", "3右环岛中心", "4入右环岛", "5出右环岛", "6三岔路口", "7发现左环岛", "8左环岛中心", "9入左环岛", "10出左环岛", "11十字路口","12直道"};
+char *class_Name_Group[CLASS_NUM+3] = {"0左弯", "1右弯", "2发现右环岛", "3右环岛中心", "4入右环岛", "5出右环岛", "6三岔路口", "7发现左环岛", "8左环岛中心", "9入左环岛", "10出左环岛", "11十字路口","12直道","13靠左（临时使用）","14靠右（临时使用）"};
 
 float arg_Classification[16];
 
@@ -394,26 +393,6 @@ uint8 Classification(void)
     return classification_Result_temp;
 }
 
-void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
-{
-    static uint8 Classification_counter=0;
-    static uint8 last_classification_Result;
-
-    if(classification_Result_tmp == last_classification_Result)
-    {
-        Classification_counter++;
-        if(Classification_counter>=check_counter){
-            classification_Result = classification_Result_tmp;
-            Classification_counter =0;
-        }
-    }
-    else
-    {
-        last_classification_Result = classification_Result_tmp;
-        Classification_counter=0;
-    }
-}
-
 
 int Check_Straight(void)
 {
@@ -549,10 +528,15 @@ void DrawCenterLine(void)
     {
         DrawCenterLinewithConfig_CrossRoad();
     }
-    // 对于6三岔路口、3右环岛中心可以采用，特征是靠右行驶
-    else if (classification_Result == 6 || classification_Result == 3 )
+    // 对于6三岔路口、3右环岛中心、14靠右（临时使用）可以采用，特征是靠右行驶
+    else if (classification_Result == 6 || classification_Result == 3 || classification_Result == 14)
     {
         DrawCenterLinewithConfig_RightBased(0);
+    }
+    // 对于13靠左（临时使用）可以采用，特征是靠右行驶
+    else if (classification_Result == 13)
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
     }
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
@@ -1083,5 +1067,25 @@ void DrawCenterLinewithConfig_CrossRoad(void)
     for (int i=1;i<search_Lines - firsti;i++)
     {
         Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+    }
+}
+
+void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
+{
+    static uint8 Classification_counter=0;
+    static uint8 last_classification_Result;
+
+    if(classification_Result_tmp == last_classification_Result)
+    {
+        Classification_counter++;
+        if(Classification_counter>=check_counter){
+            classification_Result = classification_Result_tmp;
+            Classification_counter =0;
+        }
+    }
+    else
+    {
+        last_classification_Result = classification_Result_tmp;
+        Classification_counter=0;
     }
 }

@@ -58,22 +58,37 @@ void core1_main(void)
             Get_Thresholding_Image();
             Get_Inverse_Perspective_Image();
 
-            static uint8 flag_For_Circle = 1;
-            //如果是3右环岛中心，且定时器没有再计时，就开定时
-            if (Read_Timer_Status() == PAUSED && (classification_Result == 3))
+            static uint8 flag_For_Right_Circle = 0;
+            //如果是3右环岛中心，且定时器没有在计时，就开定时
+            if (Read_Timer_Status() == PAUSED && classification_Result == 3)
             {
+                if (flag_For_Right_Circle == 0)//说明还没进右环岛
+                {
+                    flag_For_Right_Circle = 1;
+                    classification_Result = 14;//靠右
+                }
+                else //说明准备出右环岛
+                {
+                    flag_For_Right_Circle = 0;
+                    classification_Result = 13;//靠左
+                }
                 Start_Timer();
             }
-            //如果在计时，根据以前分类结果来判断计时是否达到要求时间
+            //如果在计时，判断计时是否达到要求时间
             if (Read_Timer_Status() == RUNNING)
             {
                 switch (classification_Result)
                 {
-                    case 3:
-                        if (Read_Timer()>3.0f) //3右环岛中心计时3s
+                    case 13:
+                        if (Read_Timer()>1.0f) //13靠左是计时1s
                         {
                             Reset_Timer();
-                            flag_For_Circle = 1;
+                        }
+                        break;
+                    case 14:
+                        if (Read_Timer()>3.0f) //14靠右是计时3s
+                        {
+                            Reset_Timer();
                         }
                         break;
                     default:
@@ -83,7 +98,8 @@ void core1_main(void)
             //如果不在计时，继续分类
             if (Read_Timer_Status() == PAUSED)
             {
-                if (flag_For_Circle == 1)
+                //小车处于右圆环状态
+                if (flag_For_Right_Circle == 1)
                 {
                     if (Check_Straight())
                     {
@@ -93,17 +109,26 @@ void core1_main(void)
                     {
                         classification_Result = Classification();
                     }
-                    Check_Classification(classification_Result,2);
-                }
-                if (Check_Straight())
-                {
-                    classification_Result = 12;
+                    Check_Classification(classification_Result,10);
+                    //只有当再次识别到右圆环中心时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直靠右行驶
+                    if (classification_Result != 3)
+                    {
+                        classification_Result = 14;
+                    }
                 }
                 else
-                {
-                    classification_Result = Classification();
+                {//正常识别
+                    if (Check_Straight())
+                    {
+                        classification_Result = 12;
+                    }
+                    else
+                    {
+                        classification_Result = Classification();
+                    }
+                    Check_Classification(classification_Result,10);
                 }
-                Check_Classification(classification_Result,2);
+
             }
 
             DrawCenterLine();
