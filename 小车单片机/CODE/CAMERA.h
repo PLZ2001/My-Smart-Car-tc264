@@ -7,7 +7,7 @@
 #define width_Inverse_Perspective_Max 256
 #define height_Inverse_Perspective_Max 256
 
-#define CLASS_NUM 12
+#define CLASS_NUM 6
 
 #define KMEANS_K 3
 #define GOD_LIGHT 205

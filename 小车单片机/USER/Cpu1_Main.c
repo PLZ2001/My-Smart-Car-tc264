@@ -65,12 +65,12 @@ void core1_main(void)
                 if (flag_For_Right_Circle == 0)//说明还没进右环岛
                 {
                     flag_For_Right_Circle = 1;
-                    classification_Result = 14;//靠右
+                    classification_Result = 8;//8靠右
                 }
                 else //说明准备出右环岛
                 {
                     flag_For_Right_Circle = 0;
-                    classification_Result = 13;//靠左
+                    classification_Result = 7;//7靠左
                 }
                 Start_Timer();
             }
@@ -79,14 +79,14 @@ void core1_main(void)
             {
                 switch (classification_Result)
                 {
-                    case 13:
-                        if (Read_Timer()>1.0f) //13靠左是计时1s
+                    case 7:
+                        if (Read_Timer()>1.0f) //7靠左是计时1s
                         {
                             Reset_Timer();
                         }
                         break;
-                    case 14:
-                        if (Read_Timer()>3.0f) //14靠右是计时3s
+                    case 8:
+                        if (Read_Timer()>3.0f) //8靠右是计时3s
                         {
                             Reset_Timer();
                         }
@@ -103,24 +103,24 @@ void core1_main(void)
                 {
                     if (Check_Straight())
                     {
-                        classification_Result = 12;
+                        classification_Result = 6;//6直道
                     }
                     else
                     {
                         classification_Result = Classification();
                     }
                     Check_Classification(classification_Result,10);
-                    //只有当再次识别到右圆环中心时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直靠右行驶
+                    //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
                     if (classification_Result != 3)
                     {
-                        classification_Result = 14;
+                        classification_Result = 8;
                     }
                 }
                 else
                 {//正常识别
                     if (Check_Straight())
                     {
-                        classification_Result = 12;
+                        classification_Result = 6;//6直道
                     }
                     else
                     {
