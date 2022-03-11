@@ -1,10 +1,11 @@
 clc,clear,close all;
 
 %读图片，然后二值+逆透视
-A = imread('185.34十字路口.pgm');
+A = imread('389.12三岔路口.pgm');
 value = Kmeans(A);
 B = ImageProcessing(A(:,1:end-1)>value, 40, 27.89191, 5.915322, 0.1, 2);
 %识别类型
+arg = Get25(B);
 if CheckStraightV2(B) == 1
     class_Name = '直道';
 else

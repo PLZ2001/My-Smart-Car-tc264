@@ -2,12 +2,12 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
 % 找中心线算法，输入赛道类型class_Name和逆透视二值化图片image，输出绘制有左线、右线、中心线的逆透视二值化图片image_withLine
     image_withLine = image;
     % 对于左弯、右弯，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
-    if strcmp(class_Name,'左弯') || strcmp(class_Name,'右弯') 
+    if strcmp(class_Name,'左弯') || strcmp(class_Name,'右弯')
         filter = -0.5;%滤波系数，正数时是低通滤波，负数时相当于高通滤波
         search_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         
         start_Row = size(image,1);%标记当前在处理哪一行，从最后一行开始
-        start_Col = [ceil(size(image,2)/2),ceil(size(image,2)/2)];%标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心开始
+        start_Col = [ceil(size(image,2)/2)-5,ceil(size(image,2)/2)+5];%标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心开始
         Col_Left = -2*ones(1,search_Lines);%按从下往上的顺序存储左线的列号结果，不合法的全部为-2
         Col_Right = -2*ones(1,search_Lines);%按从下往上的顺序存储右线的列号结果，不合法的全部为-2
         Col_Center = -2*ones(1,search_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
@@ -222,7 +222,7 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
         full_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         search_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         
-        Col_Center = -2*ones(1,full_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
+        Col_Center = -2*ones(1,search_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
         Conv_Core(1).core = [1 1 -1
                              1 1 -1
                             -1 -1 -1]; 
@@ -311,20 +311,15 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
                 end
             end            
         end
-        
-        
-        
-       
-        
     % 对于三岔路口可以采用，特征是滤波是较大正数，且始终靠右行驶
     elseif strcmp(class_Name,'三岔路口')
         flag=1;
         road_width = 0;
-        filter = -0.3;%滤波系数，正数时是低通滤波，负数时相当于高通滤波
+        filter = 0;%滤波系数，正数时是低通滤波，负数时相当于高通滤波
         search_Lines = size(image,1);%一共要扫描多少行，最大是图片宽
         
         start_Row = size(image,1);%标记当前在处理哪一行，从最后一行开始
-        start_Col = [ceil(size(image,2)/2),ceil(size(image,2)/2)];%标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心开始
+        start_Col = [ceil(size(image,2)/2)-5,ceil(size(image,2)/2)+5];%标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心开始
         Col_Left = -2*ones(1,search_Lines);%按从下往上的顺序存储左线的列号结果，不合法的全部为-2
         Col_Right = -2*ones(1,search_Lines);%按从下往上的顺序存储右线的列号结果，不合法的全部为-2
         Col_Center = -2*ones(1,search_Lines);%按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2

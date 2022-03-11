@@ -1,8 +1,8 @@
 clear
 
-filename=dir('D:\CarData\2022-03-06 06-36-07 Images\*.pgm');%存储所有文件名
+filename=dir('D:\OneDrive\桌面\class4\class4\三岔路口\*.pgm');%存储所有文件名
 for i=1:length(filename)
-    fname=strcat('D:\CarData\2022-03-06 06-36-07 Images\',filename(i).name);%存储路径
+    fname=strcat('D:\OneDrive\桌面\class4\class4\三岔路口\',filename(i).name);%存储路径
     file=[filename(i).name];
     file(end-3:end)=[];%去掉字符串后四位
     
