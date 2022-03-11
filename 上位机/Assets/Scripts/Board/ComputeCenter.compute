@@ -67,8 +67,13 @@ struct Picture
 	float value;
 	float maxvalue;
 };
+struct Lines
+{
+	int center;
+};
 // RW前缀表示可读可写，即外部cs文件可读写
 RWStructuredBuffer<Picture> pics;
+RWStructuredBuffer<Lines> lines;
 
 float thresholdingValue;
 float cameraAlphaUpOrDown;
@@ -111,18 +116,39 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 			{
 				uint index = i + j/ratio * (uint)width;
 				DiffusedTrailMap2[Pos] = pics[index].value / pics[index].maxvalue;
-				DiffusedTrailMap3[Pos] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+				if (Pos.x == lines[Pos.y].center)
+				{
+					DiffusedTrailMap3[Pos] = 0.5;//中心线
+				}
+				else
+				{
+					DiffusedTrailMap3[Pos] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+				}
 			}
 			else
 			{
 				DiffusedTrailMap2[Pos] = 0;
-				DiffusedTrailMap3[Pos] = 0;
+				if (Pos.x == lines[Pos.y].center)
+				{
+					DiffusedTrailMap3[Pos] = 0.5;//中心线
+				}
+				else
+				{
+					DiffusedTrailMap3[Pos] = 0;
+				}
 			}
 		}
 		else
 		{
 			DiffusedTrailMap2[Pos] = 0;
-			DiffusedTrailMap3[Pos] = 0;
+			if (Pos.x == lines[Pos.y].center)
+			{
+				DiffusedTrailMap3[Pos] = 0.5;//中心线
+			}
+			else
+			{
+				DiffusedTrailMap3[Pos] = 0;
+			}
 		}
 	}
 	else if (width_Choice == 1)
@@ -139,18 +165,39 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 			{
 				uint index = i + j/ratio * (uint)width;
 				DiffusedTrailMap2[id.xy] = pics[index].value / pics[index].maxvalue;
-				DiffusedTrailMap3[id.xy] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+				if (id.x == lines[id.y].center)
+				{
+					DiffusedTrailMap3[id.xy] = 0.5;//中心线
+				}
+				else
+				{
+					DiffusedTrailMap3[id.xy] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+				}
 			}
 			else
 			{
 				DiffusedTrailMap2[id.xy] = 0;
-				DiffusedTrailMap3[id.xy] = 0;
+				if (id.x == lines[id.y].center)
+				{
+					DiffusedTrailMap3[id.xy] = 0.5;//中心线
+				}
+				else
+				{
+					DiffusedTrailMap3[id.xy] = 0;
+				}
 			}
 		}
 		else
 		{
 			DiffusedTrailMap2[id.xy] = 0;
-			DiffusedTrailMap3[id.xy] = 0;
+			if (id.x == lines[id.y].center)
+			{
+				DiffusedTrailMap3[id.xy] = 0.5;//中心线
+			}
+			else
+			{
+				DiffusedTrailMap3[id.xy] = 0;
+			}
 		}
 
 		if ((id.x + id.y * (uint)width_Inverse_Perspective) >= width * height)

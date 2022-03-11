@@ -605,13 +605,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2e6607c812bb644932b5ced93dbc73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portName: COM4
+  portName: COM3
   baudRate: 115200
   parity: 0
   dataBits: 8
   stopBits: 1
-  receiveLength: 15216
-  baseReceiveLength: 15216
+  receiveLength: 16176
+  baseReceiveLength: 16176
   flag: 0
 --- !u!4 &181704886
 Transform:
@@ -5535,8 +5535,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 741870225}
   m_HandleRect: {fileID: 1333149194}
   m_Direction: 0
-  m_MinValue: -30
-  m_MaxValue: 30
+  m_MinValue: -32
+  m_MaxValue: 32
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -7827,7 +7827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   compute: {fileID: 7200000, guid: 22c1faeec1e69f54eae832027ec73567, type: 3}
   numAgents: 100
-  width: 188
+  width: 187
   height: 40
   stepsPerFrame: 1
   filterMode: 1
@@ -8748,7 +8748,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u2194\u76EE\u6807\u8F6C\u5411(0\xB130\xB0)\uFF1A"
+  m_Text: "\u2194\u76EE\u6807\u8F6C\u5411(0\xB132\xB0)\uFF1A"
 --- !u!222 &1452013588
 CanvasRenderer:
   m_ObjectHideFlags: 0

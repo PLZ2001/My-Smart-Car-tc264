@@ -92,7 +92,7 @@ public class KeyManager : MonoBehaviour
                 GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
             }
 
-            whiteBoard.steering_Target = whiteBoard.steering_Target - b_Steering * whiteBoard.steering_Target / (30 + b_Steering);
+            whiteBoard.steering_Target = whiteBoard.steering_Target - b_Steering * whiteBoard.steering_Target / (32 + b_Steering);
             GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = whiteBoard.steering_Target;
             if (whiteBoard.steering_Target < 0.5 * b_Steering && whiteBoard.steering_Target > -0.5 * b_Steering)
             {

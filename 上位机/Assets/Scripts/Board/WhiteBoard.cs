@@ -26,7 +26,7 @@ public class WhiteBoard : MonoBehaviour
 
     [Header("Display Settings")]
     // 设置画面宽
-    public int width = 188;
+    public int width = 187;
     // 设置画面高
     public int height = 40;
     // 设置每帧步长
@@ -56,7 +56,7 @@ public class WhiteBoard : MonoBehaviour
     [SerializeField, HideInInspector] protected RenderTexture diffusedTrailMap3;
     [SerializeField, HideInInspector] protected RenderTexture displayTexture3;
 
-    Picture[] pics = new Picture[188 * 40];//用一个一维数组存储图片数据
+    Picture[] pics = new Picture[187 * 40];//用一个一维数组存储图片数据
     ComputeBuffer picsBuffer;//用于传递图片
     public SerialPortManager serialPortManager;//用于输入外部的串口实例
     string str;
@@ -94,7 +94,10 @@ public class WhiteBoard : MonoBehaviour
     int repeat_image_cnt = 0;
 
     int classification_Result=0;
-    string[] class_Name_Group = {"左弯", "右弯", "发现右环岛", "右环岛中心", "入右环岛", "出右环岛", "三岔路口", "发现左环岛", "左环岛中心", "入左环岛", "出左环岛", "十字路口","直道"};
+    string[] class_Name_Group = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左","8靠右"};
+
+    Lines[] lines = new Lines[256];
+    ComputeBuffer linesBuffer;
 
     // 启动函数，只会运行一次
     protected virtual void Start()
@@ -187,6 +190,14 @@ public class WhiteBoard : MonoBehaviour
         }//对图片进行初始化，默认全部是白色
         ComputeHelper.CreateStructuredBuffer(ref picsBuffer, pics);
         compute.SetBuffer(diffuseMapKernel, "pics", picsBuffer);
+
+        for (int i = 0; i < 256; i++)
+        {
+            lines[i].center = -2;
+        }
+        ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
+        compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
+        
 
 
         GameObject.Find("UI/Canvas/Toggle").GetComponent<Toggle>().isOn = (UART_Flag_NO_IMAGE == 0);
@@ -281,7 +292,7 @@ public class WhiteBoard : MonoBehaviour
         UART_Flag_NO_IMAGE = GameObject.Find("UI/Canvas/Toggle").GetComponent<Toggle>().isOn ? 0 : 1;
         if (UART_Flag_NO_IMAGE == 1)
         {
-            serialPortManager.receiveLength = serialPortManager.baseReceiveLength - (4 + 188 * 40+ 4) * 2;
+            serialPortManager.receiveLength = serialPortManager.baseReceiveLength - (4 + 187 * 40+ 4) * 2;
         }
         else
         {
@@ -415,7 +426,7 @@ public class WhiteBoard : MonoBehaviour
             Debug.Log(BitConverter.ToString(byteArray_Send));
 
             //发送舵机参数，数据头00-FF-05-01，数据长度1字节，数据尾00-FF-05-02
-            byteArray_Send = new byte[] { 0x00, 0xFF, 0x05, 0x01, (byte)(Math.Round((steering_Target - (-30)) / (30 - (-30)) * 255)), 0x00, 0xFF, 0x05, 0x02 };
+            byteArray_Send = new byte[] { 0x00, 0xFF, 0x05, 0x01, (byte)(Math.Round((steering_Target - (-32)) / (32 - (-32)) * 255)), 0x00, 0xFF, 0x05, 0x02 };
             serialPortManager.WriteByte(byteArray_Send);
             Debug.Log(BitConverter.ToString(byteArray_Send));
 
@@ -478,7 +489,7 @@ public class WhiteBoard : MonoBehaviour
                             Directory.CreateDirectory(path);
                         }
                         FileStream fs = new FileStream(path+ Time.fixedTime.ToString()+class_Name_Group[classification_Result]+".pgm", FileMode.Create);
-                        byte[] data1 = Encoding.UTF8.GetBytes("P5\n"+"188 40\n"+"255\n");
+                        byte[] data1 = Encoding.UTF8.GetBytes("P5\n"+"187 40\n"+"255\n");
                         byte[] data2 = new byte[width * height];
                         for (int i = 0; i < width * height; i++)
                         {
@@ -607,8 +618,8 @@ public class WhiteBoard : MonoBehaviour
                 if (index2 == 4 + 1 && reading_Flag == true)//检测两个数据头之间是否有正确的字节数目
                 {
                     int value = byteArray[index1 + 4];
-                    GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = (float)value / 256 * (30 - (-30)) + (-30);
-                    steering_Target = (float)value / 256 * (30 - (-30)) + (-30);//更新Slider的值，赋值为二值化阈值
+                    GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = (float)value / 256 * (32 - (-32)) + (-32);
+                    steering_Target = (float)value / 256 * (32 - (-32)) + (-32);//更新Slider的值，赋值为二值化阈值
                 }
             }
             //接收pid参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
@@ -655,7 +666,30 @@ public class WhiteBoard : MonoBehaviour
 
                 }
             }
-            
+            //接收中心线，数据头00-FF-09-01，数据长度512字节，数据尾00-FF-09-02
+            index1 = str.IndexOf("00-FF-09-01") / 3;//找到第一个数据头
+            if (index1 != -1)
+            {
+                index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-09-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                if (index2 == 4 + 512)//检测两个数据头之间是否有正确的字节数目
+                {
+                    for (int i = 0; i < 256; i++)
+                    {
+                        int value = byteArray[index1 + 4 + 2 * i];
+                        if (value == 1)
+                        {
+                            lines[i].center = -2;
+                        }
+                        else
+                        {
+                            lines[i].center = byteArray[index1 + 4 + 2 * i + 1];
+                        }
+                    }
+                    ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
+                    compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
+                    
+                }
+            }
             //...
 
             serialPortManager.flag = false;
@@ -690,6 +724,10 @@ public class WhiteBoard : MonoBehaviour
         public float x, y;
         public float value;
         public float maxvalue;
+    }
+    public struct Lines
+    {
+        public int center;
     }
 
     public void Toggle_Reading_Flag()
