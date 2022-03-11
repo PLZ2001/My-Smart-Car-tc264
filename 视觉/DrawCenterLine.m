@@ -328,10 +328,15 @@ function [image_withLine,Col_Center,search_Lines] = DrawCenterLine(class_Name,im
                 start_Row = start_Row - 1;
                 continue;
             end%在当前的行里，如果左线或右线有一个是255区域（未知区域），说明还没有进入到真正的视角区域（0区域或1区域）
-            if image(start_Row,start_Col(2)) == 0 %如果右线发现0区域（背景）                  
+            if image(start_Row,start_Col(2)) == 0 %如果右线发现0区域（背景）     
+                cnt_temp = 0;
                 while image(start_Row,start_Col(2)) == 0 && start_Col(2)>=1+1
                     start_Col(2) = start_Col(2) - 1;
+                    cnt_temp = cnt_temp + 1;
                 end      %则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
+                if cnt_temp>20
+                    break;
+                end
                 if image(start_Row,start_Col(2)) == 1
                     Col_Right(i) = start_Col(2); %只有是1区域的才可以将列号存储到右线里
                 end
