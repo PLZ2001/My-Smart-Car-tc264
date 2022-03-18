@@ -21,7 +21,6 @@ extern enum PID_Mode PID_mode;
 
 void UART_Speed(void);
 void Set_Speed_Target(uint8 val);
-void UART_FuzzyPID(void);
 void UART_PID(void);
 void Set_PID(uint8 v1, uint8 v2, uint8 v3, uint8 v4, uint8 v5, uint8 v6);
 

@@ -29,7 +29,7 @@ IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding_inversePerspective[height_I
 int width_Inverse_Perspective;
 int height_Inverse_Perspective;
 
-float BayesTable[13][CLASS_NUM] = {{-6.212,-9.319,-24.312,-25.426,-3.056,-29.253},
+float BayesTable_16[13][CLASS_NUM] = {{-6.212,-9.319,-24.312,-25.426,-3.056,-29.253},
         {25.361,26.676,57.032,54.606,25.934,60.921},
         {30.833,28.652,55.679,57.031,30.260,59.570},
         {-11.965,-9.801,-27.646,-27.080,-5.181,-31.199},
@@ -42,10 +42,29 @@ float BayesTable[13][CLASS_NUM] = {{-6.212,-9.319,-24.312,-25.426,-3.056,-29.253
         {138.356,156.841,144.860,165.326,99.307,119.594},
         {122.261,105.980,128.375,112.617,70.663,89.646},
         {-189.763,-187.540,-328.932,-331.373,-322.336,-380.283}};
+float BayesTable_25[17][CLASS_NUM] = {{1.685,-3.593,1.532,-4.908,9.487,-2.020},
+        {13.395,16.396,12.648,16.239,13.193,9.854},
+        {9.275,9.163,63.356,62.429,7.743,66.090},
+        {8.719,7.773,6.405,4.235,5.764,0.084},
+        {2.974,7.324,1.222,6.714,13.834,3.711},
+        {6.857,10.178,10.562,14.006,19.157,12.922},
+        {-11.146,-14.156,-23.473,-26.963,-38.984,-28.164},
+        {68.947,68.188,103.941,103.082,95.119,113.900},
+        {-17.427,-15.530,-30.721,-25.538,-39.677,-30.052},
+        {8.645,6.568,13.853,9.487,18.106,12.077},
+        {34.226,-8.819,57.349,10.286,87.398,98.488},
+        {-134.646,-130.190,-46.101,-41.610,-33.127,-37.576},
+        {-1.891,35.422,10.037,56.403,84.903,96.292},
+        {28.944,17.733,56.317,47.125,43.668,44.197},
+        {621.139,621.478,643.436,630.584,554.176,585.571},
+        {-8.681,3.995,19.472,31.779,22.297,20.645},
+        {-254.031,-254.603,-427.897,-419.047,-383.225,-467.807}};
 
-char *class_Name_Group[CLASS_NUM+3] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）"};
+char *class_Name_Group[CLASS_NUM+4] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"};
 
-float arg_Classification[16];
+float arg_Classification_16[16];
+float arg_Classification_25[25];
+
 
 void My_Init_Camera(void)
 {
@@ -60,6 +79,35 @@ void UART_Image(void)
     uart_putchar(DEBUG_UART,0x01);//发送数据头
     uart_putbuff(DEBUG_UART, *mt9v03x_image_cutted, X_WIDTH_CAMERA*Y_WIDTH_CAMERA);  //发送压缩后的图像
     //uart_putbuff(DEBUG_UART, *mt9v03x_image_cutted_compressed, compressed_Size);  //发送压缩后的图像
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x01);
+    uart_putchar(DEBUG_UART,0x02);//发送数据尾
+}
+
+void UART_Thresholding_Image(void)
+{
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x01);
+    uart_putchar(DEBUG_UART,0x01);//发送数据头
+    uint32 len = X_WIDTH_CAMERA*Y_WIDTH_CAMERA/8; //要求X_WIDTH_CAMERA*Y_WIDTH_CAMERA刚好是8的倍数
+    uint8 *buff = mt9v03x_image_cutted_thresholding;
+    while(len)
+    {
+
+        uint8 dat = (*buff<<7)
+                | (*(buff+1)<<6)
+                | (*(buff+2)<<5)
+                | (*(buff+3)<<4)
+                | (*(buff+4)<<3)
+                | (*(buff+5)<<2)
+                | (*(buff+6)<<1)
+                | (*(buff+7));
+        uart_putchar(DEBUG_UART, dat);
+        len--;
+        buff+=8;
+    }
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x01);
@@ -202,11 +250,73 @@ void Get_Cutted_Image(void)
 
 
 
+//曾经的分4类
+//void Get_Thresholding_Image(void)
+//{
+//    //Kmeans法更新二值化阈值
+//    float m[KMEANS_K][3] = {{51,0,0},{102,0,0},{153,0,0},{204,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
+//    float maxtimes = 2;
+//    for (int time = 0;time<maxtimes;time++)
+//    {
+//        for (int i = 0;i<KMEANS_K;i++)
+//        {
+//            m[i][1] = 0;
+//        }
+//        for (int i = 0;i<Y_WIDTH_CAMERA;i++)
+//        {
+//            for (int j = 0;j<X_WIDTH_CAMERA;j++)
+//            {
+//                float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
+//                int min_distance_class = 0;
+//                for (int k=1;k<KMEANS_K;k++)
+//                {
+//                    if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
+//                    {
+//                        min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
+//                        min_distance_class = k;
+//                    }
+//                }
+//                m[min_distance_class][1] = m[min_distance_class][1]+1;
+//                m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
+//            }
+//        }
+//        for (int i = 0;i<KMEANS_K;i++)
+//        {
+//            m[i][0] = m[i][2];
+//        }
+//    }
+//    float max_cnt[2] = {-1,-1};
+//    int max_cnt_class[2] = {0,0};
+//    for (int i = 0;i<KMEANS_K;i++)
+//    {
+//        if (m[i][1]>max_cnt[0] && m[i][0]<GOD_LIGHT)
+//        {
+//            max_cnt[1] = max_cnt[0];
+//            max_cnt_class[1] = max_cnt_class[0];
+//            max_cnt[0] = m[i][1];
+//            max_cnt_class[0] = i;
+//        }
+//        else if (m[i][1]>max_cnt[1] && m[i][0]<GOD_LIGHT)
+//        {
+//            max_cnt[1] = m[i][1];
+//            max_cnt_class[1] = i;
+//        }
+//    }
+//    thresholding_Value = (uint8)(0.5*(m[max_cnt_class[0]][0]+m[max_cnt_class[1]][0]));
+//
+//    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
+//    {
+//        for(int i = 0; i < X_WIDTH_CAMERA; i++)
+//        {
+//            mt9v03x_image_cutted_thresholding[j][i] = mt9v03x_image_cutted[j][i]>thresholding_Value;
+//        }
+//    }
+//}
 
 void Get_Thresholding_Image(void)
 {
     //Kmeans法更新二值化阈值
-    float m[KMEANS_K][3] = {{85,0,0},{171,0,0},{255,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
+    float m[KMEANS_K][3] = {{85,0,0},{170,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
     float maxtimes = 2;
     for (int time = 0;time<maxtimes;time++)
     {
@@ -237,42 +347,7 @@ void Get_Thresholding_Image(void)
             m[i][0] = m[i][2];
         }
     }
-    float max_cnt[2] = {m[0][1],m[1][1]};
-    int max_cnt_class[2] = {0,1};
-    if (m[0][1] >= m[1][1])
-    {
-        for (int i = 2;i<KMEANS_K;i++)
-        {
-            if (m[i][1]>max_cnt[0] && m[i][0]<GOD_LIGHT)
-            {
-                max_cnt[0] = m[i][1];
-                max_cnt_class[0] = i;
-            }
-            else if (m[i][1]>max_cnt[1] && m[i][0]<GOD_LIGHT)
-            {
-                max_cnt[1] = m[i][1];
-                max_cnt_class[1] = i;
-            }
-        }
-    }
-    else
-    {
-        for (int i = 2;i<KMEANS_K;i++)
-        {
-            if (m[i][1]>max_cnt[1] && m[i][0]<GOD_LIGHT)
-            {
-                max_cnt[1] = m[i][1];
-                max_cnt_class[1] = i;
-            }
-            else if (m[i][1]>max_cnt[0] && m[i][0]<GOD_LIGHT)
-            {
-                max_cnt[0] = m[i][1];
-                max_cnt_class[0] = i;
-            }
-        }
-    }
-
-    thresholding_Value = (uint8)(0.5*(m[max_cnt_class[0]][0]+m[max_cnt_class[1]][0]));
+    thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));
 
     for(int j = 0; j < Y_WIDTH_CAMERA; j++)
     {
@@ -358,40 +433,143 @@ void Get16(float* arg)
     }
 }
 
-uint8 Classification(void)
+uint8 Classification_16(void)
 {
-    //float arg_Classification[16];
-    Get16(arg_Classification);
+    //float arg_Classification_16[16];
+    Get16(arg_Classification_16);
     float classification_Data[CLASS_NUM] = {0};
-    float classification_Data_max;
-    uint8 classification_Result_temp;
+    float classification_Data_max1=0;
+    uint8 classification_Result_temp1=0;
+    float classification_Data_max2=0;
+    uint8 classification_Result_temp2=0;
     for (uint8 i = 0;i<CLASS_NUM;i++)
     {
-        classification_Data[i] = arg_Classification[0]*BayesTable[0][i]+
-                                arg_Classification[1]*BayesTable[1][i]+
-                                arg_Classification[2]*BayesTable[2][i]+
-                                arg_Classification[3]*BayesTable[3][i]+
-                                arg_Classification[4]*BayesTable[4][i]+
-                                arg_Classification[5]*BayesTable[5][i]+
-                                arg_Classification[6]*BayesTable[6][i]+
-                                arg_Classification[7]*BayesTable[7][i]+
-                                arg_Classification[9]*BayesTable[8][i]+
-                                arg_Classification[10]*BayesTable[9][i]+
-                                arg_Classification[13]*BayesTable[10][i]+
-                                arg_Classification[14]*BayesTable[11][i]+
-                                BayesTable[12][i];
-        if (i==0)
+        classification_Data[i] = arg_Classification_16[0]*BayesTable_16[0][i]+
+                                arg_Classification_16[1]*BayesTable_16[1][i]+
+                                arg_Classification_16[2]*BayesTable_16[2][i]+
+                                arg_Classification_16[3]*BayesTable_16[3][i]+
+                                arg_Classification_16[4]*BayesTable_16[4][i]+
+                                arg_Classification_16[5]*BayesTable_16[5][i]+
+                                arg_Classification_16[6]*BayesTable_16[6][i]+
+                                arg_Classification_16[7]*BayesTable_16[7][i]+
+                                arg_Classification_16[9]*BayesTable_16[8][i]+
+                                arg_Classification_16[10]*BayesTable_16[9][i]+
+                                arg_Classification_16[13]*BayesTable_16[10][i]+
+                                arg_Classification_16[14]*BayesTable_16[11][i]+
+                                BayesTable_16[12][i];
+
+        if (classification_Data[i]>classification_Data_max1)
         {
-            classification_Data_max = classification_Data[0];
-            classification_Result_temp = 0;
+            classification_Data_max2 = classification_Data_max1;
+            classification_Result_temp2 = classification_Result_temp1;
+            classification_Data_max1 = classification_Data[i];
+            classification_Result_temp1 = i;
         }
-        else if (classification_Data[i]>classification_Data_max)
+        else if (classification_Data[i]>classification_Data_max2)
         {
-            classification_Data_max = classification_Data[i];
-            classification_Result_temp = i;
+            classification_Data_max2 = classification_Data[i];
+            classification_Result_temp2 = i;
         }
     }
-    return classification_Result_temp;
+    if ((classification_Data_max1-classification_Data_max2) > CLASSIFICATION_16_VALID)
+    {
+        return classification_Result_temp1;
+    }
+    else
+    {
+        return 9;//9代表未知
+    }
+}
+
+void Get25(float* arg)
+{
+    int col_edge[6],row_edge[6];
+    col_edge[0] = 0;
+    col_edge[1] = width_Inverse_Perspective/5;
+    col_edge[2] = 2*col_edge[1];
+    col_edge[3] = 3*col_edge[1];
+    col_edge[4] = 4*col_edge[1];
+    col_edge[5] = width_Inverse_Perspective-1;
+    row_edge[0] = 0;
+    row_edge[1] = height_Inverse_Perspective/5;
+    row_edge[2] = 2*row_edge[1];
+    row_edge[3] = 3*row_edge[1];
+    row_edge[4] = 4*row_edge[1];
+    row_edge[5] = height_Inverse_Perspective-1;
+
+    int white_cnt[25] = {0};
+    int black_cnt[25] = {0};
+    for (int i = 0;i<height_Inverse_Perspective;i++)
+    {
+        for (int j = 0;j<width_Inverse_Perspective;j++)
+        {
+            white_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
+            black_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
+        }
+    }
+    for (int i = 0;i<25;i++)
+    {
+        if ((white_cnt[i]+black_cnt[i]) == 0)
+        {
+           arg[i] = 0;
+        }
+        else
+        {
+           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+        }
+    }
+}
+
+uint8 Classification_25(void)
+{
+    Get25(arg_Classification_25);
+    float classification_Data[CLASS_NUM] = {0};
+    float classification_Data_max1=0;
+    uint8 classification_Result_temp1=0;
+    float classification_Data_max2=0;
+    uint8 classification_Result_temp2=0;
+    for (uint8 i = 0;i<CLASS_NUM;i++)
+    {
+        classification_Data[i] = arg_Classification_25[0]*BayesTable_25[0][i]+
+                arg_Classification_25[1]*BayesTable_25[1][i]+
+                arg_Classification_25[2]*BayesTable_25[2][i]+
+                arg_Classification_25[3]*BayesTable_25[3][i]+
+                arg_Classification_25[4]*BayesTable_25[4][i]+
+                arg_Classification_25[5]*BayesTable_25[5][i]+
+                arg_Classification_25[6]*BayesTable_25[6][i]+
+                arg_Classification_25[7]*BayesTable_25[7][i]+
+                arg_Classification_25[8]*BayesTable_25[8][i]+
+                arg_Classification_25[9]*BayesTable_25[9][i]+
+                arg_Classification_25[11]*BayesTable_25[10][i]+
+                arg_Classification_25[12]*BayesTable_25[11][i]+
+                arg_Classification_25[13]*BayesTable_25[12][i]+
+                arg_Classification_25[16]*BayesTable_25[13][i]+
+                arg_Classification_25[17]*BayesTable_25[14][i]+
+                arg_Classification_25[18]*BayesTable_25[15][i]+
+                BayesTable_25[16][i];
+
+
+        if (classification_Data[i]>classification_Data_max1)
+        {
+            classification_Data_max2 = classification_Data_max1;
+            classification_Result_temp2 = classification_Result_temp1;
+            classification_Data_max1 = classification_Data[i];
+            classification_Result_temp1 = i;
+        }
+        else if (classification_Data[i]>classification_Data_max2)
+        {
+            classification_Data_max2 = classification_Data[i];
+            classification_Result_temp2 = i;
+        }
+    }
+    if ((classification_Data_max1-classification_Data_max2) > CLASSIFICATION_25_VALID)
+    {
+        return classification_Result_temp1;
+    }
+    else
+    {
+        return 9;//9代表未知
+    }
 }
 
 
@@ -401,7 +579,7 @@ int Check_Straight(void)
     int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};
     int Col_Left[height_Inverse_Perspective_Max] = {-2};
     int Col_Right[height_Inverse_Perspective_Max] = {-2};
-    search_Lines_Straight=(int)(30/(10.0f*ratioOfPixelToHG)); //表示直线扫描范围为车前2.0倍摄像头高度
+    search_Lines_Straight=(int)(3/ratioOfPixelToHG); //表示直线扫描范围为车前3.0倍摄像头高度
     for (int i=0;i<search_Lines_Straight;i++)
     {
         Col_Left[i] = -2;
@@ -542,7 +720,7 @@ void DrawCenterLine(void)
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
     {
-        DrawCenterLinewithConfig(-0.5);
+        DrawCenterLinewithConfig(0);
     }
 }
 
@@ -567,9 +745,15 @@ void DrawCenterLinewithConfig(float filter)
         }//在当前的行里，如果左线或右线有一个是255区域（未知区域），说明还没有进入到真正的视角区域（0区域或1区域）；或者如果左线跑到右线的右边去了，则说明不是道路了
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1 && start_Col[0]>=1)
             {
                 start_Col[0] = start_Col[0] - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
             }
             start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
@@ -579,9 +763,15 @@ void DrawCenterLinewithConfig(float filter)
         }
         else//如果左线发现0区域（背景）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0 && start_Col[0]<=width_Inverse_Perspective-2)
             {
                 start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
             {
@@ -590,9 +780,15 @@ void DrawCenterLinewithConfig(float filter)
         }
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0 && start_Col[1]>=1)
             {
                 start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
             {
@@ -601,9 +797,15 @@ void DrawCenterLinewithConfig(float filter)
         }
         else//如果右线发现1区域（道路）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1 && start_Col[1]<=width_Inverse_Perspective-2)
             {
                 start_Col[1] = start_Col[1] + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
             }
             start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
@@ -627,57 +829,34 @@ void DrawCenterLinewithConfig(float filter)
             }
             else //如果上一个中心线不合法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
             }
         }
         else if (Col_Right[i]!=-2 && Col_Left[i]==-2) //左线非法，右线合法
         {
-            if (Col_Center[i-1]!=-2 && Col_Right[i-1]!=-2) //如果上一次中心线合法，上一次右线合法
+            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-Col_Right[i-1]+Col_Center[i-1]); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-road_width/2.0f); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
             }
-            else if (Col_Center[i-1]==-2 && Col_Right[i-1]!=-2) //如果上一次中心线非法，上一次右线合法
+            else //如果上一次中心线非法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Right[i]-Col_Right[i-1]+width_Inverse_Perspective/2.0);//假定上一次中心线在正中间，根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Right[i-1]==-2) //如果上一次中心线合法，上一次右线非法
-            {
-                Col_Center[i] = Col_Center[i-1]; //这一次中心线继续使用上一次的中心线
-            }
-            else //如果上一次中心线非法，上一次右线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Right[i]-road_width/2.0f); //这一次中心线直接假定为正中间
             }
         }
         else if (Col_Right[i]==-2 && Col_Left[i]!=-2) //左线合法，右线非法，与上文类似
         {
-            if (Col_Center[i-1]!=-2 && Col_Left[i-1]!=-2)
+            if (Col_Center[i-1]!=-2)
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]-Col_Left[i-1]+Col_Center[i-1]);
-            }
-            else if (Col_Center[i-1]==-2 && Col_Left[i-1]!=-2)
-            {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Left[i]-Col_Left[i-1]+width_Inverse_Perspective/2.0);
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Left[i-1]==-2)
-            {
-                Col_Center[i] = Col_Center[i-1];
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
             else
             {
-                Col_Center[i] = width_Inverse_Perspective/2.0;
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
         }
         else //左线非法，右线非法
         {
-            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
-            {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*width_Inverse_Perspective/2.0; //根据上一次的中心线、假定的这一次中心线（取正中间），用滤波计算这次的中心线
-            }
-            else //如果上一次中心线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
-            }
+
         }
         //中心线计算完毕
     }
@@ -685,9 +864,6 @@ void DrawCenterLinewithConfig(float filter)
 
 void DrawCenterLinewithConfig_RightBased(float filter)
 {
-    int flag=1;
-    int road_width = 0;
-
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
     int Col_Left[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储左线的列号结果，不合法的全部为-2
@@ -712,7 +888,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>20)
+            if (cnt_temp>road_width)
             {
                 break;
             }
@@ -723,9 +899,15 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         }
         else//如果右线发现1区域（道路）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1 && start_Col[1]<=width_Inverse_Perspective-2)
             {
                 start_Col[1] = start_Col[1] + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
             }
             start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
@@ -736,29 +918,20 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         start_Col[0] = start_Col[1]-road_width;//左线的初始扫描点是右线往左road_width
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
         {
-            if (flag==1)//第一次初始化road_width
-            {
-                while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1 && start_Col[0]>=1)
-                {
-                    start_Col[0] = start_Col[0] - 1;
-                }
-                start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
-                {
-                    Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
-                }
-
-                road_width = start_Col[1]-start_Col[0];
-                flag = 0;
-            }
             Col_Left[i] = start_Col[0];//第一次之后，剩余时候发现1区域就保持右线往左road_width
         }
         else//如果左线发现0区域（背景）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0 && start_Col[0]<=width_Inverse_Perspective-2)
             {
                 start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>road_width)
+            {
+                break;
+            }
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
             {
                 Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
@@ -781,57 +954,34 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else //如果上一个中心线不合法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
             }
         }
         else if (Col_Right[i]!=-2 && Col_Left[i]==-2) //左线非法，右线合法
         {
-            if (Col_Center[i-1]!=-2 && Col_Right[i-1]!=-2) //如果上一次中心线合法，上一次右线合法
+            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-Col_Right[i-1]+Col_Center[i-1]); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-road_width/2.0f); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
             }
-            else if (Col_Center[i-1]==-2 && Col_Right[i-1]!=-2) //如果上一次中心线非法，上一次右线合法
+            else //如果上一次中心线非法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Right[i]-Col_Right[i-1]+width_Inverse_Perspective/2.0);//假定上一次中心线在正中间，根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Right[i-1]==-2) //如果上一次中心线合法，上一次右线非法
-            {
-                Col_Center[i] = Col_Center[i-1]; //这一次中心线继续使用上一次的中心线
-            }
-            else //如果上一次中心线非法，上一次右线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Right[i]-road_width/2.0f); //这一次中心线直接假定为正中间
             }
         }
         else if (Col_Right[i]==-2 && Col_Left[i]!=-2) //左线合法，右线非法，与上文类似
         {
-            if (Col_Center[i-1]!=-2 && Col_Left[i-1]!=-2)
+            if (Col_Center[i-1]!=-2)
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]-Col_Left[i-1]+Col_Center[i-1]);
-            }
-            else if (Col_Center[i-1]==-2 && Col_Left[i-1]!=-2)
-            {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Left[i]-Col_Left[i-1]+width_Inverse_Perspective/2.0);
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Left[i-1]==-2)
-            {
-                Col_Center[i] = Col_Center[i-1];
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
             else
             {
-                Col_Center[i] = width_Inverse_Perspective/2.0;
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
         }
         else //左线非法，右线非法
         {
-            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
-            {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*width_Inverse_Perspective/2.0; //根据上一次的中心线、假定的这一次中心线（取正中间），用滤波计算这次的中心线
-            }
-            else //如果上一次中心线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
-            }
+
         }
         //中心线计算完毕
     }
@@ -839,9 +989,6 @@ void DrawCenterLinewithConfig_RightBased(float filter)
 
 void DrawCenterLinewithConfig_LeftBased(float filter)
 {
-    int flag=1;
-    int road_width = 0;
-
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
     int Col_Left[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储左线的列号结果，不合法的全部为-2
@@ -860,9 +1007,15 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         }//在当前的行里，如果左线或右线有一个是255区域（未知区域），说明还没有进入到真正的视角区域（0区域或1区域）；或者如果左线跑到右线的右边去了，则说明不是道路了
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1 && start_Col[0]>=1)
             {
                 start_Col[0] = start_Col[0] - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>20)
+            {
+                break;
             }
             start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
@@ -890,10 +1043,16 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         start_Col[1] = start_Col[0]+road_width;//右线的初始扫描点是左线往右road_width
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
         {
+            int cnt_temp = 0;
             while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0 && start_Col[1]>=1)
             {
                 start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>20)
+            {
+                break;
+            }
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
             {
                 Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
@@ -901,20 +1060,6 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         }
         else//如果右线发现1区域（道路）
         {
-            if (flag==1)//第一次初始化road_width
-            {
-                while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1 && start_Col[1]<=width_Inverse_Perspective-2)
-                {
-                    start_Col[1] = start_Col[1] + 1;
-                }
-                start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
-                {
-                    Col_Right[i] = start_Col[1];//只有是0区域的才可以将列号存储到右线里
-                }
-                road_width = start_Col[1]-start_Col[0];
-                flag = 0;
-            }
             Col_Right[i] = start_Col[1];//第一次之后，剩余时候发现1区域就保持左线往右road_width
         }
 
@@ -934,57 +1079,34 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else //如果上一个中心线不合法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //假定上一次中心线在正中间，根据上一次中心线、这一次左右线中值，用滤波计算这次的中心线
             }
         }
         else if (Col_Right[i]!=-2 && Col_Left[i]==-2) //左线非法，右线合法
         {
-            if (Col_Center[i-1]!=-2 && Col_Right[i-1]!=-2) //如果上一次中心线合法，上一次右线合法
+            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-Col_Right[i-1]+Col_Center[i-1]); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Right[i]-road_width/2.0f); //根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
             }
-            else if (Col_Center[i-1]==-2 && Col_Right[i-1]!=-2) //如果上一次中心线非法，上一次右线合法
+            else //如果上一次中心线非法
             {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Right[i]-Col_Right[i-1]+width_Inverse_Perspective/2.0);//假定上一次中心线在正中间，根据上一次的中心线、假定的这一次中心线（保持上一次和右线的距离），用滤波计算这次的中心线
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Right[i-1]==-2) //如果上一次中心线合法，上一次右线非法
-            {
-                Col_Center[i] = Col_Center[i-1]; //这一次中心线继续使用上一次的中心线
-            }
-            else //如果上一次中心线非法，上一次右线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Right[i]-road_width/2.0f); //这一次中心线直接假定为正中间
             }
         }
         else if (Col_Right[i]==-2 && Col_Left[i]!=-2) //左线合法，右线非法，与上文类似
         {
-            if (Col_Center[i-1]!=-2 && Col_Left[i-1]!=-2)
+            if (Col_Center[i-1]!=-2)
             {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]-Col_Left[i-1]+Col_Center[i-1]);
-            }
-            else if (Col_Center[i-1]==-2 && Col_Left[i-1]!=-2)
-            {
-                Col_Center[i] = filter*width_Inverse_Perspective/2.0+(1-filter)*(Col_Left[i]-Col_Left[i-1]+width_Inverse_Perspective/2.0);
-            }
-            else if (Col_Center[i-1]!=-2 && Col_Left[i-1]==-2)
-            {
-                Col_Center[i] = Col_Center[i-1];
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
             else
             {
-                Col_Center[i] = width_Inverse_Perspective/2.0;
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(Col_Left[i]+road_width/2.0f);
             }
         }
         else //左线非法，右线非法
         {
-            if (Col_Center[i-1]!=-2) //如果上一次中心线合法
-            {
-                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*width_Inverse_Perspective/2.0; //根据上一次的中心线、假定的这一次中心线（取正中间），用滤波计算这次的中心线
-            }
-            else //如果上一次中心线非法
-            {
-                Col_Center[i] = width_Inverse_Perspective/2.0; //这一次中心线直接假定为正中间
-            }
+
         }
         //中心线计算完毕
     }

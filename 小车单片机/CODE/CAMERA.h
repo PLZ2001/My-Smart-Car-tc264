@@ -7,13 +7,23 @@
 #define width_Inverse_Perspective_Max 256
 #define height_Inverse_Perspective_Max 256
 
+#define Camera_Height 0.2
+
 #define CLASS_NUM 6
 
-#define KMEANS_K 3
+#define CLASSIFICATION_16_VALID 25//35太大了//21不够大
+#define CLASSIFICATION_25_VALID 35
+
+//曾经的分4类
+//#define KMEANS_K 4
+//#define GOD_LIGHT 205
+
+#define KMEANS_K 2
 #define GOD_LIGHT 205
 
 #define STRAIGHT_CONDITION 5
 
+#define road_width (0.4/Camera_Height/ratioOfPixelToHG) //道路实际宽度0.4m
 
 extern int width_Inverse_Perspective;
 extern int height_Inverse_Perspective;
@@ -33,6 +43,7 @@ extern int search_Lines;
 void My_Init_Camera(void);
 
 void UART_Image(void);
+void UART_Thresholding_Image(void);
 void UART_Thresholding_Value(void);
 void UART_Inverse_Perspective(void);
 void UART_Classification(void);
@@ -42,7 +53,8 @@ void Set_CameraAlphaUpOrDown(uint8 val);
 void Set_CameraThetaDown(uint8 val);
 void Set_RatioOfMaxDisToHG(uint8 val);
 void Set_RatioOfPixelToHG(uint8 val);
-uint8 Classification(void);
+uint8 Classification_16(void);
+uint8 Classification_25(void);
 int Check_Straight(void);
 void DrawCenterLine(void);
 void DrawCenterLinewithConfig(float filter);

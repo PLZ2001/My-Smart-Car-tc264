@@ -42,6 +42,34 @@ void Set_Steering_Target(uint8 val)
     steering_Target = ((float)val) / 256 * (STEERING_MAX-STEERING_MIN)+STEERING_MIN;
 }
 
+void UART_SteeringPID(void)
+{
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x06);
+    uart_putchar(DEBUG_UART,0x01);//发送数据头
+    int16 kp = (int16)round(1000*Steering_PID.KP);
+    int16 ki = (int16)round(1000*Steering_PID.KI);
+    int16 kd = (int16)round(1000*Steering_PID.KD);
+    uart_putchar(DEBUG_UART, kp>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, kp&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, ki>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, ki&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, kd>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, kd&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x06);
+    uart_putchar(DEBUG_UART,0x02);//发送数据尾
+}
+
+void Set_SteeringPID(uint8 v1, uint8 v2, uint8 v3, uint8 v4, uint8 v5, uint8 v6)
+{
+    Steering_PID.KP = (v1*256.0f+v2)/1000.0f;
+    Steering_PID.KI = (v3*256.0f+v4)/1000.0f;
+    Steering_PID.KD = (v5*256.0f+v6)/1000.0f;
+}
+
 void Set_Steering(void)
 {
     uint32 duty;
@@ -64,14 +92,15 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
     //根据Col_Center和扫描范围search_Lines计算误差（全局变量）
 
     float steering_Error_tmp = 0;
-    float Col_Center_Init = width_Inverse_Perspective/2.0f;
+    float Col_Center_Init = width_Inverse_Perspective/2;
 
 
-
+    int cnt = 0;
     for (int i=0;i<(search_Lines*Cal_Steering_Range_of_Img);i++)
     {
         if(Col_Center[i] != -2)
         {
+            cnt = cnt+1;
             steering_Error_tmp = steering_Error_tmp + Col_Center[i] - Col_Center_Init;
         }
     }

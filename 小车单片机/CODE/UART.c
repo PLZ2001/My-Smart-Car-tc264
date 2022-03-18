@@ -34,6 +34,11 @@ void UART(enum UARTstate state)
                 //发送裁剪后的摄像头原画面，数据头00-FF-01-01，数据长度X_WIDTH_CAMERA*Y_WIDTH_CAMERA字节，数据尾00-FF-01-02
                 UART_Image();
             }
+            else
+            {
+                //发送裁剪后的二值化画面，数据头00-FF-01-01，数据长度X_WIDTH_CAMERA*Y_WIDTH_CAMERA/8字节，数据尾00-FF-01-02
+                UART_Thresholding_Image();
+            }
 
             //发送二值化阈值，数据头00-FF-02-01，数据长度1字节，数据尾00-FF-02-02
             UART_Thresholding_Value();
@@ -47,8 +52,8 @@ void UART(enum UARTstate state)
             //发送舵机角度参数，数据头00-FF-05-01，数据长度1字节，数据尾00-FF-05-02
             UART_Steering();
 
-            //发送模糊PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
-            UART_FuzzyPID();
+            //发送转弯PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
+            UART_SteeringPID();
 
             //发送增量式PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
             UART_PID();
@@ -135,6 +140,15 @@ void UART(enum UARTstate state)
                     if (i<RECEIVE_LENGTH-8 && data_Buffer_Shadow[i+5] == 0x00 && data_Buffer_Shadow[i+6] == 0xFF && data_Buffer_Shadow[i+7] == 0x05 && data_Buffer_Shadow[i+8] == 0x02)
                     {
                         Set_Steering_Target(data_Buffer_Shadow[i+4]);
+                    }
+                }
+                //接收PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
+                if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x06 && data_Buffer_Shadow[i+3] == 0x01)
+                {
+                    if (i<RECEIVE_LENGTH-13 && data_Buffer_Shadow[i+10] == 0x00 && data_Buffer_Shadow[i+11] == 0xFF && data_Buffer_Shadow[i+12] == 0x06 && data_Buffer_Shadow[i+13] == 0x02)
+                    {
+
+                        Set_SteeringPID(data_Buffer_Shadow[i+4], data_Buffer_Shadow[i+5], data_Buffer_Shadow[i+6], data_Buffer_Shadow[i+7], data_Buffer_Shadow[i+8], data_Buffer_Shadow[i+9]);
                     }
                 }
                 //接收PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02

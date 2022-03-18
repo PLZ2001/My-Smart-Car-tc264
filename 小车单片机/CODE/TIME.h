@@ -7,6 +7,8 @@ enum TIMER_STATUS
     PAUSED
 };
 
+extern float time_up;
+
 void Start_Timer(void);
 void Pause_Timer(void);
 void Reset_Timer(void);

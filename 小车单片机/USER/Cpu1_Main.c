@@ -59,18 +59,32 @@ void core1_main(void)
             Get_Inverse_Perspective_Image();
 
             static uint8 flag_For_Right_Circle = 0;
-            //如果是3右环岛中心，且定时器没有在计时，就开定时
-            if (Read_Timer_Status() == PAUSED && classification_Result == 3)
+            //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
+            if (Read_Timer_Status() == PAUSED)
             {
-                if (flag_For_Right_Circle == 0)//说明还没进右环岛
+                switch(classification_Result)
                 {
-                    flag_For_Right_Circle = 1;
-                    classification_Result = 8;//8靠右
-                }
-                else //说明准备出右环岛
-                {
-                    flag_For_Right_Circle = 0;
-                    classification_Result = 7;//7靠左
+                    case 3:
+                        if (flag_For_Right_Circle == 0)//说明还没进右环岛
+                        {
+                            flag_For_Right_Circle = 1;
+                            classification_Result = 8;//8靠右
+                            time_up = 3.0;
+                        }
+                        else //说明准备出右环岛
+                        {
+                            flag_For_Right_Circle = 0;
+                            classification_Result = 7;//7靠左
+                            time_up = 1.0;
+                        }
+                        break;
+                    case 4:
+                        classification_Result = 8;//8靠右
+                        time_up = 1.0;
+                        break;
+                    default:
+                        break;
+
                 }
                 Start_Timer();
             }
@@ -80,13 +94,13 @@ void core1_main(void)
                 switch (classification_Result)
                 {
                     case 7:
-                        if (Read_Timer()>1.0f) //7靠左是计时1s
+                        if (Read_Timer()>time_up) //7靠左
                         {
                             Reset_Timer();
                         }
                         break;
                     case 8:
-                        if (Read_Timer()>3.0f) //8靠右是计时3s
+                        if (Read_Timer()>time_up) //8靠右
                         {
                             Reset_Timer();
                         }
@@ -107,7 +121,7 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification();
+                        classification_Result = Classification_25();
                     }
                     Check_Classification(classification_Result,10);
                     //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
@@ -124,7 +138,7 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification();
+                        classification_Result = Classification_25();
                     }
                     Check_Classification(classification_Result,10);
                 }

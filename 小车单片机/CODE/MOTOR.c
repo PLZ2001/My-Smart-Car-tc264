@@ -57,26 +57,6 @@ void Set_Speed_Target(uint8 val)
     speed_Target = ((float)val) / 256 * (SPEED_MAX-SPEED_MIN)+SPEED_MIN;//因为速度范围是对称的，而255不对称，所以接收时用256
 }
 
-void UART_FuzzyPID(void)
-{
-    uart_putchar(DEBUG_UART,0x00);
-    uart_putchar(DEBUG_UART,0xff);
-    uart_putchar(DEBUG_UART,0x06);
-    uart_putchar(DEBUG_UART,0x01);//发送数据头
-    int16 kp = (int16)round(10000*(pid_vector[0]->kp+pid_vector[0]->delta_kp));
-    int16 ki = (int16)round(10000*(pid_vector[0]->ki+pid_vector[0]->delta_ki));
-    int16 kd = (int16)round(10000*(pid_vector[0]->kd+pid_vector[0]->delta_kd));
-    uart_putchar(DEBUG_UART, kp>>8);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART, kp&0x00FF);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART, ki>>8);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART, ki&0x00FF);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART, kd>>8);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART, kd&0x00FF);//先传高8位，再传低8位
-    uart_putchar(DEBUG_UART,0x00);
-    uart_putchar(DEBUG_UART,0xff);
-    uart_putchar(DEBUG_UART,0x06);
-    uart_putchar(DEBUG_UART,0x02);//发送数据尾
-}
 
 void UART_PID(void)
 {

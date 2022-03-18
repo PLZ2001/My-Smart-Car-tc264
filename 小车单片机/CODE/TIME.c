@@ -2,6 +2,7 @@
 #include "TIME.h"
 
 uint32 time_10ms = 0;
+float time_up;
 enum TIMER_STATUS timer_Status = PAUSED;
 
 void Start_Timer(void)
