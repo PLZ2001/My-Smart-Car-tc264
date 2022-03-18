@@ -116,6 +116,28 @@ void Cal_Steering_Target(void)
     Steering_PID.last_error = Steering_PID.current_error;
     Steering_PID.current_error = steering_Error;
 
+    //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
+
+    switch(classification_Result){
+        case 5:
+        {
+            Steering_PID.KP=Steering_PID.KP/10;
+             break;
+        }
+        case 6:
+        {
+            Steering_PID.KP=Steering_PID.KP/10;
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
+
+
+
     steering_Target = (Steering_PID.KP * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
 
     if(steering_Target<0) steering_Target = steering_Target*1.1;
