@@ -60,7 +60,7 @@ float BayesTable_25[17][CLASS_NUM] = {{1.685,-3.593,1.532,-4.908,9.487,-2.020},
         {-8.681,3.995,19.472,31.779,22.297,20.645},
         {-254.031,-254.603,-427.897,-419.047,-383.225,-467.807}};
 
-char *class_Name_Group[CLASS_NUM+4] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"};
+char *class_Name_Group[CLASS_NUM+5] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知","10左直线"};
 
 float arg_Classification_16[16];
 float arg_Classification_25[25];
@@ -686,6 +686,97 @@ int Check_Straight(void)
     return ((max_Col_Left - min_Col_Left <= STRAIGHT_CONDITION && max_Col_Left >= min_Col_Left)
             && (max_Col_Right - min_Col_Right <= STRAIGHT_CONDITION && max_Col_Right >= min_Col_Right)
             && max_Col_Left < min_Col_Right);
+}
+
+
+int Check_Left_Straight(void)
+{
+    int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
+    int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
+    int Col_Left[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储左线的列号结果，不合法的全部为-2
+    int Col_Right[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储右线的列号结果，不合法的全部为-2
+    for (int i=0;i<search_Lines;i++)
+    {
+        Col_Left[i] = -2;
+        Col_Right[i] = -2;
+    }
+    for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+        {
+            start_Row = start_Row - 1;
+            continue;
+        }//在当前的行里，如果左线或右线有一个是255区域（未知区域），说明还没有进入到真正的视角区域（0区域或1区域）；或者如果左线跑到右线的右边去了，则说明不是道路了
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1 && start_Col[0]>=1)
+            {
+                start_Col[0] = start_Col[0] - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
+            }
+            start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
+            {
+                Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
+            }
+        }
+        else//如果左线发现0区域（背景）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0 && start_Col[0]<=width_Inverse_Perspective-2)
+            {
+                start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>road_width)
+            {
+                break;
+            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
+            {
+                Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+            }
+        }
+
+        start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
+    }
+
+    start_Row = height_Inverse_Perspective-1;
+    int d_Col_Left;
+    int d_Col_Left_Num=0;
+
+    int i;
+    for (i=0;i<search_Lines;i++)
+    {
+        if (Col_Left[i] !=-2)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
+            {
+                d_Col_Left_Num = search_Lines-i-1;
+                break;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        start_Row = start_Row - 1;
+    }
+    for (int j=0;j<d_Col_Left_Num;j++)
+    {
+        d_Col_Left = Col_Left[i+1]-Col_Left[i];
+        i++;
+        if (d_Col_Left < 0 || d_Col_Left > 1)
+        {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 

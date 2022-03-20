@@ -12,7 +12,7 @@
 #define CLASS_NUM 6
 
 #define CLASSIFICATION_16_VALID 25//35太大了//21不够大
-#define CLASSIFICATION_25_VALID 35
+#define CLASSIFICATION_25_VALID 37//40太大了//35不够大
 
 //曾经的分4类
 //#define KMEANS_K 4
@@ -56,6 +56,7 @@ void Set_RatioOfPixelToHG(uint8 val);
 uint8 Classification_16(void);
 uint8 Classification_25(void);
 int Check_Straight(void);
+int Check_Left_Straight(void);
 void DrawCenterLine(void);
 void DrawCenterLinewithConfig(float filter);
 void DrawCenterLinewithConfig_RightBased(float filter);

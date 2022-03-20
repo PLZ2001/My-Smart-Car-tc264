@@ -70,43 +70,34 @@ void core1_main(void)
                             flag_For_Right_Circle = 1;
                             classification_Result = 8;//8靠右
                             time_up = 3.0;
-                        }
-                        else //说明准备出右环岛
-                        {
-                            flag_For_Right_Circle = 0;
-                            classification_Result = 7;//7靠左
-                            time_up = 1.0;
+                            Start_Timer();
                         }
                         break;
                     case 4:
                         classification_Result = 8;//8靠右
                         time_up = 1.0;
+                        Start_Timer();
+                        break;
+                    case 10:
+                        if (flag_For_Right_Circle == 1) //说明准备出右环岛
+                        {
+                            flag_For_Right_Circle = 0;
+                            classification_Result = 7;//7靠左
+                            time_up = 0.5;
+                            Start_Timer();
+                        }
                         break;
                     default:
                         break;
-
                 }
-                Start_Timer();
+
             }
             //如果在计时，判断计时是否达到要求时间
             if (Read_Timer_Status() == RUNNING)
             {
-                switch (classification_Result)
+                if (Read_Timer()>time_up)
                 {
-                    case 7:
-                        if (Read_Timer()>time_up) //7靠左
-                        {
-                            Reset_Timer();
-                        }
-                        break;
-                    case 8:
-                        if (Read_Timer()>time_up) //8靠右
-                        {
-                            Reset_Timer();
-                        }
-                        break;
-                    default:
-                        break;
+                    Reset_Timer();
                 }
             }
             //如果不在计时，继续分类
@@ -115,19 +106,14 @@ void core1_main(void)
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Check_Straight())
+                    //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
+                    if (Check_Left_Straight() == 0)
                     {
-                        classification_Result = 6;//6直道
+                        classification_Result = 8;
                     }
                     else
                     {
-                        classification_Result = Classification_25();
-                    }
-                    Check_Classification(classification_Result,10);
-                    //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
-                    if (classification_Result != 3)
-                    {
-                        classification_Result = 8;
+                        classification_Result = 10;//10左直线
                     }
                 }
                 else
@@ -140,7 +126,7 @@ void core1_main(void)
                     {
                         classification_Result = Classification_25();
                     }
-                    Check_Classification(classification_Result,10);
+                    Check_Classification(classification_Result,1);
                 }
 
             }

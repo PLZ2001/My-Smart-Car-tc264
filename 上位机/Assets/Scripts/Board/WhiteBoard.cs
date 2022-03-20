@@ -94,10 +94,12 @@ public class WhiteBoard : MonoBehaviour
     int repeat_image_cnt = 0;
 
     int classification_Result=0;
-    string[] class_Name_Group = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左","8靠右"};
+    string[] class_Name_Group = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左","8靠右","9未知","10左直线"};
 
     Lines[] lines = new Lines[256];
     ComputeBuffer linesBuffer;
+
+    float steering_kp, steering_ki, steering_kd;
 
     // 启动函数，只会运行一次
     protected virtual void Start()
@@ -253,6 +255,12 @@ public class WhiteBoard : MonoBehaviour
 
         GameObject.Find("UI/Canvas/Text (8)/InputField").GetComponent<InputField>().text = class_Name_Group[classification_Result];//将Slider的值赋值为 class_Name_Group[classification_Result]
 
+        GameObject.Find("UI/Canvas/Text (16)/Slider").GetComponent<Slider>().value = steering_kp;//将Slider的值赋值为kp
+        GameObject.Find("UI/Canvas/Text (16)/InputField").GetComponent<InputField>().text = steering_kp.ToString();
+        GameObject.Find("UI/Canvas/Text (17)/Slider").GetComponent<Slider>().value = steering_ki;//将Slider的值赋值为ki
+        GameObject.Find("UI/Canvas/Text (17)/InputField").GetComponent<InputField>().text = steering_ki.ToString();
+        GameObject.Find("UI/Canvas/Text (18)/Slider").GetComponent<Slider>().value = steering_kd;//将Slider的值赋值为kd
+        GameObject.Find("UI/Canvas/Text (18)/InputField").GetComponent<InputField>().text = steering_kd.ToString();
     }
 
     // 循环函数，会反复运行
@@ -292,7 +300,7 @@ public class WhiteBoard : MonoBehaviour
         UART_Flag_NO_IMAGE = GameObject.Find("UI/Canvas/Toggle").GetComponent<Toggle>().isOn ? 0 : 1;
         if (UART_Flag_NO_IMAGE == 1)
         {
-            serialPortManager.receiveLength = serialPortManager.baseReceiveLength - (4 + 187 * 40+ 4) * 2;
+            serialPortManager.receiveLength = serialPortManager.baseReceiveLength - (4 + 187 * 40 + 4) * 2 + (4 + 187 * 40 / 8 + 4) * 2;
         }
         else
         {
@@ -393,6 +401,13 @@ public class WhiteBoard : MonoBehaviour
         kd = GameObject.Find("UI/Canvas/Text (14)/Slider").GetComponent<Slider>().value;
         GameObject.Find("UI/Canvas/Text (14)/InputField").GetComponent<InputField>().text = kd.ToString();
 
+        steering_kp = GameObject.Find("UI/Canvas/Text (16)/Slider").GetComponent<Slider>().value;
+        GameObject.Find("UI/Canvas/Text (16)/InputField").GetComponent<InputField>().text = steering_kp.ToString();
+        steering_ki = GameObject.Find("UI/Canvas/Text (17)/Slider").GetComponent<Slider>().value;
+        GameObject.Find("UI/Canvas/Text (17)/InputField").GetComponent<InputField>().text = steering_ki.ToString();
+        steering_kd = GameObject.Find("UI/Canvas/Text (18)/Slider").GetComponent<Slider>().value;
+        GameObject.Find("UI/Canvas/Text (18)/InputField").GetComponent<InputField>().text = steering_kd.ToString();
+
         GameObject.Find("UI/Canvas/Text (8)/InputField").GetComponent<InputField>().text = class_Name_Group[classification_Result];
 
         //...
@@ -430,6 +445,11 @@ public class WhiteBoard : MonoBehaviour
             serialPortManager.WriteByte(byteArray_Send);
             Debug.Log(BitConverter.ToString(byteArray_Send));
 
+            //发送舵机PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
+            byteArray_Send = new byte[] { 0x00, 0xFF, 0x06, 0x01, (byte)(((Int16)(Math.Round(steering_kp * 1000))) >> 8), (byte)(((Int16)(Math.Round(steering_kp * 1000)))), (byte)(((Int16)(Math.Round(steering_ki * 1000))) >> 8), (byte)(((Int16)(Math.Round(steering_ki * 1000)))), (byte)(((Int16)(Math.Round(steering_kd * 1000))) >> 8), (byte)(((Int16)(Math.Round(steering_kd * 1000)))), 0x00, 0xFF, 0x06, 0x02 };
+            serialPortManager.WriteByte(byteArray_Send);
+            Debug.Log(BitConverter.ToString(byteArray_Send));
+
             //发送PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
             byteArray_Send = new byte[] { 0x00, 0xFF, 0x07, 0x01, (byte)(((Int16)(Math.Round(kp*1000)))>>8), (byte)(((Int16)(Math.Round(kp * 1000)))), (byte)(((Int16)(Math.Round(ki * 1000))) >> 8), (byte)(((Int16)(Math.Round(ki * 1000)))), (byte)(((Int16)(Math.Round(kd * 1000))) >> 8), (byte)(((Int16)(Math.Round(kd * 1000)))), 0x00, 0xFF, 0x07, 0x02 };
             serialPortManager.WriteByte(byteArray_Send);
@@ -463,51 +483,95 @@ public class WhiteBoard : MonoBehaviour
                     classification_Result = value;
                 }
             }
-            //接收图片，数据头00-FF-01-01，数据长度width * height字节，数据尾00-FF-01-02
-            index1 = str.IndexOf("00-FF-01-01")/3;//找到第一个数据头
-            if (index1 != -1)
+            if (UART_Flag_NO_IMAGE == 1)
             {
-                index2 = (str.Substring(index1*3,str.Length-1-index1*3)).IndexOf("00-FF-01-02")/3;//找到最后一个数据头（也就是第二个数据头） 
-                if (index2 == 4 + width * height)//检测两个数据头之间是否有正确的字节数目
+                //接收图片，数据头00-FF-01-01，数据长度width * height/8字节，数据尾00-FF-01-02
+                index1 = str.IndexOf("00-FF-01-01") / 3;//找到第一个数据头
+                if (index1 != -1)
                 {
-                    for (int i = 0; i < width * height; i++)
+                    index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-01-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                    if (index2 == 4 + width * height/8)//检测两个数据头之间是否有正确的字节数目
                     {
-                        pics[i].x = i % width;
-                        pics[i].y = i / width;
-                        int value = byteArray[i + index1 + 4];
-                        pics[i].value = value;
-                        pics[i].maxvalue = 255;                  
-                    }//将数据赋给图片一维数组
-                    ComputeHelper.CreateStructuredBuffer(ref picsBuffer, pics);
-                    compute.SetBuffer(diffuseMapKernel, "pics", picsBuffer);//传入Compute Shader
+                        for (int i = 0; i < width * height; i++)
+                        {
+                            pics[i].x = i % width;
+                            pics[i].y = i / width;
+                            int value = byteArray[i/8 + index1 + 4]&(0x80>>(i%8));
+                            pics[i].value = value;
+                            pics[i].maxvalue = 1;
+                        }//将数据赋给图片一维数组
+                        ComputeHelper.CreateStructuredBuffer(ref picsBuffer, pics);
+                        compute.SetBuffer(diffuseMapKernel, "pics", picsBuffer);//传入Compute Shader
 
-                    if (repeat_image_cnt==0)
-                    {
+
                         string path = @"D:\CarData\" + timeString + @" Images\";
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
                         }
-                        FileStream fs = new FileStream(path+ Time.fixedTime.ToString()+class_Name_Group[classification_Result]+".pgm", FileMode.Create);
-                        byte[] data1 = Encoding.UTF8.GetBytes("P5\n"+"187 40\n"+"255\n");
+                        FileStream fs = new FileStream(path + Time.fixedTime.ToString() + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
+                        byte[] data1 = Encoding.UTF8.GetBytes("P5\n" + "187 40\n" + "1\n");
                         byte[] data2 = new byte[width * height];
                         for (int i = 0; i < width * height; i++)
                         {
-                            data2[i] = byteArray[i + index1 + 4];
+                            data2[i] = (byte)((byteArray[(i / 8) + index1 + 4] & (0x80 >> (i % 8)))>> (7-i % 8));
                         }
                         fs.Write(data1, 0, data1.Length);
                         fs.Write(data2, 0, data2.Length);
                         fs.Flush();
                         fs.Close();
                     }
-                    repeat_image_cnt = repeat_image_cnt + 1;
-                    if (repeat_image_cnt == 30)
-                    {
-                        repeat_image_cnt = 0;
-                    }
-
                 }
             }
+            else
+            {
+                //接收图片，数据头00-FF-01-01，数据长度width * height字节，数据尾00-FF-01-02
+                index1 = str.IndexOf("00-FF-01-01") / 3;//找到第一个数据头
+                if (index1 != -1)
+                {
+                    index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-01-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                    if (index2 == 4 + width * height)//检测两个数据头之间是否有正确的字节数目
+                    {
+                        for (int i = 0; i < width * height; i++)
+                        {
+                            pics[i].x = i % width;
+                            pics[i].y = i / width;
+                            int value = byteArray[i + index1 + 4];
+                            pics[i].value = value;
+                            pics[i].maxvalue = 255;
+                        }//将数据赋给图片一维数组
+                        ComputeHelper.CreateStructuredBuffer(ref picsBuffer, pics);
+                        compute.SetBuffer(diffuseMapKernel, "pics", picsBuffer);//传入Compute Shader
+
+                        if (repeat_image_cnt == 0)
+                        {
+                            string path = @"D:\CarData\" + timeString + @" Images\";
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            FileStream fs = new FileStream(path + Time.fixedTime.ToString() + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
+                            byte[] data1 = Encoding.UTF8.GetBytes("P5\n" + "187 40\n" + "255\n");
+                            byte[] data2 = new byte[width * height];
+                            for (int i = 0; i < width * height; i++)
+                            {
+                                data2[i] = byteArray[i + index1 + 4];
+                            }
+                            fs.Write(data1, 0, data1.Length);
+                            fs.Write(data2, 0, data2.Length);
+                            fs.Flush();
+                            fs.Close();
+                        }
+                        repeat_image_cnt = repeat_image_cnt + 1;
+                        if (repeat_image_cnt >= 7)
+                        {
+                            repeat_image_cnt = 0;
+                        }
+
+                    }
+                }
+            }
+            
 
             //用户发起读取要求时才更新
             //接收二值化阈值，数据头00-FF-02-01，数据长度1字节，数据尾00-FF-02-02
@@ -620,6 +684,50 @@ public class WhiteBoard : MonoBehaviour
                     int value = byteArray[index1 + 4];
                     GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = (float)value / 256 * (32 - (-32)) + (-32);
                     steering_Target = (float)value / 256 * (32 - (-32)) + (-32);//更新Slider的值，赋值为二值化阈值
+                }
+            }
+            //接收舵机pid参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
+            index1 = str.IndexOf("00-FF-06-01") / 3;//找到第一个数据头
+            if (index1 != -1)
+            {
+                index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-06-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                if (index2 == 4 + 6 && reading_Flag == true)//检测两个数据头之间是否有正确的字节数目
+                {
+                    int value = byteArray[index1 + 4] * 256 + byteArray[index1 + 5];
+                    if (value > 32767)
+                    {
+                        value = value - 65536;
+                    }
+                    GameObject.Find("UI/Canvas/Text (16)/Slider").GetComponent<Slider>().value = value / 1000.0f;
+                    steering_kp = value / 1000.0f;//更新Slider的值，赋值
+
+                    value = byteArray[index1 + 6] * 256 + byteArray[index1 + 7];
+                    if (value > 32767)
+                    {
+                        value = value - 65536;
+                    }
+                    GameObject.Find("UI/Canvas/Text (17)/Slider").GetComponent<Slider>().value = value / 1000.0f;
+                    steering_ki = value / 1000.0f;//更新Slider的值，赋值
+
+                    value = byteArray[index1 + 8] * 256 + byteArray[index1 + 9];
+                    if (value > 32767)
+                    {
+                        value = value - 65536;
+                    }
+                    GameObject.Find("UI/Canvas/Text (18)/Slider").GetComponent<Slider>().value = value / 1000.0f;
+                    steering_kd = value / 1000.0f;//更新Slider的值，赋值
+
+                    string path = @"D:\CarData\" + timeString + @" Others\";
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    FileStream fs = new FileStream(path + "SteeringPID.txt", FileMode.Append);
+                    byte[] data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + steering_kp.ToString() + "," + steering_ki.ToString() + "," + steering_kd.ToString() + "\r\n");
+                    fs.Write(data, 0, data.Length);
+                    fs.Flush();
+                    fs.Close();
+
                 }
             }
             //接收pid参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02

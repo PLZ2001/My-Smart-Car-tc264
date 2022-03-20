@@ -9,7 +9,7 @@ using System.Text;
 public class SerialPortManager : MonoBehaviour
 {
     public string portName = "COM3";//串口号，英飞凌调试器是COM4，蓝牙是COM3
-    public int baudRate = 115200;//波特率
+    public int baudRate = 115200*4;//波特率
     public Parity parity = Parity.None;//效验位
     public int dataBits = 8;//数据位
     public StopBits stopBits = StopBits.One;//停止位
