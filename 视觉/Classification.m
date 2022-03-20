@@ -18,17 +18,28 @@ function [class_Name] = Classification(image)
 
     arg = Get16(image);
     classification_Data = zeros(1,6);
+    classification_Data_max1 = 0;
+    classification_Result1 = 0;
+    classification_Data_max2 = 0;
+    classification_Result2 = 0;
     for i = 1:6
         classification_Data(i) = arg(1)*BayesTable(1,i)+arg(2)*BayesTable(2,i)+arg(3)*BayesTable(3,i)+arg(4)*BayesTable(4,i)+arg(5)*BayesTable(5,i)+arg(6)*BayesTable(6,i)+arg(7)*BayesTable(7,i)+arg(8)*BayesTable(8,i)+arg(10)*BayesTable(9,i)+arg(11)*BayesTable(10,i)+arg(14)*BayesTable(11,i)+arg(15)*BayesTable(12,i)+BayesTable(13,i);
-        if i==1
-            classification_Data_max = classification_Data(1);
-            classification_Result = 1;
-        elseif classification_Data(i)>classification_Data_max
-            classification_Data_max = classification_Data(i);
-            classification_Result = i;         
+                    
+        if classification_Data(i)>classification_Data_max1
+            classification_Data_max2 = classification_Data_max1;
+            classification_Result2 = classification_Result1;
+            classification_Data_max1 = classification_Data(i);
+            classification_Result1 = i;           
+        elseif classification_Data(i)>classification_Data_max2
+            classification_Data_max2 = classification_Data(i);
+            classification_Result2 = i;
         end
     end
     class_Name_Group = {'左弯','右弯','左环岛', '右环岛','三岔路口','十字路口'};
-    class_Name = class_Name_Group(classification_Result);
+    if classification_Data_max1-classification_Data_max2 > 21
+        class_Name = class_Name_Group(classification_Result1);
+    else
+        class_Name = '未知';
+    end
 end
 

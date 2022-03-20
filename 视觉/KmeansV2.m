@@ -1,7 +1,7 @@
-function [value] = Kmeans(image)
+function [value] = KmeansV2(image)
     image = double(image);
-    KMEANS_K = 4;
-    m = [51,0,0;102,0,0;153,0,0;206,0,0];%第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
+    KMEANS_K = 2;
+    m = [85,0,0;170,0,0];%第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
     maxtimes = 2;
     for time = 1:maxtimes
         for i = 1:KMEANS_K
@@ -27,7 +27,7 @@ function [value] = Kmeans(image)
     end
     max_cnt = [-1,-1,-1];
     max_cnt_class = [0,0,0];
-    for i = 1:KMEANS_K%循环，找到样本数排2、3名的类别
+    for i = 1:KMEANS_K%循环，找到样本数排1、2、3名的类别
         if m(i,1)>max_cnt(1)
             max_cnt(3) = max_cnt(2);
             max_cnt_class(3) = max_cnt_class(2);
@@ -46,6 +46,6 @@ function [value] = Kmeans(image)
         end
     end
     
-    value = uint8(0.5*(m(max_cnt_class(2),1)+m(max_cnt_class(3),1)));
+    value = uint8(0.5*(m(max_cnt_class(1),1)+m(max_cnt_class(2),1)));
 end
 
