@@ -1,6 +1,7 @@
 #include "headfile.h"
 #include "STEERING.h"
 #include "CAMERA.h"
+#include "SEARCH.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 
@@ -121,39 +122,23 @@ void Cal_Steering_Target(void)
     switch(classification_Result){
         case 5:
         {
-<<<<<<< HEAD
              steering_Target = (Steering_PID.KP/10 * Steering_PID.current_error) +Steering_PID.KD/10*( Steering_PID.current_error - Steering_PID.last_error );
-=======
-            Steering_PID.KP=Steering_PID.KP/10;
->>>>>>> c137ed46bb422c79cf6549fcd780d1028758f4f1
              break;
         }
         case 6:
         {
-<<<<<<< HEAD
             steering_Target = (Steering_PID.KP/10 * Steering_PID.current_error) +Steering_PID.KD/10*( Steering_PID.current_error - Steering_PID.last_error );
-=======
-            Steering_PID.KP=Steering_PID.KP/10;
->>>>>>> c137ed46bb422c79cf6549fcd780d1028758f4f1
             break;
         }
 
         default:
         {
-<<<<<<< HEAD
             steering_Target = (Steering_PID.KP * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
-=======
->>>>>>> c137ed46bb422c79cf6549fcd780d1028758f4f1
             break;
         }
     }
 
 
-
-<<<<<<< HEAD
-=======
-    steering_Target = (Steering_PID.KP * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
->>>>>>> c137ed46bb422c79cf6549fcd780d1028758f4f1
 
     if(steering_Target<0) steering_Target = steering_Target*1.1;
     if(steering_Target>STEERING_MAX) steering_Target = STEERING_MAX;

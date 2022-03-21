@@ -70,6 +70,8 @@ struct Picture
 struct Lines
 {
 	int center;
+	int left;
+	int right;
 };
 // RW前缀表示可读可写，即外部cs文件可读写
 RWStructuredBuffer<Picture> pics;
@@ -94,8 +96,8 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 	if (width_Choice == 0)
 	{
 		uint index = id.x + ((uint)height - 1 - id.y) * (uint)width;
-		DiffusedTrailMap[id.xy] = pics[index].value / pics[index].maxvalue;
-		DiffusedTrailMap1[id.xy] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+		DiffusedTrailMap[id.xy] = float4(1, 1, 1, 1) * (pics[index].value / pics[index].maxvalue);
+		DiffusedTrailMap1[id.xy] = float4(1, 1, 1, 1) * ((pics[index].value / pics[index].maxvalue) > thresholdingValue);
 		
 		if ((id.x + id.y * (uint)width) >= width_Inverse_Perspective * height_Inverse_Perspective)
 		{
@@ -115,39 +117,63 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 			if (i >= 0 && i < width)
 			{
 				uint index = i + j/ratio * (uint)width;
-				DiffusedTrailMap2[Pos] = pics[index].value / pics[index].maxvalue;
+				DiffusedTrailMap2[Pos] = float4(1, 1, 1, 1) * (pics[index].value / pics[index].maxvalue);
 				if (Pos.x == lines[Pos.y].center)
 				{
-					DiffusedTrailMap3[Pos] = 0.5;//中心线
+					DiffusedTrailMap3[Pos] = float4(0, 1, 0, 1);//中心线
+				}
+				else if (Pos.x == lines[Pos.y].left)
+				{
+					DiffusedTrailMap3[Pos] = float4(1, 0, 0, 1);//左线
+				}
+				else if (Pos.x == lines[Pos.y].right)
+				{
+					DiffusedTrailMap3[Pos] = float4(0, 0, 1, 1);//右线
 				}
 				else
 				{
-					DiffusedTrailMap3[Pos] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+					DiffusedTrailMap3[Pos] = float4(1, 1, 1, 1) * ((pics[index].value / pics[index].maxvalue) > thresholdingValue);
 				}
 			}
 			else
 			{
-				DiffusedTrailMap2[Pos] = 0;
+				DiffusedTrailMap2[Pos] = float4(1, 1, 1, 1) * 0;
 				if (Pos.x == lines[Pos.y].center)
 				{
-					DiffusedTrailMap3[Pos] = 0.5;//中心线
+					DiffusedTrailMap3[Pos] = float4(0, 1, 0, 1);//中心线
+				}
+				else if (Pos.x == lines[Pos.y].left)
+				{
+					DiffusedTrailMap3[Pos] = float4(1, 0, 0, 1);//左线
+				}
+				else if (Pos.x == lines[Pos.y].right)
+				{
+					DiffusedTrailMap3[Pos] = float4(0, 0, 1, 1);//右线
 				}
 				else
 				{
-					DiffusedTrailMap3[Pos] = 0;
+					DiffusedTrailMap3[Pos] = float4(1, 1, 1, 1) * 0;
 				}
 			}
 		}
 		else
 		{
-			DiffusedTrailMap2[Pos] = 0;
+			DiffusedTrailMap2[Pos] = float4(1, 1, 1, 1) * 0;
 			if (Pos.x == lines[Pos.y].center)
 			{
-				DiffusedTrailMap3[Pos] = 0.5;//中心线
+				DiffusedTrailMap3[Pos] = float4(0, 1, 0, 1);//中心线
+			}
+			else if (Pos.x == lines[Pos.y].left)
+			{
+				DiffusedTrailMap3[Pos] = float4(1, 0, 0, 1);//左线
+			}
+			else if (Pos.x == lines[Pos.y].right)
+			{
+				DiffusedTrailMap3[Pos] = float4(0, 0, 1, 1);//右线
 			}
 			else
 			{
-				DiffusedTrailMap3[Pos] = 0;
+				DiffusedTrailMap3[Pos] = float4(1, 1, 1, 1) * 0;
 			}
 		}
 	}
@@ -164,39 +190,63 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 			if (i >= 0 && i < width)
 			{
 				uint index = i + j/ratio * (uint)width;
-				DiffusedTrailMap2[id.xy] = pics[index].value / pics[index].maxvalue;
+				DiffusedTrailMap2[id.xy] = float4(1, 1, 1, 1) * (pics[index].value / pics[index].maxvalue);
 				if (id.x == lines[id.y].center)
 				{
-					DiffusedTrailMap3[id.xy] = 0.5;//中心线
+					DiffusedTrailMap3[id.xy] = float4(0, 1, 0, 1);//中心线
+				}
+				else if (id.x == lines[id.y].left)
+				{
+					DiffusedTrailMap3[id.xy] = float4(1, 0, 0, 1);//左线
+				}
+				else if (id.x == lines[id.y].right)
+				{
+					DiffusedTrailMap3[id.xy] = float4(0, 0, 1, 1);//右线
 				}
 				else
 				{
-					DiffusedTrailMap3[id.xy] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;
+					DiffusedTrailMap3[id.xy] = float4(1, 1, 1, 1) * ((pics[index].value / pics[index].maxvalue) > thresholdingValue);
 				}
 			}
 			else
 			{
-				DiffusedTrailMap2[id.xy] = 0;
+				DiffusedTrailMap2[id.xy] = float4(1, 1, 1, 1) * 0;
 				if (id.x == lines[id.y].center)
 				{
-					DiffusedTrailMap3[id.xy] = 0.5;//中心线
+					DiffusedTrailMap3[id.xy] = float4(0, 1, 0, 1);//中心线
+				}
+				else if (id.x == lines[id.y].left)
+				{
+					DiffusedTrailMap3[id.xy] = float4(1, 0, 0, 1);//左线
+				}
+				else if (id.x == lines[id.y].right)
+				{
+					DiffusedTrailMap3[id.xy] = float4(0, 0, 1, 1);//右线
 				}
 				else
 				{
-					DiffusedTrailMap3[id.xy] = 0;
+					DiffusedTrailMap3[id.xy] = float4(1, 1, 1, 1) * 0;
 				}
 			}
 		}
 		else
 		{
-			DiffusedTrailMap2[id.xy] = 0;
+			DiffusedTrailMap2[id.xy] = float4(1, 1, 1, 1) * 0;
 			if (id.x == lines[id.y].center)
 			{
-				DiffusedTrailMap3[id.xy] = 0.5;//中心线
+				DiffusedTrailMap3[id.xy] = float4(0, 1, 0, 1);//中心线
+			}
+			else if (id.x == lines[id.y].left)
+			{
+				DiffusedTrailMap3[id.xy] = float4(1, 0, 0, 1);//左线
+			}
+			else if (id.x == lines[id.y].right)
+			{
+				DiffusedTrailMap3[id.xy] = float4(0, 0, 1, 1);//右线
 			}
 			else
 			{
-				DiffusedTrailMap3[id.xy] = 0;
+				DiffusedTrailMap3[id.xy] = float4(1, 1, 1, 1) * 0;
 			}
 		}
 
@@ -208,8 +258,8 @@ void Diffuse (uint3 id : SV_DispatchThreadID)
 		Pos.x = (id.x + id.y * (uint)width_Inverse_Perspective) % (uint)width;
 		Pos.y = (id.x + id.y * (uint)width_Inverse_Perspective) / (uint)width;
 		uint index = Pos.x + ((uint)height - 1 - Pos.y) * (uint)width;
-		DiffusedTrailMap[Pos] = pics[index].value / pics[index].maxvalue;
-		DiffusedTrailMap1[Pos] = (pics[index].value / pics[index].maxvalue) > thresholdingValue;	
+		DiffusedTrailMap[Pos] = float4(1, 1, 1, 1) * (pics[index].value / pics[index].maxvalue);
+		DiffusedTrailMap1[Pos] = float4(1, 1, 1, 1) * ((pics[index].value / pics[index].maxvalue) > thresholdingValue);
 	}
 }
 
@@ -234,22 +284,22 @@ void UpdateColourMap (uint3 id : SV_DispatchThreadID)
 	// rgba = 1，1，1，1时是不透明纯白色
 	if (width_Choice == 0)
 	{
-		ColourMap[id.xy] = float4(1, 1, 1, 1) * dot(TrailMap[id.xy], float4(1, 0, 0, 0));
-		ColourMap1[id.xy] = float4(1, 1, 1, 1) * dot(TrailMap1[id.xy], float4(1, 0, 0, 0));
+		ColourMap[id.xy] = TrailMap[id.xy];
+		ColourMap1[id.xy] = TrailMap1[id.xy];
 		uint2 Pos;
 		Pos.x = (id.x + id.y * (uint)width) % (uint)width_Inverse_Perspective;
 		Pos.y = (id.x + id.y * (uint)width) / (uint)width_Inverse_Perspective;
-		ColourMap2[Pos] = float4(1, 1, 1, 1) * dot(TrailMap2[Pos], float4(1, 0, 0, 0));
-		ColourMap3[Pos] = float4(1, 1, 1, 1) * dot(TrailMap3[Pos], float4(1, 0, 0, 0));
+		ColourMap2[Pos] = TrailMap2[Pos];
+		ColourMap3[Pos] = TrailMap3[Pos];
 	}
 	else if (width_Choice == 1)
 	{
-		ColourMap2[id.xy] = float4(1, 1, 1, 1) * dot(TrailMap2[id.xy], float4(1, 0, 0, 0));
-		ColourMap3[id.xy] = float4(1, 1, 1, 1) * dot(TrailMap3[id.xy], float4(1, 0, 0, 0));
+		ColourMap2[id.xy] = TrailMap2[id.xy];
+		ColourMap3[id.xy] = TrailMap3[id.xy];
 		uint2 Pos;
 		Pos.x = (id.x + id.y * (uint)width_Inverse_Perspective) % (uint)width;
 		Pos.y = (id.x + id.y * (uint)width_Inverse_Perspective) / (uint)width;
-		ColourMap[Pos] = float4(1, 1, 1, 1) * dot(TrailMap[Pos], float4(1, 0, 0, 0));
-		ColourMap1[Pos] = float4(1, 1, 1, 1) * dot(TrailMap1[Pos], float4(1, 0, 0, 0));
+		ColourMap[Pos] = TrailMap[Pos];
+		ColourMap1[Pos] = TrailMap1[Pos];
 	}
 }

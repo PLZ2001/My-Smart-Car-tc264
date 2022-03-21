@@ -5,6 +5,7 @@
 #include "STEERING.h"
 #include "CAMERA.h"
 #include "fuzzy_PID.h"//模糊PID算法
+#include "SEARCH.h"
 
 uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];//接收缓冲区，等于所有命令长度的2倍时最好
 uint8 *dat = data_Buffer;//接收缓冲区的指针
@@ -17,6 +18,22 @@ uint8 UART_Flag_NO_IMAGE = TRUE;//用于表示是否不用传图片到上位机
 void My_Init_UART(void)
 {
     pit_interrupt_ms(CCU6_1, PIT_CH1, 10);//10ms检查一次UART接收数据
+}
+
+void Send_FLoat_Parameter(uint8 ID, float par)
+{
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,ID);
+    uart_putchar(DEBUG_UART,0x01);//发送数据头
+    uart_putchar(DEBUG_UART, BYTE0(par));
+    uart_putchar(DEBUG_UART, BYTE1(par));
+    uart_putchar(DEBUG_UART, BYTE2(par));
+    uart_putchar(DEBUG_UART, BYTE3(par));
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,ID);
+    uart_putchar(DEBUG_UART,0x02);//发送数据尾
 }
 
 void UART(enum UARTstate state)
@@ -58,10 +75,14 @@ void UART(enum UARTstate state)
             //发送增量式PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
             UART_PID();
 
-            //发送中线结果，数据头00-FF-09-01，数据长度512字节，数据尾00-FF-09-02
+            //发送中线结果，数据头00-FF-09-01，数据长度256字节，数据尾00-FF-09-02
             UART_ColCenter();
 
+            //发送左线结果，数据头00-FF-10-01，数据长度256字节，数据尾00-FF-10-02
+            UART_ColLeft();
 
+            //发送右线结果，数据头00-FF-11-01，数据长度256字节，数据尾00-FF-11-02
+            UART_ColRight();
 
             UART_Flag_TX = FALSE;
         }
@@ -142,7 +163,7 @@ void UART(enum UARTstate state)
                         Set_Steering_Target(data_Buffer_Shadow[i+4]);
                     }
                 }
-                //接收PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
+                //接收舵机PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
                 if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x06 && data_Buffer_Shadow[i+3] == 0x01)
                 {
                     if (i<RECEIVE_LENGTH-13 && data_Buffer_Shadow[i+10] == 0x00 && data_Buffer_Shadow[i+11] == 0xFF && data_Buffer_Shadow[i+12] == 0x06 && data_Buffer_Shadow[i+13] == 0x02)

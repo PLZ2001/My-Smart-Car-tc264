@@ -96,8 +96,9 @@ public class WhiteBoard : MonoBehaviour
     int classification_Result=0;
     string[] class_Name_Group = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左","8靠右","9未知","10左直线"};
 
-    Lines[] lines = new Lines[256];
+    Lines[] lines = new Lines[128];
     ComputeBuffer linesBuffer;
+
 
     float steering_kp, steering_ki, steering_kd;
 
@@ -193,9 +194,11 @@ public class WhiteBoard : MonoBehaviour
         ComputeHelper.CreateStructuredBuffer(ref picsBuffer, pics);
         compute.SetBuffer(diffuseMapKernel, "pics", picsBuffer);
 
-        for (int i = 0; i < 256; i++)
+        for (int i = 0; i < 128; i++)
         {
             lines[i].center = -2;
+            lines[i].left = -2;
+            lines[i].right = -2;
         }
         ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
         compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
@@ -774,14 +777,14 @@ public class WhiteBoard : MonoBehaviour
 
                 }
             }
-            //接收中心线，数据头00-FF-09-01，数据长度512字节，数据尾00-FF-09-02
+            //接收中心线，数据头00-FF-09-01，数据长度256字节，数据尾00-FF-09-02
             index1 = str.IndexOf("00-FF-09-01") / 3;//找到第一个数据头
             if (index1 != -1)
             {
                 index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-09-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
-                if (index2 == 4 + 512)//检测两个数据头之间是否有正确的字节数目
+                if (index2 == 4 + 256)//检测两个数据头之间是否有正确的字节数目
                 {
-                    for (int i = 0; i < 256; i++)
+                    for (int i = 0; i < 128; i++)
                     {
                         int value = byteArray[index1 + 4 + 2 * i];
                         if (value == 1)
@@ -796,6 +799,54 @@ public class WhiteBoard : MonoBehaviour
                     ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
                     compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
                     
+                }
+            }
+            //接收左线，数据头00-FF-10-01，数据长度256字节，数据尾00-FF-10-02
+            index1 = str.IndexOf("00-FF-10-01") / 3;//找到第一个数据头
+            if (index1 != -1)
+            {
+                index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-10-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                if (index2 == 4 + 256)//检测两个数据头之间是否有正确的字节数目
+                {
+                    for (int i = 0; i < 128; i++)
+                    {
+                        int value = byteArray[index1 + 4 + 2 * i];
+                        if (value == 1)
+                        {
+                            lines[i].left = -2;
+                        }
+                        else
+                        {
+                            lines[i].left = byteArray[index1 + 4 + 2 * i + 1];
+                        }
+                    }
+                    ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
+                    compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
+
+                }
+            }
+            //接收中心线，数据头00-FF-11-01，数据长度256字节，数据尾00-FF-11-02
+            index1 = str.IndexOf("00-FF-11-01") / 3;//找到第一个数据头
+            if (index1 != -1)
+            {
+                index2 = (str.Substring(index1 * 3, str.Length - 1 - index1 * 3)).IndexOf("00-FF-11-02") / 3;//找到最后一个数据头（也就是第二个数据头） 
+                if (index2 == 4 + 256)//检测两个数据头之间是否有正确的字节数目
+                {
+                    for (int i = 0; i < 128; i++)
+                    {
+                        int value = byteArray[index1 + 4 + 2 * i];
+                        if (value == 1)
+                        {
+                            lines[i].right = -2;
+                        }
+                        else
+                        {
+                            lines[i].right = byteArray[index1 + 4 + 2 * i + 1];
+                        }
+                    }
+                    ComputeHelper.CreateStructuredBuffer(ref linesBuffer, lines);
+                    compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
+
                 }
             }
             //...
@@ -836,6 +887,8 @@ public class WhiteBoard : MonoBehaviour
     public struct Lines
     {
         public int center;
+        public int left;
+        public int right;
     }
 
     public void Toggle_Reading_Flag()

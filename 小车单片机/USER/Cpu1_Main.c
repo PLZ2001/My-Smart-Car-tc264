@@ -26,6 +26,7 @@
 #include "UART.h"
 #include "fastlz.h"
 #include "TIME.h"
+#include "SEARCH.h"
 
 
 #pragma section all "cpu1_dsram"

@@ -815,8 +815,8 @@ MonoBehaviour:
   parity: 0
   dataBits: 8
   stopBits: 1
-  receiveLength: 16176
-  baseReceiveLength: 16176
+  receiveLength: 16720
+  baseReceiveLength: 16720
   flag: 0
 --- !u!4 &181704886
 Transform:
