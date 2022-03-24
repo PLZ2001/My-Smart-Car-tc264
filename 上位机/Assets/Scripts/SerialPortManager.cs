@@ -8,17 +8,26 @@ using System.Text;
 
 public class SerialPortManager : MonoBehaviour
 {
+    [System.NonSerialized]
     public string portName = "COM3";//串口号，英飞凌调试器是COM4，蓝牙是COM3
+    [System.NonSerialized]
     public int baudRate = 115200*4;//波特率
+    [System.NonSerialized]
     public Parity parity = Parity.None;//效验位
+    [System.NonSerialized]
     public int dataBits = 8;//数据位
+    [System.NonSerialized]
     public StopBits stopBits = StopBits.One;//停止位
+    [System.NonSerialized]
     public SerialPort sp = null;
     Thread dataReceiveThread;
 
     public StringBuilder sb = new System.Text.StringBuilder();//用于存储一定长度的接收数据（字符串），这种字符串数据结构特点是速度快
+    [System.NonSerialized]
     public int receiveLength = (4+187*40+4 + 4+1+4 + 4+4+4 + 4+5+4 + 4+1+4 +4+6+4 + 4+6+4 +4+1+4 + 4+256+4+ 4+256+4 + 4+256+4) * 2;//指定sb的字符串长度，等于所有命令长度的2倍时最好 
+    [System.NonSerialized]
     public int baseReceiveLength = (4 + 187 * 40 + 4 + 4 + 1 + 4 + 4 + 4 + 4 + 4 + 5 + 4 + 4 + 1 + 4 + 4 + 6 + 4 + 4 + 6 + 4 + 4 + 1 + 4 + 4 + 256 + 4 + 4 + 256 + 4 + 4 + 256 + 4) * 2;
+    [System.NonSerialized]
     public bool flag = false;
 
     void Start()
