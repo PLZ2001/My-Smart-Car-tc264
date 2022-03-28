@@ -77,7 +77,7 @@ void core1_main(void)
                         }
                         break;
                     case 4:
-                        classification_Result = 8;//8¿¿ÓÒ
+                        classification_Result = 4;//4Èý²íÂ·¿Ú
                         time_up = 1.0;
                         Start_Timer();
                         break;

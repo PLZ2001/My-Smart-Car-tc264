@@ -299,15 +299,20 @@ void DrawCenterLine(void)
     {
         DrawCenterLinewithConfig_CrossRoad();
     }
-    // 对于4三岔路口、8靠右（临时使用）可以采用，特征是靠右行驶
-    else if (classification_Result == 4 || classification_Result == 8)
+    // 对于4三岔路口可以采用，特征是靠右行驶
+    else if (classification_Result == 4)
     {
         DrawCenterLinewithConfig_RightBased(0.7);
+    }
+    // 对于8靠右（临时使用）可以采用，特征是靠右行驶
+    else if (classification_Result == 8)
+    {
+        DrawCenterLinewithConfig_RightBased(-0.3);
     }
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
     {
-        DrawCenterLinewithConfig_LeftBased(0.7);
+        DrawCenterLinewithConfig_LeftBased(-0.3);
     }
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
@@ -866,3 +871,46 @@ uint8 Check_RightCircle(void)
     }
 }
 
+
+uint8 Check_ThreeRoads(void)
+{
+    int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
+    int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
+    int check_lines = 2;
+    uint8 result = 0;
+    for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
+    {
+        if (check_lines==0)
+        {
+            break;
+        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+        {
+            start_Row = start_Row - 1;
+            continue;
+        }
+        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)
+        {
+            start_Col[0]--;
+        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] !=255)
+        {
+            break;
+        }
+        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+        {
+            start_Col[1]++;
+        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] !=255)
+        {
+            break;
+        }
+        check_lines--;
+        if (check_lines==0)
+        {
+            result=1;
+            break;
+        }
+    }
+    return result;
+}
