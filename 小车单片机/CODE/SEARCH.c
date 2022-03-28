@@ -73,7 +73,7 @@ void UART_ColRight(void)
 }
 
 
-int Check_Straight(void)
+uint8 Check_Straight(void)
 {
     int start_Row = height_Inverse_Perspective-1;
     int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};
@@ -188,7 +188,7 @@ int Check_Straight(void)
 }
 
 
-int Check_Left_Straight(void)
+uint8 Check_Left_Straight(void)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -264,11 +264,15 @@ int Check_Left_Straight(void)
         }
         start_Row = start_Row - 1;
     }
+    if (d_Col_Left_Num<=5)
+    {
+        return 0;
+    }
     for (int j=0;j<d_Col_Left_Num;j++)
     {
         d_Col_Left = Col_Left[i+1]-Col_Left[i];
         i++;
-        if (d_Col_Left < 0 || d_Col_Left > 1)
+        if (d_Col_Left < 0 || d_Col_Left > 2)
         {
             return 0;
         }
@@ -298,12 +302,12 @@ void DrawCenterLine(void)
     // 对于4三岔路口、8靠右（临时使用）可以采用，特征是靠右行驶
     else if (classification_Result == 4 || classification_Result == 8)
     {
-        DrawCenterLinewithConfig_RightBased(0);
+        DrawCenterLinewithConfig_RightBased(0.7);
     }
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
     {
-        DrawCenterLinewithConfig_LeftBased(0);
+        DrawCenterLinewithConfig_LeftBased(0.7);
     }
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
@@ -787,6 +791,78 @@ void DrawCenterLinewithConfig_CrossRoad(void)
     for (int i=1;i<search_Lines - firsti;i++)
     {
         Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+    }
+}
+
+uint8 Check_RightCircle(void)
+{
+    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+    int Conv_Core[1][3][3] = {{{1,1,1},{1,1,-1},{1,-1,-1}}};
+    //Conv_Core(1).core = [1 1 1
+//                         1 1 -1
+//                         1 -1 -1];
+
+
+    int Conv_Score_max[1] = {-9};
+    int Conv_Score_max_i[1] = {0};
+    int Conv_Score_max_j[1] = {0};
+    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+    {
+        for (int j=1;j<width_Inverse_Perspective-1;j++)
+        {
+            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
+            int Conv_Score[1] = {0};//存储2类卷积结果
+            int flag = 1;//卷积合不合法
+            for (int k=0;k<1;k++)
+            {
+                for (int ii=0;ii<3;ii++)
+                {
+                    for (int jj=0;jj<3;jj++)
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+                        {
+                            flag = 0;
+                            break;
+                        }
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+                        {
+                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+                        }
+                        else
+                        {
+                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+                        }
+                    }
+                    if (flag == 0)
+                    {
+                        break;
+                    }
+                }
+                if (flag == 0)
+                {
+                    break;
+                }
+            }
+            if (flag == 0)
+            {
+                continue;
+            }
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[0] = Conv_Score[0];
+                Conv_Score_max_i[0] = i;
+                Conv_Score_max_j[0] = j;
+            }
+        }
+    }
+
+    if (Conv_Score_max[0] >= 9)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
     }
 }
 

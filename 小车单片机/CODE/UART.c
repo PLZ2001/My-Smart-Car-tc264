@@ -1,11 +1,13 @@
 #include "headfile.h"
 #include "UART.h"
 #include "OLED.h"
-#include "MOTOR.h"
 #include "STEERING.h"
 #include "CAMERA.h"
 #include "fuzzy_PID.h"//模糊PID算法
 #include "SEARCH.h"
+#include "MOTOR1.h"
+#include "MOTOR2.h"
+
 
 uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];//接收缓冲区，等于所有命令长度的2倍时最好
 uint8 *dat = data_Buffer;//接收缓冲区的指针
@@ -63,17 +65,17 @@ void UART(enum UARTstate state)
             //发送逆透视参数，数据头00-FF-03-01，数据长度4字节，数据尾00-FF-03-02
             UART_Inverse_Perspective();
 
-            //发送直流电机速度参数，数据头00-FF-04-01，数据长度3字节，数据尾00-FF-04-02
-            UART_Speed();
+            //发送直流电机速度参数，数据头00-FF-04-01，数据长度5字节，数据尾00-FF-04-02
+            UART_Speed1();
 
-            //发送舵机角度参数，数据头00-FF-05-01，数据长度1字节，数据尾00-FF-05-02
+            //发送舵机参数，数据头00-FF-05-01，数据长度3字节，数据尾00-FF-05-02
             UART_Steering();
 
             //发送转弯PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
             UART_SteeringPID();
 
             //发送增量式PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
-            UART_PID();
+            UART_PID1();
 
             //发送中线结果，数据头00-FF-09-01，数据长度256字节，数据尾00-FF-09-02
             UART_ColCenter();
@@ -83,6 +85,12 @@ void UART(enum UARTstate state)
 
             //发送右线结果，数据头00-FF-11-01，数据长度256字节，数据尾00-FF-11-02
             UART_ColRight();
+
+            //发送直流电机速度参数，数据头00-FF-12-01，数据长度5字节，数据尾00-FF-12-02
+            UART_Speed2();
+
+            //发送增量式PID参数，数据头00-FF-13-01，数据长度6字节，数据尾00-FF-13-02
+            UART_PID2();
 
             UART_Flag_TX = FALSE;
         }
@@ -152,7 +160,7 @@ void UART(enum UARTstate state)
                 {
                     if (i<RECEIVE_LENGTH-8 && data_Buffer_Shadow[i+5] == 0x00 && data_Buffer_Shadow[i+6] == 0xFF && data_Buffer_Shadow[i+7] == 0x04 && data_Buffer_Shadow[i+8] == 0x02)
                     {
-                        Set_Speed_Target(data_Buffer_Shadow[i+4]);
+                        Set_Speed_Target1(data_Buffer_Shadow[i+4]);
                     }
                 }
                 //接收舵机参数，数据头00-FF-05-01，数据长度1字节，数据尾00-FF-05-02
@@ -178,10 +186,26 @@ void UART(enum UARTstate state)
                     if (i<RECEIVE_LENGTH-13 && data_Buffer_Shadow[i+10] == 0x00 && data_Buffer_Shadow[i+11] == 0xFF && data_Buffer_Shadow[i+12] == 0x07 && data_Buffer_Shadow[i+13] == 0x02)
                     {
 
-                        Set_PID(data_Buffer_Shadow[i+4], data_Buffer_Shadow[i+5], data_Buffer_Shadow[i+6], data_Buffer_Shadow[i+7], data_Buffer_Shadow[i+8], data_Buffer_Shadow[i+9]);
+                        Set_PID1(data_Buffer_Shadow[i+4], data_Buffer_Shadow[i+5], data_Buffer_Shadow[i+6], data_Buffer_Shadow[i+7], data_Buffer_Shadow[i+8], data_Buffer_Shadow[i+9]);
                     }
                 }
+                //接收速度参数，数据头00-FF-08-01，数据长度1字节，数据尾00-FF-08-02
+                if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x08 && data_Buffer_Shadow[i+3] == 0x01)
+                {
+                    if (i<RECEIVE_LENGTH-8 && data_Buffer_Shadow[i+5] == 0x00 && data_Buffer_Shadow[i+6] == 0xFF && data_Buffer_Shadow[i+7] == 0x08 && data_Buffer_Shadow[i+8] == 0x02)
+                    {
+                        Set_Speed_Target2(data_Buffer_Shadow[i+4]);
+                    }
+                }
+                //接收PID参数，数据头00-FF-09-01，数据长度6字节，数据尾00-FF-09-02
+                if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x09 && data_Buffer_Shadow[i+3] == 0x01)
+                {
+                    if (i<RECEIVE_LENGTH-13 && data_Buffer_Shadow[i+10] == 0x00 && data_Buffer_Shadow[i+11] == 0xFF && data_Buffer_Shadow[i+12] == 0x09 && data_Buffer_Shadow[i+13] == 0x02)
+                    {
 
+                        Set_PID2(data_Buffer_Shadow[i+4], data_Buffer_Shadow[i+5], data_Buffer_Shadow[i+6], data_Buffer_Shadow[i+7], data_Buffer_Shadow[i+8], data_Buffer_Shadow[i+9]);
+                    }
+                }
 
                 //...
             }//逐位查找数据头

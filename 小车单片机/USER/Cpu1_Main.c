@@ -20,13 +20,15 @@
 #include "headfile.h"
 #include "KEY.h"//按键扫描相关
 #include "CAMERA.h"//摄像头、图像处理相关
-#include "MOTOR.h"//直流电机相关
 #include "OLED.h"//显示屏相关
 #include "STEERING.h"//舵机相关
 #include "UART.h"
 #include "fastlz.h"
 #include "TIME.h"
 #include "SEARCH.h"
+#include "MOTOR1.h"//直流电机相关
+#include "MOTOR2.h"//直流电机相关
+
 
 
 #pragma section all "cpu1_dsram"
@@ -126,6 +128,14 @@ void core1_main(void)
                     else
                     {
                         classification_Result = Classification_25();
+                        if (classification_Result ==3)//3右环岛
+                        {
+                            if(!Check_RightCircle())
+                            {
+                                classification_Result = 9;//9未知
+                            }
+                        }
+
                     }
                     Check_Classification(classification_Result,1);
                 }
@@ -136,7 +146,8 @@ void core1_main(void)
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
             Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
-            Cal_Speed_Target();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
+            Cal_Speed_Target1();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
+            Cal_Speed_Target2();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
 
             if (UART_EN == TRUE)
             {
@@ -147,13 +158,22 @@ void core1_main(void)
 
 
         //低速目标且低速时，开环
-        if (speed_Target < 0.5 && speed_Target > -0.5 && speed_Measured < 0.5 && speed_Measured > -0.5)
+        if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
         {
-            PID_mode = OPEN_LOOP;
+            PID_mode1 = OPEN_LOOP1;
         }
         else
         {
-            PID_mode = PID_CLOSED_LOOP;
+            PID_mode1 = PID_CLOSED_LOOP1;
+        }
+
+        if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
+        {
+            PID_mode2 = OPEN_LOOP2;
+        }
+        else
+        {
+            PID_mode2 = PID_CLOSED_LOOP2;
         }
 
 

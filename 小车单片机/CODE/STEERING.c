@@ -12,7 +12,7 @@ struct
     float KP;
     float KI;
     float KD;
-}Steering_PID={0.0f,0.0f,30.0/90.0f,0.0f,0.0f};
+}Steering_PID={0.0f,0.0f,0.2f,0.0f,2.0f};
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
@@ -22,7 +22,7 @@ float steering_Target = 0;//目标角度（°），更新函数Set_Steering_Target(uint8 va
 
 void My_Init_Steering(void)
 {
-    gtm_pwm_init(ATOM2_CH0_P33_10, 100, 1500);//设置P33.10输出PWM波，频率100Hz，占空比1500/10000；用于舵机
+    gtm_pwm_init(ATOM2_CH0_P33_10, 100, STEERING_DUTY_CENTER);//设置P33.10输出PWM波，频率100Hz，占空比1520/10000；用于舵机
 }
 
 void UART_Steering(void)
@@ -32,6 +32,9 @@ void UART_Steering(void)
     uart_putchar(DEBUG_UART,0x05);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
     uart_putchar(DEBUG_UART, (uint8)round((steering_Target - STEERING_MIN)/(STEERING_MAX-STEERING_MIN)*255));
+    int16 se  = (int16)round(100*steering_Error);
+    uart_putchar(DEBUG_UART, se>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, se&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x05);
@@ -74,9 +77,7 @@ void Set_SteeringPID(uint8 v1, uint8 v2, uint8 v3, uint8 v4, uint8 v5, uint8 v6)
 void Set_Steering(void)
 {
     uint32 duty;
-    //duty = 11.759*steering_Target + 4.4933
-    //R-Square = 0.9975
-    duty = 11.759*(steering_Target>0?steering_Target:(-steering_Target)) + 4.4933;
+    duty = STEERING_DUTY_MAX/STEERING_MAX*(steering_Target>0?steering_Target:(-steering_Target));
     if (duty>STEERING_DUTY_MAX)//保护电机
     {
         duty = STEERING_DUTY_MAX;
@@ -85,7 +86,7 @@ void Set_Steering(void)
     {
         duty = 0;
     }
-    pwm_duty(ATOM2_CH0_P33_10, (uint32)(1500+(steering_Target<0?1:-1)*duty));
+    pwm_duty(ATOM2_CH0_P33_10, (uint32)(STEERING_DUTY_CENTER+(steering_Target<0?1:-1)*duty));
 }
 
 void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
@@ -140,7 +141,7 @@ void Cal_Steering_Target(void)
 
 
 
-    if(steering_Target<0) steering_Target = steering_Target*1.1;
+    //if(steering_Target<0) steering_Target = steering_Target*1.1;
     if(steering_Target>STEERING_MAX) steering_Target = STEERING_MAX;
     if(steering_Target<STEERING_MIN) steering_Target = STEERING_MIN;
 }

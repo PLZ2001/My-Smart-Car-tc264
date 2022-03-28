@@ -18,8 +18,9 @@ void UART_ColCenter(void);
 void UART_ColLeft(void);
 void UART_ColRight(void);
 
-int Check_Straight(void);
-int Check_Left_Straight(void);
+uint8 Check_Straight(void);
+uint8 Check_Left_Straight(void);
+uint8 Check_RightCircle(void);
 void DrawCenterLine(void);
 void DrawCenterLinewithConfig(float filter);
 void DrawCenterLinewithConfig_RightBased(float filter);

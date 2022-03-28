@@ -21,13 +21,16 @@
 #include "headfile.h"
 #include "KEY.h"//按键扫描相关
 #include "CAMERA.h"//摄像头、图像处理相关
-#include "MOTOR.h"//直流电机相关
 #include "OLED.h"//显示屏相关
 #include "STEERING.h"//舵机相关
 #include "UART.h"//串口通信相关
 #include "fastlz.h"//压缩算法
 #include "fuzzy_PID.h"//模糊PID算法
 #include "SEARCH.h"
+#include "WIFI.h"
+#include "MOTOR1.h"//直流电机相关
+#include "MOTOR2.h"//直流电机相关
+
 
 
 #pragma section all "cpu0_dsram"
@@ -45,13 +48,17 @@ int core0_main(void)
 	//用户在此处调用各种初始化函数等
 
 	My_Init_Steering();//我的初始化舵机
-	My_Init_Motor();//我的初始化直流电机
-	My_Init_SpeedSensor();//我的初始化编码器
+	My_Init_Motor1();//我的初始化直流电机
+	My_Init_Motor2();//我的初始化直流电机
+	My_Init_SpeedSensor1();//我的初始化编码器
+	My_Init_SpeedSensor2();//我的初始化编码器
     My_Init_OLED();//我的初始化OLED
     My_Init_Camera();//我的初始化摄像头
     My_Init_Key();//我的初始化按键
     My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
+
+    //My_Init_Wifi();//我的初始化WIFI通信
 
     //等待所有核心初始化完毕
 	IfxCpu_emitEvent(&g_cpuSyncEvent);
@@ -65,6 +72,7 @@ int core0_main(void)
 	    {
 	        UART(Send);
 	    }
+	    //Send_with_Wifi();//用wifi发送
 	}
 }
 

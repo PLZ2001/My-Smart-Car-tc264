@@ -1,9 +1,10 @@
 #ifndef __STEERING_h__
 #define __STEERING_h__
 
-#define STEERING_MAX 32.0
-#define STEERING_MIN -32.0
-#define STEERING_DUTY_MAX 381.0
+#define STEERING_MAX 40.0
+#define STEERING_MIN -40.0
+#define STEERING_DUTY_MAX 170.0
+#define STEERING_DUTY_CENTER 1530
 
 extern float steering_Target;
 

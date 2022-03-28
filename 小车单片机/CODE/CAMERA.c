@@ -88,7 +88,7 @@ void UART_Thresholding_Image(void)
     uart_putchar(DEBUG_UART,0x01);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
     uint32 len = X_WIDTH_CAMERA*Y_WIDTH_CAMERA/8; //要求X_WIDTH_CAMERA*Y_WIDTH_CAMERA刚好是8的倍数
-    uint8 *buff = mt9v03x_image_cutted_thresholding;
+    uint8 *buff = *mt9v03x_image_cutted_thresholding;
     while(len)
     {
         uint8 dat = (*buff<<7)
