@@ -22,13 +22,13 @@ public class KeyManager : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.W))
             {
-                whiteBoard.speed_Target += a_Speed;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                whiteBoard.speed_Target1 += a_Speed;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
             }
             if (Input.GetKey(KeyCode.S))
             {
-                whiteBoard.speed_Target -= a_Speed;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                whiteBoard.speed_Target1 -= a_Speed;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
             }
             if (Input.GetKey(KeyCode.A))
             {              
@@ -42,18 +42,18 @@ public class KeyManager : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.P))
             {
-                whiteBoard.speed_Target = whiteBoard.speed_Target/2;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                whiteBoard.speed_Target1 = whiteBoard.speed_Target1/2;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
             }
 
-            whiteBoard.speed_Target = whiteBoard.speed_Target - a_Speed * whiteBoard.speed_Target / (7 + a_Speed);
-            GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+            whiteBoard.speed_Target1 = whiteBoard.speed_Target1 - a_Speed * whiteBoard.speed_Target1 / (7 + a_Speed);
+            GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
             whiteBoard.steering_Target = whiteBoard.steering_Target - b_Steering * whiteBoard.steering_Target / (30 + b_Steering);
             GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = whiteBoard.steering_Target;
-            if (whiteBoard.speed_Target < 0.5*a_Speed && whiteBoard.speed_Target > -0.5 * a_Speed)
+            if (whiteBoard.speed_Target1 < 0.5*a_Speed && whiteBoard.speed_Target1 > -0.5 * a_Speed)
             {
-                whiteBoard.speed_Target = 0;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                whiteBoard.speed_Target1 = 0;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
             }
             if (whiteBoard.steering_Target < 0.5 * b_Steering && whiteBoard.steering_Target > -0.5 * b_Steering)
             {
@@ -66,15 +66,23 @@ public class KeyManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                if (whiteBoard.speed_Target <7)
-                    whiteBoard.speed_Target += 1;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                if (whiteBoard.speed_Target1 <7)
+                    whiteBoard.speed_Target1 += 1;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
+
+                if (whiteBoard.speed_Target2 < 7)
+                    whiteBoard.speed_Target2 += 1;
+                GameObject.Find("UI/Canvas/Text (24)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target2;
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                if (whiteBoard.speed_Target > -7)
-                    whiteBoard.speed_Target -= 1;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                if (whiteBoard.speed_Target1 > -7)
+                    whiteBoard.speed_Target1 -= 1;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
+
+                if (whiteBoard.speed_Target2 > -7)
+                    whiteBoard.speed_Target2 -= 1;
+                GameObject.Find("UI/Canvas/Text (24)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target2;
             }
             if (Input.GetKey(KeyCode.A))
             {              
@@ -88,11 +96,14 @@ public class KeyManager : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.P))
             {
-                whiteBoard.speed_Target = 0;
-                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target;
+                whiteBoard.speed_Target1 = 0;
+                GameObject.Find("UI/Canvas/Text (10)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target1;
+
+                whiteBoard.speed_Target2 = 0;
+                GameObject.Find("UI/Canvas/Text (24)/Slider").GetComponent<Slider>().value = whiteBoard.speed_Target2;
             }
 
-            whiteBoard.steering_Target = whiteBoard.steering_Target - b_Steering * whiteBoard.steering_Target / (32 + b_Steering);
+            whiteBoard.steering_Target = whiteBoard.steering_Target - b_Steering * whiteBoard.steering_Target / (40 + b_Steering);
             GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = whiteBoard.steering_Target;
             if (whiteBoard.steering_Target < 0.5 * b_Steering && whiteBoard.steering_Target > -0.5 * b_Steering)
             {
