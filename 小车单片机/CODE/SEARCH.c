@@ -72,6 +72,45 @@ void UART_ColRight(void)
     uart_putchar(DEBUG_UART,0x02);//发送数据尾
 }
 
+void DrawCenterLine(void)
+{
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = -2;
+    }
+
+    // 对于6直道，可以采用，特征是滤波是较大正数，用于避免中心线有过大的波动
+    if (classification_Result == 6)
+    {
+        DrawCenterLinewithConfig(0.7);
+    }
+    // 对于5十字路口，可以采用，特征是使用卷积核判断两个拐点
+    else if (classification_Result == 5)
+    {
+        DrawCenterLinewithConfig_CrossRoad();
+    }
+    // 对于4三岔路口可以采用，特征是靠右行驶
+    else if (classification_Result == 4)
+    {
+        DrawCenterLinewithConfig_RightBased(0.7);
+    }
+    // 对于8靠右（临时使用）可以采用，特征是靠右行驶
+    else if (classification_Result == 8)
+    {
+        DrawCenterLinewithConfig_RightBased(-0.3);
+    }
+    // 对于7靠左（临时使用）可以采用，特征是靠左行驶
+    else if (classification_Result == 7)
+    {
+        DrawCenterLinewithConfig_LeftBased(-0.3);
+    }
+    // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
+    else
+    {
+        DrawCenterLinewithConfig(0);
+    }
+}
 
 uint8 Check_Straight(void)
 {
@@ -281,45 +320,7 @@ uint8 Check_Left_Straight(void)
 }
 
 
-void DrawCenterLine(void)
-{
-    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
-    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-    {
-        Col_Center[i] = -2;
-    }
 
-    // 对于6直道，可以采用，特征是滤波是较大正数，用于避免中心线有过大的波动
-    if (classification_Result == 6)
-    {
-        DrawCenterLinewithConfig(0.7);
-    }
-    // 对于5十字路口，可以采用，特征是使用卷积核判断两个拐点
-    else if (classification_Result == 5)
-    {
-        DrawCenterLinewithConfig_CrossRoad();
-    }
-    // 对于4三岔路口可以采用，特征是靠右行驶
-    else if (classification_Result == 4)
-    {
-        DrawCenterLinewithConfig_RightBased(0.7);
-    }
-    // 对于8靠右（临时使用）可以采用，特征是靠右行驶
-    else if (classification_Result == 8)
-    {
-        DrawCenterLinewithConfig_RightBased(-0.3);
-    }
-    // 对于7靠左（临时使用）可以采用，特征是靠左行驶
-    else if (classification_Result == 7)
-    {
-        DrawCenterLinewithConfig_LeftBased(-0.3);
-    }
-    // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
-    else
-    {
-        DrawCenterLinewithConfig(0);
-    }
-}
 
 //filter滤波系数，正数时是低通滤波，负数时相当于高通滤波
 void DrawCenterLinewithConfig(float filter)

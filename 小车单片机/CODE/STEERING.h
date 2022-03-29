@@ -7,6 +7,7 @@
 #define STEERING_DUTY_CENTER 1530
 
 extern float steering_Target;
+extern float steering_Error;
 
 void My_Init_Steering(void);
 void UART_Steering(void);

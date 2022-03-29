@@ -30,6 +30,7 @@
 #include "WIFI.h"
 #include "MOTOR1.h"//直流电机相关
 #include "MOTOR2.h"//直流电机相关
+#include "ICM.h"
 
 
 
@@ -57,6 +58,7 @@ int core0_main(void)
     My_Init_Key();//我的初始化按键
     My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
+    //My_Init_ICM();//我的初始化ICM
 
     //My_Init_Wifi();//我的初始化WIFI通信
 
@@ -73,6 +75,7 @@ int core0_main(void)
 	        UART(Send);
 	    }
 	    //Send_with_Wifi();//用wifi发送
+	    //Get_ICM_DATA();
 	}
 }
 

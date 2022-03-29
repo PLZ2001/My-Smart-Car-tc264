@@ -28,6 +28,7 @@
 #include "SEARCH.h"
 #include "MOTOR1.h"//直流电机相关
 #include "MOTOR2.h"//直流电机相关
+#include "MOTOR_CTL.h"
 
 
 
@@ -78,7 +79,7 @@ void core1_main(void)
                         break;
                     case 4:
                         classification_Result = 4;//4三岔路口
-                        time_up = 1.0;
+                        time_up = 0.5;
                         Start_Timer();
                         break;
                     case 10:
@@ -135,6 +136,13 @@ void core1_main(void)
                                 classification_Result = 9;//9未知
                             }
                         }
+                        //if (classification_Result ==4)//4三岔路口
+                        //{
+                        //    if(!Check_ThreeRoads())
+                        //    {
+                        //        classification_Result = 9;//9未知
+                        //    }
+                        //}
 
                     }
                     Check_Classification(classification_Result,1);
@@ -146,8 +154,12 @@ void core1_main(void)
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
             Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
-            Cal_Speed_Target1();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
-            Cal_Speed_Target2();//根据Col_Center和扫描范围search_Lines计算速度目标speed_Target，待完成
+
+            if (start_Flag==1)
+            {
+                Differential_Motor();
+            }
+
 
             if (UART_EN == TRUE)
             {

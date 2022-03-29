@@ -7,6 +7,7 @@
 #include "TIME.h"
 #include "MOTOR1.h"
 #include "MOTOR2.h"
+#include "MOTOR_CTL.h"
 
 
 enum OLEDPage OLED_Page = Timer_Page;
@@ -41,6 +42,16 @@ void Update_OLED_per16ms(void)
                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
+               OLED_PRINTF(0,3,"SpeedTarget:%01.01fm/s   ",speed_Target);
+               OLED_PRINTF(0,4,"Class:%d     ",classification_Result);
+               if (start_Flag == 1)
+                {
+                   OLED_PRINTF(0,5,"START: ON ");
+                }
+                else
+                {
+                    OLED_PRINTF(0,5,"START: OFF");
+                }
                //OLED_PRINTF(0,2,"fuzzy_struct->output[2]:%f   ",pid_vector[0]->fuzzy_struct->output[2]);
                break;
            case UART_Setting_Page:
@@ -73,6 +84,11 @@ void Update_OLED_per16ms(void)
                    OLED_PRINTF(0,0,"Timer Status: RUNNING");
                }
                OLED_PRINTF(0,1,"Time Now: %.3f s   ",Read_Timer());
+               break;
+           case Gyroscope_Page:
+               OLED_PRINTF(0,0,"x: %d     ",icm_gyro_x);
+               OLED_PRINTF(0,1,"y: %d     ",icm_gyro_y);
+               OLED_PRINTF(0,2,"z: %d     ",icm_gyro_z);
                break;
            default:
                oled_fill(0x00);

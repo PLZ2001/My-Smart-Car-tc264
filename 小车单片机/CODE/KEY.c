@@ -2,6 +2,7 @@
 #include "KEY.h"
 #include "OLED.h"//ÏÔÊ¾ÆÁÏà¹Ø
 #include "UART.h"
+#include "MOTOR_CTL.h"
 
 
 void My_Init_Key(void)
@@ -102,6 +103,20 @@ void Key0_Action(void)
 
 void Key1_Action(void)
 {
+    switch (OLED_Page)
+    {
+        case UART_Setting_Page:
+            UART_EN = UART_EN?FALSE:TRUE;
+            break;
+        case OLED_Setting_Page:
+            OLED_EN = OLED_EN?FALSE:TRUE;
+            break;
+        case Speed_Page:
+            start_Flag = start_Flag?0:1;
+            break;
+        default:
+            break;
+    }
     OLED_Page_Active_Flag = TRUE;
 }
 
@@ -114,6 +129,13 @@ void Key2_Action(void)
             break;
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
+            break;
+        case Speed_Page:
+            speed_Target+=0.2;
+            if (speed_Target>=3.2)
+            {
+                speed_Target=0;
+            }
             break;
         default:
             break;
