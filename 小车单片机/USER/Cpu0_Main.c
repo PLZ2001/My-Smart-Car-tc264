@@ -60,6 +60,8 @@ int core0_main(void)
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
     My_Init_Timer();//我的初始化TIMER
 
+    Get_Thresholding_Value();//获取第一次二值化阈值计算结果
+
     //My_Init_ICM();//我的初始化ICM
 
     //My_Init_Wifi();//我的初始化WIFI通信
