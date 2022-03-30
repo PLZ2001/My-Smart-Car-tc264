@@ -53,6 +53,7 @@ void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 
 
 void Get_Cutted_Image(void);
+void Get_Thresholding_Value(void);
 void Get_Thresholding_Image(void);
 void Get_Inverse_Perspective_Image(void);
 

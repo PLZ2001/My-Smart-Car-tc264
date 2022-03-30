@@ -3,6 +3,7 @@
 #include "fastlz.h"//压缩算法
 #include <stdlib.h>
 #include "OLED.h"
+#include "TIME.h"
 
 
 //需要串口通信输出去，但不用传过来的变量
@@ -290,41 +291,51 @@ void Get_Cutted_Image(void)
 //    }
 //}
 
+void Get_Thresholding_Value(void)
+{
+    float m[KMEANS_K][3] = {{85,0,0},{170,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
+       float maxtimes = 2;
+       for (int time = 0;time<maxtimes;time++)
+       {
+           for (int i = 0;i<KMEANS_K;i++)
+           {
+               m[i][1] = 0;
+           }
+           for (int i = 0;i<Y_WIDTH_CAMERA;i++)
+           {
+               for (int j = 0;j<X_WIDTH_CAMERA;j++)
+               {
+                   float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
+                   int min_distance_class = 0;
+                   for (int k=1;k<KMEANS_K;k++)
+                   {
+                       if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
+                       {
+                           min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
+                           min_distance_class = k;
+                       }
+                   }
+                   m[min_distance_class][1] = m[min_distance_class][1]+1;
+                   m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
+               }
+           }
+           for (int i = 0;i<KMEANS_K;i++)
+           {
+               m[i][0] = m[i][2];
+           }
+       }
+       thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));//二值化阈值更新结果
+
+       Start_Timer(3);
+}
+
 void Get_Thresholding_Image(void)
 {
     //Kmeans法更新二值化阈值
-    float m[KMEANS_K][3] = {{85,0,0},{170,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
-    float maxtimes = 2;
-    for (int time = 0;time<maxtimes;time++)
-    {
-        for (int i = 0;i<KMEANS_K;i++)
-        {
-            m[i][1] = 0;
-        }
-        for (int i = 0;i<Y_WIDTH_CAMERA;i++)
-        {
-            for (int j = 0;j<X_WIDTH_CAMERA;j++)
-            {
-                float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
-                int min_distance_class = 0;
-                for (int k=1;k<KMEANS_K;k++)
-                {
-                    if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
-                    {
-                        min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
-                        min_distance_class = k;
-                    }
-                }
-                m[min_distance_class][1] = m[min_distance_class][1]+1;
-                m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
-            }
-        }
-        for (int i = 0;i<KMEANS_K;i++)
-        {
-            m[i][0] = m[i][2];
-        }
+    if (Read_Timer(3) >= 0.5 ) {
+        Reset_Timer(3);
+        Get_Thresholding_Value();
     }
-    thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));
 
     for(int j = 0; j < Y_WIDTH_CAMERA; j++)
     {
