@@ -86,9 +86,12 @@ void Update_OLED_per16ms(void)
                OLED_PRINTF(0,1,"Time Now: %.3f s   ",Read_Timer());
                break;
            case Gyroscope_Page:
-               OLED_PRINTF(0,0,"x: %d     ",icm_gyro_x);
-               OLED_PRINTF(0,1,"y: %d     ",icm_gyro_y);
-               OLED_PRINTF(0,2,"z: %d     ",icm_gyro_z);
+               OLED_PRINTF(0,0,"gyro_x: %d     ",icm_gyro_x);
+               OLED_PRINTF(0,1,"gyro_y: %d     ",icm_gyro_y);
+               OLED_PRINTF(0,2,"gyro_z: %d     ",icm_gyro_z);
+               OLED_PRINTF(0,3,"acc_x: %d     ",icm_acc_x);
+               OLED_PRINTF(0,4,"acc_y: %d     ",icm_acc_y);
+               OLED_PRINTF(0,5,"acc_z: %d     ",icm_acc_z);
                break;
            default:
                oled_fill(0x00);

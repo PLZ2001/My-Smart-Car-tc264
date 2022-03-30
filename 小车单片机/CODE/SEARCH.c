@@ -890,19 +890,29 @@ uint8 Check_ThreeRoads(void)
             start_Row = start_Row - 1;
             continue;
         }
-        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)
+        uint8 black_cnt = 0;
+        uint8 black_cnt_limit = 3;
+        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 255)
         {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]]==0)
+            {
+                black_cnt++;
+            }
             start_Col[0]--;
         }
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] !=255)
+        if (black_cnt>black_cnt_limit)
         {
             break;
         }
-        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 255)
         {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]]==0)
+            {
+                black_cnt++;
+            }
             start_Col[1]++;
         }
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] !=255)
+        if (black_cnt>black_cnt_limit)
         {
             break;
         }

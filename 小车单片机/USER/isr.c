@@ -36,8 +36,8 @@ IFX_INTERRUPT(cc60_pit_ch0_isr, 0, CCU6_0_CH0_ISR_PRIORITY)
 {
 	enableInterrupts();//开启中断嵌套
 	PIT_CLEAR_FLAG(CCU6_0, PIT_CH0);
-	Check_Key_per10ms();//按键扫描10ms一次
-	Timer_Action_per10ms();//定时器10ms一次
+	Check_Key_per1ms();//按键扫描1ms一次
+	Timer_Action_per1ms();//定时器1ms一次
 
 }
 

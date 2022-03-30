@@ -59,6 +59,8 @@ void core1_main(void)
             Get_Cutted_Image();//裁剪图像到188*40
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
 
+            //Get_ICM_DATA();//更新陀螺仪数据
+
             Get_Thresholding_Image();
             Get_Inverse_Perspective_Image();
 
@@ -136,13 +138,13 @@ void core1_main(void)
                                 classification_Result = 9;//9未知
                             }
                         }
-                        //if (classification_Result ==4)//4三岔路口
-                        //{
-                        //    if(!Check_ThreeRoads())
-                        //    {
-                        //        classification_Result = 9;//9未知
-                        //    }
-                        //}
+                        if (classification_Result ==4)//4三岔路口
+                        {
+                            if(!Check_ThreeRoads())
+                            {
+                                classification_Result = 9;//9未知
+                            }
+                        }
 
                     }
                     Check_Classification(classification_Result,1);

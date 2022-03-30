@@ -75,7 +75,7 @@ int core0_main(void)
 	        UART(Send);
 	    }
 	    //Send_with_Wifi();//”√wifi∑¢ÀÕ
-	    //Get_ICM_DATA();
+
 	}
 }
 

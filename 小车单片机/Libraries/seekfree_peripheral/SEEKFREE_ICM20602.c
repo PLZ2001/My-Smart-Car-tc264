@@ -29,6 +29,7 @@
 #include "zf_spi.h"
 #include "SEEKFREE_IIC.h"
 #include "SEEKFREE_ICM20602.h"
+#include "OLED.h"
 
 
 int16 icm_gyro_x,icm_gyro_y,icm_gyro_z;
@@ -68,17 +69,21 @@ void icm20602_self1_check(void)
 //-------------------------------------------------------------------------------------------------------------------
 void icm20602_init(void)
 {
+    OLED_PRINTF(0,0,"1");
 	simiic_init();
     systick_delay_ms(STM0, 10);  //上电延时
-    
+    OLED_PRINTF(0,0,"2");
     //检测
-    icm20602_self1_check();
+    //icm20602_self1_check();
+    OLED_PRINTF(0,0,"3");
     
     //复位
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_PWR_MGMT_1,0x80);               //复位设备
     systick_delay_ms(STM0, 2);                                                        //延时
     while(0x80 & simiic_read_reg(ICM20602_DEV_ADDR,ICM20602_PWR_MGMT_1,SIMIIC));//等待复位完成
     
+    OLED_PRINTF(0,0,"4");
+
     //配置参数
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_PWR_MGMT_1,0x01);               //时钟设置
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_PWR_MGMT_2,0x00);               //开启陀螺仪和加速度计
@@ -87,6 +92,8 @@ void icm20602_init(void)
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_GYRO_CONFIG,0x18);              //±2000 dps
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_ACCEL_CONFIG,0x10);             //±8g
     simiic_write_reg(ICM20602_DEV_ADDR,ICM20602_ACCEL_CONFIG_2,0x03);           //Average 4 samples   44.8HZ   //0x23 Average 16 samples
+
+    OLED_PRINTF(0,0,"5");
 }
 
 

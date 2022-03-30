@@ -56,7 +56,7 @@ void UART(enum UARTstate state)
             else
             {
                 //发送裁剪后的二值化画面，数据头00-FF-01-01，数据长度X_WIDTH_CAMERA*Y_WIDTH_CAMERA/8字节，数据尾00-FF-01-02
-                UART_Thresholding_Image();
+                //UART_Thresholding_Image();
             }
 
             //发送二值化阈值，数据头00-FF-02-01，数据长度1字节，数据尾00-FF-02-02

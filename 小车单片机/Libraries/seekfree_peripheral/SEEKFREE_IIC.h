@@ -34,8 +34,8 @@
 
 
 
-#define SEEKFREE_SCL    P13_1//P02_3                           //定义SCL引脚  可任意更改为其他IO
-#define SEEKFREE_SDA    P13_2//P02_2                           //定义SDA引脚  可任意更改为其他IO
+#define SEEKFREE_SCL    P15_7//P13_1//P02_3                           //定义SCL引脚  可任意更改为其他IO
+#define SEEKFREE_SDA    P15_8//P13_2//P02_2                           //定义SDA引脚  可任意更改为其他IO
 
 
 #define SIMIIC_DELAY_TIME	20

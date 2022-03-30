@@ -1,7 +1,7 @@
 #include "headfile.h"
 #include "TIME.h"
 
-uint32 time_10ms = 0;
+uint32 time_1ms = 0;
 float time_up;
 enum TIMER_STATUS timer_Status = PAUSED;
 
@@ -18,17 +18,17 @@ void Pause_Timer(void)
 void Reset_Timer(void)
 {
     timer_Status = PAUSED;
-    time_10ms = 0;
+    time_1ms = 0;
 }
 
 void Set_Timer(float time)
 {
-    time_10ms = (uint32)(100*time);
+    time_1ms = (uint32)(1000*time);
 }
 
 float Read_Timer(void)
 {
-    return (time_10ms/100.0f);
+    return (time_1ms/1000.0f);
 }
 
 int Read_Timer_Status(void)
@@ -36,12 +36,12 @@ int Read_Timer_Status(void)
     return timer_Status;
 }
 
-void Timer_Action_per10ms(void)
+void Timer_Action_per1ms(void)
 {
     switch (timer_Status)
     {
         case RUNNING:
-            time_10ms = time_10ms + 1;
+            time_1ms = time_1ms + 1;
             break;
         case PAUSED:
             break;

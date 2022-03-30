@@ -14,7 +14,7 @@ void Pause_Timer(void);
 void Reset_Timer(void);
 void Set_Timer(float time);
 float Read_Timer(void);
-void Timer_Action_per10ms(void);
+void Timer_Action_per1ms(void);
 int Read_Timer_Status(void);
 
 
