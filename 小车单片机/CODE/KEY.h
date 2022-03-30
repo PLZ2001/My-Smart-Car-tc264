@@ -5,8 +5,8 @@
 #define KEY1_GPIO P22_1
 #define KEY2_GPIO P22_2
 
-#define STATUS0_COUNTER_MAX 50//5
-#define STATUS1_COUNTER_MAX 500//50
+#define STATUS0_COUNTER_MAX 5
+#define STATUS1_COUNTER_MAX 50
 
 enum Keycode
 {
@@ -16,7 +16,7 @@ enum Keycode
 };
 
 void My_Init_Key(void);
-void Check_Key_per1ms(void);
+void Check_Key_per10ms(void);
 void Key0_Action(void);
 void Key1_Action(void);
 void Key2_Action(void);

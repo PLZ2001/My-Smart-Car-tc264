@@ -58,6 +58,8 @@ int core0_main(void)
     My_Init_Key();//我的初始化按键
     My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
+    My_Init_Timer();//我的初始化TIMER
+
     //My_Init_ICM();//我的初始化ICM
 
     //My_Init_Wifi();//我的初始化WIFI通信

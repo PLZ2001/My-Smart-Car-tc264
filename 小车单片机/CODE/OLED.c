@@ -17,10 +17,10 @@ uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 void My_Init_OLED(void)
 {
     oled_init();
-    pit_interrupt_ms(CCU6_0, PIT_CH1, 16);//Update_OLED_per16ms
+    pit_interrupt_ms(CCU6_0, PIT_CH1, 10);//Update_OLED_per10ms
 }
 
-void Update_OLED_per16ms(void)
+void Update_OLED_per10ms(void)
 {
     if (OLED_EN == TRUE)
     {
@@ -75,15 +75,15 @@ void Update_OLED_per16ms(void)
                }
                break;
            case Timer_Page:
-               if (Read_Timer_Status() == PAUSED)
+               if (Read_Timer_Status(0) == PAUSED)
                {
-                   OLED_PRINTF(0,0,"Timer Status: PAUSED ");
+                   OLED_PRINTF(0,0,"Timer0 Status: PAUSED ");
                }
                else
                {
-                   OLED_PRINTF(0,0,"Timer Status: RUNNING");
+                   OLED_PRINTF(0,0,"Timer0 Status: RUNNING");
                }
-               OLED_PRINTF(0,1,"Time Now: %.3f s   ",Read_Timer());
+               OLED_PRINTF(0,1,"Timer0 Now: %.3f s   ",Read_Timer(0));
                break;
            case Gyroscope_Page:
                OLED_PRINTF(0,0,"gyro_x: %d     ",icm_gyro_x);
@@ -93,6 +93,9 @@ void Update_OLED_per16ms(void)
                OLED_PRINTF(0,4,"acc_y: %d     ",icm_acc_y);
                OLED_PRINTF(0,5,"acc_z: %d     ",icm_acc_z);
                break;
+           case Timer_Page2:
+              //显示内容由Cpu1_Main.c部分完成
+              break;
            default:
                oled_fill(0x00);
                break;

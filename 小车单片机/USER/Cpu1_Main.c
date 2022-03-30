@@ -56,17 +56,27 @@ void core1_main(void)
         //来自摄像机的图像到达后，进行图像处理
         if (mt9v03x_finish_flag == 1 && (UART_Flag_TX == FALSE || UART_EN == FALSE))
         {
+            InsertTimer1Point(0);
+            InsertTimer2Point(6);
+
             Get_Cutted_Image();//裁剪图像到188*40
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
+
+            InsertTimer1Point(1);
 
             //Get_ICM_DATA();//更新陀螺仪数据
 
             Get_Thresholding_Image();
+
+            InsertTimer1Point(2);
             Get_Inverse_Perspective_Image();
+
+            InsertTimer1Point(3);
+
 
             static uint8 flag_For_Right_Circle = 0;
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
-            if (Read_Timer_Status() == PAUSED)
+            if (Read_Timer_Status(0) == PAUSED)
             {
                 switch(classification_Result)
                 {
@@ -75,22 +85,22 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             classification_Result = 8;//8靠右
-                            time_up = 3.0;
-                            Start_Timer();
+                            time_up[0] = 3.0;
+                            Start_Timer(0);
                         }
                         break;
                     case 4:
                         classification_Result = 4;//4三岔路口
-                        time_up = 0.5;
-                        Start_Timer();
+                        time_up[0] = 0.5;
+                        Start_Timer(0);
                         break;
                     case 10:
                         if (flag_For_Right_Circle == 1) //说明准备出右环岛
                         {
                             flag_For_Right_Circle = 0;
                             classification_Result = 7;//7靠左
-                            time_up = 0.5;
-                            Start_Timer();
+                            time_up[0] = 0.5;
+                            Start_Timer(0);
                         }
                         break;
                     default:
@@ -99,15 +109,15 @@ void core1_main(void)
 
             }
             //如果在计时，判断计时是否达到要求时间
-            if (Read_Timer_Status() == RUNNING)
+            if (Read_Timer_Status(0) == RUNNING)
             {
-                if (Read_Timer()>time_up)
+                if (Read_Timer(0)>time_up[0])
                 {
-                    Reset_Timer();
+                    Reset_Timer(0);
                 }
             }
             //如果不在计时，继续分类
-            if (Read_Timer_Status() == PAUSED)
+            if (Read_Timer_Status(0) == PAUSED)
             {
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
@@ -167,6 +177,8 @@ void core1_main(void)
             {
                 UART_Flag_TX = TRUE;
             }
+
+            InsertTimer1Point(4);
         }
 
 

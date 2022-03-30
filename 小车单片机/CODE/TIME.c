@@ -1,52 +1,62 @@
 #include "headfile.h"
 #include "TIME.h"
 
-uint32 time_1ms = 0;
-float time_up;
-enum TIMER_STATUS timer_Status = PAUSED;
 
-void Start_Timer(void)
+uint32 time_100us[TIMER_NUM] = {0};
+float time_up[TIMER_NUM];
+enum TIMERSTATUS timer_Status[TIMER_NUM] = {PAUSED};
+
+void My_Init_Timer(void)
 {
-    timer_Status = RUNNING;
+    pit_interrupt_us(CCU6_0, PIT_CH0, 100);
 }
 
-void Pause_Timer(void)
+void Start_Timer(uint8 ID)
 {
-    timer_Status = PAUSED;
+    timer_Status[ID] = RUNNING;
 }
 
-void Reset_Timer(void)
+void Pause_Timer(uint8 ID)
 {
-    timer_Status = PAUSED;
-    time_1ms = 0;
+    timer_Status[ID] = PAUSED;
 }
 
-void Set_Timer(float time)
+void Reset_Timer(uint8 ID)
 {
-    time_1ms = (uint32)(1000*time);
+    timer_Status[ID] = PAUSED;
+    time_100us[ID] = 0;
 }
 
-float Read_Timer(void)
+void Set_Timer(uint8 ID, float time)
 {
-    return (time_1ms/1000.0f);
+    time_100us[ID] = (uint32)(10000*time);
 }
 
-int Read_Timer_Status(void)
+float Read_Timer(uint8 ID)
 {
-    return timer_Status;
+    return (time_100us[ID]/10000.0f);
 }
 
-void Timer_Action_per1ms(void)
+int Read_Timer_Status(uint8 ID)
 {
-    switch (timer_Status)
+    return timer_Status[ID];
+}
+
+void Timer_Action_per100us(void)
+{
+    for (int ID=0;ID<TIMER_NUM;ID++)
     {
-        case RUNNING:
-            time_1ms = time_1ms + 1;
-            break;
-        case PAUSED:
-            break;
-        default:
-            break;
+        switch (timer_Status[ID])
+        {
+            case RUNNING:
+                time_100us[ID] = time_100us[ID] + 1;
+                break;
+            case PAUSED:
+                break;
+            default:
+                break;
+        }
     }
+
 }
 

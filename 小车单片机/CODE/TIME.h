@@ -1,22 +1,26 @@
 #ifndef __TIME_h__
 #define __TIME_h__
 
-enum TIMER_STATUS
+#define TIMER_NUM 4
+#define InsertTimer1Point(x)  if (OLED_Page == Timer_Page2){OLED_PRINTF(0,x,"NO%d: %.01f ms    ",x,1000*Read_Timer(1));Reset_Timer(1);Start_Timer(1);}
+#define InsertTimer2Point(x)  if (OLED_Page == Timer_Page2){OLED_PRINTF(0,x,"NO%d: %.01f ms    ",x,1000*Read_Timer(2));Reset_Timer(2);Start_Timer(2);}
+
+enum TIMERSTATUS
 {
-    RUNNING,
-    PAUSED
+    PAUSED,
+    RUNNING
 };
 
-extern float time_up;
+extern float time_up[TIMER_NUM];
 
-void Start_Timer(void);
-void Pause_Timer(void);
-void Reset_Timer(void);
-void Set_Timer(float time);
-float Read_Timer(void);
-void Timer_Action_per1ms(void);
-int Read_Timer_Status(void);
-
+void Start_Timer(uint8 ID);
+void Pause_Timer(uint8 ID);
+void Reset_Timer(uint8 ID);
+void Set_Timer(uint8 ID, float time);
+float Read_Timer(uint8 ID);
+int Read_Timer_Status(uint8 ID);
+void Timer_Action_per100us(void);
+void My_Init_Timer(void);
 
 
 

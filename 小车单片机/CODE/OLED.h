@@ -4,7 +4,7 @@
 #define OLED_PRINTF(x,y,...) {char string[40];sprintf(string, __VA_ARGS__);oled_p6x8str(x,y,string);}
 //可以像正常的printf一样在OLED上输出格式化字符串
 //例如：OLED_PRINTF(0,0,"The speed is %d km/s", speed);
-#define PAGE_NUM 7
+#define PAGE_NUM 8
 
 enum OLEDPage
 {
@@ -14,7 +14,8 @@ enum OLEDPage
     UART_Setting_Page,
     OLED_Setting_Page,
     Timer_Page,
-    Gyroscope_Page
+    Gyroscope_Page,
+    Timer_Page2
 };
 
 extern enum OLEDPage OLED_Page;
@@ -22,7 +23,7 @@ extern uint8 OLED_EN;
 extern uint8 OLED_Page_Active_Flag;
 
 void My_Init_OLED(void);
-void Update_OLED_per16ms(void);
+void Update_OLED_per10ms(void);
 
 
 
