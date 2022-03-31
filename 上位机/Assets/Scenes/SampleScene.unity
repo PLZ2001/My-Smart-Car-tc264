@@ -19030,6 +19030,7 @@ MonoBehaviour:
   speed_Target1: 0
   speed_Target2: 0
   steering_Target: 0
+  steering_Error: 0
   writing_Flag: 0
   reading_Flag: 0
   key_Control: 0

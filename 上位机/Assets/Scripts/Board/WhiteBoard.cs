@@ -61,6 +61,8 @@ public class WhiteBoard : MonoBehaviour
     ComputeBuffer picsBuffer;//用于传递图片
     public SerialPortManager serialPortManager;//用于输入外部的串口实例
     string str;
+    string str_now;
+    string str_temp;
     int index1;
     int index2;
 
@@ -92,6 +94,9 @@ public class WhiteBoard : MonoBehaviour
     public bool key_Control = true;
 
     string timeString = DateTime.Now.ToString("yyyy-MM-dd") +" "+ DateTime.Now.ToString("hh-mm-ss");
+    string Time_Now;
+    string Time_Start;
+    bool flag_Time_Start = false;
 
     float kp1, ki1, kd1;
     float kp2, ki2, kd2;
@@ -111,6 +116,10 @@ public class WhiteBoard : MonoBehaviour
     float steering_kp, steering_ki, steering_kd;
 
     bool isPaused = false;
+
+    string Pointer;
+
+    bool read_Local_UART_Flag = false;
 
     // 启动函数，只会运行一次
     protected virtual void Start()
@@ -316,6 +325,7 @@ public class WhiteBoard : MonoBehaviour
 
     void RunSimulation()
     {
+
         // 把各种格式的数据都输入Compute Shader，每次循环都要输入一次
         // deltaTime是每帧的实际时间
         compute.SetFloat("deltaTime", Time.fixedDeltaTime);
@@ -455,6 +465,8 @@ public class WhiteBoard : MonoBehaviour
 
         //...
 
+        
+
 
         // 用户发起写入要求
         byte[] byteArray_Send;
@@ -462,7 +474,7 @@ public class WhiteBoard : MonoBehaviour
         //发送图片是否传输的信号，数据头00-FF-01-01，数据长度1字节，数据尾00-FF-01-02
         byteArray_Send = new byte[] { 0x00, 0xFF, 0x01, 0x01, (byte)UART_Flag_NO_IMAGE, 0x00, 0xFF, 0x01, 0x02 };
         serialPortManager.WriteByte(byteArray_Send);
-        Debug.Log(BitConverter.ToString(byteArray_Send));
+        //Debug.Log(BitConverter.ToString(byteArray_Send));
 
         if (writing_Flag == true)
         {
@@ -511,21 +523,77 @@ public class WhiteBoard : MonoBehaviour
             //...
         }
 
+        
+
+        
+
 
         //当串行通信收到的信息长度满足等于设置长度时
         if (serialPortManager.flag == true)
         {
-            Debug.Log(serialPortManager.sb.Length);//输出字符串长度
-            str = serialPortManager.sb.ToString();//转成string
 
-            byte[] byteArray = Encoding.GetEncoding(37).GetBytes(str);//将string解码为Byte数组，依然使用37号字符集
-            str = BitConverter.ToString(byteArray);//为了便于查找数据头00-FF-01-01，将Byte数组转为“...-XX-XX-XX-XX-XX-...”的字符串形式
+            var xAxis = chart.GetOrAddChartComponent<XAxis>();
+            Pointer = xAxis.GetData((int)xAxis.context.pointerValue); //用于获取鼠标在示波器上的位置
+            //Debug.Log(Pointer);
+            //Debug.Log(Time_Now);
+            if (Pointer!=null && flag_Time_Start==false)
+            {
+                Time_Start = Pointer;
+                flag_Time_Start = true;
+            }
+            if (Pointer == null || Pointer == Time_Start)
+            {
+                read_Local_UART_Flag = false;
+            }
+            else
+            {
+                read_Local_UART_Flag = true;
+            }
 
-            Debug.Log(str);
+            Time_Now = Time.fixedTime.ToString();
+
+
+
+            //Debug.Log(serialPortManager.sb.Length);//输出字符串长度
+            str_now = serialPortManager.sb.ToString();//转成string
+
+            byte[] byteArray_now = Encoding.GetEncoding(37).GetBytes(str_now);//将string解码为Byte数组，依然使用37号字符集
+            str_now = BitConverter.ToString(byteArray_now);//为了便于查找数据头00-FF-01-01，将Byte数组转为“...-XX-XX-XX-XX-XX-...”的字符串形式
+
+            string path_temp = @"D:\CarData\" + timeString + @" UART\";
+            if (!Directory.Exists(path_temp))
+            {
+                Directory.CreateDirectory(path_temp);
+            }
+            FileStream fs_temp = new FileStream(path_temp + Time_Now + ".txt", FileMode.Append);
+            fs_temp.Write(byteArray_now, 0, byteArray_now.Length);
+            fs_temp.Flush();
+            fs_temp.Close();
+
+            byte[] byteArray_temp = new byte[1];
+            if (read_Local_UART_Flag==true)
+            {
+                FileStream fs_temp_temp = new FileStream(path_temp + Pointer + ".txt", FileMode.OpenOrCreate);
+                byteArray_temp = new byte[(int)fs_temp_temp.Length];
+                fs_temp_temp.Read(byteArray_temp, 0, (int)fs_temp_temp.Length);
+                str_temp = BitConverter.ToString(byteArray_temp);
+                fs_temp_temp.Flush();
+                fs_temp_temp.Close();
+            }
+            byte[] byteArray;
+
+            str = str_now;
+            byteArray = byteArray_now;
+            //Debug.Log(str);
 
 
             //一直更新，不需要用户发起读取请求
             //接收分类参数，数据头00-FF-08-01，数据长度1字节，数据尾00-FF-08-02
+            if (read_Local_UART_Flag == true)
+            {
+                str = str_temp;
+                byteArray = byteArray_temp;
+            }
             index1 = str.IndexOf("00-FF-08-01") / 3;//找到第一个数据头
             if (index1 != -1)
             {
@@ -533,6 +601,7 @@ public class WhiteBoard : MonoBehaviour
                 if (index2 == 4 + 1)//检测两个数据头之间是否有正确的字节数目
                 {
                     int value = byteArray[index1 + 4];
+                    //Debug.Log("value等于"+value.ToString());
                     GameObject.Find("UI/Canvas/Text (8)/InputField").GetComponent<InputField>().text = class_Name_Group[value];
                     classification_Result = value;
                 }
@@ -563,7 +632,7 @@ public class WhiteBoard : MonoBehaviour
                         {
                             Directory.CreateDirectory(path);
                         }
-                        FileStream fs = new FileStream(path + Time.fixedTime.ToString() + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
+                        FileStream fs = new FileStream(path + Time_Now + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
                         byte[] data1 = Encoding.UTF8.GetBytes("P5\n" + "187 40\n" + "1\n");
                         byte[] data2 = new byte[width * height];
                         for (int i = 0; i < width * height; i++)
@@ -604,7 +673,7 @@ public class WhiteBoard : MonoBehaviour
                             {
                                 Directory.CreateDirectory(path);
                             }
-                            FileStream fs = new FileStream(path + Time.fixedTime.ToString() + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
+                            FileStream fs = new FileStream(path + Time_Now + class_Name_Group[classification_Result] + ".pgm", FileMode.Create);
                             byte[] data1 = Encoding.UTF8.GetBytes("P5\n" + "187 40\n" + "255\n");
                             byte[] data2 = new byte[width * height];
                             for (int i = 0; i < width * height; i++)
@@ -625,8 +694,6 @@ public class WhiteBoard : MonoBehaviour
                     }
                 }
             }
-            
-
             //用户发起读取要求时才更新
             //接收二值化阈值，数据头00-FF-02-01，数据长度1字节，数据尾00-FF-02-02
             index1 = str.IndexOf("00-FF-02-01") / 3;//找到第一个数据头
@@ -669,6 +736,12 @@ public class WhiteBoard : MonoBehaviour
                     compute.SetFloat("ratioOfPixelToHG", ratioOfPixelToHG);//更新Compute Shader
                 }
             }
+
+            if (read_Local_UART_Flag == true)
+            {
+                str = str_now;
+                byteArray = byteArray_now;
+            }
             //接收速度参数，数据头00-FF-04-01，数据长度5字节，数据尾00-FF-04-02
             index1 = str.IndexOf("00-FF-04-01") / 3;//找到第一个数据头
             if (index1 != -1)
@@ -689,15 +762,6 @@ public class WhiteBoard : MonoBehaviour
                     value = byteArray[index1 + 8];
                     current_error = (float)value / 256 * (7 - (-7)) + (-7);//更新Slider的值，赋值
 
-                    if (isPaused == false)
-                    {
-                        chart.AddXAxisData(Time.fixedTime.ToString());
-                        chart.AddData(0, speed_Measured2);
-                        chart.AddData(1, speed_Measured1);
-                        chart.AddData(2, steering_Target/10);
-                        chart.AddData(3, steering_Error/100);
-                    }
-
 
                     string path = @"D:\CarData\" + timeString + @" Others\";
                     if (!Directory.Exists(path))
@@ -705,37 +769,19 @@ public class WhiteBoard : MonoBehaviour
                         Directory.CreateDirectory(path);
                     }
                     FileStream fs = new FileStream(path + "speed_Measured1.txt", FileMode.Append);
-                    byte[] data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString()+","+ speed_Measured1.ToString() + "\r\n");
+                    byte[] data = Encoding.UTF8.GetBytes(Time_Now+","+ speed_Measured1.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
 
                     fs = new FileStream(path + "speed_Output1.txt", FileMode.Append);
-                    data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + speed_Output1.ToString() + "\r\n");
+                    data = Encoding.UTF8.GetBytes(Time_Now + "," + speed_Output1.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
 
                     fs = new FileStream(path + "error.txt", FileMode.Append);
-                    data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + last_error.ToString() +','+ current_error.ToString() + "\r\n");
-                    fs.Write(data, 0, data.Length);
-                    fs.Flush();
-                    fs.Close();
-
-                    fs = new FileStream(path + "steering_Target.txt", FileMode.Append);
-                    data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + steering_Target.ToString() + "\r\n");
-                    fs.Write(data, 0, data.Length);
-                    fs.Flush();
-                    fs.Close();
-
-                    fs = new FileStream(path + "speed_Measured2.txt", FileMode.Append);
-                    data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + speed_Measured2.ToString() + "\r\n");
-                    fs.Write(data, 0, data.Length);
-                    fs.Flush();
-                    fs.Close();
-
-                    fs = new FileStream(path + "speed_Output2.txt", FileMode.Append);
-                    data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + speed_Output2.ToString() + "\r\n");
+                    data = Encoding.UTF8.GetBytes(Time_Now + "," + last_error.ToString() +','+ current_error.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
@@ -764,7 +810,24 @@ public class WhiteBoard : MonoBehaviour
                     value = byteArray[index1 + 5];
                     GameObject.Find("UI/Canvas/Text (19)/Slider").GetComponent<Slider>().value = (float)value / 256 * (7 - (-7)) + (-7);
                     speed_Output2 = (float)value / 256 * (7 - (-7)) + (-7);//更新Slider的值，赋值
-                    
+
+                    string path = @"D:\CarData\" + timeString + @" Others\";
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+
+                    FileStream fs = new FileStream(path + "speed_Measured2.txt", FileMode.Append);
+                    byte[] data = Encoding.UTF8.GetBytes(Time_Now + "," + speed_Measured2.ToString() + "\r\n");
+                    fs.Write(data, 0, data.Length);
+                    fs.Flush();
+                    fs.Close();
+
+                    fs = new FileStream(path + "speed_Output2.txt", FileMode.Append);
+                    data = Encoding.UTF8.GetBytes(Time_Now + "," + speed_Output2.ToString() + "\r\n");
+                    fs.Write(data, 0, data.Length);
+                    fs.Flush();
+                    fs.Close();
 
                     if (reading_Flag == true)
                     {
@@ -792,11 +855,24 @@ public class WhiteBoard : MonoBehaviour
                     }
                     steering_Error = value / 100.0f;
 
+
                     if (reading_Flag == true)
                     {
                         value = byteArray[index1 + 4];
                         GameObject.Find("UI/Canvas/Text (11)/Slider").GetComponent<Slider>().value = (float)value / 256 * (40 - (-40)) + (-40);
                         steering_Target = (float)value / 256 * (40 - (-40)) + (-40);//更新Slider的值，赋值为二值化阈值
+
+
+                        string path = @"D:\CarData\" + timeString + @" Others\";
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        FileStream fs = new FileStream(path + "steering_Target.txt", FileMode.Append);
+                        byte[] data = Encoding.UTF8.GetBytes(Time_Now + "," + steering_Target.ToString() + "\r\n");
+                        fs.Write(data, 0, data.Length);
+                        fs.Flush();
+                        fs.Close();
                     }
                     
                 }
@@ -838,7 +914,7 @@ public class WhiteBoard : MonoBehaviour
                         Directory.CreateDirectory(path);
                     }
                     FileStream fs = new FileStream(path + "SteeringPID.txt", FileMode.Append);
-                    byte[] data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + steering_kp.ToString() + "," + steering_ki.ToString() + "," + steering_kd.ToString() + "\r\n");
+                    byte[] data = Encoding.UTF8.GetBytes(Time_Now + "," + steering_kp.ToString() + "," + steering_ki.ToString() + "," + steering_kd.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
@@ -882,7 +958,7 @@ public class WhiteBoard : MonoBehaviour
                         Directory.CreateDirectory(path);
                     }
                     FileStream fs = new FileStream(path + "PID1.txt", FileMode.Append);
-                    byte[] data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + kp1.ToString()+ "," + ki1.ToString()+ "," + kd1.ToString() + "\r\n");
+                    byte[] data = Encoding.UTF8.GetBytes(Time_Now + "," + kp1.ToString()+ "," + ki1.ToString()+ "," + kd1.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
@@ -926,12 +1002,17 @@ public class WhiteBoard : MonoBehaviour
                         Directory.CreateDirectory(path);
                     }
                     FileStream fs = new FileStream(path + "PID2.txt", FileMode.Append);
-                    byte[] data = Encoding.UTF8.GetBytes(Time.fixedTime.ToString() + "," + kp2.ToString() + "," + ki2.ToString() + "," + kd2.ToString() + "\r\n");
+                    byte[] data = Encoding.UTF8.GetBytes(Time_Now + "," + kp2.ToString() + "," + ki2.ToString() + "," + kd2.ToString() + "\r\n");
                     fs.Write(data, 0, data.Length);
                     fs.Flush();
                     fs.Close();
 
                 }
+            }
+            if (read_Local_UART_Flag == true)
+            {
+                str = str_temp;
+                byteArray = byteArray_temp;
             }
             //接收中心线，数据头00-FF-09-01，数据长度256字节，数据尾00-FF-09-02
             index1 = str.IndexOf("00-FF-09-01") / 3;//找到第一个数据头
@@ -981,7 +1062,7 @@ public class WhiteBoard : MonoBehaviour
 
                 }
             }
-            //接收中心线，数据头00-FF-11-01，数据长度256字节，数据尾00-FF-11-02
+            //接收右线，数据头00-FF-11-01，数据长度256字节，数据尾00-FF-11-02
             index1 = str.IndexOf("00-FF-11-01") / 3;//找到第一个数据头
             if (index1 != -1)
             {
@@ -1008,7 +1089,18 @@ public class WhiteBoard : MonoBehaviour
             //...
 
             serialPortManager.flag = false;
+
+            if (isPaused == false)
+            {
+                chart.AddXAxisData(Time_Now);
+                chart.AddData(0, speed_Measured2);
+                chart.AddData(1, speed_Measured1);
+                chart.AddData(2, steering_Target / 10);
+                chart.AddData(3, steering_Error / 100);
+            }
         }
+
+        
 
         // 每次循环，调用一次Compute Shader进行并行运算
         if (width_Inverse_Perspective*height_Inverse_Perspective < width*height)

@@ -91,7 +91,7 @@ public class SerialPortManager : MonoBehaviour
                         continue;
                     }//如果缓冲区中可以读取的字节数为0就跳过，否则按照可读取字节数创造Byte数组                
                     byte[] buffer = new byte[sp.BytesToRead];//按照可读取字节数创造Byte数组
-                    Debug.Log(buffer.Length);//显示一下此时可读取字节的长度
+                    //Debug.Log(buffer.Length);//显示一下此时可读取字节的长度
                     bytes = sp.Read(buffer, 0, buffer.Length);//接收该长度的字节数据，存到Byte数组buffer里，bytes返回是否读取成功
                     if (bytes == 0)
                     {
