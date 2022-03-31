@@ -42,7 +42,7 @@
 
 //------------PIT中断参数相关定义------------
 #define CCU6_0_CH0_INT_SERVICE	IfxSrc_Tos_cpu0	//定义CCU6_0 PIT通道0中断服务类型，即中断是由谁响应处理 0:CPU0 1:CPU1 3:DMA  不可设置为其他值
-#define CCU6_0_CH0_ISR_PRIORITY 30	//定义CCU6_0 PIT通道0中断优先级 优先级范围1-255 越大优先级越高 与平时使用的单片机不一样
+#define CCU6_0_CH0_ISR_PRIORITY 33//30	//定义CCU6_0 PIT通道0中断优先级 优先级范围1-255 越大优先级越高 与平时使用的单片机不一样
 
 #define CCU6_0_CH1_INT_SERVICE	IfxSrc_Tos_cpu0
 #define CCU6_0_CH1_ISR_PRIORITY 31
@@ -51,7 +51,7 @@
 #define CCU6_1_CH0_ISR_PRIORITY 32
 
 #define CCU6_1_CH1_INT_SERVICE	IfxSrc_Tos_cpu0
-#define CCU6_1_CH1_ISR_PRIORITY 33
+#define CCU6_1_CH1_ISR_PRIORITY 30//33
 
 
 

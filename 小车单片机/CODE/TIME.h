@@ -1,7 +1,7 @@
 #ifndef __TIME_h__
 #define __TIME_h__
 
-#define TIMER_NUM 4
+#define TIMER_NUM 5
 #define InsertTimer1Point(x)  if (OLED_Page == Timer_Page2){OLED_PRINTF(0,x,"NO%d: %.01f ms    ",x,1000*Read_Timer(1));Reset_Timer(1);Start_Timer(1);}
 #define InsertTimer2Point(x)  if (OLED_Page == Timer_Page2){OLED_PRINTF(0,x,"NO%d: %.01f ms    ",x,1000*Read_Timer(2));Reset_Timer(2);Start_Timer(2);}
 

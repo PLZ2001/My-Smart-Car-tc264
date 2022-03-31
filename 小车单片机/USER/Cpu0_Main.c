@@ -60,7 +60,6 @@ int core0_main(void)
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
     My_Init_Timer();//我的初始化TIMER
 
-    Get_Thresholding_Value();//获取第一次二值化阈值计算结果
 
     //My_Init_ICM();//我的初始化ICM
 
@@ -74,6 +73,7 @@ int core0_main(void)
     //注意 从V1.1.6版本之后  printf打印的信息从串口输出具体可以学习库例程6-Printf_Demo
 	while (TRUE)
 	{
+
 	    if (UART_EN == TRUE)
 	    {
 	        UART(Send);

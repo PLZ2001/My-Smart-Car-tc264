@@ -93,7 +93,7 @@ void DrawCenterLine(void)
     // 对于4三岔路口可以采用，特征是靠右行驶
     else if (classification_Result == 4)
     {
-        DrawCenterLinewithConfig_RightBased(0.7);
+        DrawCenterLinewithConfig_RightBased(0);
     }
     // 对于8靠右（临时使用）可以采用，特征是靠右行驶
     else if (classification_Result == 8)

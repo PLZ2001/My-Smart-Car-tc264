@@ -66,6 +66,14 @@ void core1_main(void)
 
             //Get_ICM_DATA();//更新陀螺仪数据
 
+            if (Thresholding_Value_Init_Flag == 0)
+            {
+                Get_Inverse_Perspective_Table();//求逆透视表
+                Get_Thresholding_Value();//求二值化阈值
+                time_up[3]=1.0f;
+                Start_Timer(3);//启动计时
+                Thresholding_Value_Init_Flag = 1;
+            }
             Get_Thresholding_Image();
 
             InsertTimer1Point(2);
@@ -85,7 +93,7 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             classification_Result = 8;//8靠右
-                            time_up[0] = 3.0;
+                            time_up[0] = 1.5;
                             Start_Timer(0);
                         }
                         break;
@@ -97,10 +105,12 @@ void core1_main(void)
                     case 10:
                         if (flag_For_Right_Circle == 1) //说明准备出右环岛
                         {
-                            flag_For_Right_Circle = 0;
+                            flag_For_Right_Circle = 2;
                             classification_Result = 7;//7靠左
                             time_up[0] = 0.5;
                             Start_Timer(0);
+                            time_up[4] = 5.0f;
+                            Start_Timer(4);
                         }
                         break;
                     default:
@@ -114,6 +124,13 @@ void core1_main(void)
                 if (Read_Timer(0)>time_up[0])
                 {
                     Reset_Timer(0);
+                }
+            }
+            if (Read_Timer_Status(4) == RUNNING)
+            {
+                if (Read_Timer(4)>time_up[4])
+                {
+                    Reset_Timer(4);
                 }
             }
             //如果不在计时，继续分类
@@ -134,6 +151,10 @@ void core1_main(void)
                 }
                 else
                 {//正常识别
+                    if (flag_For_Right_Circle == 2 && Read_Timer_Status(4) == PAUSED)
+                    {
+                        flag_For_Right_Circle = 0;
+                    }
                     if (Check_Straight())
                     {
                         classification_Result = 6;//6直道
@@ -143,7 +164,7 @@ void core1_main(void)
                         classification_Result = Classification_25();
                         if (classification_Result ==3)//3右环岛
                         {
-                            if(!Check_RightCircle())
+                            if(flag_For_Right_Circle!=0 || !Check_RightCircle())
                             {
                                 classification_Result = 9;//9未知
                             }

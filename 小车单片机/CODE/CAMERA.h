@@ -30,6 +30,8 @@ extern float cameraThetaDown;//需要校正
 extern float ratioOfMaxDisToHG;//仅影响显示距离
 extern float ratioOfPixelToHG;//仅影响分辨率
 extern uint8 classification_Result;
+extern uint8 Thresholding_Value_Init_Flag;//表示是否初始化了二值化阈值
+
 
 
 void My_Init_Camera(void);
@@ -54,6 +56,7 @@ void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 
 void Get_Cutted_Image(void);
 void Get_Thresholding_Value(void);
+void Get_Inverse_Perspective_Table(void);
 void Get_Thresholding_Image(void);
 void Get_Inverse_Perspective_Image(void);
 

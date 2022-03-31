@@ -10,7 +10,7 @@
 #include "MOTOR_CTL.h"
 
 
-enum OLEDPage OLED_Page = Timer_Page;
+enum OLEDPage OLED_Page = Speed_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -44,13 +44,14 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
                OLED_PRINTF(0,3,"SpeedTarget:%01.01fm/s   ",speed_Target);
                OLED_PRINTF(0,4,"Class:%d     ",classification_Result);
+               OLED_PRINTF(0,5,"2-value:%d     ",thresholding_Value);
                if (start_Flag == 1)
                 {
-                   OLED_PRINTF(0,5,"START: ON ");
+                   OLED_PRINTF(0,6,"START: ON ");
                 }
                 else
                 {
-                    OLED_PRINTF(0,5,"START: OFF");
+                    OLED_PRINTF(0,6,"START: OFF");
                 }
                //OLED_PRINTF(0,2,"fuzzy_struct->output[2]:%f   ",pid_vector[0]->fuzzy_struct->output[2]);
                break;
@@ -83,7 +84,7 @@ void Update_OLED_per10ms(void)
                {
                    OLED_PRINTF(0,0,"Timer0 Status: RUNNING");
                }
-               OLED_PRINTF(0,1,"Timer0 Now: %.3f s   ",Read_Timer(0));
+               OLED_PRINTF(0,1,"Timer4 Now: %.3f s   ",Read_Timer(4));
                break;
            case Gyroscope_Page:
                OLED_PRINTF(0,0,"gyro_x: %d     ",icm_gyro_x);

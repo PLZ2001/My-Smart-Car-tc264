@@ -62,6 +62,10 @@ char *class_Name_Group[CLASS_NUM+5] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "
 float arg_Classification_16[16];
 float arg_Classification_25[25];
 
+uint8 Inverse_Perspective_Table_Row[height_Inverse_Perspective_Max];
+uint8 Inverse_Perspective_Table_Col[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+
+uint8 Thresholding_Value_Init_Flag = 0;//表示是否初始化了二值化阈值
 
 void My_Init_Camera(void)
 {
@@ -291,50 +295,94 @@ void Get_Cutted_Image(void)
 //    }
 //}
 
+//void Get_Thresholding_Image(void)
+//{
+//    //Kmeans法更新二值化阈值
+//    float m[KMEANS_K][3] = {{85,0,0},{170,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
+//    float maxtimes = 2;
+//    for (int time = 0;time<maxtimes;time++)
+//    {
+//        for (int i = 0;i<KMEANS_K;i++)
+//        {
+//            m[i][1] = 0;
+//        }
+//        for (int i = 0;i<Y_WIDTH_CAMERA;i++)
+//        {
+//            for (int j = 0;j<X_WIDTH_CAMERA;j++)
+//            {
+//                float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
+//                int min_distance_class = 0;
+//                for (int k=1;k<KMEANS_K;k++)
+//                {
+//                    if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
+//                    {
+//                        min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
+//                        min_distance_class = k;
+//                    }
+//                }
+//                m[min_distance_class][1] = m[min_distance_class][1]+1;
+//                m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
+//            }
+//        }
+//        for (int i = 0;i<KMEANS_K;i++)
+//        {
+//            m[i][0] = m[i][2];
+//        }
+//    }
+//    thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));
+//
+//    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
+//    {
+//        for(int i = 0; i < X_WIDTH_CAMERA; i++)
+//        {
+//            mt9v03x_image_cutted_thresholding[j][i] = mt9v03x_image_cutted[j][i]>thresholding_Value;
+//        }
+//    }
+//}
+
 void Get_Thresholding_Value(void)
 {
     float m[KMEANS_K][3] = {{85,0,0},{170,0,0}};//第一列存最终分类结果，第二列存每种分类的样本数，第三列存中间变量
-       float maxtimes = 2;
-       for (int time = 0;time<maxtimes;time++)
+    float maxtimes = 2;
+    for (int time = 0;time<maxtimes;time++)
+    {
+       for (int i = 0;i<KMEANS_K;i++)
        {
-           for (int i = 0;i<KMEANS_K;i++)
+           m[i][1] = 0;
+       }
+       for (int i = 0;i<Y_WIDTH_CAMERA;i++)
+       {
+           for (int j = 0;j<X_WIDTH_CAMERA;j++)
            {
-               m[i][1] = 0;
-           }
-           for (int i = 0;i<Y_WIDTH_CAMERA;i++)
-           {
-               for (int j = 0;j<X_WIDTH_CAMERA;j++)
+               float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
+               int min_distance_class = 0;
+               for (int k=1;k<KMEANS_K;k++)
                {
-                   float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
-                   int min_distance_class = 0;
-                   for (int k=1;k<KMEANS_K;k++)
+                   if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
                    {
-                       if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
-                       {
-                           min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
-                           min_distance_class = k;
-                       }
+                       min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
+                       min_distance_class = k;
                    }
-                   m[min_distance_class][1] = m[min_distance_class][1]+1;
-                   m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
                }
-           }
-           for (int i = 0;i<KMEANS_K;i++)
-           {
-               m[i][0] = m[i][2];
+               m[min_distance_class][1] = m[min_distance_class][1]+1;
+               m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
            }
        }
-       thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));//二值化阈值更新结果
-
-       Start_Timer(3);
+       for (int i = 0;i<KMEANS_K;i++)
+       {
+           m[i][0] = m[i][2];
+       }
+    }
+    thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));//二值化阈值更新结果
 }
 
 void Get_Thresholding_Image(void)
 {
     //Kmeans法更新二值化阈值
-    if (Read_Timer(3) >= 0.5 ) {
+    if (Read_Timer(3) > time_up[3] ) {
         Reset_Timer(3);
         Get_Thresholding_Value();
+        Start_Timer(3);
     }
 
     for(int j = 0; j < Y_WIDTH_CAMERA; j++)
@@ -346,19 +394,21 @@ void Get_Thresholding_Image(void)
     }
 }
 
-void Get_Inverse_Perspective_Image(void)
+void Get_Inverse_Perspective_Table(void)
 {
     int ratio=2;
     width_Inverse_Perspective = (int)round(2 * (X_WIDTH_CAMERA*1.0) / (ratio*Y_WIDTH_CAMERA*1.0) * tan(cameraAlphaUpOrDown) / cos(cameraThetaDown) * ratioOfMaxDisToHG / ratioOfPixelToHG);
     height_Inverse_Perspective = (int)round(ratioOfMaxDisToHG / ratioOfPixelToHG);
-
     for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)
     {
         float y_Processed = (float)(height_Inverse_Perspective - 1 - j_Processed);
         float y = (tan(cameraThetaDown)-1.0/y_Processed/ratioOfPixelToHG)*ratio*(Y_WIDTH_CAMERA*1.0)/2.0/tan(cameraAlphaUpOrDown);
         int j = (int)round(-y + (ratio*Y_WIDTH_CAMERA*1.0-1)/2.0);
+
+
         if (j>=0 && j<ratio*Y_WIDTH_CAMERA*1.0)
         {
+            Inverse_Perspective_Table_Row[j_Processed]=(uint8)(j/ratio);//存表
             for (int i_Processed = 0;i_Processed<width_Inverse_Perspective;i_Processed++)
             {
                 float x_Processed = (float)i_Processed - ((float)width_Inverse_Perspective-1)/2.0;
@@ -366,23 +416,77 @@ void Get_Inverse_Perspective_Image(void)
                 int i = (int)round(x + (X_WIDTH_CAMERA*1.0-1)/2.0);
                 if (i>=0 && i<X_WIDTH_CAMERA*1.0)
                 {
-                    mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = mt9v03x_image_cutted_thresholding[j/ratio][i];
+                    Inverse_Perspective_Table_Col[j_Processed][i_Processed] = (uint8)i;//存表
                 }
                 else
                 {
-                    mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = 255;
+                    Inverse_Perspective_Table_Col[j_Processed][i_Processed] = 255;//非法
                 }
             }
         }
         else
         {
-            for (int i_Processed = 1;i_Processed<width_Inverse_Perspective;i_Processed++)
+            Inverse_Perspective_Table_Row[j_Processed]=255;//非法
+        }
+    }
+}
+
+
+void Get_Inverse_Perspective_Image(void)
+{
+    for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)
+    {
+        for (int i_Processed = 0;i_Processed<width_Inverse_Perspective;i_Processed++)
+        {
+            if (Inverse_Perspective_Table_Row[j_Processed]!=255 && Inverse_Perspective_Table_Col[j_Processed][i_Processed]!=255)
+            {
+                mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = mt9v03x_image_cutted_thresholding[Inverse_Perspective_Table_Row[j_Processed]][Inverse_Perspective_Table_Col[j_Processed][i_Processed]];
+            }
+            else
             {
                 mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = 255;
             }
         }
     }
 }
+//
+//void Get_Inverse_Perspective_Image(void)
+//{
+//    int ratio=2;
+//    width_Inverse_Perspective = (int)round(2 * (X_WIDTH_CAMERA*1.0) / (ratio*Y_WIDTH_CAMERA*1.0) * tan(cameraAlphaUpOrDown) / cos(cameraThetaDown) * ratioOfMaxDisToHG / ratioOfPixelToHG);
+//    height_Inverse_Perspective = (int)round(ratioOfMaxDisToHG / ratioOfPixelToHG);
+//
+//    for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)
+//    {
+//        float y_Processed = (float)(height_Inverse_Perspective - 1 - j_Processed);
+//        float y = (tan(cameraThetaDown)-1.0/y_Processed/ratioOfPixelToHG)*ratio*(Y_WIDTH_CAMERA*1.0)/2.0/tan(cameraAlphaUpOrDown);
+//        int j = (int)round(-y + (ratio*Y_WIDTH_CAMERA*1.0-1)/2.0);
+//        if (j>=0 && j<ratio*Y_WIDTH_CAMERA*1.0)
+//        {
+//            for (int i_Processed = 0;i_Processed<width_Inverse_Perspective;i_Processed++)
+//            {
+//                float x_Processed = (float)i_Processed - ((float)width_Inverse_Perspective-1)/2.0;
+//                float x = x_Processed*(ratio*Y_WIDTH_CAMERA*1.0/2.0/tan(cameraAlphaUpOrDown)*sin(cameraThetaDown)-y*cos(cameraThetaDown))*ratioOfPixelToHG;
+//                int i = (int)round(x + (X_WIDTH_CAMERA*1.0-1)/2.0);
+//                if (i>=0 && i<X_WIDTH_CAMERA*1.0)
+//                {
+//                    mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = mt9v03x_image_cutted_thresholding[j/ratio][i];
+//                }
+//                else
+//                {
+//                    mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = 255;
+//                }
+//            }
+//        }
+//        else
+//        {
+//            for (int i_Processed = 1;i_Processed<width_Inverse_Perspective;i_Processed++)
+//            {
+//                mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = 255;
+//            }
+//        }
+//    }
+//}
 //
 //void Get16(float* arg)
 //{

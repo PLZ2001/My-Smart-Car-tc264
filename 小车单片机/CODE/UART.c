@@ -13,7 +13,7 @@ uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];//½ÓÊÕ»º³åÇø£¬µÈÓÚËùÓĞÃüÁî³¤¶Èµ
 uint8 *dat = data_Buffer;//½ÓÊÕ»º³åÇøµÄÖ¸Õë
 uint8 UART_Flag_RX = FALSE;//ÓÃÓÚÖ¸Ê¾½ÓÊÕ»º³åÇøÊÇ·ñ´ïµ½ÁËËùĞè³¤¶È
 uint8 UART_Flag_TX = FALSE;//ÓÃÓÚÖ¸Ê¾ÊÇ·ñ¿ÉÒÔ·¢ËÍÊı¾İ
-uint8 UART_EN = TRUE;//ÓÃÓÚ±íÊ¾ÉÏÎ»»ú¹¦ÄÜÊÇ·ñ¿ªÆô
+uint8 UART_EN = FALSE;//ÓÃÓÚ±íÊ¾ÉÏÎ»»ú¹¦ÄÜÊÇ·ñ¿ªÆô
 uint8 data_Buffer_Shadow[RECEIVE_LENGTH];//ÓÃÓÚÈ¡³ö½ÓÊÕ»º³åÇø
 uint8 UART_Flag_NO_IMAGE = TRUE;//ÓÃÓÚ±íÊ¾ÊÇ·ñ²»ÓÃ´«Í¼Æ¬µ½ÉÏÎ»»ú
 
@@ -56,7 +56,7 @@ void UART(enum UARTstate state)
             else
             {
                 //·¢ËÍ²Ã¼ôºóµÄ¶şÖµ»¯»­Ãæ£¬Êı¾İÍ·00-FF-01-01£¬Êı¾İ³¤¶ÈX_WIDTH_CAMERA*Y_WIDTH_CAMERA/8×Ö½Ú£¬Êı¾İÎ²00-FF-01-02
-                //UART_Thresholding_Image();
+                UART_Thresholding_Image();
             }
 
             //·¢ËÍ¶şÖµ»¯ãĞÖµ£¬Êı¾İÍ·00-FF-02-01£¬Êı¾İ³¤¶È1×Ö½Ú£¬Êı¾İÎ²00-FF-02-02
