@@ -133,7 +133,7 @@ void Key2_Action(void)
             speed_Target+=0.2;
             if (speed_Target>=3.2)
             {
-                speed_Target=0;
+                speed_Target=-3.0;
             }
             break;
         default:

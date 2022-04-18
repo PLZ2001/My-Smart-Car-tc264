@@ -26,8 +26,8 @@ enum PID_Mode1 PID_mode1 = PID_CLOSED_LOOP1;//PID模式选择
 
 void My_Init_Motor1(void)
 {
-    gtm_pwm_init(ATOM0_CH6_P23_1, 12500, 5000);//设置P23.1输出PWM波，频率12.5kHz，占空比5000/10000；用于直流电机正端
-    gtm_pwm_init(ATOM1_CH5_P32_4, 12500, 5000);//设置P32.4输出PWM波，频率12.5kHz，占空比5000/10000；用于直流电机负端
+    gtm_pwm_init(ATOM0_CH6_P23_1, 12500, 0);//设置P23.1输出PWM波，频率12.5kHz，占空比5000/10000；用于直流电机正端
+    gtm_pwm_init(ATOM1_CH5_P32_4, 12500, 0);//设置P32.4输出PWM波，频率12.5kHz，占空比5000/10000；用于直流电机负端
 }
 
 void My_Init_SpeedSensor1(void)
@@ -175,7 +175,17 @@ void Set_Speed1(void)
     {
         duty = 0;
     }
-    pwm_duty(ATOM0_CH6_P23_1, (uint32)(5000-(speed_Output1>0?1:(-1))*duty));
+    if (speed_Output1>0)
+    {
+        pwm_duty(ATOM0_CH6_P23_1, (uint32)(0));
+        pwm_duty(ATOM1_CH5_P32_4, (uint32)(duty));
+    }
+    else
+    {
+        pwm_duty(ATOM0_CH6_P23_1, (uint32)(duty));
+        pwm_duty(ATOM1_CH5_P32_4, (uint32)(0));
+    }
+
 }
 
 void Cal_Speed_Target1(void)

@@ -10,9 +10,9 @@
 #include "SEARCH.h"
 
 
-float speed_Target;//目标速度
+float speed_Target = 0;//目标速度
 
-uint8 start_Flag = 0;//1表示启动
+uint8 start_Flag = 0;  //1表示启动
 
 
 void Differential_Motor(void)
