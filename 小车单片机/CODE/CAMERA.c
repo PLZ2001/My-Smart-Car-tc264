@@ -228,6 +228,19 @@ void Get_Cutted_Image(void)
         }
         origin_i+=2;
     }
+//    int origin_i=0,origin_j=0;
+//    origin_i = 40;
+//    origin_j = 0;
+//    for(int i = 0; i < Y_WIDTH_CAMERA; i++)
+//    {
+//        origin_i = 40 + i*2;
+//        origin_j = 0;
+//        for(int j = 0; j < X_WIDTH_CAMERA; j++)
+//        {
+//            origin_j = j;
+//            mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][origin_j];
+//        }
+//    }
 }
 
 

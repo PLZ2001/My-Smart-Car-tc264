@@ -4,7 +4,7 @@
 #define STEERING_MAX 40.0
 #define STEERING_MIN -40.0
 #define STEERING_DUTY_MAX 170.0
-#define STEERING_DUTY_CENTER 1530
+#define STEERING_DUTY_CENTER 1550//1530
 
 extern float steering_Target;
 extern float steering_Error;

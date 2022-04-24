@@ -95,7 +95,7 @@ void mt9v03x_init(void)
     boolean interrupt_state = disableInterrupts();
 
 
-    MT9V034_Init(200);//设置帧率
+    MT9V034_Init(100);//设置帧率(曾经200)
 
 	//摄像头采集初始化
 	//初始化 数据引脚

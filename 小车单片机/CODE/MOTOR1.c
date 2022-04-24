@@ -166,7 +166,7 @@ void Cal_Speed_Output1(void)
 void Set_Speed1(void)
 {
     uint32 duty;
-    duty = (speed_Output1>0?speed_Output1:(-speed_Output1))*700 +100;//地面开环用它
+    duty = (speed_Output1>=0?speed_Output1:(-speed_Output1))*700 +100;//地面开环用它
     if (duty>MOTOR_DUTY_MAX1)//保护电机
     {
         duty = MOTOR_DUTY_MAX1;
@@ -175,15 +175,40 @@ void Set_Speed1(void)
     {
         duty = 0;
     }
-    if (speed_Output1>0)
+//    pwm_duty(ATOM0_CH6_P23_1, (uint32)(5000-(speed_Output1>0?1:(-1))*duty));
+
+    static uint8 PWM_SetChannel = 0; //0表示0的端口，1表示duty的端口
+    static uint8 flag_forward = 1;
+    static uint8 flag_backward = 1;
+
+    if (speed_Output1>=0 && flag_forward == 1)//只有改变方向为向前，才会执行
     {
         pwm_duty(ATOM0_CH6_P23_1, (uint32)(0));
+        flag_forward = 0;
+        flag_backward = 1;
+        PWM_SetChannel = 0;
+    }
+    else if (speed_Output1<0 && flag_backward == 1)//只有改变方向为向后，才会执行
+    {
+        pwm_duty(ATOM1_CH5_P32_4, (uint32)(0));
+        flag_forward = 1;
+        flag_backward = 0;
+        PWM_SetChannel = 0;
+    }
+
+    //只有PWM_SetChannel = 1才会执行
+    if (speed_Output1>=0 && PWM_SetChannel == 1)
+    {
         pwm_duty(ATOM1_CH5_P32_4, (uint32)(duty));
     }
-    else
+    else if (speed_Output1<0 && PWM_SetChannel == 1)
     {
         pwm_duty(ATOM0_CH6_P23_1, (uint32)(duty));
-        pwm_duty(ATOM1_CH5_P32_4, (uint32)(0));
+    }
+
+    if (PWM_SetChannel == 0)
+    {
+        PWM_SetChannel = 1;
     }
 
 }
