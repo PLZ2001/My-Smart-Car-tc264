@@ -29,6 +29,7 @@
 #include "TIME.h"
 #include "MOTOR1.h"
 #include "MOTOR2.h"
+#include "MOTOR_CTL.h"
 
 
 //PIT中断函数  示例
@@ -56,6 +57,10 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 	PIT_CLEAR_FLAG(CCU6_1, PIT_CH0);
 
 	//由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
+	if (start_Flag==1)
+    {
+        Differential_Motor();
+    }
 	Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
 	Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
 	Cal_Speed_Output1();

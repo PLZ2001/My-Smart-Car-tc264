@@ -188,10 +188,7 @@ void core1_main(void)
             //由处理后的图像等信息，获取速度、转向角度的目标值
             Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
 
-            if (start_Flag==1)
-            {
-                Differential_Motor();
-            }
+
 
 
             if (UART_EN == TRUE)

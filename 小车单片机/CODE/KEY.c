@@ -129,13 +129,18 @@ void Key2_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
-        case Speed_Page:
-            speed_Target+=0.2;
-            if (speed_Target>=3.2)
+        case Speed_Page:{
+            static int8 direction = 1;
+            speed_Target+=0.2*direction;
+            if (speed_Target>=3)
             {
-                speed_Target=0;
+                direction = -1;
             }
-            break;
+            if (speed_Target<=-3)
+            {
+                direction = 1;
+            }
+            break;}
         default:
             break;
     }
