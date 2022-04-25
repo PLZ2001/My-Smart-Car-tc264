@@ -125,9 +125,14 @@ void mt9v03x_dma(void);
 
 
 /* 摄像头使用SCCB通信 SCCB和IIC基本类似 */
+#define ZJU_PCB
+#ifdef ZJU_PCB
+#define MT9V034_SCL_PIN   P00_1   /*!< SCCB SCL 管脚 */
+#define MT9V034_SDA_PIN   P00_0   /*!< SCCB SDA 管脚 */
+#else
 #define MT9V034_SCL_PIN   P11_2   /*!< SCCB SCL 管脚 */
 #define MT9V034_SDA_PIN   P11_3   /*!< SCCB SDA 管脚 */
-
+#endif
 
 #define MT9V034_SCL_Out   gpio_dir(MT9V034_SCL_PIN, GPO, PULLDOWN);      //配置输出作为SCL_Out
 #define MT9V034_SDA_Out   gpio_dir(MT9V034_SDA_PIN, GPO, PULLDOWN);      //配置作为输出作为SDA_Out

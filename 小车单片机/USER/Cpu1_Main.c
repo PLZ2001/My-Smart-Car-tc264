@@ -93,13 +93,13 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             classification_Result = 8;//8¿¿ÓÒ
-                            time_up[0] = 1.5;
+                            time_up[0] = 1;
                             Start_Timer(0);
                         }
                         break;
                     case 4:
                         classification_Result = 4;//4Èý²íÂ·¿Ú
-                        time_up[0] = 0.5;
+                        time_up[0] = 0.2;
                         Start_Timer(0);
                         break;
                     case 10:

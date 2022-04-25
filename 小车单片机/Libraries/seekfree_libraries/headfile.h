@@ -21,8 +21,6 @@
 #define _headfile_h
 
 
-
-
 #include "SEEKFREE_PRINTF.h"
 
 #include "zf_assert.h"

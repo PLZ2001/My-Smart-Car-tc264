@@ -35,14 +35,29 @@
 
 #include "common.h"
 
+//----宏定义OLED引脚----
 
-//----宏定义OLED引脚----	 
-#define  OLED_SCL_PIN	P20_14
-#define  OLED_SDA_PIN	P20_11
-#define  OLED_RST_PIN	P20_10
-#define  OLED_DC_PIN	P20_12
-#define  OLED_CS_PIN	P20_13
+#define ZJU_PCB //如果用ZJU一队板子，就写这句话；如果是用龙邱板子，就注释掉这句话
 
+#ifdef ZJU_PCB
+
+//浙大一队板子
+#define  OLED_SCL_PIN   P20_14
+#define  OLED_SDA_PIN   P20_13
+#define  OLED_RST_PIN   P20_12
+#define  OLED_DC_PIN    P20_11
+#define  OLED_CS_PIN    P20_10
+
+#else
+
+//龙邱板子
+#define  OLED_SCL_PIN   P20_14
+#define  OLED_SDA_PIN   P20_11
+#define  OLED_RST_PIN   P20_10
+#define  OLED_DC_PIN    P20_12
+#define  OLED_CS_PIN    P20_13
+
+#endif
                             
                             
 //定义显示方向

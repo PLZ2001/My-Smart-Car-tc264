@@ -5,6 +5,7 @@
 #include "OLED.h"
 #include "TIME.h"
 
+//摄像头高度约为19.5cm
 
 //需要串口通信输出去，但不用传过来的变量
 IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像

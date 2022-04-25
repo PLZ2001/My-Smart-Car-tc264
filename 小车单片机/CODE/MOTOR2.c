@@ -4,7 +4,7 @@
 #include "IfxGpt12.h"
 #include "fuzzy_PID.h"//模糊PID算法
 
-
+//2代表左电机
 
 
 //需要串口通信输出去，但不用传过来的变量

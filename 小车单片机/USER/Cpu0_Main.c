@@ -54,7 +54,7 @@ int core0_main(void)
 	My_Init_SpeedSensor1();//我的初始化编码器
 	My_Init_SpeedSensor2();//我的初始化编码器
     My_Init_OLED();//我的初始化OLED
-    //My_Init_Camera();//我的初始化摄像头
+    My_Init_Camera();//我的初始化摄像头
     My_Init_Key();//我的初始化按键
     My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
