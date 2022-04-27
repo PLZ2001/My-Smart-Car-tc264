@@ -136,6 +136,13 @@ void Cal_Steering_Target(void)
             steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
+//        case 0:
+//        case 1:
+//        case 9:
+//        {
+//            steering_Target = (Steering_PID.KP*1.3f * Steering_PID.current_error) +Steering_PID.KD*1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+//            break;
+//        }
 
         default:
         {

@@ -139,7 +139,7 @@ void core1_main(void)
                 if (flag_For_Right_Circle == 1)
                 {
                     //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
-                    if (Check_Left_Straight() == 0)
+                    if (Check_Left_Straight(2,0) == 0)
                     {
                         classification_Result = 8;
                     }
@@ -173,6 +173,17 @@ void core1_main(void)
                             if(!Check_ThreeRoads())
                             {
                                 classification_Result = 9;//9未知
+                            }
+                        }
+                        if (classification_Result == 9)//9未知
+                        {
+                            if(Check_Left_Straight(2,-2))
+                            {
+                                classification_Result = 7;//7靠左
+                            }
+                            if(Check_Right_Straight(2,-2))
+                            {
+                                classification_Result = 8;//8靠右
                             }
                         }
 

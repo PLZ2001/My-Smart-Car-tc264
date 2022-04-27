@@ -832,8 +832,8 @@ uint8 Classification_Classic(void)
     {
         return 5;
     }
-    //else if (Conv_Score_max[2] >= 9 && Conv_Score_max[3] >= 9 && Conv_Score_max[4] >= 9)
-    else if (Conv_Score_max[2] >= 9)
+    else if (Conv_Score_max[2] >= 9 && Conv_Score_max[3] >= 9 && Conv_Score_max[4] >= 9)
+    //else if (Conv_Score_max[2] >= 9)
     {
         return 3;
     }
