@@ -3,6 +3,7 @@
 #include "OLED.h"//ÏÔÊ¾ÆÁÏà¹Ø
 #include "UART.h"
 #include "MOTOR_CTL.h"
+#include "SEARCH.h"
 
 
 
@@ -111,6 +112,14 @@ void Key1_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
+        case TimeSet_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 4)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case Speed_Page:
             start_Flag = start_Flag?0:1;
             break;
@@ -129,6 +138,25 @@ void Key2_Action(void)
             break;
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
+            break;
+        case TimeSet_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    threeRoads_RightTime += 0.01f*up_Down;
+                    break;
+                case 1:
+                    rightCircle_RightTime += 0.1f*up_Down;
+                    break;
+                case 2:
+                    rightCircle_LeftTime += 0.1f*up_Down;
+                    break;
+                case 3:
+                    rightCircle_BannedTime += 0.5f*up_Down;
+                    break;
+                default:
+                    break;
+            }
             break;
         case Speed_Page:{
             static int8 direction = 1;

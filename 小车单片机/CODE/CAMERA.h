@@ -4,8 +4,13 @@
 #define Y_WIDTH_CAMERA 40
 #define X_WIDTH_CAMERA 187
 
+#ifndef width_Inverse_Perspective_Max
 #define width_Inverse_Perspective_Max 128
+#endif
+
+#ifndef height_Inverse_Perspective_Max
 #define height_Inverse_Perspective_Max 128
+#endif
 
 #define CLASS_NUM 6
 
@@ -49,6 +54,7 @@ void Set_RatioOfMaxDisToHG(uint8 val);
 void Set_RatioOfPixelToHG(uint8 val);
 //uint8 Classification_16(void);
 uint8 Classification_25(void);
+uint8 Classification_Classic(void);
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 
 

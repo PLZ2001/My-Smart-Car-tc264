@@ -1,6 +1,13 @@
 #ifndef __SEARCH_h__
 #define __SEARCH_h__
 
+#ifndef width_Inverse_Perspective_Max
+#define width_Inverse_Perspective_Max 128
+#endif
+
+#ifndef height_Inverse_Perspective_Max
+#define height_Inverse_Perspective_Max 128
+#endif
 
 #define Camera_Height 0.2
 
@@ -13,6 +20,11 @@ extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中
 extern int Col_Left[height_Inverse_Perspective_Max];
 extern int Col_Right[height_Inverse_Perspective_Max];
 extern int search_Lines;
+
+extern float threeRoads_RightTime;
+extern float rightCircle_RightTime;
+extern float rightCircle_LeftTime;
+extern float rightCircle_BannedTime;
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);

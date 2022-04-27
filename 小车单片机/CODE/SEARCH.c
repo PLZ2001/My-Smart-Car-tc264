@@ -20,6 +20,10 @@ int Col_Right[height_Inverse_Perspective_Max] = {-2};//°´´ÓÏÂÍùÉÏµÄË³Ğò´æ´¢ÓÒÏßµ
 int search_Lines_Straight;//Ö¸Ö±Ïß¼ì²âµÄÓĞĞ§É¨ÃèĞĞÊı
 int search_Lines;//Ö¸Col_CenterµÄÓĞĞ§É¨ÃèĞĞÊı£¬ÓÃÓÚ±éÀúCol_Center
 
+float threeRoads_RightTime = 0.15f;
+float rightCircle_RightTime = 0.5f;
+float rightCircle_LeftTime = 0.5f;
+float rightCircle_BannedTime = 3.0f;
 
 void UART_ColCenter(void)
 {

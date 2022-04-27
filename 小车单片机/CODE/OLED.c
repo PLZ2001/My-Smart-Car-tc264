@@ -8,11 +8,15 @@
 #include "MOTOR1.h"
 #include "MOTOR2.h"
 #include "MOTOR_CTL.h"
+#include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = Speed_Page;
+enum OLEDPage OLED_Page = TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
+
+uint8 pointer_temp = 0;//用来作为指针使用
+int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
 
 void My_Init_OLED(void)
 {
@@ -33,10 +37,48 @@ void Update_OLED_per10ms(void)
         switch(OLED_Page)
         {
            case Camera_Page:
-               oled_dis_bmp(64, 128, *mt9v03x_image_cutted, thresholding_Value);
+               oled_dis_bmp(height_Inverse_Perspective, width_Inverse_Perspective, *mt9v03x_image_cutted_thresholding_inversePerspective, 0);
                break;
            case UART_Debug_Page:
                //显示内容由Cpu0_Main.c的串口通信部分完成
+               break;
+           case TimeSet_Page:
+               if (pointer_temp == 0)
+               {
+                   OLED_PRINTF(0,0,"->3Road_R:%01.02f s   ",threeRoads_RightTime);
+                   OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
+                   OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
+                   OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+               }
+               else if (pointer_temp == 1)
+               {
+                   OLED_PRINTF(0,0,"3Road_R:%01.02f s   ",threeRoads_RightTime);
+                   OLED_PRINTF(0,1,"->RCircle_R:%01.02f s   ",rightCircle_RightTime);
+                   OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
+                   OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+               }
+               else if (pointer_temp == 2)
+               {
+                   OLED_PRINTF(0,0,"3Road_R:%01.02f s   ",threeRoads_RightTime);
+                   OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
+                   OLED_PRINTF(0,2,"->RCircle_L:%01.02f s   ",rightCircle_LeftTime);
+                   OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+               }
+               else if (pointer_temp == 3)
+               {
+                   OLED_PRINTF(0,0,"3Road_R:%01.02f s   ",threeRoads_RightTime);
+                   OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
+                   OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
+                   OLED_PRINTF(0,3,"->RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+               }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,4,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,4,"SUB");
+               }
                break;
            case Speed_Page:
                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);

@@ -36,7 +36,6 @@
 //将本语句与#pragma section all restore语句之间的全局变量都放在CPU1的RAM中
 
 
-
 void core1_main(void)
 {
 	disableInterrupts();
@@ -93,13 +92,13 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             classification_Result = 8;//8靠右
-                            time_up[0] = 1;
+                            time_up[0] = rightCircle_RightTime;
                             Start_Timer(0);
                         }
                         break;
                     case 4:
                         classification_Result = 4;//4三岔路口
-                        time_up[0] = 0.2;
+                        time_up[0] = threeRoads_RightTime;
                         Start_Timer(0);
                         break;
                     case 10:
@@ -107,9 +106,9 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 2;
                             classification_Result = 7;//7靠左
-                            time_up[0] = 0.5;
+                            time_up[0] = rightCircle_LeftTime;
                             Start_Timer(0);
-                            time_up[4] = 5.0f;
+                            time_up[4] = rightCircle_BannedTime;
                             Start_Timer(4);
                         }
                         break;
@@ -161,7 +160,7 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification_25();
+                        classification_Result = Classification_25();//多分类算法Classification_25()，传统特征点法Classification_Classic()
                         if (classification_Result ==3)//3右环岛
                         {
                             if(flag_For_Right_Circle!=0 || !Check_RightCircle())

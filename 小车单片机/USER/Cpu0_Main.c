@@ -19,8 +19,8 @@
 
 
 #include "headfile.h"
-#include "KEY.h"//按键扫描相关
 #include "CAMERA.h"//摄像头、图像处理相关
+#include "KEY.h"//按键扫描相关
 #include "OLED.h"//显示屏相关
 #include "STEERING.h"//舵机相关
 #include "UART.h"//串口通信相关

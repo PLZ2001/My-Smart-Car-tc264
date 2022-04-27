@@ -678,6 +678,176 @@ uint8 Classification_25(void)
     }
 }
 
+uint8 Classification_Classic(void)
+{
+    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+    int Conv_Core[7][3][3] = {{{1,1,-1},{1,1,-1},{-1,-1,-1}},
+                              {{-1,1,1},{-1,1,1},{-1,-1,-1}},
+                              {{1,1,1},{1,1,-1},{1,-1,-1}},
+                              {{1,-1,-1},{1,-1,-1},{1,-1,-1}},
+                              {{-1,-1,1},{-1,-1,1},{-1,-1,1}},
+                              {{1,1,1},{1,1,-1},{1,-1,-1}},
+                              {{1,1,1},{-1,1,1},{-1,-1,1}}};
+    //十字路口
+    //Conv_Core(0).core = [1 1 -1
+//                         1 1 -1
+//                        -1 -1 -1];
+    //Conv_Core(1).core = [-1 1 1
+//                         -1 1 1
+//                        -1 -1 -1];
+    //右圆环
+    //Conv_Core(2).core = [1 1 1
+//                         1 1 -1
+//                         1 -1 -1];
+    //Conv_Core(3).core = [1 -1 -1
+//                         1 -1 -1
+//                         1 -1 -1];
+    //Conv_Core(4).core = [-1 -1 1
+//                         -1 -1 1
+//                         -1 -1 1];
+    //三岔路口
+    //Conv_Core(5).core = [1 1 1
+//                         1 1 -1
+//                         1 -1 -1];
+    //Conv_Core(6).core = [1 1 1
+//                        -1 1 1
+//                        -1 -1 1];
+    int Conv_Score_max[7] = {-9,-9,-9,-9,-9,-9,-9};
+    int Conv_Score_max_i[7] = {0,0,0,0,0,0,0};
+    int Conv_Score_max_j[7] = {0,0,0,0,0,0,0};
+    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+    {
+        for (int j=1;j<width_Inverse_Perspective-1;j++)
+        {
+            // 对于每个中心点(i,j)，计算7类卷积值，分别取最大值保留
+            int Conv_Score[7] = {0,0,0,0,0,0,0};//存储7类卷积结果
+            int flag = 1;//卷积合不合法
+            for (int k=0;k<7;k++)
+            {
+                for (int ii=0;ii<3;ii++)
+                {
+                    for (int jj=0;jj<3;jj++)
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+                        {
+                            flag = 0;
+                            break;
+                        }
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+                        {
+                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+                        }
+                        else
+                        {
+                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+                        }
+                    }
+                    if (flag == 0)
+                    {
+                        break;
+                    }
+                }
+                if (flag == 0)
+                {
+                    break;
+                }
+            }
+            if (flag == 0)
+            {
+                continue;
+            }
+            //十字路口
+            //Conv_Core(0).core = [1 1 -1
+        //                         1 1 -1
+        //                        -1 -1 -1];
+            //Conv_Core(1).core = [-1 1 1
+        //                         -1 1 1
+        //                        -1 -1 -1];
+            //右圆环
+            //Conv_Core(2).core = [1 1 1
+        //                         1 1 -1
+        //                         1 -1 -1];
+            //Conv_Core(3).core = [1 -1 -1
+        //                         1 -1 -1
+        //                         1 -1 -1];
+            //Conv_Core(4).core = [-1 -1 1
+        //                         -1 -1 1
+        //                         -1 -1 1];
+            //三岔路口
+            //Conv_Core(5).core = [1 1 1
+        //                         1 1 -1
+        //                         1 -1 -1];
+            //Conv_Core(6).core = [1 1 1
+        //                        -1 1 1
+        //                        -1 -1 1];
+            //十字路口
+            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.6)
+            {
+                Conv_Score_max[0] = Conv_Score[0];
+                Conv_Score_max_i[0] = i;
+                Conv_Score_max_j[0] = j;
+            }
+            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.4)
+            {
+                Conv_Score_max[1] = Conv_Score[1];
+                Conv_Score_max_i[1] = i;
+                Conv_Score_max_j[1] = j;
+            }
+            //右圆环
+            if (Conv_Score[2] > Conv_Score_max[2] && i<height_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[2] = Conv_Score[2];
+                Conv_Score_max_i[2] = i;
+                Conv_Score_max_j[2] = j;
+            }
+            if (Conv_Score[3] > Conv_Score_max[3] && j<width_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[3] = Conv_Score[3];
+                Conv_Score_max_i[3] = i;
+                Conv_Score_max_j[3] = j;
+            }
+            if (Conv_Score[4] > Conv_Score_max[4] && j>width_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[4] = Conv_Score[4];
+                Conv_Score_max_i[4] = i;
+                Conv_Score_max_j[4] = j;
+            }
+            //三岔路口
+            if (Conv_Score[5] > Conv_Score_max[5] && j>width_Inverse_Perspective*0.6)
+            {
+                Conv_Score_max[5] = Conv_Score[5];
+                Conv_Score_max_i[5] = i;
+                Conv_Score_max_j[5] = j;
+            }
+            if (Conv_Score[6] > Conv_Score_max[6] && j<width_Inverse_Perspective*0.4)
+            {
+                Conv_Score_max[6] = Conv_Score[6];
+                Conv_Score_max_i[6] = i;
+                Conv_Score_max_j[6] = j;
+            }
+        }
+    }
+    //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+    if (Conv_Score_max[0] >= 9 && Conv_Score_max[1] >= 9)
+    {
+        return 5;
+    }
+    //else if (Conv_Score_max[2] >= 9 && Conv_Score_max[3] >= 9 && Conv_Score_max[4] >= 9)
+    else if (Conv_Score_max[2] >= 9)
+    {
+        return 3;
+    }
+    else if (Conv_Score_max[5] >= 9 && Conv_Score_max[6] >= 9)
+    {
+        return 4;
+    }
+    else
+    {
+        return 9;//9未知
+    }
+
+}
+
 
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
 {
