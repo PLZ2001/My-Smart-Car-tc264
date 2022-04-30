@@ -82,12 +82,22 @@ void core1_main(void)
 
 
             static uint8 flag_For_Right_Circle = 0;
+            static uint8 flag_For_Left_Circle = 0;
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
                 switch(classification_Result)
                 {
-                    case 3:
+                    case 2://左环岛
+                        if (flag_For_Left_Circle == 0)//说明还没进左环岛
+                        {
+                            flag_For_Left_Circle = 1;
+                            classification_Result = 7;//7靠左
+                            time_up[0] = rightCircle_RightTime;
+                            Start_Timer(0);
+                        }
+                        break;
+                    case 3://右环岛
                         if (flag_For_Right_Circle == 0)//说明还没进右环岛
                         {
                             flag_For_Right_Circle = 1;
@@ -101,7 +111,7 @@ void core1_main(void)
                         time_up[0] = threeRoads_RightTime;
                         Start_Timer(0);
                         break;
-                    case 10:
+                    case 10://左直线
                         if (flag_For_Right_Circle == 1) //说明准备出右环岛
                         {
                             flag_For_Right_Circle = 2;
@@ -110,6 +120,17 @@ void core1_main(void)
                             Start_Timer(0);
                             time_up[4] = rightCircle_BannedTime;
                             Start_Timer(4);
+                        }
+                        break;
+                    case 11://右直线
+                        if (flag_For_Left_Circle == 1) //说明准备出左环岛
+                        {
+                            flag_For_Left_Circle = 2;
+                            classification_Result = 8;//8靠右
+                            time_up[0] = rightCircle_LeftTime;
+                            Start_Timer(0);
+                            time_up[5] = rightCircle_BannedTime;
+                            Start_Timer(5);
                         }
                         break;
                     default:
@@ -132,13 +153,19 @@ void core1_main(void)
                     Reset_Timer(4);
                 }
             }
+            if (Read_Timer_Status(5) == RUNNING)
+            {
+                if (Read_Timer(5)>time_up[5])
+                {
+                    Reset_Timer(5);
+                }
+            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
-                    //只有当再次识别到右圆环时，才可以flag_For_Right_Circle=0，从而进行正常的识别，否则一直8靠右行驶
                     if (Check_Left_Straight(2,0) == 0)
                     {
                         classification_Result = 8;
@@ -148,11 +175,27 @@ void core1_main(void)
                         classification_Result = 10;//10左直线
                     }
                 }
+                //小车处于左圆环状态
+                else if (flag_For_Left_Circle == 1)
+                {
+                    if (Check_Right_Straight(0,-2) == 0)
+                    {
+                        classification_Result = 7;
+                    }
+                    else
+                    {
+                        classification_Result = 11;//11右直线
+                    }
+                }
                 else
                 {//正常识别
                     if (flag_For_Right_Circle == 2 && Read_Timer_Status(4) == PAUSED)
                     {
                         flag_For_Right_Circle = 0;
+                    }
+                    if (flag_For_Left_Circle == 2 && Read_Timer_Status(5) == PAUSED)
+                    {
+                        flag_For_Left_Circle = 0;
                     }
                     if (Check_Straight())
                     {
@@ -164,6 +207,13 @@ void core1_main(void)
                         if (classification_Result ==3)//3右环岛
                         {
                             if(flag_For_Right_Circle!=0 || !Check_RightCircle())
+                            {
+                                classification_Result = 9;//9未知
+                            }
+                        }
+                        if (classification_Result ==2)//2左环岛
+                        {
+                            if(flag_For_Left_Circle!=0 || !Check_LeftCircle())
                             {
                                 classification_Result = 9;//9未知
                             }

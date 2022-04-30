@@ -335,7 +335,7 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     }
     for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
     {
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
         {
             start_Row = start_Row - 1;
             continue;
@@ -388,7 +388,7 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     {
         if (Col_Right[i] !=-2)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 0)
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
                 d_Col_Right_Num = search_Lines-i-1;
                 break;
@@ -947,7 +947,79 @@ uint8 Check_RightCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[0] = Conv_Score[0];
+                Conv_Score_max_i[0] = i;
+                Conv_Score_max_j[0] = j;
+            }
+        }
+    }
+
+    if (Conv_Score_max[0] >= 9)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+uint8 Check_LeftCircle(void)
+{
+    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+    int Conv_Core[1][3][3] = {{{1,1,1},{-1,1,1},{-1,-1,1}}};
+    //Conv_Core(1).core = [1 1 1
+//                        -1 1 1
+//                       -1 -1 1];
+
+
+    int Conv_Score_max[1] = {-9};
+    int Conv_Score_max_i[1] = {0};
+    int Conv_Score_max_j[1] = {0};
+    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+    {
+        for (int j=1;j<width_Inverse_Perspective-1;j++)
+        {
+            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
+            int Conv_Score[1] = {0};//存储2类卷积结果
+            int flag = 1;//卷积合不合法
+            for (int k=0;k<1;k++)
+            {
+                for (int ii=0;ii<3;ii++)
+                {
+                    for (int jj=0;jj<3;jj++)
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+                        {
+                            flag = 0;
+                            break;
+                        }
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+                        {
+                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+                        }
+                        else
+                        {
+                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+                        }
+                    }
+                    if (flag == 0)
+                    {
+                        break;
+                    }
+                }
+                if (flag == 0)
+                {
+                    break;
+                }
+            }
+            if (flag == 0)
+            {
+                continue;
+            }
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
