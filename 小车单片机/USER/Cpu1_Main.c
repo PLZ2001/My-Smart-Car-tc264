@@ -220,7 +220,7 @@ void core1_main(void)
                         }
                         if (classification_Result ==4)//4三岔路口
                         {
-                            if(!Check_ThreeRoads())
+                            if(!Check_ThreeRoads_New())
                             {
                                 classification_Result = 9;//9未知
                             }

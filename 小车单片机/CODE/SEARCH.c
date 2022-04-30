@@ -1091,3 +1091,40 @@ uint8 Check_ThreeRoads(void)
     }
     return result;
 }
+
+uint8 Check_ThreeRoads_New(void)
+{
+    uint8 water_i = 0, water_j = 0.5*width_Inverse_Perspective;
+    int8 direction = 1;
+    int8 cnt = 0;
+    int8 last_angle = 1;
+    while(1)
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0)
+        {
+            water_i++;
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
+        {
+            water_j+=direction;
+            if (cnt==3)
+            {
+                last_angle++;
+                if (last_angle>4)
+                {
+                    return 0;
+                }
+            }
+        }
+        else
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
+        }
+    }
+    return 1;
+}
