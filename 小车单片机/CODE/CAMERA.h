@@ -36,7 +36,12 @@ extern float ratioOfMaxDisToHG;//仅影响显示距离
 extern float ratioOfPixelToHG;//仅影响分辨率
 extern uint8 classification_Result;
 extern uint8 Thresholding_Value_Init_Flag;//表示是否初始化了二值化阈值
-
+extern uint8 fuzzy_Image_25[5][5];
+extern uint8 fuzzy_Image_36[6][6];
+extern float fuzzy_thresholdingValue_25;
+extern float fuzzy_thresholdingValue_36;
+extern float score[4];
+extern float max_Score;
 
 
 void My_Init_Camera(void);
@@ -55,6 +60,7 @@ void Set_RatioOfPixelToHG(uint8 val);
 //uint8 Classification_16(void);
 uint8 Classification_25(void);
 uint8 Classification_Classic(void);
+uint8 Classification_Classic25(void);
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 
 

@@ -160,7 +160,7 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification_25();//多分类算法Classification_25()，传统特征点法Classification_Classic()
+                        classification_Result = Classification_Classic36();//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
                         if (classification_Result ==3)//3右环岛
                         {
                             if(flag_For_Right_Circle!=0 || !Check_RightCircle())

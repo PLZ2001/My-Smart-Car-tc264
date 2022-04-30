@@ -62,6 +62,66 @@ char *class_Name_Group[CLASS_NUM+5] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "
 
 float arg_Classification_16[16];
 float arg_Classification_25[25];
+float arg_Classification_36[36];
+uint8 arg_Classification_36_Table[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+
+uint8 fuzzy_Image_25[5][5];
+uint8 fuzzy_Image_36[6][6];
+float fuzzy_thresholdingValue_25 = 0.60;
+float fuzzy_thresholdingValue_36 = 0.40;
+//1表示：如果这里有道路，就会加分
+//-1表示：如果这里有道路，就会扣分
+//0表示：不用管
+float  ModelTable_25[4][5][5]={{{ 1, 0, 0, 0, 1},
+                                { 1, 1, 0, 1, 1},
+                                { 0, 1, 1, 1, 0},
+                                { 0, 1, 1, 1, 0},
+                                { 0, 0, 0, 0, 0}}, {{ 0, 0, 1, 0, 0},
+                                                    { 0, 0, 1, 0, 0},
+                                                    { 0, 1, 1, 1, 0},
+                                                    { 0, 1, 1, 1, 0},
+                                                    { 0, 0, 0, 0, 0}}, {{ 0, 0, 1, 0, 0},
+                                                                        { 0, 0, 1, 0, 0},
+                                                                        { 0,-1, 1, 1, 0},
+                                                                        { 0,-1, 1, 1, 0},
+                                                                        { 0, 0, 0, 0, 0}}, {{ 0, 0, 1, 0, 0},
+                                                                                            { 0, 0, 1, 0, 0},
+                                                                                            { 0, 1, 1,-1, 0},
+                                                                                            { 0, 1, 1,-1, 0},
+                                                                                            { 0, 0, 0, 0, 0}}};// 三岔路口、十字路口、右环岛、左环岛
+//表示标准的道路得分情况
+uint8 ModelTable_25_Score[4] = {9,8,6,6};//{11,9,9,9};
+
+//1表示：如果这里有道路，就会加分
+//-1表示：如果这里有道路，就会扣分
+//0表示：不用管
+float ModelTable_36[4][6][6]={{{ 1, 0,-1,-1, 0, 1},
+                               { 1, 1,-1,-1, 1, 1},
+                               { 0, 1,-1,-1, 1, 0},
+                               { 0, 1, 1, 1, 1, 0},
+                               { 0, 0, 1, 1, 0, 0},
+                               { 0, 0, 0, 0, 0, 0}}, {{ 0,-1, 1, 1,-1, 0},
+                                                      { 0,-1, 1, 1,-1, 0},
+                                                      { 0, 1, 1, 1, 1, 0},
+                                                      { 0, 1, 1, 1, 1, 0},
+                                                      { 0, 0, 1, 1, 0, 0},
+                                                      { 0, 0, 0, 0, 0, 0}}, {{-1,-1, 1, 1,-1,-1},
+                                                                             {-1,-1, 1, 1,-1,-1},
+                                                                             { 0,-1, 1, 1, 1, 0},
+                                                                             { 0,-1, 1, 1, 1, 0},
+                                                                             { 0, 0, 1, 1, 0, 0},
+                                                                             { 0, 0, 0, 0, 0, 0}}, {{-1,-1, 1, 1,-1,-1},
+                                                                                                    {-1,-1, 1, 1,-1,-1},
+                                                                                                    { 0, 1, 1, 1,-1, 0},
+                                                                                                    { 0, 1, 1, 1,-1, 0},
+                                                                                                    { 0, 0, 1, 1, 0, 0},
+                                                                                                    { 0, 0, 0, 0, 0, 0}}};// 三岔路口、十字路口、右环岛、左环岛
+//表示标准的道路得分情况
+uint8 ModelTable_36_Score[4] = {12,14,12,12};
+float ModelTable_36_Score_Required[4] = {0.8,0.8,0.8,0.8};
+
+float score[4] = {0};
+float max_Score = -72;
 
 uint8 Inverse_Perspective_Table_Row[height_Inverse_Perspective_Max];
 uint8 Inverse_Perspective_Table_Col[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
@@ -626,6 +686,77 @@ void Get25(float* arg)
     }
 }
 
+void New_Get25(float* arg)
+{
+    float col_edge,row_edge;
+    col_edge = width_Inverse_Perspective/5.0f;
+    row_edge = height_Inverse_Perspective/5.0f;
+
+    int white_cnt[25] = {0};
+    int black_cnt[25] = {0};
+    for (int i = 0;i<height_Inverse_Perspective;i++)
+    {
+        for (int j = 0;j<width_Inverse_Perspective;j++)
+        {
+            white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
+            black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
+        }
+    }
+    for (int i = 0;i<25;i++)
+    {
+        if ((white_cnt[i]+black_cnt[i]) == 0)
+        {
+           arg[i] = 0;
+        }
+        else
+        {
+           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+        }
+    }
+}
+
+void New_Get36(float* arg)
+{
+    float col_edge,row_edge;
+    col_edge = width_Inverse_Perspective/6.0f;
+    row_edge = height_Inverse_Perspective/6.0f;
+
+    static uint8 flag = 1;
+    if (flag == 1)
+    {
+        for (int i = 0;i<height_Inverse_Perspective;i++)
+        {
+            for (int j = 0;j<width_Inverse_Perspective;j++)
+            {
+                arg_Classification_36_Table[i][j] = (uint8)(6*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1);
+            }
+        }
+        flag = 0;
+    }
+
+    int white_cnt[36] = {0};
+    int black_cnt[36] = {0};
+    for (int i = 0;i<height_Inverse_Perspective;i++)
+    {
+        for (int j = 0;j<width_Inverse_Perspective;j++)
+        {
+            white_cnt[arg_Classification_36_Table[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[arg_Classification_36_Table[i][j]];
+            black_cnt[arg_Classification_36_Table[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[arg_Classification_36_Table[i][j]];
+        }
+    }
+    for (int i = 0;i<36;i++)
+    {
+        if ((white_cnt[i]+black_cnt[i]) == 0)
+        {
+           arg[i] = 0;
+        }
+        else
+        {
+           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+        }
+    }
+}
+
 uint8 Classification_25(void)
 {
     Get25(arg_Classification_25);
@@ -848,6 +979,110 @@ uint8 Classification_Classic(void)
 
 }
 
+uint8 Classification_Classic25(void)
+{
+    New_Get25(arg_Classification_25);
+    float max_Score = -25;
+    float score = 0;
+    uint8 max_Socre_Result = 9;//9未知
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            fuzzy_Image_25[i][j] = arg_Classification_25[i*5+j]>fuzzy_thresholdingValue_25;
+        }
+    }
+    for (int k = 0; k < 4; k++)
+    {
+        score = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5 ; j++)
+            {
+                score = score + arg_Classification_25[i*5+j]*ModelTable_25[k][i][j];
+            }
+        }
+        if (score > max_Score)
+        {
+            max_Score = score;
+            max_Socre_Result = k;
+        }
+    }
+
+    if (max_Socre_Result!=9 && max_Score>=ModelTable_25_Score[max_Socre_Result]*(0.1+fuzzy_thresholdingValue_25))
+    {
+        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+        switch(max_Socre_Result)
+        {
+            case 0:
+                return 4;
+            case 1:
+                return 5;
+            case 2:
+                return 3;
+            case 3:
+                return 2;
+            default:
+                return 9;//未知
+        }
+    }
+    else
+    {
+        return 9;//未知
+    }
+}
+
+uint8 Classification_Classic36(void)
+{
+    New_Get36(arg_Classification_36);
+    uint8 max_Socre_Result = 9;//9未知
+    max_Score = -72;
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            fuzzy_Image_36[i][j] = arg_Classification_36[i*6+j]>fuzzy_thresholdingValue_36;
+        }
+    }
+    for (int k = 0; k < 4; k++)
+    {
+        score[k] = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                score[k] = score[k] + arg_Classification_36[i*6+j]*ModelTable_36[k][i][j];
+            }
+        }
+        if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
+        {
+            max_Score = (score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36);
+            max_Socre_Result = k;
+        }
+    }
+
+    if (max_Socre_Result!=9 && max_Score>ModelTable_36_Score_Required[max_Socre_Result])
+    {
+        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+        switch(max_Socre_Result)
+        {
+            case 0:
+                return 4;
+            case 1:
+                return 5;
+            case 2:
+                return 3;
+            case 3:
+                return 2;
+            default:
+                return 9;//未知
+        }
+    }
+    else
+    {
+        return 9;//未知
+    }
+}
 
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
 {

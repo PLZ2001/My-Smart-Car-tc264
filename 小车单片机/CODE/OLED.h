@@ -8,8 +8,8 @@
 
 enum OLEDPage
 {
-    Camera_Page,
     UART_Debug_Page,
+    Camera_Page,
     TimeSet_Page,
     Speed_Page,
     UART_Setting_Page,

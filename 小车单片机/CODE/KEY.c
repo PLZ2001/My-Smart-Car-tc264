@@ -4,6 +4,7 @@
 #include "UART.h"
 #include "MOTOR_CTL.h"
 #include "SEARCH.h"
+#include "CAMERA.h"
 
 
 
@@ -133,6 +134,18 @@ void Key2_Action(void)
 {
     switch (OLED_Page)
     {
+        case Camera_Page:{
+            static int8 direction = 1;
+            fuzzy_thresholdingValue_36+=0.05*direction;
+            if (fuzzy_thresholdingValue_36>=1)
+            {
+                direction = -1;
+            }
+            if (fuzzy_thresholdingValue_36<=0)
+            {
+                direction = 1;
+            }
+            break;}
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;
