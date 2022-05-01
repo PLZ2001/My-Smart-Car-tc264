@@ -7,6 +7,7 @@
 #include "SEARCH.h"
 #include "MOTOR1.h"
 #include "MOTOR2.h"
+#include "MOTOR_CTL.h"
 
 
 uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];//接收缓冲区，等于所有命令长度的2倍时最好
@@ -206,6 +207,64 @@ void UART(enum UARTstate state)
                         Set_PID2(data_Buffer_Shadow[i+4], data_Buffer_Shadow[i+5], data_Buffer_Shadow[i+6], data_Buffer_Shadow[i+7], data_Buffer_Shadow[i+8], data_Buffer_Shadow[i+9]);
                     }
                 }
+                //接收是否紧急停车命令，数据头00-FF-10-01，数据长度1字节，数据尾00-FF-10-02
+                if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x10 && data_Buffer_Shadow[i+3] == 0x01)
+                {
+                    if (i<RECEIVE_LENGTH-8 && data_Buffer_Shadow[i+5] == 0x00 && data_Buffer_Shadow[i+6] == 0xFF && data_Buffer_Shadow[i+7] == 0x10 && data_Buffer_Shadow[i+8] == 0x02)
+                    {
+                        emergency_Stop = data_Buffer_Shadow[i+4];
+                    }
+                }
+
+                //...
+            }//逐位查找数据头
+
+            UART_Flag_RX = FALSE;
+        }
+    }
+    else if (state == Emergency_Read)
+    {
+        //通过串口接收数据，执行相应动作
+        if (UART_Flag_RX == TRUE)//缓冲区接收数据满足了所需长度
+        {
+            uint16 i = 0;
+            for (i=0;i<EMERGENCY_RECEIVE_LENGTH;i++)
+            {
+                data_Buffer_Shadow[i] = data_Buffer[i];
+            }//把缓冲区内容复制过来
+            if (OLED_Page == UART_Debug_Page)
+            {
+                oled_uint16(0, 0, data_Buffer_Shadow[0]);
+                oled_uint16(36, 0, data_Buffer_Shadow[1]);
+                oled_uint16(36*2, 0, data_Buffer_Shadow[2]);
+                oled_uint16(0, 1, data_Buffer_Shadow[3]);
+                oled_uint16(36, 1, data_Buffer_Shadow[4]);
+                oled_uint16(36*2, 1, data_Buffer_Shadow[5]);
+                oled_uint16(0, 2, data_Buffer_Shadow[6]);
+                oled_uint16(36, 2, data_Buffer_Shadow[7]);
+                oled_uint16(36*2, 2, data_Buffer_Shadow[8]);
+                oled_uint16(0, 3, data_Buffer_Shadow[9]);
+                oled_uint16(36, 3, data_Buffer_Shadow[10]);
+                oled_uint16(36*2, 3, data_Buffer_Shadow[11]);
+                oled_uint16(0, 4, data_Buffer_Shadow[12]);
+                oled_uint16(36, 4, data_Buffer_Shadow[13]);
+                oled_uint16(36*2, 4, data_Buffer_Shadow[14]);
+                oled_uint16(0, 5, data_Buffer_Shadow[15]);
+                oled_uint16(36, 5, data_Buffer_Shadow[16]);
+                oled_uint16(36*2, 5, data_Buffer_Shadow[17]);
+            }
+            for (i=0;i<EMERGENCY_RECEIVE_LENGTH-4;i++)
+            {
+                //接收是否紧急停车命令，数据头00-FF-10-01，数据长度1字节，数据尾00-FF-10-02
+                if (data_Buffer_Shadow[i] == 0x00 && data_Buffer_Shadow[i+1] == 0xFF && data_Buffer_Shadow[i+2] == 0x10 && data_Buffer_Shadow[i+3] == 0x01)
+                {
+                    if (i<EMERGENCY_RECEIVE_LENGTH-8 && data_Buffer_Shadow[i+5] == 0x00 && data_Buffer_Shadow[i+6] == 0xFF && data_Buffer_Shadow[i+7] == 0x10 && data_Buffer_Shadow[i+8] == 0x02)
+                    {
+                        emergency_Stop = data_Buffer_Shadow[i+4];
+                        break;
+                    }
+                }
+
 
                 //...
             }//逐位查找数据头

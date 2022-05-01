@@ -4,7 +4,7 @@
 
 extern float speed_Target;//目标速度
 extern uint8 start_Flag;
-
+extern uint8 emergency_Stop;
 
 void Differential_Motor(void);
 

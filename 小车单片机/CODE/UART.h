@@ -1,7 +1,8 @@
 #ifndef __UART_h__
 #define __UART_h__
 
-#define RECEIVE_LENGTH ((4+1+4 + 4+1+4 + 4+4+4 + 4+1+4 + 4+1+4 + 4+6+4 + 4+6+4 + 4+1+4 + 4+6+4)*2)
+#define RECEIVE_LENGTH ((4+1+4 + 4+1+4 + 4+4+4 + 4+1+4 + 4+1+4 + 4+6+4 + 4+6+4 + 4+1+4 + 4+6+4 + 4+1+4)*2)
+#define EMERGENCY_RECEIVE_LENGTH ((4+1+4 + 4+1+4)*2)
 #define CACHE_LENGTH 0
 
 #define BYTE0(x) (*((uint8*)(&(x))))
@@ -15,7 +16,8 @@
 enum UARTstate
 {
     Read,
-    Send
+    Send,
+    Emergency_Read
 };
 
 extern uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];

@@ -55,20 +55,39 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 {
 	enableInterrupts();//开启中断嵌套
 	PIT_CLEAR_FLAG(CCU6_1, PIT_CH0);
+	if (emergency_Stop == 0)
+	{
+	   	//由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
+        if (start_Flag==1)
+        {
+            Differential_Motor();
+        }
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
+        Cal_Speed_Output1();
+        Cal_Speed_Output2();
+        Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
+        Set_Speed1();
+        Set_Speed2();
+        Set_Steering();
+	}
+	else
+	{
+	    OLED_PRINTF(0,0,"hey");
+	    start_Flag = 0;
+	    speed_Target = 0;
+	    speed_Target1 = 0;
+	    speed_Target2 = 0;
+	    speed_Output1 = 0;
+	    speed_Output2 = 0;
+	    steering_Target = 0;
+	    Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
+        Set_Speed1();
+        Set_Speed2();
+        Set_Steering();
+	}
 
-	//由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
-	if (start_Flag==1)
-    {
-        Differential_Motor();
-    }
-	Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
-	Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
-	Cal_Speed_Output1();
-	Cal_Speed_Output2();
-	Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
-	Set_Speed1();
-	Set_Speed2();
-	Set_Steering();
 }
 
 IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
@@ -79,6 +98,11 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
     {
         UART(Read);
     }
+	else
+	{
+	    UART(Emergency_Read);
+	}
+
 }
 
 
@@ -164,18 +188,37 @@ IFX_INTERRUPT(uart0_rx_isr, 0, UART0_RX_INT_PRIO)
 	enableInterrupts();//开启中断嵌套
     IfxAsclin_Asc_isrReceive(&uart0_handle);
 
-    if (dat == CACHE_LENGTH + RECEIVE_LENGTH + data_Buffer)
+    if (UART_EN == TRUE)
     {
-        dat -= CACHE_LENGTH+1;
-        uint16 i = 0;
-        for (i=0;i<RECEIVE_LENGTH-1;i++)
+        if (dat >= CACHE_LENGTH + RECEIVE_LENGTH + data_Buffer)
         {
-            data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
+            dat = RECEIVE_LENGTH + data_Buffer - 1;
+            uint16 i = 0;
+            for (i=0;i<RECEIVE_LENGTH-1;i++)
+            {
+                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
+            }
+            UART_Flag_RX = TRUE;
         }
-        UART_Flag_RX = TRUE;
+        uart_query(DEBUG_UART, dat);
+        dat += 1;
     }
-    uart_query(DEBUG_UART, dat);
-    dat += 1;
+    else
+    {
+        if (dat >= CACHE_LENGTH + EMERGENCY_RECEIVE_LENGTH + data_Buffer)
+        {
+            dat = EMERGENCY_RECEIVE_LENGTH + data_Buffer - 1;
+            uint16 i = 0;
+            for (i=0;i<EMERGENCY_RECEIVE_LENGTH-1;i++)
+            {
+                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
+            }
+            UART_Flag_RX = TRUE;
+        }
+        uart_query(DEBUG_UART, dat);
+        dat += 1;
+    }
+
 }
 IFX_INTERRUPT(uart0_er_isr, 0, UART0_ER_INT_PRIO)
 {
