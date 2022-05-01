@@ -5,6 +5,7 @@
 #include "MOTOR_CTL.h"
 #include "SEARCH.h"
 #include "CAMERA.h"
+#include "STEERING.h"
 
 
 
@@ -113,6 +114,14 @@ void Key1_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
+        case SteeringPID_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 3)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case TimeSet_Page:
             pointer_temp += 1;
             if (pointer_temp >= 4)
@@ -152,6 +161,9 @@ void Key2_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
+        case SteeringPID_Page:
+            Key_temp();
+            break;
         case TimeSet_Page:
             switch (pointer_temp)
             {
@@ -173,7 +185,15 @@ void Key2_Action(void)
             break;
         case Speed_Page:{
             static int8 direction = 1;
-            speed_Target+=0.2*direction;
+            if (speed_Target>=2.6)
+            {
+                speed_Target+=0.1*direction;
+            }
+            else
+            {
+                speed_Target+=0.2*direction;
+            }
+
             if (speed_Target>=3)
             {
                 direction = -1;

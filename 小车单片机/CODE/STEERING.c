@@ -2,17 +2,18 @@
 #include "STEERING.h"
 #include "CAMERA.h"
 #include "SEARCH.h"
+#include "OLED.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 
-struct
+struct steerpid
 {
     float last_error;//上次
     float current_error; //当前
     float KP;
     float KI;
     float KD;
-}Steering_PID={0.0f,0.0f,0.25f,0.0f,0.0f};
+} Steering_PID={0.0f,0.0f,0.25f,0.0f,0.3f};
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
@@ -157,4 +158,53 @@ void Cal_Steering_Target(void)
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
     if(steering_Target>STEERING_MAX) steering_Target = STEERING_MAX;
     if(steering_Target<STEERING_MIN) steering_Target = STEERING_MIN;
+}
+
+
+void Key_temp(void)
+{
+    switch (pointer_temp)
+    {
+        case 0:
+            Steering_PID.KP += 0.05f*up_Down;
+            break;
+        case 1:
+            Steering_PID.KI += 0.05f*up_Down;
+            break;
+        case 2:
+            Steering_PID.KD += 0.05f*up_Down;
+            break;
+        default:
+            break;
+    }
+}
+
+void OLED_temp(void)
+{
+    if (pointer_temp == 0)
+    {
+        OLED_PRINTF(0,0,"->Kp:%01.02f s   ",Steering_PID.KP);
+        OLED_PRINTF(0,1,"Ki:%01.02f s   ",Steering_PID.KI);
+        OLED_PRINTF(0,2,"Kd:%01.02f s   ",Steering_PID.KD);
+    }
+    else if (pointer_temp == 1)
+    {
+        OLED_PRINTF(0,0,"Kp:%01.02f s   ",Steering_PID.KP);
+        OLED_PRINTF(0,1,"->Ki:%01.02f s   ",Steering_PID.KI);
+        OLED_PRINTF(0,2,"Kd:%01.02f s   ",Steering_PID.KD);
+    }
+    else if (pointer_temp == 2)
+    {
+        OLED_PRINTF(0,0,"Kp:%01.02f s   ",Steering_PID.KP);
+        OLED_PRINTF(0,1,"Ki:%01.02f s   ",Steering_PID.KI);
+        OLED_PRINTF(0,2,"->Kd:%01.02f s   ",Steering_PID.KD);
+    }
+    if (up_Down == 1)
+    {
+        OLED_PRINTF(0,3,"ADD");
+    }
+    else if (up_Down == -1)
+    {
+        OLED_PRINTF(0,3,"SUB");
+    }
 }

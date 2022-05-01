@@ -947,7 +947,7 @@ uint8 Check_RightCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
@@ -1019,7 +1019,7 @@ uint8 Check_LeftCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.5  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;

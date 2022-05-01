@@ -8,6 +8,7 @@
 
 extern float steering_Target;
 extern float steering_Error;
+extern struct steerpid Steering_PID;
 
 void My_Init_Steering(void);
 void UART_Steering(void);

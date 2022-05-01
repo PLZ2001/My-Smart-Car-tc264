@@ -78,11 +78,13 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 	    speed_Target = 0;
 	    speed_Target1 = 0;
 	    speed_Target2 = 0;
-	    speed_Output1 = 0;
-	    speed_Output2 = 0;
+//	    speed_Output1 = 0;
+//	    speed_Output2 = 0;
 	    steering_Target = 0;
 	    Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
         Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
+        Cal_Speed_Output1();//新增
+        Cal_Speed_Output2();//新增
         Set_Speed1();
         Set_Speed2();
         Set_Steering();
