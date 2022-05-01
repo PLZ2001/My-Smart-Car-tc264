@@ -121,6 +121,8 @@ public class WhiteBoard : MonoBehaviour
 
     bool read_Local_UART_Flag = false;
 
+    int emergency_Stop = 0;
+
     // 启动函数，只会运行一次
     protected virtual void Start()
     {
@@ -223,6 +225,8 @@ public class WhiteBoard : MonoBehaviour
         compute.SetBuffer(diffuseMapKernel, "lines", linesBuffer);
         
 
+
+        GameObject.Find("UI/Canvas/Toggle").GetComponent<Toggle>().isOn = (UART_Flag_NO_IMAGE == 0);
 
         GameObject.Find("UI/Canvas/Toggle").GetComponent<Toggle>().isOn = (UART_Flag_NO_IMAGE == 0);
 
@@ -475,6 +479,11 @@ public class WhiteBoard : MonoBehaviour
         byteArray_Send = new byte[] { 0x00, 0xFF, 0x01, 0x01, (byte)UART_Flag_NO_IMAGE, 0x00, 0xFF, 0x01, 0x02 };
         serialPortManager.WriteByte(byteArray_Send);
         //Debug.Log(BitConverter.ToString(byteArray_Send));
+
+        //发送是否紧急停车的信号，数据头00-FF-10-01，数据长度1字节，数据尾00-FF-10-02
+        byteArray_Send = new byte[] { 0x00, 0xFF, 0x10, 0x01, (byte)emergency_Stop, 0x00, 0xFF, 0x10, 0x02 };
+        serialPortManager.WriteByte(byteArray_Send);
+        Debug.Log(BitConverter.ToString(byteArray_Send));
 
         if (writing_Flag == true)
         {
@@ -1169,6 +1178,20 @@ public class WhiteBoard : MonoBehaviour
         }
     }
 
+    public void Toggle_emergency_Stop()
+    {
+        emergency_Stop = emergency_Stop==1?0:1;
+        if (emergency_Stop == 1)
+        {
+            Sprite sprite = Resources.Load("GreenCircle", typeof(Sprite)) as Sprite;
+            GameObject.Find("UI/Canvas/STOP/Image").GetComponent<Image>().sprite = sprite;
+        }
+        else
+        {
+            Sprite sprite = Resources.Load("RedCircle", typeof(Sprite)) as Sprite;
+            GameObject.Find("UI/Canvas/STOP/Image").GetComponent<Image>().sprite = sprite;
+        }
+    }
 
 }
 
