@@ -13,7 +13,7 @@ struct steerpid
     float KP;
     float KI;
     float KD;
-} Steering_PID={0.0f,0.0f,0.25f,0.0f,0.3f};
+} Steering_PID={0.0f,0.0f,0.25f,0.0f,0.30f};
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）

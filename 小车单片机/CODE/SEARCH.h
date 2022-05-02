@@ -14,7 +14,7 @@
 #define STRAIGHT_CONDITION 5
 
 #define road_width (0.4/Camera_Height/ratioOfPixelToHG) //道路实际宽度0.4m
-
+#define wider_road_width (0.6/Camera_Height/ratioOfPixelToHG) //道路实际宽度0.4m
 
 extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 extern int Col_Left[height_Inverse_Perspective_Max];
@@ -25,14 +25,16 @@ extern float threeRoads_RightTime;
 extern float rightCircle_RightTime;
 extern float rightCircle_LeftTime;
 extern float rightCircle_BannedTime;
+extern int8 first_angle;
+
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);
 void UART_ColRight(void);
 
 uint8 Check_Straight(void);
-uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, int8 max_dd_Col_Left, int8 min_dd_Col_Left);
-uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, int8 max_dd_Col_Right, int8 min_dd_Col_Right);
+uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float max_dd_Col_Left, float min_dd_Col_Left);
+uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float max_dd_Col_Right, float min_dd_Col_Right);
 uint8 Check_LeftCircle(void);
 uint8 Check_RightCircle(void);
 void DrawCenterLine(void);

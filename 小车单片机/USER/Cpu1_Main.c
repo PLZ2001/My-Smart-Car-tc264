@@ -227,11 +227,11 @@ void core1_main(void)
                         }
                         if (classification_Result == 9)//9Î´Öª
                         {
-                            if(Check_Left_Straight(2,-2,2,-2))
+                            if(Check_Left_Straight(2,-2,0.5,-0.5))
                             {
                                 classification_Result = 7;//7¿¿×ó
                             }
-                            if(Check_Right_Straight(2,-2,2,-2))
+                            if(Check_Right_Straight(2,-2,0.5,-0.5))
                             {
                                 classification_Result = 8;//8¿¿ÓÒ
                             }

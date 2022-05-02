@@ -46,6 +46,7 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,5,"%d %d %d %d %d %d",fuzzy_Image_36[5][0],fuzzy_Image_36[5][1],fuzzy_Image_36[5][2],fuzzy_Image_36[5][3],fuzzy_Image_36[5][4],fuzzy_Image_36[5][5]);
                //OLED_PRINTF(0,6,"Class:%d Value:%01.02f",classification_Result,fuzzy_thresholdingValue_36);
                OLED_PRINTF(0,6,"Class:%d Max:%01.02f",classification_Result,max_Score);
+//               OLED_PRINTF(0,6,"Class:%d Max:%d",classification_Result,first_angle);
                OLED_PRINTF(0,7,"%02.01f %02.01f %02.01f %02.01f",score[0],score[1],score[2],score[3]);
                break;
            case UART_Debug_Page:
