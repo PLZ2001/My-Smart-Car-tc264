@@ -272,5 +272,40 @@ void UART(enum UARTstate state)
             UART_Flag_RX = FALSE;
         }
     }
+    else if (state == Emergency_Send)
+    {
+        //通过串口发送数据给上位机
+        if (UART_Flag_TX == TRUE)
+        {
+            //发送分类结果，数据头00-FF-08-01，数据长度1字节，数据尾00-FF-08-02
+            UART_Classification();
+
+            //发送二值化阈值，数据头00-FF-02-01，数据长度1字节，数据尾00-FF-02-02
+            UART_Thresholding_Value();
+
+            //发送逆透视参数，数据头00-FF-03-01，数据长度4字节，数据尾00-FF-03-02
+            UART_Inverse_Perspective();
+
+            //发送直流电机速度参数，数据头00-FF-04-01，数据长度5字节，数据尾00-FF-04-02
+            UART_Speed1();
+
+            //发送舵机参数，数据头00-FF-05-01，数据长度3字节，数据尾00-FF-05-02
+            UART_Steering();
+
+            //发送转弯PID参数，数据头00-FF-06-01，数据长度6字节，数据尾00-FF-06-02
+            UART_SteeringPID();
+
+            //发送增量式PID参数，数据头00-FF-07-01，数据长度6字节，数据尾00-FF-07-02
+            UART_PID1();
+
+            //发送直流电机速度参数，数据头00-FF-12-01，数据长度5字节，数据尾00-FF-12-02
+            UART_Speed2();
+
+            //发送增量式PID参数，数据头00-FF-13-01，数据长度6字节，数据尾00-FF-13-02
+            UART_PID2();
+
+            UART_Flag_TX = FALSE;
+        }
+    }
 
 }

@@ -17,7 +17,8 @@ enum UARTstate
 {
     Read,
     Send,
-    Emergency_Read
+    Emergency_Read,
+    Emergency_Send
 };
 
 extern uint8 data_Buffer[RECEIVE_LENGTH + CACHE_LENGTH];

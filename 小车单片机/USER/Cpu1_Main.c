@@ -251,10 +251,7 @@ void core1_main(void)
 
 
 
-            if (UART_EN == TRUE)
-            {
-                UART_Flag_TX = TRUE;
-            }
+            UART_Flag_TX = TRUE;
 
             InsertTimer1Point(4);
         }

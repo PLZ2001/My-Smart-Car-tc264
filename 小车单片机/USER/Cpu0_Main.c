@@ -78,6 +78,10 @@ int core0_main(void)
 	    {
 	        UART(Send);
 	    }
+	    else
+	    {
+	        UART(Emergency_Send);
+	    }
 	    //Send_with_Wifi();//”√wifi∑¢ÀÕ
 
 	}
