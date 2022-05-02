@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = SteeringPID_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = Camera_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 

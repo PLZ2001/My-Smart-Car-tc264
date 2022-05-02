@@ -231,7 +231,7 @@ uint8 Check_Straight(void)
 }
 
 
-uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
+uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, int8 max_dd_Col_Left, int8 min_dd_Col_Left)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -287,7 +287,8 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
     }
 
     start_Row = height_Inverse_Perspective-1;
-    int d_Col_Left;
+    int d_Col_Left[2]={0};
+    int dd_Col_Left;
     int d_Col_Left_Num=0;
 
     int i;
@@ -313,18 +314,27 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
     }
     for (int j=0;j<d_Col_Left_Num;j++)
     {
-        d_Col_Left = Col_Left[i+1]-Col_Left[i];
+        d_Col_Left[0] = d_Col_Left[1];
+        d_Col_Left[1] = Col_Left[i+1]-Col_Left[i];
         i++;
-        if (d_Col_Left < min_d_Col_Left || d_Col_Left > max_d_Col_Left)
+        if (d_Col_Left[1] < min_d_Col_Left || d_Col_Left[1] > max_d_Col_Left)
         {
             return 0;
+        }
+        if (j>=1)
+        {
+            dd_Col_Left = d_Col_Left[1] - d_Col_Left[0];
+            if (dd_Col_Left < min_dd_Col_Left || dd_Col_Left > max_dd_Col_Left)
+            {
+                return 0;
+            }
         }
     }
     return 1;
 }
 
 
-uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
+uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, int8 max_dd_Col_Right, int8 min_dd_Col_Right)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -380,7 +390,8 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     }
 
     start_Row = height_Inverse_Perspective-1;
-    int d_Col_Right;
+    int d_Col_Right[2]={0};
+    int dd_Col_Right;
     int d_Col_Right_Num=0;
 
     int i;
@@ -406,11 +417,20 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     }
     for (int j=0;j<d_Col_Right_Num;j++)
     {
-        d_Col_Right = Col_Right[i+1]-Col_Right[i];
+        d_Col_Right[0] = d_Col_Right[1];
+        d_Col_Right[1] = Col_Right[i+1]-Col_Right[i];
         i++;
-        if (d_Col_Right < min_d_Col_Right || d_Col_Right > max_d_Col_Right)
+        if (d_Col_Right[1] < min_d_Col_Right || d_Col_Right[1] > max_d_Col_Right)
         {
             return 0;
+        }
+        if (j>=1)
+        {
+            dd_Col_Right = d_Col_Right[1] - d_Col_Right[0];
+            if (dd_Col_Right < min_dd_Col_Right || dd_Col_Right > max_dd_Col_Right)
+            {
+                return 0;
+            }
         }
     }
     return 1;
@@ -947,7 +967,7 @@ uint8 Check_RightCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.1 && j>width_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*0.7)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
@@ -1019,7 +1039,7 @@ uint8 Check_LeftCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.1 && j<width_Inverse_Perspective*0.5 && j>width_Inverse_Perspective*0.3)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
@@ -1110,7 +1130,7 @@ uint8 Check_ThreeRoads_New(void)
             if (cnt==3)
             {
                 last_angle++;
-                if (last_angle>4)
+                if (last_angle>8)
                 {
                     return 0;
                 }
