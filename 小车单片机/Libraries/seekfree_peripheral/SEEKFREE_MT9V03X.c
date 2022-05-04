@@ -106,8 +106,8 @@ void mt9v03x_init(void)
 
     link_list_num = eru_dma_init(MT9V03X_DMA_CH, GET_PORT_IN_ADDR(MT9V03X_DATA_PIN), camera_buffer_addr, MT9V03X_PCLK_PIN, FALLING, MT9V03X_W*MT9V03X_H);//如果超频到300M 倒数第二个参数请设置为FALLING
 
-    //eru_init(MT9V03X_VSYNC_PIN, FALLING);   //初始化场中断，并设置为下降沿触发中断
-    eru_init(MT9V03X_VSYNC_PIN, BOTH);   //初始化场中断，并设置为下降沿触发中断
+    eru_init(MT9V03X_VSYNC_PIN, FALLING);   //初始化场中断，并设置为下降沿触发中断
+//    eru_init(MT9V03X_VSYNC_PIN, BOTH);   //初始化场中断，并设置为下降沿触发中断
     restoreInterrupts(interrupt_state);
 }
 
