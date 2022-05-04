@@ -176,7 +176,7 @@ void Key2_Action(void)
             switch (pointer_temp)
             {
                 case 0:
-                    STEERING_DUTY_CENTER += 1*up_Down;
+                    STEERING_DUTY_CENTER += 2*up_Down;
                     break;
                 default:
                     break;
