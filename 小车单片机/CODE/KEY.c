@@ -114,6 +114,14 @@ void Key1_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
+        case Steering_Center_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 1)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case SteeringPID_Page:
             pointer_temp += 1;
             if (pointer_temp >= 3)
@@ -163,6 +171,16 @@ void Key2_Action(void)
             break;
         case SteeringPID_Page:
             Key_temp();
+            break;
+        case Steering_Center_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    STEERING_DUTY_CENTER += 1*up_Down;
+                    break;
+                default:
+                    break;
+            }
             break;
         case TimeSet_Page:
             switch (pointer_temp)

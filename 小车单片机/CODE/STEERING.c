@@ -5,6 +5,7 @@
 #include "OLED.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
+int STEERING_DUTY_CENTER=1772;
 
 struct steerpid
 {

@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = SteeringPID_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = Steering_Center_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -36,6 +36,20 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case Steering_Center_Page:
+               if (pointer_temp == 0)
+              {
+                  OLED_PRINTF(0,0,"Center:%d    ",STEERING_DUTY_CENTER);
+              }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,1,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,1,"SUB");
+               }
+               break;
            case Camera_Page:
                //oled_dis_bmp(height_Inverse_Perspective, width_Inverse_Perspective, *mt9v03x_image_cutted_thresholding_inversePerspective, 0);
                OLED_PRINTF(0,0,"%d %d %d %d %d %d",fuzzy_Image_36[0][0],fuzzy_Image_36[0][1],fuzzy_Image_36[0][2],fuzzy_Image_36[0][3],fuzzy_Image_36[0][4],fuzzy_Image_36[0][5]);

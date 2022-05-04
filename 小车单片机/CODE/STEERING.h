@@ -4,11 +4,11 @@
 #define STEERING_MAX 40.0
 #define STEERING_MIN -40.0
 #define STEERING_DUTY_MAX 170.0
-#define STEERING_DUTY_CENTER 1760//1530
 
 extern float steering_Target;
 extern float steering_Error;
 extern struct steerpid Steering_PID;
+extern int STEERING_DUTY_CENTER;
 
 void My_Init_Steering(void);
 void UART_Steering(void);
