@@ -167,7 +167,7 @@ void core1_main(void)
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Check_Left_Straight(2,0) == 0)
+                    if (Check_Left_Straight_New(2,0,100,-100) == 0)
                     {
                         classification_Result = 8;
                     }
@@ -179,7 +179,7 @@ void core1_main(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 1)
                 {
-                    if (Check_Right_Straight(0,-2) == 0)
+                    if (Check_Right_Straight_New(0,-2,100,-100) == 0)
                     {
                         classification_Result = 7;
                     }
@@ -228,11 +228,11 @@ void core1_main(void)
                         }
                         if (classification_Result == 9)//9未知
                         {
-                            if(Check_Left_Straight(2,-2))
+                            if(Check_Left_Straight_New(2,-2,0.5,-0.5))
                             {
                                 classification_Result = 7;//7靠左
                             }
-                            if(Check_Right_Straight(2,-2))
+                            if(Check_Right_Straight_New(2,-2,0.5,-0.5))
                             {
                                 classification_Result = 8;//8靠右
                             }
