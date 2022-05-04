@@ -305,6 +305,20 @@ void Get_Cutted_Image(void)
 //    }
 }
 
+//真正的裁剪
+void Get_Cutted_Image_New(void)
+{
+    int origin_i=0;
+    origin_i = 40;
+    for(int i = 0; i < Y_WIDTH_CAMERA; i++,origin_i+=2)
+    {
+        for(int j = 0; j < X_WIDTH_CAMERA; j++)
+        {
+            mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][j];
+        }
+    }
+}
+
 
 
 //曾经的分4类

@@ -55,11 +55,12 @@ void core1_main(void)
         //来自摄像机的图像到达后，进行图像处理
         if (mt9v03x_finish_flag == 1 && (UART_Flag_TX == FALSE || UART_EN == FALSE))
         {
+            mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
             InsertTimer1Point(0);
             InsertTimer2Point(6);
 
             Get_Cutted_Image();//裁剪图像到188*40
-            mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
+
 
             InsertTimer1Point(1);
 
