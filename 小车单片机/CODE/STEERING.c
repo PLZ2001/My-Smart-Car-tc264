@@ -33,9 +33,12 @@ void UART_Steering(void)
     uart_putchar(DEBUG_UART,0x05);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
     uart_putchar(DEBUG_UART, (uint8)round((steering_Target - STEERING_MIN)/(STEERING_MAX-STEERING_MIN)*255));
-    int16 se  = (int16)round(100*steering_Error);
+    int16 se  = (int16)round(100*Steering_PID.current_error);
     uart_putchar(DEBUG_UART, se>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, se&0x00FF);//先传高8位，再传低8位
+    int16 d_se  = (int16)round(100*(Steering_PID.current_error-Steering_PID.last_error));
+    uart_putchar(DEBUG_UART, d_se>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, d_se&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x05);
