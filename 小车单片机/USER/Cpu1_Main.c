@@ -198,11 +198,11 @@ void core1_main(void)
                     {
                         flag_For_Left_Circle = 0;
                     }
-                    if (Check_Straight())
-                    {
-                        classification_Result = 6;//6直道
-                    }
-                    else
+//                    if (Check_Straight())
+//                    {
+//                        classification_Result = 6;//6直道
+//                    }
+//                    else
                     {
                         classification_Result = Classification_Classic36();//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
                         if (classification_Result ==3)//3右环岛
