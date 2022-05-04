@@ -20,16 +20,14 @@ uint8 emergency_Stop = 0;//1表示紧急停车
 
 void Differential_Motor(void)
 {
-//    speed_Target1 = speed_Target - steering_Error/600*(speed_Target+1)/(1.2f+1);//右轮目标速度（m/s）
-//    speed_Target2 = speed_Target + steering_Error/600*(speed_Target+1)/(1.2f+1);//左轮目标速度（m/s）
     if (steering_Error>=0)
     {
-        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+1)/(1.2f+1);//左轮目标速度（m/s）
+        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+1.1f)/(1.2f+1);//左轮目标速度（m/s）
         speed_Target1 = speed_Target;
     }
     else
     {
-        speed_Target1 = speed_Target - steering_Error/600*(speed_Target+1)/(1.2f+1);//右轮目标速度（m/s）
+        speed_Target1 = speed_Target - steering_Error/600*(speed_Target+1.1f)/(1.2f+1);//右轮目标速度（m/s）
         speed_Target2 = speed_Target;
     }
 }

@@ -24,7 +24,7 @@ float steering_Target = 0;//目标角度（°），更新函数Set_Steering_Target(uint8 va
 
 void My_Init_Steering(void)
 {
-    gtm_pwm_init(ATOM2_CH0_P33_10, 100, STEERING_DUTY_CENTER);//设置P33.10输出PWM波，频率100Hz，占空比1520/10000；用于舵机
+    gtm_pwm_init(ATOM2_CH0_P33_10, 50, STEERING_DUTY_CENTER);//设置P33.10输出PWM波，频率100Hz，占空比1520/10000；用于舵机
 }
 
 void UART_Steering(void)
