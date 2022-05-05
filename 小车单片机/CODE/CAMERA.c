@@ -134,7 +134,7 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1, 0,-1,-1, 0, 1},
 // 三岔路口、十字路口、右环岛、左环岛、右丁字、左丁字、T字路口
 //表示标准的道路得分情况
 uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.7,0.8,0.8,0.8,0.6,0.6,0.6};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.7,0.8,0.7,0.7,0.6,0.6,0.6};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
