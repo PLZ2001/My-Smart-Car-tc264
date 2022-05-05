@@ -24,6 +24,7 @@ float threeRoads_RightTime = 0.15f;
 float rightCircle_RightTime = 0.5f;
 float rightCircle_LeftTime = 0.5f;
 float rightCircle_BannedTime = 3.0f;
+float T_Time = 0.5f;
 
 void UART_ColCenter(void)
 {

@@ -75,6 +75,7 @@ void Update_OLED_per10ms(void)
                    OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
                    OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
                    OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+                   OLED_PRINTF(0,4,"T:%01.02f s   ",T_Time);
                }
                else if (pointer_temp == 1)
                {
@@ -82,6 +83,7 @@ void Update_OLED_per10ms(void)
                    OLED_PRINTF(0,1,"->RCircle_R:%01.02f s   ",rightCircle_RightTime);
                    OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
                    OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+                   OLED_PRINTF(0,4,"T:%01.02f s   ",T_Time);
                }
                else if (pointer_temp == 2)
                {
@@ -89,6 +91,7 @@ void Update_OLED_per10ms(void)
                    OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
                    OLED_PRINTF(0,2,"->RCircle_L:%01.02f s   ",rightCircle_LeftTime);
                    OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+                   OLED_PRINTF(0,4,"T:%01.02f s   ",T_Time);
                }
                else if (pointer_temp == 3)
                {
@@ -96,14 +99,23 @@ void Update_OLED_per10ms(void)
                    OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
                    OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
                    OLED_PRINTF(0,3,"->RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+                   OLED_PRINTF(0,4,"T:%01.02f s   ",T_Time);
+               }
+               else if (pointer_temp == 4)
+               {
+                   OLED_PRINTF(0,0,"3Road_R:%01.02f s   ",threeRoads_RightTime);
+                   OLED_PRINTF(0,1,"RCircle_R:%01.02f s   ",rightCircle_RightTime);
+                   OLED_PRINTF(0,2,"RCircle_L:%01.02f s   ",rightCircle_LeftTime);
+                   OLED_PRINTF(0,3,"RCircle_Ban:%01.02f s   ",rightCircle_BannedTime);
+                   OLED_PRINTF(0,4,"->T:%01.02f s   ",T_Time);
                }
                if (up_Down == 1)
                {
-                   OLED_PRINTF(0,4,"ADD");
+                   OLED_PRINTF(0,5,"ADD");
                }
                else if (up_Down == -1)
                {
-                   OLED_PRINTF(0,4,"SUB");
+                   OLED_PRINTF(0,5,"SUB");
                }
                break;
            case Speed_Page:

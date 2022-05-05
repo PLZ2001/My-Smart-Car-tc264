@@ -58,7 +58,7 @@ float BayesTable_25[17][CLASS_NUM] = {{1.685,-3.593,1.532,-4.908,9.487,-2.020},
         {-8.681,3.995,19.472,31.779,22.297,20.645},
         {-254.031,-254.603,-427.897,-419.047,-383.225,-467.807}};
 
-char *class_Name_Group[CLASS_NUM+6] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知","10左直线","11右直线"};
+char *class_Name_Group[CLASS_NUM+9] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知","10左直线","11右直线","12左丁字","13右丁字","14T字"};
 
 float arg_Classification_16[16];
 float arg_Classification_25[25];
@@ -95,7 +95,7 @@ uint8 ModelTable_25_Score[4] = {9,8,6,6};//{11,9,9,9};
 //1表示：如果这里有道路，就会加分
 //-1表示：如果这里有道路，就会扣分
 //0表示：不用管
-float ModelTable_36[4][6][6]={{{ 1, 0,-1,-1, 0, 1},
+float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1, 0,-1,-1, 0, 1},
                                { 1, 1,-1,-1, 1, 1},
                                { 0, 1,-1,-1, 1, 0},
                                { 0, 1, 1, 1, 1, 0},
@@ -115,13 +115,28 @@ float ModelTable_36[4][6][6]={{{ 1, 0,-1,-1, 0, 1},
                                                                                                     { 0, 1, 1, 1,-1, 0},
                                                                                                     { 0, 1, 1, 1,-1, 0},
                                                                                                     { 0, 0, 1, 1, 0, 0},
-                                                                                                    { 0, 0, 0, 0, 0, 0}}};
-// 三岔路口、十字路口、右环岛、左环岛
+                                                                                                    { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
+                                                                                                                            { 0,-1, 1, 1,-1, 0},
+                                                                                                                            { 0,-1, 1, 1,-1, 0},
+                                                                                                                            { 0,-1, 1, 1, 1, 0},
+                                                                                                                            { 0, 0, 1, 1, 0, 0},
+                                                                                                                            { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
+                                                                                                                                                    { 0,-1, 1, 1,-1, 0},
+                                                                                                                                                    { 0,-1, 1, 1,-1, 0},
+                                                                                                                                                    { 0, 1, 1, 1,-1, 0},
+                                                                                                                                                    { 0, 0, 1, 1, 0, 0},
+                                                                                                                                                    { 0, 0, 0, 0, 0, 0}},  {{ 0,-1,-1,-1,-1, 0},
+                                                                                                                                                                            { 0,-1,-1,-1,-1, 0},
+                                                                                                                                                                            { 0, 1, 1, 1, 1, 0},
+                                                                                                                                                                            { 0, 1, 1, 1, 1, 0},
+                                                                                                                                                                            { 0, 0, 1, 1, 0, 0},
+                                                                                                                                                                            { 0, 0, 0, 0, 0, 0}}};
+// 三岔路口、十字路口、右环岛、左环岛、右丁字、左丁字、T字路口
 //表示标准的道路得分情况
-uint8 ModelTable_36_Score[4] = {12,14,12,12};
-float ModelTable_36_Score_Required[4] = {0.7,0.8,0.8,0.8};
+uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.7,0.8,0.8,0.8,0.7,0.7,0.6};
 
-float score[4] = {0};
+float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
 
 uint8 Inverse_Perspective_Table_Row[height_Inverse_Perspective_Max];
@@ -1045,7 +1060,7 @@ uint8 Classification_Classic36(void)
             fuzzy_Image_36[i][j] = arg_Classification_36[i*6+j]>fuzzy_thresholdingValue_36;
         }
     }
-    for (int k = 0; k < 4; k++)
+    for (int k = 0; k < CLASS_NUM_NEW; k++)
     {
         score[k] = 0;
         for (int i = 0; i < 6; i++)
@@ -1064,7 +1079,7 @@ uint8 Classification_Classic36(void)
 
     if (max_Socre_Result!=9 && max_Score>ModelTable_36_Score_Required[max_Socre_Result])
     {
-        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口", "12左丁字", "13右丁字", "14T字"
         switch(max_Socre_Result)
         {
             case 0:
@@ -1075,6 +1090,12 @@ uint8 Classification_Classic36(void)
                 return 3;
             case 3:
                 return 2;
+            case 4:
+                return 13;
+            case 5:
+                return 12;
+            case 6:
+                return 14;
             default:
                 return 9;//未知
         }

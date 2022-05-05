@@ -13,6 +13,7 @@
 #endif
 
 #define CLASS_NUM 6
+#define CLASS_NUM_NEW 7
 
 //#define CLASSIFICATION_16_VALID 25//35太大了//21不够大
 #define CLASSIFICATION_25_VALID 37//40太大了//35不够大
@@ -40,7 +41,7 @@ extern uint8 fuzzy_Image_25[5][5];
 extern uint8 fuzzy_Image_36[6][6];
 extern float fuzzy_thresholdingValue_25;
 extern float fuzzy_thresholdingValue_36;
-extern float score[4];
+extern float score[CLASS_NUM_NEW];
 extern float max_Score;
 
 

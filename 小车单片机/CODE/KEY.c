@@ -132,7 +132,7 @@ void Key1_Action(void)
             break;
         case TimeSet_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 4)
+            if (pointer_temp >= 5)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -197,6 +197,8 @@ void Key2_Action(void)
                 case 3:
                     rightCircle_BannedTime += 0.5f*up_Down;
                     break;
+                case 4:
+                    T_Time += 0.1f*up_Down;
                 default:
                     break;
             }

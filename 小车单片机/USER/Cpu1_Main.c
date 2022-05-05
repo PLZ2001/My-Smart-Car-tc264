@@ -84,6 +84,8 @@ void core1_main(void)
 
             static uint8 flag_For_Right_Circle = 0;
             static uint8 flag_For_Left_Circle = 0;
+            static uint8 flag_For_Right_T = 0;
+            static uint8 flag_For_Left_T = 0;
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -132,6 +134,22 @@ void core1_main(void)
                             Start_Timer(0);
                             time_up[5] = rightCircle_BannedTime;
                             Start_Timer(5);
+                        }
+                        break;
+                    case 14://T字
+                        if (flag_For_Right_T == 1) //说明准备出右丁字
+                        {
+                            flag_For_Right_T = 0;
+                            classification_Result = 7;//7靠左
+                            time_up[0] = T_Time;
+                            Start_Timer(0);
+                        }
+                        else if (flag_For_Left_T == 1)
+                        {
+                            flag_For_Right_T = 0;
+                            classification_Result = 8;//8靠右
+                            time_up[0] = T_Time;
+                            Start_Timer(0);
                         }
                         break;
                     default:
@@ -205,6 +223,16 @@ void core1_main(void)
                     else
                     {
                         classification_Result = Classification_Classic36();//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                        if (classification_Result == 13)//右丁字
+                        {
+                            flag_For_Right_T = 1;
+                            flag_For_Left_T = 0;
+                        }
+                        if (classification_Result == 12)//左丁字
+                        {
+                            flag_For_Right_T = 0;
+                            flag_For_Left_T = 1;
+                        }
                         if (classification_Result ==3)//3右环岛
                         {
                             if(flag_For_Right_Circle!=0 || !Check_RightCircle())

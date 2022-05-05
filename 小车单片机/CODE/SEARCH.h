@@ -25,6 +25,7 @@ extern float threeRoads_RightTime;
 extern float rightCircle_RightTime;
 extern float rightCircle_LeftTime;
 extern float rightCircle_BannedTime;
+extern float T_Time;
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);
