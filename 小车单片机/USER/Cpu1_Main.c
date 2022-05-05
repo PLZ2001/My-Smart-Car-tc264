@@ -235,14 +235,14 @@ void core1_main(void)
                         }
                         if (classification_Result ==3)//3右环岛
                         {
-                            if(flag_For_Right_Circle!=0 || !Check_RightCircle())
+                            if(flag_For_Right_Circle!=0 || !Check_RightCircle_New())
                             {
                                 classification_Result = 9;//9未知
                             }
                         }
                         if (classification_Result ==2)//2左环岛
                         {
-                            if(flag_For_Left_Circle!=0 || !Check_LeftCircle())
+                            if(flag_For_Left_Circle!=0 || !Check_LeftCircle_New())
                             {
                                 classification_Result = 9;//9未知
                             }
