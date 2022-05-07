@@ -26,10 +26,13 @@ float rightCircle_LeftTime = 0.5f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
 
-int8 target_down[2] = {1,6};
-int8 target_up[2] = {3,10};
-int8 d_target[2] = {1,9};
+int8 target_down[2] = {2,6};
+int8 target_up[2] = {5,15};
+int8 d_target[2] = {3,9};
 int8 lines = 3;
+
+int8 last_angle_down;
+int8 last_angle_up;
 
 void UART_ColCenter(void)
 {
@@ -1114,7 +1117,7 @@ uint8 Check_ThreeRoads_New(void)
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
             water_j+=direction;
-            if (cnt==1)
+            if (cnt==2)
             {
                 last_angle++;
                 if (last_angle>4)
@@ -1127,7 +1130,7 @@ uint8 Check_ThreeRoads_New(void)
         {
             direction = -direction;
             cnt++;
-            if (cnt>=2)
+            if (cnt>=3)
             {
                 break;
             }
@@ -1155,13 +1158,13 @@ uint8 Check_RightCircle_New(void)
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
             water_j+=direction;
-            if (cnt==1)
+            if (cnt==2)
             {
                 last_angle++;
-                if (last_angle>target_down[1])
-                {
-                    return 0;
-                }
+//                if (last_angle>target_down[1])
+//                {
+//                    return 0;
+//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1170,10 +1173,10 @@ uint8 Check_RightCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-                if (last_angle<target_down[0])
-                {
-                    return 0;
-                }
+//                if (last_angle<target_down[0])
+//                {
+//                    return 0;
+//                }
                 break;
             }
         }
@@ -1183,7 +1186,7 @@ uint8 Check_RightCircle_New(void)
         }
     }
 
-    int8 last_angle_down = last_angle;
+    last_angle_down = last_angle;
     uint8 last_water_i = water_i;
     water_i = 0.2*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
     direction = 1;
@@ -1201,13 +1204,13 @@ uint8 Check_RightCircle_New(void)
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
             water_j+=direction;
-            if (cnt==1)
+            if (cnt==2)
             {
                 last_angle++;
-                if (last_angle>target_up[1])
-                {
-                    return 0;
-                }
+//                if (last_angle>target_up[1])
+//                {
+//                    return 0;
+//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1216,10 +1219,10 @@ uint8 Check_RightCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-                if (last_angle<target_up[0])
-                {
-                    return 0;
-                }
+//                if (last_angle<target_up[0])
+//                {
+//                    return 0;
+//                }
                 break;
             }
         }
@@ -1229,9 +1232,11 @@ uint8 Check_RightCircle_New(void)
         }
     }
 
-    int8 last_angle_up = last_angle;
+    last_angle_up = last_angle;
 
-    if ((last_angle_up - last_angle_down) > d_target[0] && (last_angle_up - last_angle_down) < d_target[1])
+    if ((last_angle_up - last_angle_down) >= d_target[0] && (last_angle_up - last_angle_down) <= d_target[1]
+         && last_angle_down >= target_down[0] && last_angle_down <= target_down[1]
+         && last_angle_up >= target_up[0] && last_angle_up <= target_up[1])
     {
         return 1;
     }
@@ -1262,10 +1267,10 @@ uint8 Check_LeftCircle_New(void)
             if (cnt==1)
             {
                 last_angle++;
-                if (last_angle>target_down[1])
-                {
-                    return 0;
-                }
+//                if (last_angle>target_down[1])
+//                {
+//                    return 0;
+//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1274,10 +1279,10 @@ uint8 Check_LeftCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-                if (last_angle<target_down[0])
-                {
-                    return 0;
-                }
+//                if (last_angle<target_down[0])
+//                {
+//                    return 0;
+//                }
                 break;
             }
         }
@@ -1287,7 +1292,7 @@ uint8 Check_LeftCircle_New(void)
         }
     }
 
-    int8 last_angle_down = last_angle;
+    last_angle_down = last_angle;
     uint8 last_water_i = water_i;
     water_i = 0.2*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
     direction = 1;
@@ -1308,10 +1313,10 @@ uint8 Check_LeftCircle_New(void)
             if (cnt==1)
             {
                 last_angle++;
-                if (last_angle>target_up[1])
-                {
-                    return 0;
-                }
+//                if (last_angle>target_up[1])
+//                {
+//                    return 0;
+//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1320,10 +1325,10 @@ uint8 Check_LeftCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-                if (last_angle<target_up[0])
-                {
-                    return 0;
-                }
+//                if (last_angle<target_up[0])
+//                {
+//                    return 0;
+//                }
                 break;
             }
         }
@@ -1333,9 +1338,11 @@ uint8 Check_LeftCircle_New(void)
         }
     }
 
-    int8 last_angle_up = last_angle;
+    last_angle_up = last_angle;
 
-    if ((last_angle_up - last_angle_down) > d_target[0] && (last_angle_up - last_angle_down) < d_target[1])
+    if ((last_angle_up - last_angle_down) >= d_target[0] && (last_angle_up - last_angle_down) <= d_target[1]
+          && last_angle_down >= target_down[0] && last_angle_down <= target_down[1]
+          && last_angle_up >= target_up[0] && last_angle_up <= target_up[1])
     {
         return 1;
     }
