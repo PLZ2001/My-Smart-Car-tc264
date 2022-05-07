@@ -26,9 +26,9 @@ float rightCircle_LeftTime = 0.5f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
 
-int8 Circle_target_down[2] = {2,6};
+int8 Circle_target_down[2] = {2,8};
 int8 Circle_target_up[2] = {5,15};
-int8 Circle_d_target[2] = {3,9};
+int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
 int8 ThreeRoads_target_down[2] = {1,8};
@@ -1200,8 +1200,8 @@ uint8 Check_ThreeRoads_New(void)
 
 uint8 Check_RightCircle_New(void)
 {
-    uint8 water_i = 0.2*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
-    int8 direction = 1;
+    uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
+    int8 direction = -1;
     int8 cnt = 0;
     int8 last_angle = 1;
 
@@ -1238,7 +1238,7 @@ uint8 Check_RightCircle_New(void)
     last_angle_down = last_angle;
     uint8 last_water_i = water_i;
     water_i = 0.2*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
-    direction = 1;
+    direction = -1;
     cnt = 0;
     last_angle = 1;
 
@@ -1289,7 +1289,7 @@ uint8 Check_RightCircle_New(void)
 
 uint8 Check_LeftCircle_New(void)
 {
-    uint8 water_i = 0.2*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
+    uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
     int8 direction = 1;
     int8 cnt = 0;
     int8 last_angle = 1;
