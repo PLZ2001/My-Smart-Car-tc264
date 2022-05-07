@@ -26,10 +26,12 @@ float rightCircle_LeftTime = 0.5f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
 
-int8 Circle_target_down[2] = {2,8};
-int8 Circle_target_up[2] = {5,15};
-int8 Circle_d_target[2] = {3,12};
-
+int8 Circle_target_down[2] = {1,8};
+int8 Circle_target_up[2] = {5,18};
+int8 Circle_d_target[2] = {3,15};
+//int8 Circle_target_down[2] = {2,8};
+//int8 Circle_target_up[2] = {5,15};
+//int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
 int8 ThreeRoads_target_down[2] = {1,8};
