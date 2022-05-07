@@ -34,9 +34,9 @@ int8 Circle_d_target[2] = {3,15};
 //int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
-int8 ThreeRoads_target_down[2] = {1,8};
+int8 ThreeRoads_target_down[2] = {1,11};
 int8 ThreeRoads_target_up[2] = {5,20};
-int8 ThreeRoads_d_target[2] = {1,12};
+int8 ThreeRoads_d_target[2] = {1,16};
 int8 ThreeRoads_lines = 3;
 
 int8 last_angle_down;
