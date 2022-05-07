@@ -26,10 +26,15 @@ float rightCircle_LeftTime = 0.5f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
 
-int8 target_down[2] = {2,6};
-int8 target_up[2] = {5,15};
-int8 d_target[2] = {3,9};
-int8 lines = 3;
+int8 Circle_target_down[2] = {2,6};
+int8 Circle_target_up[2] = {5,15};
+int8 Circle_d_target[2] = {3,9};
+int8 Circle_lines = 3;
+
+int8 ThreeRoads_target_down[2] = {1,8};
+int8 ThreeRoads_target_up[2] = {5,20};
+int8 ThreeRoads_d_target[2] = {1,12};
+int8 ThreeRoads_lines = 3;
 
 int8 last_angle_down;
 int8 last_angle_up;
@@ -1103,10 +1108,12 @@ uint8 Check_ThreeRoads(void)
 
 uint8 Check_ThreeRoads_New(void)
 {
-    uint8 water_i = 0, water_j = 0.5*width_Inverse_Perspective;
+    uint8 water_i = 0.2*height_Inverse_Perspective, water_j = 0.5*width_Inverse_Perspective;
     int8 direction = 1;
     int8 cnt = 0;
     int8 last_angle = 1;
+
+
     while(1)
     {
         if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0)
@@ -1117,26 +1124,76 @@ uint8 Check_ThreeRoads_New(void)
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
             water_j+=direction;
-            if (cnt==2)
+            if (cnt==1)
             {
                 last_angle++;
-                if (last_angle>4)
-                {
-                    return 0;
-                }
             }
         }
-        else
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
         {
             direction = -direction;
             cnt++;
-            if (cnt>=3)
+            if (cnt>=4)
             {
                 break;
             }
         }
+        else
+        {
+            return 0;
+        }
     }
-    return 1;
+
+    last_angle_down = last_angle;
+    uint8 last_water_i = water_i;
+    water_i = 0.2*height_Inverse_Perspective, water_j = 0.5*width_Inverse_Perspective;
+    direction = 1;
+    cnt = 0;
+    last_angle = 1;
+
+
+    while(1)
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-ThreeRoads_lines+1)
+        {
+            water_i++;
+            cnt = 0;
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
+        {
+            water_j+=direction;
+            if (cnt==1)
+            {
+                last_angle++;
+            }
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    last_angle_up = last_angle;
+
+    if ((last_angle_up - last_angle_down) >= ThreeRoads_d_target[0] && (last_angle_up - last_angle_down) <= ThreeRoads_d_target[1]
+          && last_angle_down >= ThreeRoads_target_down[0] && last_angle_down <= ThreeRoads_target_down[1]
+          && last_angle_up >= ThreeRoads_target_up[0] && last_angle_up <= ThreeRoads_target_up[1])
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 
@@ -1161,10 +1218,6 @@ uint8 Check_RightCircle_New(void)
             if (cnt==2)
             {
                 last_angle++;
-//                if (last_angle>target_down[1])
-//                {
-//                    return 0;
-//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1173,10 +1226,6 @@ uint8 Check_RightCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-//                if (last_angle<target_down[0])
-//                {
-//                    return 0;
-//                }
                 break;
             }
         }
@@ -1196,7 +1245,7 @@ uint8 Check_RightCircle_New(void)
 
     while(1)
     {
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-lines+1)
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-Circle_lines+1)
         {
             water_i++;
             cnt = 0;
@@ -1207,10 +1256,6 @@ uint8 Check_RightCircle_New(void)
             if (cnt==2)
             {
                 last_angle++;
-//                if (last_angle>target_up[1])
-//                {
-//                    return 0;
-//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1219,10 +1264,6 @@ uint8 Check_RightCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-//                if (last_angle<target_up[0])
-//                {
-//                    return 0;
-//                }
                 break;
             }
         }
@@ -1234,9 +1275,9 @@ uint8 Check_RightCircle_New(void)
 
     last_angle_up = last_angle;
 
-    if ((last_angle_up - last_angle_down) >= d_target[0] && (last_angle_up - last_angle_down) <= d_target[1]
-         && last_angle_down >= target_down[0] && last_angle_down <= target_down[1]
-         && last_angle_up >= target_up[0] && last_angle_up <= target_up[1])
+    if ((last_angle_up - last_angle_down) >= Circle_d_target[0] && (last_angle_up - last_angle_down) <= Circle_d_target[1]
+         && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
+         && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
     {
         return 1;
     }
@@ -1267,10 +1308,6 @@ uint8 Check_LeftCircle_New(void)
             if (cnt==1)
             {
                 last_angle++;
-//                if (last_angle>target_down[1])
-//                {
-//                    return 0;
-//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1279,10 +1316,6 @@ uint8 Check_LeftCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-//                if (last_angle<target_down[0])
-//                {
-//                    return 0;
-//                }
                 break;
             }
         }
@@ -1302,7 +1335,7 @@ uint8 Check_LeftCircle_New(void)
 
     while(1)
     {
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-lines+1)
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-Circle_lines+1)
         {
             water_i++;
             cnt = 0;
@@ -1313,10 +1346,6 @@ uint8 Check_LeftCircle_New(void)
             if (cnt==1)
             {
                 last_angle++;
-//                if (last_angle>target_up[1])
-//                {
-//                    return 0;
-//                }
             }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
@@ -1325,10 +1354,6 @@ uint8 Check_LeftCircle_New(void)
             cnt++;
             if (cnt>=4)
             {
-//                if (last_angle<target_up[0])
-//                {
-//                    return 0;
-//                }
                 break;
             }
         }
@@ -1340,9 +1365,9 @@ uint8 Check_LeftCircle_New(void)
 
     last_angle_up = last_angle;
 
-    if ((last_angle_up - last_angle_down) >= d_target[0] && (last_angle_up - last_angle_down) <= d_target[1]
-          && last_angle_down >= target_down[0] && last_angle_down <= target_down[1]
-          && last_angle_up >= target_up[0] && last_angle_up <= target_up[1])
+    if ((last_angle_up - last_angle_down) >= Circle_d_target[0] && (last_angle_up - last_angle_down) <= Circle_d_target[1]
+          && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
+          && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
     {
         return 1;
     }

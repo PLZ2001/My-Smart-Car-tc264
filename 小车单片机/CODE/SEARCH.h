@@ -28,7 +28,7 @@ extern float rightCircle_BannedTime;
 extern float T_Time;
 extern int8 last_angle_down;
 extern int8 last_angle_up;
-extern int8 lines;
+extern int8 Circle_lines;
 
 
 void UART_ColCenter(void);

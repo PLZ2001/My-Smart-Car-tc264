@@ -37,7 +37,7 @@ void Update_OLED_per10ms(void)
         switch(OLED_Page)
         {
            case Circle_Page:
-               OLED_PRINTF(0,0,"%d:%d   ",lines,last_angle_up);
+               OLED_PRINTF(0,0,"%d:%d   ",Circle_lines,last_angle_up);
                OLED_PRINTF(0,1,"1:%d    ",last_angle_down);
                break;
            case Steering_Center_Page:
