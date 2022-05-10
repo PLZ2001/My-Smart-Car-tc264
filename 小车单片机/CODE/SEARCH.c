@@ -34,13 +34,21 @@ int8 Circle_d_target[2] = {3,15};
 //int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
-int8 ThreeRoads_target_down[2] = {1,11};
+int8 ThreeRoads_target_down[2] = {1,10};
 int8 ThreeRoads_target_up[2] = {5,20};
 int8 ThreeRoads_d_target[2] = {1,16};
 int8 ThreeRoads_lines = 3;
 
 int8 last_angle_down;
 int8 last_angle_up;
+
+float ZebraCrossing_Value = 8;
+float cnt_ave = 0;
+uint8 ZebraCrossing_PermittingTimes = 0;
+uint8 ZebraCrossing_Start = 16;
+uint8 ZebraCrossing_End = 16;
+float ZebraCrossing_Time = 0.5f;
+float ZebraCrossing_BannedTime = 1.0f;
 
 void UART_ColCenter(void)
 {
@@ -1379,4 +1387,37 @@ uint8 Check_LeftCircle_New(void)
         return 0;
     }
 
+}
+
+
+uint8 Check_ZebraCrossing(void)
+{
+    uint8 search_i = 0.65*height_Inverse_Perspective, search_j = 0.5*width_Inverse_Perspective;
+    uint8 cnt_right = 0;
+    uint8 cnt_left = 0;
+    for (search_j = 0.5*width_Inverse_Perspective;search_j<width_Inverse_Perspective-1;search_j++)
+    {
+        if ((mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j]==0&&mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j+1]==1)
+          ||(mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j]==1&&mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j+1]==0))
+        {
+            cnt_right++;
+        }
+    }
+    for (search_j = 0.5*width_Inverse_Perspective;search_j>1;search_j--)
+    {
+        if ((mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j]==0&&mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j-1]==1)
+          ||(mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j]==1&&mt9v03x_image_cutted_thresholding_inversePerspective[search_i][search_j-1]==0))
+        {
+            cnt_left++;
+        }
+    }
+    cnt_ave = 0.5*(cnt_right+cnt_left);
+    if (cnt_ave>=ZebraCrossing_Value)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

@@ -29,6 +29,12 @@ extern float T_Time;
 extern int8 last_angle_down;
 extern int8 last_angle_up;
 extern int8 Circle_lines;
+extern float cnt_ave;
+extern uint8 ZebraCrossing_PermittingTimes;
+extern uint8 ZebraCrossing_Start;
+extern uint8 ZebraCrossing_End;
+extern float ZebraCrossing_Time;
+extern float ZebraCrossing_BannedTime;
 
 
 void UART_ColCenter(void);

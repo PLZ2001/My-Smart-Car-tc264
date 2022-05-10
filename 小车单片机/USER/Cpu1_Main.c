@@ -86,74 +86,101 @@ void core1_main(void)
             static uint8 flag_For_Left_Circle = 0;
             static uint8 flag_For_Right_T = 0;
             static uint8 flag_For_Left_T = 0;
+            static uint8 flag_For_ZebraCrossing = 0;
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
-                switch(classification_Result)
+                if (flag_For_ZebraCrossing == 0 && start_Flag == 1)//说明还在车库没启动
                 {
-                    case 2://左环岛
-                        if (flag_For_Left_Circle == 0)//说明还没进左环岛
-                        {
-                            flag_For_Left_Circle = 1;
-                            classification_Result = 7;//7靠左
-                            time_up[0] = rightCircle_RightTime;
+                    flag_For_ZebraCrossing = 1;//表示从车库出发了
+                    classification_Result = ZebraCrossing_Start;
+                    time_up[0] = ZebraCrossing_Time;
+                    Start_Timer(0);
+                }
+                else
+                {
+                    switch(classification_Result)
+                    {
+                        case 2://左环岛
+                            if (flag_For_Left_Circle == 0)//说明还没进左环岛
+                            {
+                                flag_For_Left_Circle = 1;
+                                classification_Result = 7;//7靠左
+                                time_up[0] = rightCircle_RightTime;
+                                Start_Timer(0);
+                            }
+                            break;
+                        case 3://右环岛
+                            if (flag_For_Right_Circle == 0)//说明还没进右环岛
+                            {
+                                flag_For_Right_Circle = 1;
+                                classification_Result = 8;//8靠右
+                                time_up[0] = rightCircle_RightTime;
+                                Start_Timer(0);
+                            }
+                            break;
+                        case 4:
+                            classification_Result = 4;//4三岔路口
+                            time_up[0] = threeRoads_RightTime;
                             Start_Timer(0);
-                        }
-                        break;
-                    case 3://右环岛
-                        if (flag_For_Right_Circle == 0)//说明还没进右环岛
-                        {
-                            flag_For_Right_Circle = 1;
-                            classification_Result = 8;//8靠右
-                            time_up[0] = rightCircle_RightTime;
-                            Start_Timer(0);
-                        }
-                        break;
-                    case 4:
-                        classification_Result = 4;//4三岔路口
-                        time_up[0] = threeRoads_RightTime;
-                        Start_Timer(0);
-                        break;
-                    case 10://左直线
-                        if (flag_For_Right_Circle == 1) //说明准备出右环岛
-                        {
-                            flag_For_Right_Circle = 2;
-                            classification_Result = 7;//7靠左
-                            time_up[0] = rightCircle_LeftTime;
-                            Start_Timer(0);
-                            time_up[4] = rightCircle_BannedTime;
-                            Start_Timer(4);
-                        }
-                        break;
-                    case 11://右直线
-                        if (flag_For_Left_Circle == 1) //说明准备出左环岛
-                        {
-                            flag_For_Left_Circle = 2;
-                            classification_Result = 8;//8靠右
-                            time_up[0] = rightCircle_LeftTime;
-                            Start_Timer(0);
-                            time_up[5] = rightCircle_BannedTime;
-                            Start_Timer(5);
-                        }
-                        break;
-                    case 14://T字
-                        if (flag_For_Right_T == 1) //说明准备出右丁字
-                        {
-                            flag_For_Right_T = 0;
-                            classification_Result = 7;//7靠左
-                            time_up[0] = T_Time;
-                            Start_Timer(0);
-                        }
-                        else if (flag_For_Left_T == 1)
-                        {
-                            flag_For_Right_T = 0;
-                            classification_Result = 8;//8靠右
-                            time_up[0] = T_Time;
-                            Start_Timer(0);
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 10://左直线
+                            if (flag_For_Right_Circle == 1) //说明准备出右环岛
+                            {
+                                flag_For_Right_Circle = 2;
+                                classification_Result = 7;//7靠左
+                                time_up[0] = rightCircle_LeftTime;
+                                Start_Timer(0);
+                                time_up[4] = rightCircle_BannedTime;
+                                Start_Timer(4);
+                            }
+                            break;
+                        case 11://右直线
+                            if (flag_For_Left_Circle == 1) //说明准备出左环岛
+                            {
+                                flag_For_Left_Circle = 2;
+                                classification_Result = 8;//8靠右
+                                time_up[0] = rightCircle_LeftTime;
+                                Start_Timer(0);
+                                time_up[5] = rightCircle_BannedTime;
+                                Start_Timer(5);
+                            }
+                            break;
+                        case 14://T字
+                            if (flag_For_Right_T == 1) //说明准备出右丁字
+                            {
+                                flag_For_Right_T = 0;
+                                classification_Result = 7;//7靠左
+                                time_up[0] = T_Time;
+                                Start_Timer(0);
+                            }
+                            else if (flag_For_Left_T == 1)
+                            {
+                                flag_For_Right_T = 0;
+                                classification_Result = 8;//8靠右
+                                time_up[0] = T_Time;
+                                Start_Timer(0);
+                            }
+                            break;
+                        case 15://斑马线
+                            if (ZebraCrossing_PermittingTimes <= 0)
+                            {
+                                flag_For_ZebraCrossing = 2;//表示该入库了
+                                classification_Result = ZebraCrossing_End;
+                                time_up[0] = ZebraCrossing_Time;
+                                Start_Timer(0);
+                            }
+                            else
+                            {
+                                ZebraCrossing_PermittingTimes--;
+                                time_up[6] = ZebraCrossing_BannedTime;
+                                Start_Timer(6);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
                 }
 
             }
@@ -179,9 +206,20 @@ void core1_main(void)
                     Reset_Timer(5);
                 }
             }
-            //如果不在计时，继续分类
+            if (Read_Timer_Status(6) == RUNNING)
+            {
+                if (Read_Timer(6)>time_up[6])
+                {
+                    Reset_Timer(6);
+                }
+            }
+            //如果不在计时，而且不用入库，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
+                if (flag_For_ZebraCrossing==2)//如果入库了
+                {
+                    emergency_Stop = 1;//刹车
+                }
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
@@ -216,7 +254,12 @@ void core1_main(void)
                     {
                         flag_For_Left_Circle = 0;
                     }
-                    if (Check_Straight())
+
+                    if (Read_Timer_Status(6) == PAUSED && Check_ZebraCrossing())
+                    {
+                        classification_Result = 15;//15斑马线
+                    }
+                    else if (Check_Straight())
                     {
                         classification_Result = 6;//6直道
                     }
@@ -275,7 +318,19 @@ void core1_main(void)
             DrawCenterLine();
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
-            Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+            if (classification_Result!=16 && classification_Result!=17)
+            {
+                Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+            }
+            else if (classification_Result==16)
+            {
+                steering_Error = -200;
+            }
+            else if (classification_Result==17)
+            {
+                steering_Error = 200;
+            }
+
 
 
 

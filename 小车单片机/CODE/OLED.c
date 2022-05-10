@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = Zebra_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -36,6 +36,57 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case Zebra_Page:
+               OLED_PRINTF(0,0,"zebra:%02.01f   ",cnt_ave);
+               if (pointer_temp == 0)
+               {
+                   OLED_PRINTF(0,1,"->PermitTimes:%d   ",ZebraCrossing_PermittingTimes);
+                   OLED_PRINTF(0,2,"Start:%d   ",ZebraCrossing_Start);
+                   OLED_PRINTF(0,3,"End:%d   ",ZebraCrossing_End);
+                   OLED_PRINTF(0,4,"SteerTime:%01.02f s   ",ZebraCrossing_Time);
+                   OLED_PRINTF(0,5,"BannedTime:%01.02f s   ",ZebraCrossing_BannedTime);
+               }
+               else if (pointer_temp == 1)
+               {
+                   OLED_PRINTF(0,1,"PermitTimes:%d   ",ZebraCrossing_PermittingTimes);
+                   OLED_PRINTF(0,2,"->Start:%d   ",ZebraCrossing_Start);
+                   OLED_PRINTF(0,3,"End:%d   ",ZebraCrossing_End);
+                   OLED_PRINTF(0,4,"SteerTime:%01.02f s   ",ZebraCrossing_Time);
+                   OLED_PRINTF(0,5,"BannedTime:%01.02f s   ",ZebraCrossing_BannedTime);
+               }
+               else if (pointer_temp == 2)
+               {
+                   OLED_PRINTF(0,1,"PermitTimes:%d   ",ZebraCrossing_PermittingTimes);
+                   OLED_PRINTF(0,2,"Start:%d   ",ZebraCrossing_Start);
+                   OLED_PRINTF(0,3,"->End:%d   ",ZebraCrossing_End);
+                   OLED_PRINTF(0,4,"SteerTime:%01.02f s   ",ZebraCrossing_Time);
+                   OLED_PRINTF(0,5,"BannedTime:%01.02f s   ",ZebraCrossing_BannedTime);
+               }
+               else if (pointer_temp == 3)
+               {
+                   OLED_PRINTF(0,1,"PermitTimes:%d   ",ZebraCrossing_PermittingTimes);
+                   OLED_PRINTF(0,2,"Start:%d   ",ZebraCrossing_Start);
+                   OLED_PRINTF(0,3,"End:%d   ",ZebraCrossing_End);
+                   OLED_PRINTF(0,4,"->SteerTime:%01.02f s   ",ZebraCrossing_Time);
+                   OLED_PRINTF(0,5,"BannedTime:%01.02f s   ",ZebraCrossing_BannedTime);
+               }
+               else if (pointer_temp == 4)
+               {
+                   OLED_PRINTF(0,1,"PermitTimes:%d   ",ZebraCrossing_PermittingTimes);
+                   OLED_PRINTF(0,2,"Start:%d   ",ZebraCrossing_Start);
+                   OLED_PRINTF(0,3,"End:%d   ",ZebraCrossing_End);
+                   OLED_PRINTF(0,4,"SteerTime:%01.02f s   ",ZebraCrossing_Time);
+                   OLED_PRINTF(0,5,"->BannedTime:%01.02f s   ",ZebraCrossing_BannedTime);
+               }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,6,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,7,"SUB");
+               }
+               break;
            case Circle_Page:
                OLED_PRINTF(0,0,"%d:%d   ",Circle_lines,last_angle_up);
                OLED_PRINTF(0,1,"1:%d    ",last_angle_down);

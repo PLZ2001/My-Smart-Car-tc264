@@ -108,6 +108,14 @@ void Key1_Action(void)
 {
     switch (OLED_Page)
     {
+        case Zebra_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 5)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;
@@ -199,6 +207,27 @@ void Key2_Action(void)
                     break;
                 case 4:
                     T_Time += 0.1f*up_Down;
+                default:
+                    break;
+            }
+            break;
+        case Zebra_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    ZebraCrossing_PermittingTimes += 1*up_Down;
+                    break;
+                case 1:
+                    ZebraCrossing_Start += 1*up_Down;
+                    break;
+                case 2:
+                    ZebraCrossing_End += 1*up_Down;
+                    break;
+                case 3:
+                    ZebraCrossing_Time += 0.1f*up_Down;
+                    break;
+                case 4:
+                    ZebraCrossing_BannedTime += 0.1f*up_Down;
                 default:
                     break;
             }
