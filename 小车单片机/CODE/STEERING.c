@@ -14,7 +14,7 @@ struct steerpid
     float KP;
     float KI;
     float KD;
-} Steering_PID={0.0f,0.0f,0.25f,0.0f,0.3f};
+} Steering_PID={0.0f,0.0f,0.35f,0.0f,0.3f};
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
@@ -139,7 +139,7 @@ void Cal_Steering_Target(void)
         case 7:
         case 8:
         {
-            steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (Steering_PID.KP/1.5f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
 //        case 0:
