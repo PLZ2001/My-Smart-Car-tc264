@@ -248,7 +248,7 @@ uint8 Check_Straight(void)
 }
 
 
-uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
+uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float search_Ratio)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -308,13 +308,13 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
     int d_Col_Left_Num=0;
 
     int i;
-    for (i=0;i<search_Lines;i++)
+    for (i=0;i<search_Lines*search_Ratio;i++)
     {
         if (Col_Left[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
             {
-                d_Col_Left_Num = search_Lines-i-1;
+                d_Col_Left_Num = search_Lines*search_Ratio-i-1;
                 break;
             }
             else
@@ -341,7 +341,7 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
 }
 
 
-uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
+uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float search_Ratio)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -401,13 +401,13 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     int d_Col_Right_Num=0;
 
     int i;
-    for (i=0;i<search_Lines;i++)
+    for (i=0;i<search_Lines*search_Ratio;i++)
     {
         if (Col_Right[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
-                d_Col_Right_Num = search_Lines-i-1;
+                d_Col_Right_Num = search_Lines*search_Ratio-i-1;
                 break;
             }
             else
@@ -914,7 +914,7 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 uint8 Check_RightCircle(void)
 {
     int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{-1,-1,-1},{-1,-1,1},{-1,1,1}}};
+    int Conv_Core[1][3][3] = {{{1,1,1},{1,1,-1},{1,-1,-1}}};
     //Conv_Core(1).core = [1 1 1
 //                         1 1 -1
 //                         1 -1 -1];
@@ -964,7 +964,7 @@ uint8 Check_RightCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i>height_Inverse_Perspective*0.5 && j>width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
@@ -986,7 +986,7 @@ uint8 Check_RightCircle(void)
 uint8 Check_LeftCircle(void)
 {
     int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{-1,-1,-1},{1,-1,-1},{1,1,-1}}};
+    int Conv_Core[1][3][3] = {{{1,1,1},{-1,1,1},{-1,-1,1}}};
     //Conv_Core(1).core = [1 1 1
 //                        -1 1 1
 //                       -1 -1 1];
@@ -1036,7 +1036,7 @@ uint8 Check_LeftCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i>height_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
