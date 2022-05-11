@@ -914,7 +914,7 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 uint8 Check_RightCircle(void)
 {
     int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{1,1,1},{1,1,-1},{1,-1,-1}}};
+    int Conv_Core[1][3][3] = {{{-1,-1,-1},{-1,-1,1},{-1,1,1}}};
     //Conv_Core(1).core = [1 1 1
 //                         1 1 -1
 //                         1 -1 -1];
@@ -964,7 +964,7 @@ uint8 Check_RightCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i>height_Inverse_Perspective*0.5 && j>width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
@@ -986,7 +986,7 @@ uint8 Check_RightCircle(void)
 uint8 Check_LeftCircle(void)
 {
     int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{1,1,1},{-1,1,1},{-1,-1,1}}};
+    int Conv_Core[1][3][3] = {{{-1,-1,-1},{1,-1,-1},{1,1,-1}}};
     //Conv_Core(1).core = [1 1 1
 //                        -1 1 1
 //                       -1 -1 1];
@@ -1036,7 +1036,7 @@ uint8 Check_LeftCircle(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && i>height_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
