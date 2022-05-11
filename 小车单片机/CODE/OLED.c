@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -126,7 +126,7 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
-               OLED_PRINTF(0,3,"SpeedTarget:%01.01fm/s   ",speed_Target*60.0f/68.0f);
+               OLED_PRINTF(0,3,"SpeedTarget:%01.01fm/s   ",speed_Target_Max*60.0f/68.0f);
                OLED_PRINTF(0,4,"Class:%d     ",classification_Result);
                OLED_PRINTF(0,5,"2-value:%d     ",thresholding_Value);
                if (start_Flag == 1)

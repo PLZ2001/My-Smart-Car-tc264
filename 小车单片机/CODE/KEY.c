@@ -205,20 +205,20 @@ void Key2_Action(void)
             break;
         case Speed_Page:{
             static int8 direction = 1;
-            if (speed_Target>=2.6)
+            if (speed_Target_Max>=2.6)
             {
-                speed_Target+=0.1*direction;
+                speed_Target_Max+=0.1*direction;
             }
             else
             {
-                speed_Target+=0.2*direction;
+                speed_Target_Max+=0.2*direction;
             }
 
-            if (speed_Target>=3)
+            if (speed_Target_Max>=3)
             {
                 direction = -1;
             }
-            if (speed_Target<=-3)
+            if (speed_Target_Max<=-3)
             {
                 direction = 1;
             }

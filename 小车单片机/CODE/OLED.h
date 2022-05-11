@@ -9,12 +9,12 @@
 enum OLEDPage
 {
     UART_Debug_Page,
+    Speed_Page,
     Circle_Page,
     Steering_Center_Page,
     Camera_Page,
     SteeringPID_Page,
     TimeSet_Page,
-    Speed_Page,
     UART_Setting_Page,
     OLED_Setting_Page,
     Timer_Page,
