@@ -9,6 +9,7 @@
 #define KEY0_GPIO P33_8
 #define KEY1_GPIO P33_9
 #define KEY2_GPIO P33_11
+#define KEY3_GPIO P33_12
 
 #else
 
@@ -26,7 +27,8 @@ enum Keycode
 {
     Key0,
     Key1,
-    Key2
+    Key2,
+    Key3
 };
 
 void My_Init_Key(void);
@@ -34,6 +36,7 @@ void Check_Key_per10ms(void);
 void Key0_Action(void);
 void Key1_Action(void);
 void Key2_Action(void);
+void Key3_Action(void);
 
 
 #endif

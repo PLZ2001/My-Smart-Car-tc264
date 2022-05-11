@@ -275,22 +275,20 @@ void core1_main(void)
             DrawCenterLine();
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
-            if (classification_Result == 9)//如果是未知
+            //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
+            if ((Get_d_steering_Error()>20||Get_d_steering_Error()<-20) && classification_Result == 9)
             {
                 Cal_Steering_Error(0.55);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+                speed_Target = speed_Target_Min;
+//                Change_Steering_PID(0.25f,0,0.30f);
+                Differential_Ratio = 1.2f;
             }
             else
             {
                 Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
-            }
-
-            if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
-            {
-                speed_Target = speed_Target_Min;
-            }
-            else
-            {
                 speed_Target = speed_Target_Max;
+//                Change_Steering_PID(0.25f,0,0.30f);
+                Differential_Ratio = 1.1f;
             }
 
 

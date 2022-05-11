@@ -14,6 +14,7 @@ void My_Init_Key(void)
     gpio_init(KEY0_GPIO, GPI, 0, NO_PULL);//KEY0输入
     gpio_init(KEY1_GPIO, GPI, 0, NO_PULL);//KEY1输入
     gpio_init(KEY2_GPIO, GPI, 0, NO_PULL);//KEY2输入
+    gpio_init(KEY3_GPIO, GPI, 0, NO_PULL);//KEY2输入
 }
 
 //按键初始状态为0
@@ -24,7 +25,7 @@ void My_Init_Key(void)
 //该函数要求10ms执行一次
 void Check_Key_per10ms(void)
 {
-    static uint8 counter[3], status[3], trigger[3];
+    static uint8 counter[4], status[4], trigger[4];
     //检查Key0
     if (gpio_get(KEY0_GPIO)==0)
     {
@@ -73,6 +74,22 @@ void Check_Key_per10ms(void)
         status[Key2] = 0;
         counter[Key2] = 0;
     }
+    //检查Key3
+    if (gpio_get(KEY3_GPIO)==0)
+    {
+        counter[Key3]++;
+        if (counter[Key3]>=(status[Key3]==0?STATUS0_COUNTER_MAX:STATUS1_COUNTER_MAX))
+        {
+            status[Key3] = 1;
+            trigger[Key3] = TRUE;
+            counter[Key3] = 0;
+        }
+    }
+    else
+    {
+        status[Key3] = 0;
+        counter[Key3] = 0;
+    }
     //执行动作
     if (trigger[Key0])
     {
@@ -88,6 +105,11 @@ void Check_Key_per10ms(void)
     {
         Key2_Action();
         trigger[Key2] = FALSE;
+    }
+    if (trigger[Key3])
+    {
+        Key3_Action();
+        trigger[Key3] = FALSE;
     }
 }
 
@@ -219,6 +241,36 @@ void Key2_Action(void)
                 direction = -1;
             }
             if (speed_Target_Max<=-3)
+            {
+                direction = 1;
+            }
+            break;}
+        default:
+            break;
+    }
+    OLED_Page_Active_Flag = TRUE;
+}
+
+void Key3_Action(void)
+{
+    switch (OLED_Page)
+    {
+        case Speed_Page:{
+            static int8 direction = 1;
+            if (speed_Target_Min>=2.6)
+            {
+                speed_Target_Min+=0.1*direction;
+            }
+            else
+            {
+                speed_Target_Min+=0.2*direction;
+            }
+
+            if (speed_Target_Min>=3)
+            {
+                direction = -1;
+            }
+            if (speed_Target_Min<=-3)
             {
                 direction = 1;
             }

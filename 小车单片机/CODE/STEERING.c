@@ -212,3 +212,15 @@ void OLED_temp(void)
         OLED_PRINTF(0,3,"SUB");
     }
 }
+
+float Get_d_steering_Error(void)
+{
+    return (Steering_PID.current_error-Steering_PID.last_error);
+}
+
+void Change_Steering_PID(float kp, float ki, float kd)
+{
+    Steering_PID.KP = kp;
+    Steering_PID.KI = ki;
+    Steering_PID.KD = kd;
+}
