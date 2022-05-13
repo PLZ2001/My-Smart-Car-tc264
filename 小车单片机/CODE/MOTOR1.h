@@ -17,6 +17,9 @@ extern float speed_Measured1;
 extern float speed_Target1;
 extern float speed_Output1;
 extern enum PID_Mode1 PID_mode1;
+extern float PID_KP1;
+extern float PID_KI1;
+extern float PID_KD1;
 
 
 void UART_Speed1(void);

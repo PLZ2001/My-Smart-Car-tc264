@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = MotorPID_Page;//SteeringPID_Page;//Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -36,6 +36,35 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case MotorPID_Page:
+               if (pointer_temp == 0)
+               {
+                   OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
+                   OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+                   OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+               }
+               else if (pointer_temp == 1)
+               {
+                   OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
+                   OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+                   OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+               }
+               else if (pointer_temp == 2)
+               {
+                   OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
+                   OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+                   OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+               }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,3,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,3,"SUB");
+               }
+               break;
+
            case Circle_Page:
                OLED_PRINTF(0,0,"%d:%d   ",Circle_lines,last_angle_up);
                OLED_PRINTF(0,1,"1:%d    ",last_angle_down);

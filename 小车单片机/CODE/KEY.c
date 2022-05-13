@@ -6,6 +6,8 @@
 #include "SEARCH.h"
 #include "CAMERA.h"
 #include "STEERING.h"
+#include "MOTOR1.h"
+#include "MOTOR2.h"
 
 
 
@@ -160,6 +162,14 @@ void Key1_Action(void)
                 up_Down = -up_Down;
             }
             break;
+        case MotorPID_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 3)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case Speed_Page:
             start_Flag = start_Flag?0:1;
             break;
@@ -221,6 +231,25 @@ void Key2_Action(void)
                     break;
                 case 4:
                     T_Time += 0.1f*up_Down;
+                default:
+                    break;
+            }
+            break;
+        case MotorPID_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    PID_KP1 += 0.05f*up_Down;
+                    PID_KP2 += 0.05f*up_Down;
+                    break;
+                case 1:
+                    PID_KI1 += 0.05f*up_Down;
+                    PID_KI2 += 0.05f*up_Down;
+                    break;
+                case 2:
+                    PID_KD1 += 0.05f*up_Down;
+                    PID_KD2 += 0.05f*up_Down;
+                    break;
                 default:
                     break;
             }
