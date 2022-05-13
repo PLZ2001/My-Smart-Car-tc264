@@ -19,7 +19,7 @@ float speed_Target1 = 0;//目标速度（m/s），更新函数Set_Speed_Target(uint8 val)
 //其他变量
 float speed_Output1 = 0;//输出速度（m/s）
 float PID_KP1=7.0f/1.0f;//7.0f/3.0f;//7.0f/0.5f;//7.0f/3.0f;
-float PID_KI1=0.20f;//0.15f;//0.04f;//0.01f;
+float PID_KI1=0.25f;//0.15f;//0.04f;//0.01f;
 float PID_KD1=0.0f;//0.0f;
 
 enum PID_Mode1 PID_mode1 = PID_CLOSED_LOOP1;//PID模式选择
