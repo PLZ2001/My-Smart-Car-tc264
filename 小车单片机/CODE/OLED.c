@@ -45,15 +45,15 @@ void Update_OLED_per10ms(void)
                }
                else if (pointer_temp == 1)
                {
-                   OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
-                   OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+                   OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
+                   OLED_PRINTF(0,1,"->Ki:%01.02f s   ",PID_KI1);
                    OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
                }
                else if (pointer_temp == 2)
                {
-                   OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
+                   OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
                    OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
-                   OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+                   OLED_PRINTF(0,2,"->Kd:%01.02f s   ",PID_KD1);
                }
                if (up_Down == 1)
                {
