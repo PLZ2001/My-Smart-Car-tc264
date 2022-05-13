@@ -34,10 +34,11 @@ int8 Circle_d_target[2] = {3,15};
 //int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
-int8 ThreeRoads_target_down[2] = {1,11};
-int8 ThreeRoads_target_up[2] = {5,20};
-int8 ThreeRoads_d_target[2] = {1,16};
+int8 ThreeRoads_target_down[2] = {1,10};
+int8 ThreeRoads_target_up[2] = {5,16};//{5,19};
+int8 ThreeRoads_d_target[2] = {1,9};
 int8 ThreeRoads_lines = 3;
+//11、20是假三岔
 
 int8 last_angle_down;
 int8 last_angle_up;
@@ -119,12 +120,12 @@ void DrawCenterLine(void)
     // 对于8靠右（临时使用）可以采用，特征是靠右行驶
     else if (classification_Result == 8)
     {
-        DrawCenterLinewithConfig_RightBased(-0.3);
+        DrawCenterLinewithConfig_RightBased(0);
     }
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
     {
-        DrawCenterLinewithConfig_LeftBased(-0.3);
+        DrawCenterLinewithConfig_LeftBased(0);
     }
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
@@ -272,7 +273,7 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
                 start_Col[0] = start_Col[0] - 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -290,7 +291,7 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
                 start_Col[0] = start_Col[0] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
@@ -365,7 +366,7 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
@@ -382,7 +383,7 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
                 start_Col[1] = start_Col[1] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -459,7 +460,7 @@ void DrawCenterLinewithConfig(float filter)
                 start_Col[0] = start_Col[0] - 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -477,7 +478,7 @@ void DrawCenterLinewithConfig(float filter)
                 start_Col[0] = start_Col[0] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
@@ -494,7 +495,7 @@ void DrawCenterLinewithConfig(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
@@ -511,7 +512,7 @@ void DrawCenterLinewithConfig(float filter)
                 start_Col[1] = start_Col[1] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -595,7 +596,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -612,7 +613,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 start_Col[1] = start_Col[1] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -627,21 +628,34 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         {
             Col_Left[i] = start_Col[0];//第一次之后，剩余时候发现1区域就保持右线往左road_width
         }
-        else//如果左线发现0区域（背景）
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0)//如果左线发现0区域（背景）
         {
             int cnt_temp = 0;
-            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0 && start_Col[0]<=width_Inverse_Perspective-2)
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
             {
                 start_Col[0] = start_Col[0] + 1;
                 cnt_temp = cnt_temp + 1;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>road_width)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
             {
                 Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+            }
+        }
+        else
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
+            {
+                start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
+            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>2*road_width)
+            {
+                break;
             }
         }
 
@@ -750,7 +764,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
         {
             int cnt_temp = 0;
-            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0 && start_Col[1]>=1)
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
             {
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
@@ -764,9 +778,22 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
             }
         }
-        else//如果右线发现1区域（道路）
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)//如果右线发现1区域（道路）
         {
             Col_Right[i] = start_Col[1];//第一次之后，剩余时候发现1区域就保持左线往右road_width
+        }
+        else
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
+            {
+                start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
+            }//则右线持续向左扫描直到不再是255区域（背景）
+            if (cnt_temp>20)
+            {
+                break;
+            }
         }
 
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
@@ -873,13 +900,13 @@ void DrawCenterLinewithConfig_CrossRoad(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.6)
+            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
                 Conv_Score_max_j[0] = j;
             }
-            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.4)
+            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5)
             {
                 Conv_Score_max[1] = Conv_Score[1];
                 Conv_Score_max_i[1] = i;
