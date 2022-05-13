@@ -469,7 +469,7 @@ void Get_Thresholding_Value(void)
 void Get_Thresholding_Image(void)
 {
     //Kmeans法更新二值化阈值
-    if (Read_Timer(3) > time_up[3] ) {
+    if (Read_Timer(3) > time_up[3] && classification_Result == 6) {
         Reset_Timer(3);
         Get_Thresholding_Value();
         Start_Timer(3);
