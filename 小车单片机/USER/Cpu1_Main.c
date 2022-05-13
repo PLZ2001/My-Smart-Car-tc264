@@ -280,9 +280,15 @@ void core1_main(void)
             {
                 Cal_Steering_Error(0.55);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
                 speed_Target = speed_Target_Min;
+
                 Differential_Ratio = 1.2f;
+                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
+                {
+                    Differential_Ratio = 1.3f;
+                }
+
                 Change_Steering_PID(0.25f,0,0.30f);
-                if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)
+                if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
                 {
                     Change_Steering_PID(0.30f,0,0.30f);
                 }
@@ -291,7 +297,13 @@ void core1_main(void)
             {
                 Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
                 speed_Target = speed_Target_Max;
+
                 Differential_Ratio = 1.1f;
+                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
+                {
+                    Differential_Ratio = 1.2f;
+                }
+
                 Change_Steering_PID(0.25f,0,0.30f);
             }
 
