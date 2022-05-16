@@ -274,7 +274,9 @@ void core1_main(void)
 
             DrawCenterLine();
 
+
             //由处理后的图像等信息，获取速度、转向角度的目标值
+
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             if ((Get_d_steering_Error()>20||Get_d_steering_Error()<-20) && classification_Result == 9)
             {
@@ -304,8 +306,21 @@ void core1_main(void)
                     Differential_Ratio = 1.2f;
                 }
 
-                Change_Steering_PID(0.25f,0,0.30f);
+                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)//圆环内单独设转向pid
+                {
+                    Change_Steering_PID(0.30f,0,0.30f);
+                }
+                else
+                {
+                    Change_Steering_PID(0.25f,0,0.30f);
+                }
             }
+
+
+
+
+
+
 
 
 
