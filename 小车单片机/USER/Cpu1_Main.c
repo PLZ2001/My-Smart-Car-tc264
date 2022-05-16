@@ -35,7 +35,6 @@
 #pragma section all "cpu1_dsram"
 //将本语句与#pragma section all restore语句之间的全局变量都放在CPU1的RAM中
 
-
 void core1_main(void)
 {
 	disableInterrupts();
@@ -82,10 +81,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
 
-            static uint8 flag_For_Right_Circle = 0;
-            static uint8 flag_For_Left_Circle = 0;
-            static uint8 flag_For_Right_T = 0;
-            static uint8 flag_For_Left_T = 0;
+
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {

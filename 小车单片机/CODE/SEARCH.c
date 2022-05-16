@@ -596,7 +596,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>2*road_width)
+            if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
             {
                 break;
             }
@@ -613,7 +613,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 start_Col[1] = start_Col[1] + 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>2*road_width)
+            if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
             {
                 break;
             }
@@ -733,7 +733,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 start_Col[0] = start_Col[0] - 1;
                 cnt_temp = cnt_temp + 1;
             }
-            if (cnt_temp>20)
+            if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
             {
                 break;
             }
@@ -751,7 +751,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 start_Col[0] = start_Col[0] + 1;
                 cnt_temp = cnt_temp + 1;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>20)
+            if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
             {
                 break;
             }
@@ -769,7 +769,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-            if (cnt_temp>20)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }
@@ -790,7 +790,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是255区域（背景）
-            if (cnt_temp>20)
+            if (cnt_temp>2*road_width)
             {
                 break;
             }

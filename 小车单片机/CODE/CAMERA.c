@@ -27,6 +27,11 @@ IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding_inversePerspective[height_I
 int width_Inverse_Perspective;
 int height_Inverse_Perspective;
 
+uint8 flag_For_Right_Circle = 0;
+uint8 flag_For_Left_Circle = 0;
+uint8 flag_For_Right_T = 0;
+uint8 flag_For_Left_T = 0;
+
 //float BayesTable_16[13][CLASS_NUM] = {{-6.212,-9.319,-24.312,-25.426,-3.056,-29.253},
 //        {25.361,26.676,57.032,54.606,25.934,60.921},
 //        {30.833,28.652,55.679,57.031,30.260,59.570},

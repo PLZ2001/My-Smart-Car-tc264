@@ -44,6 +44,11 @@ extern float fuzzy_thresholdingValue_36;
 extern float score[CLASS_NUM_NEW];
 extern float max_Score;
 
+extern uint8 flag_For_Right_Circle;
+extern uint8 flag_For_Left_Circle;
+extern uint8 flag_For_Right_T;
+extern uint8 flag_For_Left_T;
+
 
 void My_Init_Camera(void);
 
