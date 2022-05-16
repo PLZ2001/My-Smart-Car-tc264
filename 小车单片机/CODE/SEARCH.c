@@ -249,7 +249,7 @@ uint8 Check_Straight(void)
 }
 
 
-uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
+uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float ratio)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -309,13 +309,13 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
     int d_Col_Left_Num=0;
 
     int i;
-    for (i=0;i<search_Lines;i++)
+    for (i=0;i<search_Lines*ratio;i++)
     {
         if (Col_Left[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
             {
-                d_Col_Left_Num = search_Lines-i-1;
+                d_Col_Left_Num = search_Lines*ratio-i-1;
                 break;
             }
             else
@@ -325,7 +325,7 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Left_Num<=5)
+    if (d_Col_Left_Num<=0.7*search_Lines)
     {
         return 0;
     }
@@ -342,7 +342,7 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left)
 }
 
 
-uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
+uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float ratio)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
@@ -402,13 +402,13 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
     int d_Col_Right_Num=0;
 
     int i;
-    for (i=0;i<search_Lines;i++)
+    for (i=0;i<search_Lines*ratio;i++)
     {
         if (Col_Right[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
-                d_Col_Right_Num = search_Lines-i-1;
+                d_Col_Right_Num = search_Lines*ratio-i-1;
                 break;
             }
             else
@@ -418,7 +418,7 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right)
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Right_Num<=5)
+    if (d_Col_Right_Num<=0.7*search_Lines)
     {
         return 0;
     }
