@@ -3,6 +3,7 @@
 #include "IfxGpt12.h"
 #include "fuzzy_PID.h"//模糊PID算法
 #include "MOTOR1.h"
+#include "MOTOR_CTL.h"
 
 
 //1代表右电机
@@ -161,11 +162,11 @@ void Cal_Speed_Output1(void)
     else if (PID_mode1 == BANGBANG_CLOSED_LOOP1)
     {
         flag = 3;//重置PID闭环
-        if (speed_Measured1 > speed_Target1+0.4)
+        if (speed_Measured1 > speed_Target1+BANGBANG_UP)
         {
             speed_Output1 = 0;
         }
-        if  (speed_Measured1 < speed_Target1-0.4)
+        if  (speed_Measured1 < speed_Target1-BANGBANG_DOWN)
         {
             speed_Output1 = SPEED_MAX1;
         }

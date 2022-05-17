@@ -302,7 +302,7 @@ void core1_main(void)
                     Differential_Ratio = 1.2f;
                 }
 
-                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)//圆环内单独设转向pid
+                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//圆环内单独设转向pid
                 {
                     Change_Steering_PID(0.30f,0,0.30f);
                 }
@@ -327,7 +327,7 @@ void core1_main(void)
         }
         else
         {
-            if (speed_Measured1 > 0.4 + speed_Target1 || speed_Measured1 < -0.4 + speed_Target1)
+            if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
             {
                 PID_mode1 = BANGBANG_CLOSED_LOOP1;
             }
@@ -343,7 +343,7 @@ void core1_main(void)
         }
         else
         {
-            if (speed_Measured2 > 0.4 + speed_Target2 || speed_Measured2 < -0.4 + speed_Target2)
+            if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
             {
                 PID_mode2 = BANGBANG_CLOSED_LOOP2;
             }
