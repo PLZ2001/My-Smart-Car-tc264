@@ -43,6 +43,10 @@ int8 ThreeRoads_lines = 3;
 int8 last_angle_down;
 int8 last_angle_up;
 
+float dd_Right_Ave;
+float min_d_Right;
+float max_d_Right;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -1406,4 +1410,122 @@ uint8 Check_LeftCircle_New(void)
         return 0;
     }
 
+}
+
+
+
+uint8 Get_Right_Info(float ratio)
+{
+    int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
+    int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
+    for (int i=0;i<search_Lines;i++)
+    {
+        Col_Left[i] = -2;
+        Col_Right[i] = -2;
+    }
+    for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+        {
+            start_Row = start_Row - 1;
+            continue;
+        }//在当前的行里，如果左线或右线有一个是255区域（未知区域），说明还没有进入到真正的视角区域（0区域或1区域）；或者如果左线跑到右线的右边去了，则说明不是道路了
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0 && start_Col[1]>=1)
+            {
+                start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+            {
+                Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
+            }
+        }
+        else//如果右线发现1区域（道路）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1 && start_Col[1]<=width_Inverse_Perspective-2)
+            {
+                start_Col[1] = start_Col[1] + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }
+            start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
+            {
+                Col_Right[i] = start_Col[1];//只有是0区域的才可以将列号存储到右线里
+            }
+        }
+
+        start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
+    }
+
+    start_Row = height_Inverse_Perspective-1;
+    int d_Col_Right;
+    int d_Col_Right_Num=0;
+
+    int i;
+    for (i=0;i<search_Lines*ratio;i++)
+    {
+        if (Col_Right[i] !=-2)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
+            {
+                d_Col_Right_Num = search_Lines*ratio-i-1;
+                break;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        start_Row = start_Row - 1;
+    }
+    if (d_Col_Right_Num<=0.5*search_Lines)
+    {
+        return 0;
+    }
+    int cnt = 0,index = 0;
+    float d_Col_Right_ave_group[height_Inverse_Perspective/5];
+    for (int j=0;j<d_Col_Right_Num;j++)
+    {
+        d_Col_Right = Col_Right[i+1]-Col_Right[i];
+        i++;
+        cnt++;
+        d_Col_Right_ave_group[index] = (d_Col_Right_ave_group[index]*(cnt-1)+d_Col_Right)/(1.0*cnt);
+        if (cnt == 5)
+        {
+            index++;
+            cnt = 0;
+        }
+    }
+    dd_Right_Ave = 0;
+    min_d_Right = width_Inverse_Perspective;
+    max_d_Right = 0;
+    for (int j=0;j<index-1;j++)
+    {
+        dd_Right_Ave = (dd_Right_Ave * j + d_Col_Right_ave_group[j+1] - d_Col_Right_ave_group[j])/(1.0*(j+1));
+    }
+    for (int j=0;j<index;j++)
+    {
+        if (d_Col_Right_ave_group[j]<=min_d_Right)
+        {
+            min_d_Right = d_Col_Right_ave_group[j];
+        }
+        if (d_Col_Right_ave_group[j]>=max_d_Right)
+        {
+            max_d_Right = d_Col_Right_ave_group[j];
+        }
+    }
+
+    return 1;
 }

@@ -29,7 +29,9 @@ extern float T_Time;
 extern int8 last_angle_down;
 extern int8 last_angle_up;
 extern int8 Circle_lines;
-
+extern float dd_Right_Ave;
+extern float min_d_Right;
+extern float max_d_Right;
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);

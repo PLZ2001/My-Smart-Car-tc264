@@ -68,6 +68,9 @@ void Update_OLED_per10ms(void)
            case Circle_Page:
                OLED_PRINTF(0,0,"%d:%d   ",Circle_lines,last_angle_up);
                OLED_PRINTF(0,1,"1:%d    ",last_angle_down);
+               OLED_PRINTF(0,3,"max_d:%02.02f    ",max_d_Right);
+               OLED_PRINTF(0,4,"min_d:%02.02f    ",min_d_Right);
+               OLED_PRINTF(0,5,"ave_dd:%02.02f    ",dd_Right_Ave);
                break;
            case Steering_Center_Page:
                if (pointer_temp == 0)

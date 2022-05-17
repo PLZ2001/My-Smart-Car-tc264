@@ -268,6 +268,12 @@ void core1_main(void)
 
             }
 
+            if(Get_Right_Info(1.0f) == 0)
+            {
+                max_d_Right = 88.88;
+                min_d_Right = 88.88;
+                dd_Right_Ave = 88.88;
+            }
             DrawCenterLine();
 
 
