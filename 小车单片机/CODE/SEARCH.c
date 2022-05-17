@@ -47,6 +47,10 @@ float dd_Right_Ave;
 float min_d_Right;
 float max_d_Right;
 
+float Circle_min_d_Right[2] = {-0.9f,-0.1f};
+float Circle_max_d_Right[2] = {0.1f,0.9f};
+float Circle_dd_Right_Ave[2] = {0.0f,0.3f};
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -1495,7 +1499,7 @@ uint8 Get_Right_Info(float ratio)
         return 0;
     }
     int cnt = 0,index = 0;
-    float d_Col_Right_ave_group[height_Inverse_Perspective/5];
+    float d_Col_Right_ave_group[height_Inverse_Perspective];
     for (int j=0;j<d_Col_Right_Num;j++)
     {
         d_Col_Right = Col_Right[i+1]-Col_Right[i];
@@ -1509,7 +1513,7 @@ uint8 Get_Right_Info(float ratio)
         }
     }
     dd_Right_Ave = 0;
-    min_d_Right = width_Inverse_Perspective;
+    min_d_Right = 1.0f*width_Inverse_Perspective;
     max_d_Right = 0;
     for (int j=0;j<index-1;j++)
     {
@@ -1528,4 +1532,22 @@ uint8 Get_Right_Info(float ratio)
     }
 
     return 1;
+}
+
+uint8 New_Check_Right_Circle(void)
+{
+    Get_Right_Info(1.0f);
+    float Circle_min_d_Right[2] = {-0.9f,-0.1f};
+    float Circle_max_d_Right[2] = {0.1f,0.9f};
+    float Circle_dd_Right_Ave[2] = {0.0f,0.3f};
+    if (min_d_Right>=Circle_min_d_Right[0] && min_d_Right<=Circle_min_d_Right[1]
+      &&max_d_Right>=Circle_max_d_Right[0] && max_d_Right<=Circle_max_d_Right[1]
+      &&dd_Right_Ave>=Circle_dd_Right_Ave[0] && dd_Right_Ave<=Circle_dd_Right_Ave[1])
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }

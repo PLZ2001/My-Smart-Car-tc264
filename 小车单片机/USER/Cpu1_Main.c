@@ -216,6 +216,10 @@ void core1_main(void)
                     {
                         classification_Result = 6;//6直道
                     }
+                    else if (New_Check_Right_Circle()&&Check_Left_Straight(2,-2,1))
+                    {
+                        classification_Result = 3;//3右环岛
+                    }
                     else
                     {
                         classification_Result = Classification_Classic36();//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
@@ -268,12 +272,7 @@ void core1_main(void)
 
             }
 
-            if(Get_Right_Info(1.0f) == 0)
-            {
-                max_d_Right = 88.88;
-                min_d_Right = 88.88;
-                dd_Right_Ave = 88.88;
-            }
+
             DrawCenterLine();
 
 
