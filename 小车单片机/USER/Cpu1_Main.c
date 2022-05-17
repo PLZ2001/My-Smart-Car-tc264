@@ -313,15 +313,6 @@ void core1_main(void)
             }
 
 
-
-
-
-
-
-
-
-
-
             UART_Flag_TX = TRUE;
 
             InsertTimer1Point(4);
@@ -336,7 +327,14 @@ void core1_main(void)
         }
         else
         {
-            PID_mode1 = PID_CLOSED_LOOP1;
+            if (speed_Measured1 > 0.4 + speed_Target1 || speed_Measured1 < -0.4 + speed_Target1)
+            {
+                PID_mode1 = BANGBANG_CLOSED_LOOP1;
+            }
+            else
+            {
+                PID_mode1 = PID_CLOSED_LOOP1;
+            }
         }
 
         if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
@@ -345,7 +343,14 @@ void core1_main(void)
         }
         else
         {
-            PID_mode2 = PID_CLOSED_LOOP2;
+            if (speed_Measured2 > 0.4 + speed_Target2 || speed_Measured2 < -0.4 + speed_Target2)
+            {
+                PID_mode2 = BANGBANG_CLOSED_LOOP2;
+            }
+            else
+            {
+                PID_mode2 = PID_CLOSED_LOOP2;
+            }
         }
 
 

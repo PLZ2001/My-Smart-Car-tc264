@@ -130,14 +130,14 @@ void Get_Speed(void)
 //由speed_Target，speed_Measured得到speed_Output
 void Cal_Speed_Output1(void)
 {
-
+    static int flag = 3;
     if (PID_mode1 == OPEN_LOOP1)
     {
+        flag = 3;//重置PID闭环
         speed_Output1 = speed_Target1;
     }
     else if (PID_mode1 == PID_CLOSED_LOOP1)
     {
-        static int flag = 3;
         flag--;
         static float speed_Error[3];
         speed_Error[2] = speed_Error[1];
@@ -157,6 +157,18 @@ void Cal_Speed_Output1(void)
     else if (PID_mode1 == FUZZY_PID_CLOSED_LOOP1)
     {
         speed_Output1 = fuzzy_pid_control(speed_Measured1, speed_Target1, pid_vector[0]);
+    }
+    else if (PID_mode1 == BANGBANG_CLOSED_LOOP1)
+    {
+        flag = 3;//重置PID闭环
+        if (speed_Measured1 > speed_Target1+0.4)
+        {
+            speed_Output1 = 0;
+        }
+        if  (speed_Measured1 < speed_Target1-0.4)
+        {
+            speed_Output1 = SPEED_MAX1;
+        }
     }
 
 }

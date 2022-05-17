@@ -12,7 +12,8 @@ enum PID_Mode2
 {
     OPEN_LOOP2,
     PID_CLOSED_LOOP2,
-    FUZZY_PID_CLOSED_LOOP2
+    FUZZY_PID_CLOSED_LOOP2,
+    BANGBANG_CLOSED_LOOP2
 };
 
 extern float speed_Measured2;
