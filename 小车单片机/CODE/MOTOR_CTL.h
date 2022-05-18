@@ -2,7 +2,7 @@
 #define __MOTOR_CTL_h__
 
 #define BANGBANG_UP 0.2
-#define BANGBANG_DOWN 0.4
+#define BANGBANG_DOWN 0.2
 
 extern float speed_Target;//目标速度
 extern uint8 start_Flag;

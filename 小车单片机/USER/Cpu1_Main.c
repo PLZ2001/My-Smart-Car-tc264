@@ -285,6 +285,10 @@ void core1_main(void)
                 {
                     Differential_Ratio = 1.3f;
                 }
+                if (speed_Target_Min >= 2.9f && speed_Target_Max >= 3.2f)//只有2.8/2.6以上才可以
+                {
+                    Differential_Ratio = 1.6f;
+                }
 
 
                 Change_Steering_PID(0.25f,0,0.30f);
@@ -309,6 +313,10 @@ void core1_main(void)
                 if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
                 {
                     Differential_Ratio = 1.2f;
+                }
+                if (speed_Target_Min >= 2.9f && speed_Target_Max >= 3.2f)//只有2.8/2.6以上才可以
+                {
+                    Differential_Ratio = 1.6f;
                 }
 
                 Change_Steering_PID(0.25f,0,0.30f);
