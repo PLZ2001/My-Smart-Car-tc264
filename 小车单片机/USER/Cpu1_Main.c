@@ -275,7 +275,7 @@ void core1_main(void)
 
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-            if (((Get_d_steering_Error()>20||Get_d_steering_Error()<-20) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
+            if (((Get_d_steering_Error()>30||Get_d_steering_Error()<-30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
             {
                 Cal_Steering_Error(0.55);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
                 speed_Target = speed_Target_Min;
