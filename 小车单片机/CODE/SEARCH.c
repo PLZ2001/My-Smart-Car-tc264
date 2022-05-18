@@ -22,7 +22,7 @@ int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
 
 float threeRoads_RightTime = 0.15f;
 float rightCircle_RightTime = 0.5f;
-float rightCircle_LeftTime = 0.5f;
+float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
 
@@ -36,7 +36,7 @@ int8 Circle_lines = 3;
 
 int8 ThreeRoads_target_down[2] = {1,10};
 int8 ThreeRoads_target_up[2] = {5,16};//{5,19};
-int8 ThreeRoads_d_target[2] = {1,14};//{1,9};
+int8 ThreeRoads_d_target[2] = {0,14};//{1,14};//{1,9};
 int8 ThreeRoads_lines = 3;
 //11、20是假三岔
 
