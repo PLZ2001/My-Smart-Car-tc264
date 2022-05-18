@@ -265,11 +265,11 @@ void Key2_Action(void)
                 speed_Target_Max+=0.2*direction;
             }
 
-            if (speed_Target_Max>=3)
+            if (speed_Target_Max>=4)
             {
                 direction = -1;
             }
-            if (speed_Target_Max<=-3)
+            if (speed_Target_Max<=-4)
             {
                 direction = 1;
             }
@@ -295,11 +295,11 @@ void Key3_Action(void)
                 speed_Target_Min+=0.2*direction;
             }
 
-            if (speed_Target_Min>=3)
+            if (speed_Target_Min>=4)
             {
                 direction = -1;
             }
-            if (speed_Target_Min<=-3)
+            if (speed_Target_Min<=-4)
             {
                 direction = 1;
             }

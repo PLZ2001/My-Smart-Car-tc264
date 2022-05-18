@@ -36,7 +36,7 @@ int8 Circle_lines = 3;
 
 int8 ThreeRoads_target_down[2] = {1,10};
 int8 ThreeRoads_target_up[2] = {5,16};//{5,19};
-int8 ThreeRoads_d_target[2] = {1,9};
+int8 ThreeRoads_d_target[2] = {1,9};//{1,14};//{1,9};
 int8 ThreeRoads_lines = 3;
 //11¡¢20ÊÇ¼ÙÈý²í
 
