@@ -216,7 +216,7 @@ void core1_main(void)
                     {
                         classification_Result = 6;//6÷±µ¿
                     }
-                    else if (New_Check_Right_Circle()&&Check_Left_Straight(2,-2,1))
+                    else if (New_Check_Right_Circle()&&New_Check_Left_Straight())
                     {
                         classification_Result = 3;//3”“ª∑µ∫
                     }

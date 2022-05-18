@@ -32,6 +32,9 @@ extern int8 Circle_lines;
 extern float dd_Right_Ave;
 extern float min_d_Right;
 extern float max_d_Right;
+extern float dd_Left_Ave;
+extern float min_d_Left;
+extern float max_d_Left;
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);
