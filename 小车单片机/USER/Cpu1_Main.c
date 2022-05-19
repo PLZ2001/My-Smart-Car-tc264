@@ -285,10 +285,6 @@ void core1_main(void)
                 {
                     Differential_Ratio = 1.3f;
                 }
-                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-                {
-                    Differential_Ratio = 1.2f;
-                }
 
 
                 Change_Steering_PID(0.25f,0,0.30f);
@@ -303,6 +299,10 @@ void core1_main(void)
                         steering_Error =  -300;
                     }
                     Change_Steering_PID(0.4f,0,0.30f);
+                }
+                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+                {
+                    Change_Steering_PID(0.20f,0,0.30f);
                 }
                 else
                 {
@@ -322,16 +322,17 @@ void core1_main(void)
                 {
                     Differential_Ratio = 1.2f;
                 }
-                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-                {
-                    Differential_Ratio = 1.1f;
-                }
 
                 Change_Steering_PID(0.25f,0,0.30f);
                 if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
                 {
                     Change_Steering_PID(0.4f,0,0.30f);
                 }
+                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+                {
+                    Change_Steering_PID(0.20f,0,0.30f);
+                }
+
             }
 
 
