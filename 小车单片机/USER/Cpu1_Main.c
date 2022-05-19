@@ -285,6 +285,10 @@ void core1_main(void)
                 {
                     Differential_Ratio = 1.3f;
                 }
+                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+                {
+                    Differential_Ratio = 1.2f;
+                }
 
 
                 Change_Steering_PID(0.25f,0,0.30f);
@@ -317,6 +321,10 @@ void core1_main(void)
                 if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
                 {
                     Differential_Ratio = 1.2f;
+                }
+                if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+                {
+                    Differential_Ratio = 1.1f;
                 }
 
                 Change_Steering_PID(0.25f,0,0.30f);
