@@ -21,7 +21,7 @@ int search_Lines_Straight;//指直线检测的有效扫描行数
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
 
 float threeRoads_RightTime = 0.15f;
-float rightCircle_RightTime = 0.5f;
+float rightCircle_RightTime = 0.2f;
 float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 0.5f;
@@ -525,7 +525,7 @@ void DrawCenterLinewithConfig(float filter)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
 
         //下面是中心线计算
-        if (start_Col[0]>start_Col[1])
+        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         {
             continue;
         }
@@ -662,7 +662,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
 
         //下面是中心线计算
-        if (start_Col[0]>start_Col[1])
+        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         {
             continue;
         }
@@ -790,7 +790,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 start_Col[1] = start_Col[1] - 1;
                 cnt_temp = cnt_temp + 1;
             }//则右线持续向左扫描直到不再是255区域（背景）
-            if (cnt_temp>2*road_width)
+            if (cnt_temp>2*road_width || start_Col[1] - start_Col[0] > 2*road_width)
             {
                 break;
             }
