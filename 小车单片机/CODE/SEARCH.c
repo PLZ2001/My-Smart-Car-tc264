@@ -17,6 +17,8 @@ int Col_Right[height_Inverse_Perspective_Max] = {-2};//°´´ÓÏÂÍùÉÏµÄË³Ğò´æ´¢ÓÒÏßµ
 
 
 //²»ĞèÒª´«ÊäµÄÆäËû±äÁ¿
+int road_width; //µÀÂ·Êµ¼Ê¿í¶È0.4m
+
 int search_Lines_Straight;//Ö¸Ö±Ïß¼ì²âµÄÓĞĞ§É¨ÃèĞĞÊı
 int search_Lines;//Ö¸Col_CenterµÄÓĞĞ§É¨ÃèĞĞÊı£¬ÓÃÓÚ±éÀúCol_Center
 
@@ -96,6 +98,7 @@ void UART_ColRight(void)
 
 void DrawCenterLine(void)
 {
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     search_Lines = height_Inverse_Perspective;//Ò»¹²ÒªÉ¨Ãè¶àÉÙĞĞ£¬×î´óÊÇÍ¼Æ¬¿í
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
     {
@@ -552,6 +555,7 @@ void DrawCenterLinewithConfig(float filter)
         //ÖĞĞÄÏß¼ÆËãÓĞ4ÖÖÇé¿ö£º×óÏßºÏ·¨(!=-2)»ò·Ç·¨(==-2)£©¡¢ÓÒÏßºÏ·¨(!=-2)»ò·Ç·¨(==-2)£©
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //×óÏßºÏ·¨£¬ÓÒÏßºÏ·¨
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //Èç¹ûÉÏÒ»¸öÖĞĞÄÏßÒ²ºÏ·¨
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //¸ù¾İÉÏÒ»´ÎµÄÖĞĞÄÏß¡¢ÕâÒ»´Î×óÓÒÏßÖĞÖµ£¬ÓÃÂË²¨¼ÆËãÕâ´ÎµÄÖĞĞÄÏß
