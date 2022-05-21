@@ -17,6 +17,8 @@ int Col_Right[height_Inverse_Perspective_Max] = {-2};//°´´ÓÏÂÍùÉÏµÄË³Ğò´æ´¢ÓÒÏßµ
 
 
 //²»ĞèÒª´«ÊäµÄÆäËû±äÁ¿
+int road_width; //µÀÂ·Êµ¼Ê¿í¶È0.4m
+
 int search_Lines_Straight;//Ö¸Ö±Ïß¼ì²âµÄÓĞĞ§É¨ÃèĞĞÊı
 int search_Lines;//Ö¸Col_CenterµÄÓĞĞ§É¨ÃèĞĞÊı£¬ÓÃÓÚ±éÀúCol_Center
 
@@ -28,7 +30,7 @@ float T_Time = 0.5f;
 
 int8 Circle_target_down[2] = {1,8};
 int8 Circle_target_up[2] = {5,18};
-int8 Circle_d_target[2] = {3,15};
+int8 Circle_d_target[2] = {0,17};//{3,15};
 //int8 Circle_target_down[2] = {2,8};
 //int8 Circle_target_up[2] = {5,15};
 //int8 Circle_d_target[2] = {3,12};
@@ -96,6 +98,7 @@ void UART_ColRight(void)
 
 void DrawCenterLine(void)
 {
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     search_Lines = height_Inverse_Perspective;//Ò»¹²ÒªÉ¨Ãè¶àÉÙĞĞ£¬×î´óÊÇÍ¼Æ¬¿í
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
     {
@@ -121,6 +124,26 @@ void DrawCenterLine(void)
     else if (classification_Result == 8)
     {
         DrawCenterLinewithConfig_RightBased(0);
+    }
+    // ¶ÔÓÚ3ÓÒ»·µº¿ÉÒÔ²ÉÓÃ£¬ÌØÕ÷ÊÇ¿¿ÓÒĞĞÊ»
+    else if (classification_Result == 3)
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
+    // ¶ÔÓÚ11ÓÒÖ±Ïß¿ÉÒÔ²ÉÓÃ£¬ÌØÕ÷ÊÇ¿¿ÓÒĞĞÊ»
+    else if (classification_Result == 11)
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
+    // ¶ÔÓÚ2×ó»·µº¿ÉÒÔ²ÉÓÃ£¬ÌØÕ÷ÊÇ¿¿×óĞĞÊ»
+    else if (classification_Result == 2)
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
+    }
+    // ¶ÔÓÚ10×óÖ±Ïß¿ÉÒÔ²ÉÓÃ£¬ÌØÕ÷ÊÇ¿¿×óĞĞÊ»
+    else if (classification_Result == 10)
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
     }
     // ¶ÔÓÚ7¿¿×ó£¨ÁÙÊ±Ê¹ÓÃ£©¿ÉÒÔ²ÉÓÃ£¬ÌØÕ÷ÊÇ¿¿×óĞĞÊ»
     else if (classification_Result == 7)
@@ -532,6 +555,7 @@ void DrawCenterLinewithConfig(float filter)
         //ÖĞĞÄÏß¼ÆËãÓĞ4ÖÖÇé¿ö£º×óÏßºÏ·¨(!=-2)»ò·Ç·¨(==-2)£©¡¢ÓÒÏßºÏ·¨(!=-2)»ò·Ç·¨(==-2)£©
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //×óÏßºÏ·¨£¬ÓÒÏßºÏ·¨
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //Èç¹ûÉÏÒ»¸öÖĞĞÄÏßÒ²ºÏ·¨
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //¸ù¾İÉÏÒ»´ÎµÄÖĞĞÄÏß¡¢ÕâÒ»´Î×óÓÒÏßÖĞÖµ£¬ÓÃÂË²¨¼ÆËãÕâ´ÎµÄÖĞĞÄÏß
@@ -858,7 +882,7 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 
     int Conv_Score_max[2] = {-9,-9};
     int Conv_Score_max_i[2] = {0,0};
-    int Conv_Score_max_j[2] = {0,0};
+    int Conv_Score_max_j[2] = {0,width_Inverse_Perspective};
     for (int i=1;i<full_Lines-1;i++)//´ÓµÚÒ»ĞĞ¿ªÊ¼ÖğĞĞÉ¨Ãè
     {
         for (int j=1;j<width_Inverse_Perspective-1;j++)
@@ -900,13 +924,25 @@ void DrawCenterLinewithConfig_CrossRoad(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>width_Inverse_Perspective/4)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
                 Conv_Score_max_j[0] = j;
             }
-            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5)
+            else if (Conv_Score[0] == Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>width_Inverse_Perspective/4 && j>= Conv_Score_max_j[0])
+            {
+                Conv_Score_max[0] = Conv_Score[0];
+                Conv_Score_max_i[0] = i;
+                Conv_Score_max_j[0] = j;
+            }
+            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*3/4)
+            {
+                Conv_Score_max[1] = Conv_Score[1];
+                Conv_Score_max_i[1] = i;
+                Conv_Score_max_j[1] = j;
+            }
+            else if (Conv_Score[1] == Conv_Score_max[1] && j>width_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*3/4 && j<= Conv_Score_max_j[1])
             {
                 Conv_Score_max[1] = Conv_Score[1];
                 Conv_Score_max_i[1] = i;

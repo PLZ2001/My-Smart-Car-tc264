@@ -13,8 +13,6 @@
 
 #define STRAIGHT_CONDITION 5
 
-#define road_width (0.4/Camera_Height/ratioOfPixelToHG) //道路实际宽度0.4m
-
 
 extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 extern int Col_Left[height_Inverse_Perspective_Max];

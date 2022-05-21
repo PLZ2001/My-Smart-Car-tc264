@@ -5,7 +5,7 @@
 #include "OLED.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
-int STEERING_DUTY_CENTER=646;//664;//652;//665;//647;//1500;//1772;
+int STEERING_DUTY_CENTER=639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 struct steerpid
 {
@@ -103,12 +103,18 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
 
 
     int cnt = 0;
+    int cnt_start = 0;
     for (int i=0;i<(search_Lines*Cal_Steering_Range_of_Img);i++)
     {
         if(Col_Center[i] != -2)
         {
             cnt = cnt+1;
-            steering_Error_tmp = steering_Error_tmp + Col_Center[i] - Col_Center_Init;
+            if (cnt == 1)
+            {
+                cnt_start = i;
+            }
+            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.1f-0.9f)+1.1f;
+            steering_Error_tmp = steering_Error_tmp + (Col_Center[i] - Col_Center_Init)*ratio;
         }
     }
 
@@ -128,7 +134,7 @@ void Cal_Steering_Target(void)
     switch(classification_Result){
         case 5:
         {
-             steering_Target = (Steering_PID.KP/10 * Steering_PID.current_error) +Steering_PID.KD/10*( Steering_PID.current_error - Steering_PID.last_error );
+             steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
              break;
         }
         case 6:
@@ -138,6 +144,10 @@ void Cal_Steering_Target(void)
         }
         case 7:
         case 8:
+        case 2:
+        case 3:
+        case 10:
+        case 11:
         {
             steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
             break;
