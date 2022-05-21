@@ -920,25 +920,25 @@ void DrawCenterLinewithConfig_CrossRoad(void)
             {
                 continue;
             }
-            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.5)
+            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>width_Inverse_Perspective*0.25)
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
                 Conv_Score_max_j[0] = j;
             }
-            else if (Conv_Score[0] == Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>= Conv_Score_max_j[0])
+            else if (Conv_Score[0] == Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>width_Inverse_Perspective*0.25 && j>= Conv_Score_max_j[0])
             {
                 Conv_Score_max[0] = Conv_Score[0];
                 Conv_Score_max_i[0] = i;
                 Conv_Score_max_j[0] = j;
             }
-            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5)
+            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*0.75)
             {
                 Conv_Score_max[1] = Conv_Score[1];
                 Conv_Score_max_i[1] = i;
                 Conv_Score_max_j[1] = j;
             }
-            else if (Conv_Score[1] == Conv_Score_max[1] && j>width_Inverse_Perspective*0.5  && j<= Conv_Score_max_j[1])
+            else if (Conv_Score[1] == Conv_Score_max[1] && j>width_Inverse_Perspective*0.5 && j<width_Inverse_Perspective*0.75 && j<= Conv_Score_max_j[1])
             {
                 Conv_Score_max[1] = Conv_Score[1];
                 Conv_Score_max_i[1] = i;
