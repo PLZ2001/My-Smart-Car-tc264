@@ -91,7 +91,7 @@ void core1_main(void)
                         if (flag_For_Left_Circle == 0)//说明还没进左环岛
                         {
                             flag_For_Left_Circle = 1;
-                            classification_Result = 7;//7靠左
+                            //classification_Result = 7;//7靠左
                             time_up[0] = rightCircle_RightTime;
                             Start_Timer(0);
                         }
@@ -100,7 +100,7 @@ void core1_main(void)
                         if (flag_For_Right_Circle == 0)//说明还没进右环岛
                         {
                             flag_For_Right_Circle = 1;
-                            classification_Result = 8;//8靠右
+                            //classification_Result = 8;//8靠右
                             time_up[0] = rightCircle_RightTime;
                             Start_Timer(0);
                         }
@@ -114,7 +114,7 @@ void core1_main(void)
                         if (flag_For_Right_Circle == 1) //说明准备出右环岛
                         {
                             flag_For_Right_Circle = 2;
-                            classification_Result = 7;//7靠左
+                            //classification_Result = 7;//7靠左
                             time_up[0] = rightCircle_LeftTime;
                             Start_Timer(0);
                             time_up[4] = rightCircle_BannedTime;
@@ -125,7 +125,7 @@ void core1_main(void)
                         if (flag_For_Left_Circle == 1) //说明准备出左环岛
                         {
                             flag_For_Left_Circle = 2;
-                            classification_Result = 8;//8靠右
+                            //classification_Result = 8;//8靠右
                             time_up[0] = rightCircle_LeftTime;
                             Start_Timer(0);
                             time_up[5] = rightCircle_BannedTime;
@@ -183,7 +183,7 @@ void core1_main(void)
                 {
                     if (Check_Left_Straight(2,0,1) == 0)
                     {
-                        classification_Result = 8;
+                        classification_Result = 3;//8;
                     }
                     else
                     {
@@ -195,7 +195,7 @@ void core1_main(void)
                 {
                     if (Check_Right_Straight(0,-2,1) == 0)
                     {
-                        classification_Result = 7;
+                        classification_Result = 2;//7;
                     }
                     else
                     {
@@ -302,7 +302,7 @@ void core1_main(void)
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.20f,0,0.30f);
+                    Change_Steering_PID(0.15f,0,0.20f);
                 }
                 else
                 {
@@ -330,7 +330,7 @@ void core1_main(void)
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.20f,0,0.30f);
+                    Change_Steering_PID(0.15f,0,0.20f);
                 }
 
             }

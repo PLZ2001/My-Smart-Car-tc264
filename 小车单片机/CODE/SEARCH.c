@@ -28,7 +28,7 @@ float T_Time = 0.5f;
 
 int8 Circle_target_down[2] = {1,8};
 int8 Circle_target_up[2] = {5,18};
-int8 Circle_d_target[2] = {3,15};
+int8 Circle_d_target[2] = {0,17};//{3,15};
 //int8 Circle_target_down[2] = {2,8};
 //int8 Circle_target_up[2] = {5,15};
 //int8 Circle_d_target[2] = {3,12};
@@ -121,6 +121,26 @@ void DrawCenterLine(void)
     else if (classification_Result == 8)
     {
         DrawCenterLinewithConfig_RightBased(0);
+    }
+    // 对于3右环岛可以采用，特征是靠右行驶
+    else if (classification_Result == 3)
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
+    // 对于11右直线可以采用，特征是靠右行驶
+    else if (classification_Result == 11)
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
+    // 对于2左环岛可以采用，特征是靠左行驶
+    else if (classification_Result == 2)
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
+    }
+    // 对于10左直线可以采用，特征是靠左行驶
+    else if (classification_Result == 10)
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
     }
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
@@ -858,7 +878,7 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 
     int Conv_Score_max[2] = {-9,-9};
     int Conv_Score_max_i[2] = {0,0};
-    int Conv_Score_max_j[2] = {0,0};
+    int Conv_Score_max_j[2] = {0,width_Inverse_Perspective};
     for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
     {
         for (int j=1;j<width_Inverse_Perspective-1;j++)
@@ -906,7 +926,19 @@ void DrawCenterLinewithConfig_CrossRoad(void)
                 Conv_Score_max_i[0] = i;
                 Conv_Score_max_j[0] = j;
             }
+            else if (Conv_Score[0] == Conv_Score_max[0] && j<width_Inverse_Perspective*0.5 && j>= Conv_Score_max_j[0])
+            {
+                Conv_Score_max[0] = Conv_Score[0];
+                Conv_Score_max_i[0] = i;
+                Conv_Score_max_j[0] = j;
+            }
             if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.5)
+            {
+                Conv_Score_max[1] = Conv_Score[1];
+                Conv_Score_max_i[1] = i;
+                Conv_Score_max_j[1] = j;
+            }
+            else if (Conv_Score[1] == Conv_Score_max[1] && j>width_Inverse_Perspective*0.5  && j<= Conv_Score_max_j[1])
             {
                 Conv_Score_max[1] = Conv_Score[1];
                 Conv_Score_max_i[1] = i;
