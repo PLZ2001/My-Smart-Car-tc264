@@ -308,7 +308,7 @@ void core1_main(void)
                 {
                     if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
                     {
-                        Change_Steering_PID(0.285f,0,0.30f);
+                        Change_Steering_PID(0.27f,0,0.30f);
                     }
                 }
             }
