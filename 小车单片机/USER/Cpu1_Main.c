@@ -307,7 +307,7 @@ void core1_main(void)
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.15f,0,0.20f);
+                    Change_Steering_PID(0.20f,0,0.20f);
                 }
                 else
                 {
@@ -335,7 +335,7 @@ void core1_main(void)
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.15f,0,0.20f);
+                    Change_Steering_PID(0.20f,0,0.20f);
                 }
 
             }
