@@ -225,7 +225,7 @@ void OLED_temp(void)
 
 float Get_d_steering_Error(void)
 {
-    return (Steering_PID.current_error-Steering_PID.last_error);
+    return (Steering_PID.current_error-Steering_PID.last_error)>=0?(Steering_PID.current_error-Steering_PID.last_error):-(Steering_PID.current_error-Steering_PID.last_error);
 }
 
 void Change_Steering_PID(float kp, float ki, float kd)

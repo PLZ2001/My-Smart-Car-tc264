@@ -273,11 +273,12 @@ void core1_main(void)
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
 
+            //Cal_Steering_Error(Get_d_steering_Error()<30.0f?0.5f:(Get_d_steering_Error()>120.0f?0.55f:((Get_d_steering_Error()-30.0f)/(120.0f-30.0f)*(0.55f-0.5f)+0.5f)));//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-            if (((Get_d_steering_Error()>30||Get_d_steering_Error()<-30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
+            if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
             {
-                Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+                Cal_Steering_Error(0.5);
                 speed_Target = speed_Target_Min;
 
                 Differential_Ratio = 1.2f;
@@ -314,7 +315,7 @@ void core1_main(void)
             }
             else
             {
-                Cal_Steering_Error(0.5);//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
+                Cal_Steering_Error(0.5);
                 speed_Target = speed_Target_Max;
 
                 Differential_Ratio = 1.1f;
@@ -334,6 +335,7 @@ void core1_main(void)
                 }
 
             }
+
 
 
             UART_Flag_TX = TRUE;
