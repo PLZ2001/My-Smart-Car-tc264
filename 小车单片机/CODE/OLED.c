@@ -11,7 +11,7 @@
 #include "SEARCH.h"
 
 
-enum OLEDPage OLED_Page = MotorPID_Page;//SteeringPID_Page;//Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
+enum OLEDPage OLED_Page = Camera_Page2;//SteeringPID_Page;//Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
@@ -36,6 +36,13 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case Camera_Page2:
+               my_oled_dis_bmp();
+               OLED_PRINTF(0,6,"SE:%03.01f S:%02.02f",steering_Error,steering_Target);
+//               OLED_PRINTF(0,7,"cnt:%d",cnt);
+//               OLED_PRINTF(0,7,"CC10:%03.01f CC20:%03.01f",Col_Center[10],Col_Center[20]);
+               OLED_PRINTF(0,7,"2-value:%d Class:%d ",thresholding_Value,classification_Result);
+               break;
            case MotorPID_Page:
                if (pointer_temp == 0)
                {
@@ -219,5 +226,36 @@ void Update_OLED_per10ms(void)
     else
     {
         oled_fill(0x00);
+    }
+}
+
+void my_oled_dis_bmp(void)
+{
+    int16 i,j;
+    int16 temp,temp1;
+    uint8 dat;
+
+
+    temp1 = height_Inverse_Perspective%8;
+    if(temp1 == 0) temp = height_Inverse_Perspective/8;
+    else           temp = height_Inverse_Perspective/8+1;
+
+    for(i=0; i<temp; i++)
+    {
+        oled_set_pos(0,(uint8)i);
+        for(j=0; j<width_Inverse_Perspective; j++)
+        {
+            dat = 0;
+
+            dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 1: 0))<<0;
+            if( i<(temp-1) || !temp1 || temp1>=2)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 1: 0))<<1;
+            if( i<(temp-1) || !temp1 || temp1>=3)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 1: 0))<<2;
+            if( i<(temp-1) || !temp1 || temp1>=4)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 1: 0))<<3;
+            if( i<(temp-1) || !temp1 || temp1>=5)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 1: 0))<<4;
+            if( i<(temp-1) || !temp1 || temp1>=6)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0))<<5;
+            if( i<(temp-1) || !temp1 || temp1>=7)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0))<<6;
+            if( i<(temp-1) || !temp1 || temp1>=8)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0))<<7;
+            oled_wrdat(dat);
+        }
     }
 }

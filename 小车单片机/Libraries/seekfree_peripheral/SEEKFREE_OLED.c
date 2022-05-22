@@ -36,7 +36,6 @@
 
 
 
-
 #define OLED_SCL(x)  gpio_set (OLED_SCL_PIN	, x)
 #define OLED_SDA(x)  gpio_set (OLED_SDA_PIN	, x)
 #define OLED_RST(x)  gpio_set (OLED_RST_PIN	, x)
@@ -476,9 +475,9 @@ void oled_dis_bmp(uint16 high, uint16 width, uint8 *p,uint8 value)
     uint8 dat;
     
     
-    temp1 = high%8;
+    temp1 = high%8;//=59%8=3
     if(temp1 == 0) temp = high/8;
-    else           temp = high/8+1;
+    else           temp = high/8+1;//=59/8+1=8
 
     for(i=0; i<temp; i++)
     {
