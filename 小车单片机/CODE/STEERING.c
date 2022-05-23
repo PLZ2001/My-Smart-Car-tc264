@@ -118,7 +118,7 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
         }
     }
 
-    steering_Error = steering_Error_tmp*(113.0f*59.0f)/(width_Inverse_Perspective*1.0f*height_Inverse_Perspective);
+    steering_Error = 0.5f/Cal_Steering_Range_of_Img*(steering_Error_tmp*(113.0f*59.0f)/(width_Inverse_Perspective*1.0f*height_Inverse_Perspective));
 
 }
 

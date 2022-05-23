@@ -278,7 +278,7 @@ void core1_main(void)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
             if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
             {
-                Cal_Steering_Error(0.5);
+                Cal_Steering_Error(0.55);
                 speed_Target = speed_Target_Min;
 
                 Differential_Ratio = 1.3f;
@@ -319,7 +319,7 @@ void core1_main(void)
             }
             else
             {
-                Cal_Steering_Error(0.5);
+                Cal_Steering_Error(0.55);
                 speed_Target = speed_Target_Max;
 
                 Differential_Ratio = 1.3f;
