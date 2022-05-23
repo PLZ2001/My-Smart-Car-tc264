@@ -2,9 +2,9 @@
 #define __MOTOR1_h__
 
 #define SPEED_MEASURING_PERIOD_ms1 10
-#define SPEED_MAX1 9.0
-#define SPEED_MIN1 -9.0
-#define MOTOR_DUTY_MAX1 6400
+#define SPEED_MAX1 9.5
+#define SPEED_MIN1 -9.5
+#define MOTOR_DUTY_MAX1 6750
 
 enum PID_Mode1
 {
