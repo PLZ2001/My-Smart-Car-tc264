@@ -164,7 +164,7 @@ void Cal_Speed_Output1(void)
         flag = 3;//ÖØÖÃPID±Õ»·
         if (speed_Measured1 > speed_Target1+BANGBANG_UP)
         {
-            speed_Output1 = 0.25f*SPEED_MIN1;
+            speed_Output1 = 0.3f*SPEED_MIN1;
         }
         if  (speed_Measured1 < speed_Target1-BANGBANG_DOWN)
         {

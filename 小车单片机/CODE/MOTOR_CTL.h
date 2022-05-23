@@ -1,7 +1,7 @@
 #ifndef __MOTOR_CTL_h__
 #define __MOTOR_CTL_h__
 
-#define BANGBANG_UP 0.2
+#define BANGBANG_UP 0.1
 #define BANGBANG_DOWN 0.3
 
 extern float speed_Target;//目标速度
