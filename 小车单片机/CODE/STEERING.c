@@ -104,8 +104,10 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
 
     int cnt = 0;
     int cnt_start = 0;
-    for (int i=0;i<(search_Lines*Cal_Steering_Range_of_Img);i++)
+    float di = Cal_Steering_Range_of_Img/0.5f;
+    for (float temp_i=0;temp_i<(search_Lines*Cal_Steering_Range_of_Img);temp_i+=di)
     {
+        int i = floor(temp_i+0.5);
         if(Col_Center[i] != -2)
         {
             cnt = cnt+1;
@@ -118,7 +120,7 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
         }
     }
 
-    steering_Error = 0.5f/Cal_Steering_Range_of_Img*(steering_Error_tmp*(113.0f*59.0f)/(width_Inverse_Perspective*1.0f*height_Inverse_Perspective));
+    steering_Error = (0.5f/Cal_Steering_Range_of_Img)*(steering_Error_tmp*(113.0f*59.0f)/(width_Inverse_Perspective*1.0f*height_Inverse_Perspective));
 
 }
 
