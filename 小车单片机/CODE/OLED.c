@@ -36,6 +36,34 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case Differential_Page:
+               if (pointer_temp == 0)
+               {
+                   OLED_PRINTF(0,0,"->DR:%01.02f ",Differential_Ratio);
+                   OLED_PRINTF(0,1,"InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
+               }
+               else if (pointer_temp == 1)
+               {
+                   OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
+                   OLED_PRINTF(0,1,"->InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
+               }
+               else if (pointer_temp == 2)
+               {
+                   OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
+                   OLED_PRINTF(0,1,"InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,2,"->SightForward:%01.02f ",SightForward);
+               }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,3,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,3,"SUB");
+               }
+               break;
            case Camera_Page2:
                my_oled_dis_bmp();
                OLED_PRINTF(0,6,"SE:%03.01f S:%02.02f",steering_Error,steering_Target);

@@ -138,6 +138,14 @@ void Key1_Action(void)
         case OLED_Setting_Page:
             OLED_EN = OLED_EN?FALSE:TRUE;
             break;
+        case Differential_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 3)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case Steering_Center_Page:
             pointer_temp += 1;
             if (pointer_temp >= 1)
@@ -203,6 +211,21 @@ void Key2_Action(void)
             break;
         case SteeringPID_Page:
             Key_temp();
+            break;
+        case Differential_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    Differential_Ratio += 0.05f*up_Down;
+                    break;
+                case 1:
+                    InnerSide_Ratio += 0.05f*up_Down;
+                    break;
+                case 2:
+                    SightForward +=0.01f*up_Down;
+                default:
+                    break;
+            }
             break;
         case Steering_Center_Page:
             switch (pointer_temp)

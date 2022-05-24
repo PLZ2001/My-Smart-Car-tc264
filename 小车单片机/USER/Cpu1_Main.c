@@ -278,10 +278,10 @@ void core1_main(void)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
             if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
             {
-                Cal_Steering_Error(0.55);
+                Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Min;
 
-                Differential_Ratio = 1.8f;//1.3f;
+                Differential_Ratio = 3.6f;//1.3f;
 //                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
 //                {
 //                    Differential_Ratio = 1.1f;
@@ -297,17 +297,17 @@ void core1_main(void)
                 {
                     if (flag_For_Right_Circle == 1)
                     {
-                        steering_Error =  300;
+                        steering_Error =  170;
                     }
                     if (flag_For_Left_Circle == 1)
                     {
-                        steering_Error =  -300;
+                        steering_Error =  -170;
                     }
                     Change_Steering_PID(0.4f,0,0.30f);
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.20f,0,0.20f);
+                    Change_Steering_PID(0.22f,0,0.20f);
                 }
                 else
                 {
@@ -319,10 +319,10 @@ void core1_main(void)
             }
             else
             {
-                Cal_Steering_Error(0.55);
+                Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Max;
 
-                Differential_Ratio = 1.8f;//1.3f
+                Differential_Ratio = 3.6f;//1.3f
 //                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
 //                {
 //                    Differential_Ratio = 1.1f;

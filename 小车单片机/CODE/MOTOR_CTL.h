@@ -10,6 +10,7 @@ extern uint8 emergency_Stop;
 extern float speed_Target_Min;
 extern float speed_Target_Max;
 extern float Differential_Ratio;
+extern float InnerSide_Ratio;
 
 void Differential_Motor(void);
 
