@@ -31,6 +31,7 @@ extern int8 Circle_lines;
 extern int8 first_Dot[2];
 extern int8 second_Dot[2];
 extern int8 third_Dot[2];
+extern float arccosValue;
 
 
 void UART_ColCenter(void);

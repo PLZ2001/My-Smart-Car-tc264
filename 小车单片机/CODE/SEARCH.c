@@ -48,6 +48,7 @@ int8 last_angle_up;
 int8 first_Dot[2];
 int8 second_Dot[2];
 int8 third_Dot[2];
+float arccosValue;
 
 void UART_ColCenter(void)
 {
@@ -1686,4 +1687,34 @@ uint8 Check_RightCircle_New2(void)
     Find_First_Dot(1);
     Find_Second_Dot(1);
     Find_Third_Dot(1);
+
+    if ( (first_Dot[0]==-2 )||(second_Dot[0]==-2 )||(third_Dot[0]==-2 )) {
+        return 0;
+    }
+
+    else{
+        int a_b_x = first_Dot[0] - second_Dot[0];
+        int a_b_y = first_Dot[1] - second_Dot[1];
+        int c_b_x = third_Dot[0] - second_Dot[0];
+        int c_b_y = third_Dot[1] - second_Dot[1];
+        int ab_mul_cb = a_b_x * c_b_x + a_b_y * c_b_y;
+        float dist_ab = sqrt(a_b_x * a_b_x + a_b_y * a_b_y);
+        float dist_cd = sqrt(c_b_x * c_b_x + c_b_y * c_b_y);
+        float cosValue = ab_mul_cb / (dist_ab * dist_cd);
+
+        arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
+
+        if (arccosValue < 90 && arccosValue > 0){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+
+
+
+
+
+
 }
