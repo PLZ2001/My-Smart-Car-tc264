@@ -1884,9 +1884,50 @@ uint8 Check_RightCircle_New3(void)
     return (Check_Right_for_RightCircle()||Check_Left_for_RightCircle());
 }
 
-//void Compensate_ColCenter(void)
-//{
-//    int cnt=0
-//    while(Col_Center)
-//}
+void Compensate_ColCenter(void)
+{
+    int i;
+    float last_center[2]={0,0};
+    for (i=0;i<search_Lines;i++) //寻找从下往上的中线最底端
+    {
+        if (Col_Center[i] != -2)
+        {
+            last_center[0] = Col_Center[i];//j
+            last_center[1] = (float)i;//i
+            break;
+        }
+    }
+
+    //存储底部中点坐标
+
+    float buttom_center[2]={0,0};
+    for (i=0;i<search_Lines;i++) //寻找视野底部
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+        {
+            buttom_center[0] = (float)(width_Inverse_Perspective/2);//j
+            buttom_center[1] = (float)i;//i
+            break;
+        }
+    }
+
+    int firsti = i;
+
+    if(last_center[1] <= buttom_center[1]+1 )
+    {
+        return;
+    }
+    else
+    {
+        //补全拐点间中线和底部中线之间的连线
+        float k = (last_center[0]  - buttom_center[0])/(last_center[1]  - buttom_center[1]);
+
+        for (int i=0;i<(last_center[1]-buttom_center[1]);i++)
+        {
+            Col_Center[i+firsti] = buttom_center[0] + k*i;
+        }
+    }
+
+
+}
 

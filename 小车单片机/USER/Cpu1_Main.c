@@ -267,8 +267,8 @@ void core1_main(void)
                 }
 
             }
-            Check_RightCircle_New2();
             DrawCenterLine();
+//            Compensate_ColCenter();
 
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
