@@ -281,40 +281,12 @@ void core1_main(void)
                 Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Min;
 
-                Differential_Ratio = 3.6f;//1.3f;
-//                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
-//                {
-//                    Differential_Ratio = 1.1f;
-//                }
-//                if (speed_Target_Min >= 2.8f && speed_Target_Max >= 3.2f)//只有2.8/2.5以上才可以
-//                {
-//                    Differential_Ratio = 1.1f;
-//                }
-
+                //Differential_Ratio = 2.5f;//1.3f;
 
                 Change_Steering_PID(0.25f,0,0.30f);
-//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-//                {
-//                    if (flag_For_Right_Circle == 1)
-//                    {
-//                        steering_Error =  170;
-//                    }
-//                    if (flag_For_Left_Circle == 1)
-//                    {
-//                        steering_Error =  -170;
-//                    }
-//                    Change_Steering_PID(0.4f,0,0.30f);
-//                }
-//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-//                {
-//                    Change_Steering_PID(0.22f,0,0.20f);
-//                }
-//                else
+                if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
                 {
-                    if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
-                    {
-                        Change_Steering_PID(0.27f,0,0.30f);
-                    }
+                    Change_Steering_PID(0.27f,0,0.30f);
                 }
             }
             else
@@ -322,21 +294,8 @@ void core1_main(void)
                 Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Max;
 
-                Differential_Ratio = 3.6f;//1.3f
-//                if (speed_Target_Min >= 2.4f && speed_Target_Max >= 2.6f)//只有2.3/2.1以上才可以
-//                {
-//                    Differential_Ratio = 1.1f;
-//                }
-
+                //Differential_Ratio = 2.5f;//1.3f
                 Change_Steering_PID(0.25f,0,0.30f);
-//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-//                {
-//                    Change_Steering_PID(0.4f,0,0.30f);
-//                }
-//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-//                {
-//                    Change_Steering_PID(0.20f,0,0.20f);
-//                }
 
             }
 
