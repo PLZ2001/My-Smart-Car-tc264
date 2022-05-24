@@ -267,7 +267,7 @@ void core1_main(void)
                 }
 
             }
-
+            Check_RightCircle_New2();
             DrawCenterLine();
 
 

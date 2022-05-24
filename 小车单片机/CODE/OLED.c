@@ -36,6 +36,11 @@ void Update_OLED_per10ms(void)
         }//每次有按键动作就刷屏一下
         switch(OLED_Page)
         {
+           case ThreeDot_Page:
+               OLED_PRINTF(0,0,"NO1:(%d,%d) ",first_Dot[0],first_Dot[1]);
+               OLED_PRINTF(0,1,"NO2:(%d,%d) ",second_Dot[0],second_Dot[1]);
+               OLED_PRINTF(0,2,"NO3:(%d,%d) ",third_Dot[0],third_Dot[1]);
+               break;
            case Differential_Page:
                if (pointer_temp == 0)
                {

@@ -28,6 +28,10 @@ extern int8 last_angle_down;
 extern int8 last_angle_up;
 extern int8 Circle_lines;
 
+extern int8 first_Dot[2];
+extern int8 second_Dot[2];
+extern int8 third_Dot[2];
+
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);
@@ -43,6 +47,11 @@ void DrawCenterLinewithConfig(float filter);
 void DrawCenterLinewithConfig_RightBased(float filter);
 void DrawCenterLinewithConfig_LeftBased(float filter);
 void DrawCenterLinewithConfig_CrossRoad(void);
+void Find_First_Dot(int mode);
+void Find_Second_Dot(int mode);
+void Find_Third_Dot(int mode);
+
+
 
 
 
