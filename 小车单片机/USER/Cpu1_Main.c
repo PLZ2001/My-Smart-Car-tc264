@@ -238,7 +238,7 @@ void core1_main(void)
                         }
                         if (classification_Result ==2)//2×ó»·µº
                         {
-                            if(flag_For_Left_Circle!=0 || !Check_LeftCircle_New())
+                            if(flag_For_Left_Circle!=0 || !((Check_LeftCircle_New() || Check_LeftCircle_New2())&&Check_LeftCircle_New3()))
                             {
                                 classification_Result = 9;//9Î´Öª
                             }

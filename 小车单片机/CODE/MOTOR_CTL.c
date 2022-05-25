@@ -20,7 +20,7 @@ uint8 start_Flag = 0;//1表示启动差速函数
 uint8 emergency_Stop = 0;//1表示紧急停车
 
 float Differential_Ratio = 3.4f;
-float InnerSide_Ratio = 0.85f;
+float InnerSide_Ratio = 1.0f;//0.85f;
 
 
 void Differential_Motor(void)
