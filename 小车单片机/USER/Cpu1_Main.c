@@ -286,11 +286,11 @@ void core1_main(void)
                 Change_Steering_PID(0.25f,0,0.30f);
                 if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
                 {
-                    Change_Steering_PID(0.25f,0,0.20f);
+                    Change_Steering_PID(0.24f,0,0.20f);
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.25f,0,0.20f);
+                    Change_Steering_PID(0.24f,0,0.20f);
                 }
                 else if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
                 {
@@ -306,11 +306,11 @@ void core1_main(void)
                 Change_Steering_PID(0.25f,0,0.30f);
                 if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
                 {
-                    Change_Steering_PID(0.25f,0,0.20f);
+                    Change_Steering_PID(0.24f,0,0.20f);
                 }
                 else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
                 {
-                    Change_Steering_PID(0.25f,0,0.20f);
+                    Change_Steering_PID(0.24f,0,0.20f);
                 }
 
 
