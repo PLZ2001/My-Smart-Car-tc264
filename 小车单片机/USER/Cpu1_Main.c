@@ -181,7 +181,7 @@ void core1_main(void)
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Check_Left_Straight(2,0,1) == 0)
+                    if (Check_Left_Straight(2,-1,1) == 0)
                     {
                         classification_Result = 3;//8;
                     }
@@ -193,7 +193,7 @@ void core1_main(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 1)
                 {
-                    if (Check_Right_Straight(0,-2,1) == 0)
+                    if (Check_Right_Straight(1,-2,1) == 0)
                     {
                         classification_Result = 2;//7;
                     }
@@ -276,7 +276,7 @@ void core1_main(void)
             //Cal_Steering_Error(Get_d_steering_Error()<30.0f?0.5f:(Get_d_steering_Error()>120.0f?0.55f:((Get_d_steering_Error()-30.0f)/(120.0f-30.0f)*(0.55f-0.5f)+0.5f)));//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-            if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  ||  (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)) )
+            if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
             {
                 Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Min;
