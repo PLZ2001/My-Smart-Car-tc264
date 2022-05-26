@@ -13,8 +13,8 @@
 
 
 float speed_Target;//目标速度
-float speed_Target_Min = 1.8;//"1.8m/s"实际是1.6m/s
-float speed_Target_Max = 1.8;
+float speed_Target_Min = 2.8;//"2.8m/s"实际是2.5m/s
+float speed_Target_Max = 2.8;
 
 uint8 start_Flag = 0;//1表示启动差速函数
 uint8 emergency_Stop = 0;//1表示紧急停车
