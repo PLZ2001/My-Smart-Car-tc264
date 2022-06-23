@@ -146,6 +146,14 @@ void Key1_Action(void)
                 up_Down = -up_Down;
             }
             break;
+        case Volt_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 2)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
         case Steering_Center_Page:
             pointer_temp += 1;
             if (pointer_temp >= 1)
@@ -223,6 +231,19 @@ void Key2_Action(void)
                     break;
                 case 2:
                     SightForward +=0.01f*up_Down;
+                default:
+                    break;
+            }
+            break;
+        case Volt_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    Base_Volt += 0.01f*up_Down;
+                    break;
+                case 1:
+                    Real_Volt += 0.01f*up_Down;
+                    break;
                 default:
                     break;
             }

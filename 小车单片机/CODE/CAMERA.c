@@ -308,6 +308,7 @@ void Get_Cutted_Image(void)
             mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][origin_j];
             origin_j++;
         }
+//        origin_i+=2;
         origin_i+=2;
     }
 //    int origin_i=0,origin_j=0;

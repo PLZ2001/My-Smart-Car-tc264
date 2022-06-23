@@ -3,9 +3,10 @@
 #include "CAMERA.h"
 #include "SEARCH.h"
 #include "OLED.h"
+#include "MOTOR_CTL.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
-int STEERING_DUTY_CENTER=671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
+int STEERING_DUTY_CENTER=777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.54f;
 
@@ -234,6 +235,10 @@ float Get_d_steering_Error(void)
 
 void Change_Steering_PID(float kp, float ki, float kd)
 {
+    if (start_Flag == 0)
+    {
+        return;
+    }
     Steering_PID.KP = kp;
     Steering_PID.KI = ki;
     Steering_PID.KD = kd;

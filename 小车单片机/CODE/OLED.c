@@ -42,6 +42,26 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,2,"NO3:(%d,%d) ",third_Dot[0],third_Dot[1]);
                OLED_PRINTF(0,3,"angle:%03.01f ",arccosValue);
                break;
+           case Volt_Page:
+               if (pointer_temp == 0)
+               {
+                   OLED_PRINTF(0,0,"->Base_Volt:%01.02f V  ",Base_Volt);
+                   OLED_PRINTF(0,1,"Real_Volt:%01.02f V  ",Real_Volt);
+               }
+               else if (pointer_temp == 1)
+               {
+                   OLED_PRINTF(0,0,"Base_Volt:%01.02f V  ",Base_Volt);
+                   OLED_PRINTF(0,1,"->Real_Volt:%01.02f V  ",Real_Volt);
+               }
+               if (up_Down == 1)
+               {
+                   OLED_PRINTF(0,2,"ADD");
+               }
+               else if (up_Down == -1)
+               {
+                   OLED_PRINTF(0,2,"SUB");
+               }
+               break;
            case Differential_Page:
                if (pointer_temp == 0)
                {

@@ -177,9 +177,10 @@ void Set_Speed2(void)
 {
     uint32 duty;
     duty = (speed_Output2>=0?speed_Output2:(-speed_Output2))*700 +100;//地面开环用它
-    if (duty>MOTOR_DUTY_MAX2)//保护电机
+    duty = (uint32)(duty*Base_Volt/Real_Volt);
+    if (duty>(uint32)(MOTOR_DUTY_MAX2*Base_Volt/Real_Volt))//保护电机
     {
-        duty = MOTOR_DUTY_MAX2;
+        duty = (uint32)(MOTOR_DUTY_MAX2*Base_Volt/Real_Volt);
     }
     if (speed_Output2 == 0)
     {
