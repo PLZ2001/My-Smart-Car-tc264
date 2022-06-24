@@ -82,7 +82,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
             //窗口默认处于中下位置
-            Set_Search_Range(height_Inverse_Perspective/2,height_Inverse_Perspective-height_Inverse_Perspective/2,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
@@ -220,7 +220,7 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification_Classic36();//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                        classification_Result = Classification_Classic36(0);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
                         if (classification_Result == 13)//右丁字
                         {
                             flag_For_Right_T = 1;
@@ -233,14 +233,14 @@ void core1_main(void)
                         }
                         if (classification_Result ==3)//3右环岛
                         {
-                            if(flag_For_Right_Circle!=0 || !((Check_RightCircle_New() || Check_RightCircle_New2())&&Check_RightCircle_New3()))
+                            if(flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
                             {
                                 classification_Result = 9;//9未知
                             }
                         }
                         if (classification_Result ==2)//2左环岛
                         {
-                            if(flag_For_Left_Circle!=0 || !((Check_LeftCircle_New() || Check_LeftCircle_New2())&&Check_LeftCircle_New3()))
+                            if(flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
                             {
                                 classification_Result = 9;//9未知
                             }
@@ -267,8 +267,75 @@ void core1_main(void)
 
                     }
                     Check_Classification(classification_Result,1);
-                }
 
+                    //以下是新窗口的识别
+                    Set_Search_Range(0,height_Inverse_Perspective/2,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    if (Check_Straight(0.5f))
+                     {
+                         classification_Result_1 = 6;//6直道
+                     }
+                     else
+                     {
+                         classification_Result_1 = Classification_Classic36(1);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+
+                         if (classification_Result_1 ==3)//3右环岛
+                         {
+//                             if(flag_For_Right_Circle!=0 || !((Check_RightCircle_New() || Check_RightCircle_New2())&&Check_RightCircle_New3()))
+                             if(flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
+                             {
+                                 classification_Result_1 = 9;//9未知
+                             }
+                         }
+                         if (classification_Result_1 ==2)//2左环岛
+                         {
+//                             if(flag_For_Left_Circle!=0 || !((Check_LeftCircle_New() || Check_LeftCircle_New2())&&Check_LeftCircle_New3()))
+                             if(flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
+                             {
+                                 classification_Result_1 = 9;//9未知
+                             }
+                         }
+                         if (classification_Result_1 ==4)//4三岔路口
+                         {
+                             if(!Check_ThreeRoads_New())
+                             {
+                                 classification_Result_1 = 9;//9未知
+                             }
+                         }
+                         if (classification_Result_1 == 9)//9未知
+                         {
+                             if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
+                             {
+                                 classification_Result_1 = 7;//7靠左
+                             }
+                             if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
+                             {
+                                 classification_Result_1 = 8;//8靠右
+                             }
+
+                         }
+
+                     }
+                     Check_Classification(classification_Result_1,1);
+
+                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     if (Check_Straight(0.6f))
+                     {
+                         classification_Result=6;
+                         classification_Result_1=6;
+                     }
+                     //改回默认窗口
+                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+
+                     //检查长直道是否满足
+                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
+                     {
+                         Long_Straight_Flag = 1;//长直道
+                     }
+                     else
+                     {
+                         Long_Straight_Flag = 0;//长直道
+                     }
+                }
             }
             DrawCenterLine();
 //            Compensate_ColCenter();
@@ -317,6 +384,11 @@ void core1_main(void)
                 }
 
 
+            }
+
+            if(Long_Straight_Flag == 1)
+            {
+                speed_Target = 2.0*speed_Target_Max;
             }
 
 

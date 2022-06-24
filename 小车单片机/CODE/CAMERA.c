@@ -10,6 +10,7 @@
 //需要串口通信输出去，但不用传过来的变量
 //IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
 uint8 classification_Result;
+uint8 classification_Result_1;
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
@@ -63,17 +64,20 @@ float BayesTable_25[17][CLASS_NUM] = {{1.685,-3.593,1.532,-4.908,9.487,-2.020},
         {-8.681,3.995,19.472,31.779,22.297,20.645},
         {-254.031,-254.603,-427.897,-419.047,-383.225,-467.807}};
 
-char *class_Name_Group[CLASS_NUM+9] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知","10左直线","11右直线","12左丁字","13右丁字","14T字"};
+char *class_Name_Group[CLASS_NUM+10] = {"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知","10左直线","11右直线","12左丁字","13右丁字","14T字","15长直道"};
 
 float arg_Classification_16[16];
 float arg_Classification_25[25];
 float arg_Classification_36[36];
 uint8 arg_Classification_36_Table[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+uint8 arg_Classification_36_Table_1[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
 
 uint8 fuzzy_Image_25[5][5];
 uint8 fuzzy_Image_36[6][6];
 float fuzzy_thresholdingValue_25 = 0.60;
-float fuzzy_thresholdingValue_36 = 0.40;
+//float fuzzy_thresholdingValue_36 = 0.40;
+float fuzzy_thresholdingValue_36 = 0.60;
+
 //1表示：如果这里有道路，就会加分
 //-1表示：如果这里有道路，就会扣分
 //0表示：不用管
@@ -100,46 +104,86 @@ uint8 ModelTable_25_Score[4] = {9,8,6,6};//{11,9,9,9};
 //1表示：如果这里有道路，就会加分
 //-1表示：如果这里有道路，就会扣分
 //0表示：不用管
-float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1, 0,-1,-1, 0, 1},
-                               { 1, 1,-1,-1, 1, 1},
-                               { 0, 1,-1,-1, 1, 0},
-                               { 0, 1, 1, 1, 1, 0},
-                               { 0, 0, 1, 1, 0, 0},
-                               { 0, 0, 0, 0, 0, 0}}, {{ 0,-1, 1, 1,-1, 0},
-                                                      { 0,-1, 1, 1,-1, 0},
-                                                      { 0, 1, 1, 1, 1, 0},
-                                                      { 0, 1, 1, 1, 1, 0},
-                                                      { 0, 0, 1, 1, 0, 0},
-                                                      { 0, 0, 0, 0, 0, 0}}, {{-1,-8, 1, 1,-1,-1},
-                                                                             {-1,-8, 1, 1, 1, 1},
-                                                                             { 0,-8, 1, 1, 1, 0},
-                                                                             { 0,-8, 1, 1, 1, 0},
-                                                                             { 0, 0, 1, 1, 0, 0},
-                                                                             { 0, 0, 0, 0, 0, 0}}, {{-1,-1, 1, 1,-8,-1},
-                                                                                                    { 1, 1, 1, 1,-8,-1},
-                                                                                                    { 0, 1, 1, 1,-8, 0},
-                                                                                                    { 0, 1, 1, 1,-8, 0},
-                                                                                                    { 0, 0, 1, 1, 0, 0},
-                                                                                                    { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
-                                                                                                                            { 0,-1, 1, 1,-1, 0},
-                                                                                                                            { 0,-2, 1, 1,-1, 0},
-                                                                                                                            { 0,-3, 1, 1, 1, 0},
-                                                                                                                            { 0, 0, 1, 1, 0, 0},
-                                                                                                                            { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
-                                                                                                                                                    { 0,-1, 1, 1,-1, 0},
-                                                                                                                                                    { 0,-1, 1, 1,-2, 0},
-                                                                                                                                                    { 0, 1, 1, 1,-3, 0},
-                                                                                                                                                    { 0, 0, 1, 1, 0, 0},
-                                                                                                                                                    { 0, 0, 0, 0, 0, 0}},  {{ 0,-1,-3,-3,-1, 0},
-                                                                                                                                                                            { 0,-1,-3,-3,-1, 0},
-                                                                                                                                                                            { 0, 1, 1, 1, 1, 0},
-                                                                                                                                                                            { 0, 1, 1, 1, 1, 0},
-                                                                                                                                                                            { 0, 0, 1, 1, 0, 0},
-                                                                                                                                                                            { 0, 0, 0, 0, 0, 0}}};
+//float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1, 0,-1,-1, 0, 1},
+//                                           { 1, 1,-1,-1, 1, 1},
+//                                           { 0, 1,-1,-1, 1, 0},
+//                                           { 0, 1, 1, 1, 1, 0},
+//                                           { 0, 0, 1, 1, 0, 0},
+//                                           { 0, 0, 0, 0, 0, 0}}, {{ 0,-1, 1, 1,-1, 0},
+//                                                                  { 0,-1, 1, 1,-1, 0},
+//                                                                  { 0, 1, 1, 1, 1, 0},
+//                                                                  { 0, 1, 1, 1, 1, 0},
+//                                                                  { 0, 0, 1, 1, 0, 0},
+//                                                                  { 0, 0, 0, 0, 0, 0}}, {{-1,-8, 1, 1,-1,-1},
+//                                                                                         {-1,-8, 1, 1, 1, 1},
+//                                                                                         { 0,-8, 1, 1, 1, 0},
+//                                                                                         { 0,-8, 1, 1, 1, 0},
+//                                                                                         { 0, 0, 1, 1, 0, 0},
+//                                                                                         { 0, 0, 0, 0, 0, 0}}, {{-1,-1, 1, 1,-8,-1},
+//                                                                                                                { 1, 1, 1, 1,-8,-1},
+//                                                                                                                { 0, 1, 1, 1,-8, 0},
+//                                                                                                                { 0, 1, 1, 1,-8, 0},
+//                                                                                                                { 0, 0, 1, 1, 0, 0},
+//                                                                                                                { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
+//                                                                                                                                        { 0,-1, 1, 1,-1, 0},
+//                                                                                                                                        { 0,-2, 1, 1,-1, 0},
+//                                                                                                                                        { 0,-3, 1, 1, 1, 0},
+//                                                                                                                                        { 0, 0, 1, 1, 0, 0},
+//                                                                                                                                        { 0, 0, 0, 0, 0, 0}},  {{ 0,-1, 1, 1,-1, 0},
+//                                                                                                                                                                { 0,-1, 1, 1,-1, 0},
+//                                                                                                                                                                { 0,-1, 1, 1,-2, 0},
+//                                                                                                                                                                { 0, 1, 1, 1,-3, 0},
+//                                                                                                                                                                { 0, 0, 1, 1, 0, 0},
+//                                                                                                                                                                { 0, 0, 0, 0, 0, 0}},  {{ 0,-1,-3,-3,-1, 0},
+//                                                                                                                                                                                        { 0,-1,-3,-3,-1, 0},
+//                                                                                                                                                                                        { 0, 1, 1, 1, 1, 0},
+//                                                                                                                                                                                        { 0, 1, 1, 1, 1, 0},
+//                                                                                                                                                                                        { 0, 0, 1, 1, 0, 0},
+//                                                                                                                                                                                        { 0, 0, 0, 0, 0, 0}}};
+
+float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-10,-10,1, 1},
+                                           { 1, 1, 0, 0, 1, 1},
+                                           { 1, 1, 1, 1, 1, 1},
+                                           { 1, 1, 1, 1, 1, 1},
+                                           { 0, 1, 1, 1, 1, 0},
+                                           { 0, 0, 1, 1, 0, 0}}, {{-10,0, 1, 1,0,-10},
+                                                                  {-2, 0, 1, 1, 0,-2},
+                                                                  { 1, 1, 1, 1, 1, 1},
+                                                                  { 1, 1, 1, 1, 1, 1},
+                                                                  { 1, 1, 1, 1, 1, 1},
+                                                                  { 0, 0, 1, 1, 0, 0}}, {{-10,0, 1, 1,0,-10},
+                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                         {-10,0, 1, 1, 1, 0},
+                                                                                         {-10,0, 1, 1, 0, 0}}, {{-10,0, 1, 1, 0,-10},
+                                                                                                                { 1, 1, 1, 1, 0,-10},
+                                                                                                                { 1, 1, 1, 1, 0,-10},
+                                                                                                                { 1, 1, 1, 1, 0,-10},
+                                                                                                                { 0, 1, 1, 1, 0,-10},
+                                                                                                                { 0, 0, 1, 1, 0,-10}},  {{-10,0, 1, 1, 0,-10},
+                                                                                                                                         {-10,0, 1, 1,-2,-10},
+                                                                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                                                                         {-10,0, 1, 1, 1, 1},
+                                                                                                                                         {-10,0, 1, 1, 0, 0}},  {{-10, 0, 1, 1,0,-10},
+                                                                                                                                                                 {-10,-2, 1, 1,0,-10},
+                                                                                                                                                                 {  1, 1, 1, 1,0,-10},
+                                                                                                                                                                 {  1, 1, 1, 1,0,-10},
+                                                                                                                                                                 {  1, 1, 1, 1,0,-10},
+                                                                                                                                                                 {  0, 0, 1, 1,0,-10}},  {{-10,-10,-10,-10,-10,-10},
+                                                                                                                                                                                          {  0,  0,  0,  0,  0,  0},
+                                                                                                                                                                                          {  1,  1,  1,  1,  1,  1},
+                                                                                                                                                                                          {  1,  1,  1,  1,  1,  1},
+                                                                                                                                                                                          {  1,  1,  1,  1,  1,  1},
+                                                                                                                                                                                          {  0,  0,  1,  1,  0,  0}}};
+
 // 三岔路口、十字路口、右环岛、左环岛、右丁字、左丁字、T字路口
 //表示标准的道路得分情况
-uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
+//uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
+//float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
+uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,20};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.1,0.2,0.2,0.2,0.2,0.2,0.2};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
@@ -150,7 +194,10 @@ uint8 Inverse_Perspective_Table_Col[height_Inverse_Perspective_Max][width_Invers
 uint8 Thresholding_Value_Init_Flag = 0;//表示是否初始化了二值化阈值
 
 
-uint8 Search_Range[2][2]={{0,height_Inverse_Perspective_Max},{0,width_Inverse_Perspective_Max}};//用来描述扫描的范围：{{起始行,扫描多少行},{起始列,扫描多少列}}
+uint8 Search_Range[2][2]={{0,height_Inverse_Perspective_Max},{0,width_Inverse_Perspective_Max}};
+//用来描述扫描的范围：{{起始行,扫描多少行},{起始列,扫描多少列}}
+
+uint8 Long_Straight_Flag = 0;
 
 void My_Init_Camera(void)
 {
@@ -788,6 +835,50 @@ void New_Get36(float* arg)
         }
     }
 }
+
+void New_Get36_1(float* arg)
+{
+    float col_edge,row_edge;
+    col_edge = Search_Range[COL][LINES]/6.0f;
+    row_edge = Search_Range[ROW][LINES]/6.0f;
+
+    static uint8 flag = 1;
+    if (flag == 1)
+    {
+        for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
+        {
+            for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+            {
+                arg_Classification_36_Table_1[i][j] = (uint8)(6*(ceil((i-Search_Range[ROW][BEGIN]+1)/row_edge)-1) + (ceil((j-Search_Range[COL][BEGIN]+1)/col_edge))-1);
+            }
+        }
+        flag = 0;
+    }
+
+    int white_cnt[36] = {0};
+    int black_cnt[36] = {0};
+    for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
+    {
+        for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+        {
+            white_cnt[arg_Classification_36_Table_1[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[arg_Classification_36_Table_1[i][j]];
+            black_cnt[arg_Classification_36_Table_1[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[arg_Classification_36_Table_1[i][j]];
+        }
+    }
+    for (int i = 0;i<36;i++)
+    {
+        if ((white_cnt[i]+black_cnt[i]) == 0)
+        {
+           arg[i] = 0;
+        }
+        else
+        {
+           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+        }
+    }
+}
+
+
 //
 //uint8 Classification_25(void)
 //{
@@ -1064,9 +1155,16 @@ void New_Get36(float* arg)
 //    }
 //}
 
-uint8 Classification_Classic36(void)
+uint8 Classification_Classic36(uint8 window_ID)
 {
-    New_Get36(arg_Classification_36);
+    if (window_ID==0)
+    {
+        New_Get36(arg_Classification_36);
+    }
+    else if (window_ID==1)
+    {
+        New_Get36_1(arg_Classification_36);
+    }
     uint8 max_Socre_Result = 9;//9未知
     max_Score = -72;
     for (int i = 0; i < 6; i++)
@@ -1086,26 +1184,26 @@ uint8 Classification_Classic36(void)
                 score[k] = score[k] + arg_Classification_36[i*6+j]*ModelTable_36[k][i][j];
             }
         }
-        if (k==2 || k==3)//额外的判断：环岛中间必须全部大于0.2
-        {
-            if (arg_Classification_36[2] > 0.2
-                    && arg_Classification_36[3] > 0.2
-                    && arg_Classification_36[8] > 0.2
-                    && arg_Classification_36[9] > 0.2
-                    && arg_Classification_36[14] > 0.2
-                    && arg_Classification_36[15] > 0.2
-                    && arg_Classification_36[20] > 0.2
-                    && arg_Classification_36[21] > 0.2
-                    && arg_Classification_36[26] > 0.2
-                    && arg_Classification_36[27] > 0.2)
-            {
-                ;
-            }
-            else
-            {
-                score[k] = 0;
-            }
-        }
+//        if (k==2 || k==3)//额外的判断：环岛中间必须全部大于0.2
+//        {
+//            if (arg_Classification_36[2] > 0.2
+//                    && arg_Classification_36[3] > 0.2
+//                    && arg_Classification_36[8] > 0.2
+//                    && arg_Classification_36[9] > 0.2
+//                    && arg_Classification_36[14] > 0.2
+//                    && arg_Classification_36[15] > 0.2
+//                    && arg_Classification_36[20] > 0.2
+//                    && arg_Classification_36[21] > 0.2
+//                    && arg_Classification_36[26] > 0.2
+//                    && arg_Classification_36[27] > 0.2)
+//            {
+//                ;
+//            }
+//            else
+//            {
+//                score[k] = 0;
+//            }
+//        }
         if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
         {
             max_Score = (score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36);

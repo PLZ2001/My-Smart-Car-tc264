@@ -105,8 +105,10 @@ void Update_OLED_per10ms(void)
                }
                OLED_PRINTF(100,0,"%03.01f  ",steering_Error);
                OLED_PRINTF(100,1,"%02.02f  ",steering_Target);
-               OLED_PRINTF(100,2,"%d  ",thresholding_Value);
-               OLED_PRINTF(100,3,"%d  ",classification_Result);
+               OLED_PRINTF(100,3,"%d  ",thresholding_Value);
+               OLED_PRINTF(100,4,"%d  ",classification_Result_1);
+               OLED_PRINTF(100,5,"%d  ",classification_Result);
+               OLED_PRINTF(100,6,"%d  ",Long_Straight_Flag);
                break;
            case MotorPID_Page:
                if (pointer_temp == 0)

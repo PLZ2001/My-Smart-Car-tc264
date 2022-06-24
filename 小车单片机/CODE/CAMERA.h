@@ -50,6 +50,10 @@ extern uint8 flag_For_Right_T;
 extern uint8 flag_For_Left_T;
 
 extern uint8 Search_Range[2][2];
+extern uint8 Long_Straight_Flag;
+extern uint8 classification_Result_1;
+
+
 
 
 void My_Init_Camera(void);
