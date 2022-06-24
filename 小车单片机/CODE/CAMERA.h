@@ -1,7 +1,7 @@
 #ifndef __CAMERA_h__
 #define __CAMERA_h__
 
-#define Y_WIDTH_CAMERA 40
+#define Y_WIDTH_CAMERA 120
 #define X_WIDTH_CAMERA 187
 
 #ifndef width_Inverse_Perspective_Max
@@ -28,7 +28,7 @@
 extern int width_Inverse_Perspective;
 extern int height_Inverse_Perspective;
 extern uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
-extern uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];
+//extern uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];
 extern uint8 thresholding_Value;
 extern uint8 mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
 extern float cameraAlphaUpOrDown;//无需校正

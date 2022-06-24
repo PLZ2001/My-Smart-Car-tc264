@@ -15,6 +15,8 @@ enum OLEDPage OLED_Page = Camera_Page2;//SteeringPID_Page;//Speed_Page;//Circle_
 uint8 OLED_EN = TRUE;//用于表示OLED屏幕是否开启
 uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 
+uint8 OLED_Camera_flag = 0;//用来指示摄像头界面是否可以启动
+
 uint8 pointer_temp = 0;//用来作为指针使用
 int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
 
@@ -41,6 +43,8 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,1,"NO2:(%d,%d) ",second_Dot[0],second_Dot[1]);
                OLED_PRINTF(0,2,"NO3:(%d,%d) ",third_Dot[0],third_Dot[1]);
                OLED_PRINTF(0,3,"angle:%03.01f ",arccosValue);
+//               OLED_PRINTF(0,4,"width:%d ",width_Inverse_Perspective);
+//               OLED_PRINTF(0,5,"height:%d ",height_Inverse_Perspective);
                break;
            case Volt_Page:
                if (pointer_temp == 0)
@@ -91,11 +95,16 @@ void Update_OLED_per10ms(void)
                }
                break;
            case Camera_Page2:
-               my_oled_dis_bmp();
-               OLED_PRINTF(0,6,"SE:%03.01f S:%02.02f",steering_Error,steering_Target);
-//               OLED_PRINTF(0,7,"cnt:%d",cnt);
-//               OLED_PRINTF(0,7,"CC10:%03.01f CC20:%03.01f",Col_Center[10],Col_Center[20]);
-               OLED_PRINTF(0,7,"2-value:%d Class:%d ",thresholding_Value,classification_Result);
+               if (OLED_Camera_flag==1)
+               {
+                  my_oled_dis_bmp();
+               }
+               else
+               {
+                   OLED_PRINTF(0,3,"LOADING~");
+               }
+//               OLED_PRINTF(0,6,"SE:%03.01f S:%02.02f",steering_Error,steering_Target);
+//               OLED_PRINTF(0,7,"2-value:%d Class:%d ",thresholding_Value,classification_Result);
                break;
            case MotorPID_Page:
                if (pointer_temp == 0)
@@ -309,6 +318,7 @@ void my_oled_dis_bmp(void)
             if( i<(temp-1) || !temp1 || temp1>=6)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0))<<5;
             if( i<(temp-1) || !temp1 || temp1>=7)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0))<<6;
             if( i<(temp-1) || !temp1 || temp1>=8)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0))<<7;
+
             oled_wrdat(dat);
         }
     }

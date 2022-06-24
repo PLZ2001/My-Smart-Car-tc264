@@ -58,7 +58,7 @@ void core1_main(void)
             InsertTimer1Point(0);
             InsertTimer2Point(6);
 
-            Get_Cutted_Image();//²Ã¼ôÍ¼Ïñµ½188*40
+            //Get_Cutted_Image();//²Ã¼ôÍ¼Ïñµ½188*40
 
 
             InsertTimer1Point(1);
@@ -77,6 +77,7 @@ void core1_main(void)
 
             InsertTimer1Point(2);
             Get_Inverse_Perspective_Image();
+            OLED_Camera_flag=1;
 
             InsertTimer1Point(3);
 

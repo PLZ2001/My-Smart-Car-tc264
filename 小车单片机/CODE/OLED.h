@@ -13,8 +13,8 @@ enum OLEDPage
     Differential_Page,
     MotorPID_Page,
     SteeringPID_Page,
-    Volt_Page,
     Steering_Center_Page,
+    Volt_Page,
     Speed_Page,
     Circle_Page,
     Camera_Page,
@@ -32,6 +32,7 @@ extern uint8 OLED_EN;
 extern uint8 OLED_Page_Active_Flag;
 extern uint8 pointer_temp;
 extern int8 up_Down;
+extern uint8 OLED_Camera_flag;
 
 void My_Init_OLED(void);
 void Update_OLED_per10ms(void);

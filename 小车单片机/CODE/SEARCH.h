@@ -9,7 +9,7 @@
 #define height_Inverse_Perspective_Max 128
 #endif
 
-#define Camera_Height 0.2
+#define Camera_Height 0.3
 
 #define STRAIGHT_CONDITION 5
 

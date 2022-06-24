@@ -8,7 +8,7 @@
 //摄像头高度约为19.5cm
 
 //需要串口通信输出去，但不用传过来的变量
-IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
+//IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
 uint8 classification_Result;
 
 
@@ -17,12 +17,12 @@ uint8 thresholding_Value = 128; //对应的更新函数为：void Set_Thresholding_Value(
 float cameraAlphaUpOrDown = 40.0f * 3.1415926 / 2 / 180;//无需校正
 float cameraThetaDown = 27.89191f * 3.1415926 / 180;//需要校正
 float ratioOfMaxDisToHG = 5.915322f;//仅影响显示距离
-float ratioOfPixelToHG = 0.1f;//仅影响分辨率
+float ratioOfPixelToHG = 0.076f;//仅影响分辨率
 
 
 //不需要传输的其他变量
 IFX_ALIGN(4) uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];//原始图像
-IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];
+//IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];
 IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
 int width_Inverse_Perspective;
 int height_Inverse_Perspective;
@@ -160,7 +160,8 @@ void UART_Image(void)
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x01);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
-    uart_putbuff(DEBUG_UART, *mt9v03x_image_cutted, X_WIDTH_CAMERA*Y_WIDTH_CAMERA);  //发送压缩后的图像
+//    uart_putbuff(DEBUG_UART, *mt9v03x_image_cutted, X_WIDTH_CAMERA*Y_WIDTH_CAMERA);  //发送压缩后的图像
+    uart_putbuff(DEBUG_UART, *mt9v03x_image, MT9V03X_H*MT9V03X_W);  //发送原始图像
     //uart_putbuff(DEBUG_UART, *mt9v03x_image_cutted_compressed, compressed_Size);  //发送压缩后的图像
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
@@ -174,18 +175,18 @@ void UART_Thresholding_Image(void)
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x01);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
-    uint32 len = X_WIDTH_CAMERA*Y_WIDTH_CAMERA/8; //要求X_WIDTH_CAMERA*Y_WIDTH_CAMERA刚好是8的倍数
-    uint8 *buff = *mt9v03x_image_cutted_thresholding;
+    uint32 len = MT9V03X_H*MT9V03X_W/8; //要求X_WIDTH_CAMERA*Y_WIDTH_CAMERA刚好是8的倍数
+    uint8 *buff = *mt9v03x_image;
     while(len)
     {
-        uint8 dat = (*buff<<7)
-                | (*(buff+1)<<6)
-                | (*(buff+2)<<5)
-                | (*(buff+3)<<4)
-                | (*(buff+4)<<3)
-                | (*(buff+5)<<2)
-                | (*(buff+6)<<1)
-                | (*(buff+7));
+        uint8 dat = ((*buff>thresholding_Value)<<7)
+                | ((*(buff+1)>thresholding_Value)<<6)
+                | ((*(buff+2)>thresholding_Value)<<5)
+                | ((*(buff+3)>thresholding_Value)<<4)
+                | ((*(buff+4)>thresholding_Value)<<3)
+                | ((*(buff+5)>thresholding_Value)<<2)
+                | ((*(buff+6)>thresholding_Value)<<1)
+                | ((*(buff+7)>thresholding_Value));
         uart_putchar(DEBUG_UART, dat);
         len--;
         buff+=8;
@@ -295,22 +296,22 @@ void Get_Cutted_Image(void)
 }*/
 
 //真正的裁剪
-void Get_Cutted_Image(void)
-{
-    int origin_i=0,origin_j=0;
-    origin_i = (MT9V03X_H - Y_WIDTH_CAMERA)/2;
-    origin_j = (MT9V03X_W - X_WIDTH_CAMERA)/2;
-    for(int i = 0; i < Y_WIDTH_CAMERA; i++)
-    {
-        origin_j = (MT9V03X_W - X_WIDTH_CAMERA)/2;
-        for(int j = 0; j < X_WIDTH_CAMERA; j++)
-        {
-            mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][origin_j];
-            origin_j++;
-        }
-//        origin_i+=2;
-        origin_i+=2;
-    }
+//void Get_Cutted_Image(void)
+//{
+//    int origin_i=0,origin_j=0;
+//    origin_i = (MT9V03X_H - Y_WIDTH_CAMERA)/2;
+//    origin_j = (MT9V03X_W - X_WIDTH_CAMERA)/2;
+//    for(int i = 0; i < Y_WIDTH_CAMERA; i++)
+//    {
+//        origin_j = (MT9V03X_W - X_WIDTH_CAMERA)/2;
+//        for(int j = 0; j < X_WIDTH_CAMERA; j++)
+//        {
+//            mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][origin_j];
+//            origin_j++;
+//        }
+////        origin_i+=2;
+//        origin_i+=1;
+//    }
 //    int origin_i=0,origin_j=0;
 //    origin_i = 40;
 //    origin_j = 0;
@@ -324,7 +325,7 @@ void Get_Cutted_Image(void)
 //            mt9v03x_image_cutted[i][j] = mt9v03x_image[origin_i][origin_j];
 //        }
 //    }
-}
+//}
 
 
 
@@ -450,18 +451,18 @@ void Get_Thresholding_Value(void)
        {
            for (int j = 0;j<X_WIDTH_CAMERA;j++)
            {
-               float min_distance = fabs(mt9v03x_image_cutted[i][j]-m[0][0]);
+               float min_distance = fabs(mt9v03x_image[i][j]-m[0][0]);
                int min_distance_class = 0;
                for (int k=1;k<KMEANS_K;k++)
                {
-                   if (fabs(mt9v03x_image_cutted[i][j]-m[k][0]) < min_distance)
+                   if (fabs(mt9v03x_image[i][j]-m[k][0]) < min_distance)
                    {
-                       min_distance = fabs(mt9v03x_image_cutted[i][j]-m[k][0]);
+                       min_distance = fabs(mt9v03x_image[i][j]-m[k][0]);
                        min_distance_class = k;
                    }
                }
                m[min_distance_class][1] = m[min_distance_class][1]+1;
-               m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image_cutted[i][j]/m[min_distance_class][1];
+               m[min_distance_class][2] = (m[min_distance_class][1]-1)/m[min_distance_class][1]*m[min_distance_class][2] + mt9v03x_image[i][j]/m[min_distance_class][1];
            }
        }
        for (int i = 0;i<KMEANS_K;i++)
@@ -482,18 +483,20 @@ void Get_Thresholding_Image(void)
         Start_Timer(3);
     }
 
-    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
-    {
-        for(int i = 0; i < X_WIDTH_CAMERA; i++)
-        {
-            mt9v03x_image_cutted_thresholding[j][i] = mt9v03x_image_cutted[j][i]>thresholding_Value;
-        }
-    }
+//    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
+//    {
+//        for(int i = 0; i < X_WIDTH_CAMERA; i++)
+//        {
+//            mt9v03x_image_cutted_thresholding[j][i] = mt9v03x_image_cutted[j][i]>thresholding_Value;
+//        }
+//    }
 }
+
 
 void Get_Inverse_Perspective_Table(void)
 {
-    int ratio=2;
+    int ratio=1;
+    int invalid_lines = 0;//指示下面无效的行数
     width_Inverse_Perspective = (int)round(2 * (X_WIDTH_CAMERA*1.0) / (ratio*Y_WIDTH_CAMERA*1.0) * tan(cameraAlphaUpOrDown) / cos(cameraThetaDown) * ratioOfMaxDisToHG / ratioOfPixelToHG);
     height_Inverse_Perspective = (int)round(ratioOfMaxDisToHG / ratioOfPixelToHG);
     for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)
@@ -524,6 +527,9 @@ void Get_Inverse_Perspective_Table(void)
         else
         {
             Inverse_Perspective_Table_Row[j_Processed]=255;//非法
+            invalid_lines = height_Inverse_Perspective - j_Processed;
+            height_Inverse_Perspective = j_Processed+1;
+            return;
         }
     }
 }
@@ -537,7 +543,7 @@ void Get_Inverse_Perspective_Image(void)
         {
             if (Inverse_Perspective_Table_Row[j_Processed]!=255 && Inverse_Perspective_Table_Col[j_Processed][i_Processed]!=255)
             {
-                mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = mt9v03x_image_cutted_thresholding[Inverse_Perspective_Table_Row[j_Processed]][Inverse_Perspective_Table_Col[j_Processed][i_Processed]];
+                mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = (mt9v03x_image[Inverse_Perspective_Table_Row[j_Processed]][Inverse_Perspective_Table_Col[j_Processed][i_Processed]])>thresholding_Value;
             }
             else
             {
