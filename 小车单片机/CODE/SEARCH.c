@@ -162,7 +162,7 @@ void DrawCenterLine(void)
     }
 }
 
-uint8 Check_Straight(void)
+uint8 Check_Straight(float ratio)
 {
     int start_Row = height_Inverse_Perspective-1;
     int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};
@@ -235,7 +235,7 @@ uint8 Check_Straight(void)
     int max_Col_Right = 0;
     int min_Col_Right = width_Inverse_Perspective;
     int detect_Right = 0;
-    for (int i=0;i<search_Lines_Straight;i++)
+    for (int i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Left[i] != -2)
         {
@@ -332,28 +332,28 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float ratio)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Left;
     int d_Col_Left_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*ratio;i++)
+    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Left[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
             {
-                d_Col_Left_Num = search_Lines*ratio-i-1;
+                d_Col_Left_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Left_Num<=0.7*search_Lines)
+    if (d_Col_Left_Num<=0.7*ratio*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -425,28 +425,28 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float rat
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Right;
     int d_Col_Right_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*ratio;i++)
+    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Right[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
-                d_Col_Right_Num = search_Lines*ratio-i-1;
+                d_Col_Right_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Right_Num<=0.7*search_Lines)
+    if (d_Col_Right_Num<=0.7*ratio*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -876,7 +876,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
 
 void DrawCenterLinewithConfig_CrossRoad(void)
 {
-    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+    int full_Lines = Search_Range[ROW][LINES];//一共要从上往下扫描多少行，最大是图片宽
     int Conv_Core[2][3][3] = {{{1,1,-1},{1,1,-1},{-1,-1,-1}},{{-1,1,1},{-1,1,1},{-1,-1,-1}}};
     //Conv_Core(1).core = [1 1 -1
 //                         1 1 -1
@@ -888,9 +888,9 @@ void DrawCenterLinewithConfig_CrossRoad(void)
     int Conv_Score_max[2] = {-9,-9};
     int Conv_Score_max_i[2] = {0,0};
     int Conv_Score_max_j[2] = {0,width_Inverse_Perspective};
-    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+    for (int i=Search_Range[ROW][BEGIN]+1;i<Search_Range[ROW][BEGIN]+full_Lines-1;i++)//从第一行开始逐行扫描
     {
-        for (int j=1;j<width_Inverse_Perspective-1;j++)
+        for (int j=Search_Range[COL][BEGIN]+1;j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1;j++)
         {
             // 对于每个中心点(i,j)，计算2类卷积值，分别取最大值保留
             int Conv_Score[2] = {0,0};//存储2类卷积结果
@@ -978,208 +978,208 @@ void DrawCenterLinewithConfig_CrossRoad(void)
         Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
     }
 }
+//
+//uint8 Check_RightCircle(void)
+//{
+//    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+//    int Conv_Core[1][3][3] = {{{1,1,1},{1,1,-1},{1,-1,-1}}};
+//    //Conv_Core(1).core = [1 1 1
+////                         1 1 -1
+////                         1 -1 -1];
+//
+//
+//    int Conv_Score_max[1] = {-9};
+//    int Conv_Score_max_i[1] = {0};
+//    int Conv_Score_max_j[1] = {0};
+//    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+//    {
+//        for (int j=1;j<width_Inverse_Perspective-1;j++)
+//        {
+//            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
+//            int Conv_Score[1] = {0};//存储2类卷积结果
+//            int flag = 1;//卷积合不合法
+//            for (int k=0;k<1;k++)
+//            {
+//                for (int ii=0;ii<3;ii++)
+//                {
+//                    for (int jj=0;jj<3;jj++)
+//                    {
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+//                        {
+//                            flag = 0;
+//                            break;
+//                        }
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+//                        }
+//                        else
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+//                        }
+//                    }
+//                    if (flag == 0)
+//                    {
+//                        break;
+//                    }
+//                }
+//                if (flag == 0)
+//                {
+//                    break;
+//                }
+//            }
+//            if (flag == 0)
+//            {
+//                continue;
+//            }
+//            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
+//            {
+//                Conv_Score_max[0] = Conv_Score[0];
+//                Conv_Score_max_i[0] = i;
+//                Conv_Score_max_j[0] = j;
+//            }
+//        }
+//    }
+//
+//    if (Conv_Score_max[0] >= 9)
+//    {
+//        return 1;
+//    }
+//    else
+//    {
+//        return 0;
+//    }
+//}
+//
+//uint8 Check_LeftCircle(void)
+//{
+//    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+//    int Conv_Core[1][3][3] = {{{1,1,1},{-1,1,1},{-1,-1,1}}};
+//    //Conv_Core(1).core = [1 1 1
+////                        -1 1 1
+////                       -1 -1 1];
+//
+//
+//    int Conv_Score_max[1] = {-9};
+//    int Conv_Score_max_i[1] = {0};
+//    int Conv_Score_max_j[1] = {0};
+//    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+//    {
+//        for (int j=1;j<width_Inverse_Perspective-1;j++)
+//        {
+//            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
+//            int Conv_Score[1] = {0};//存储2类卷积结果
+//            int flag = 1;//卷积合不合法
+//            for (int k=0;k<1;k++)
+//            {
+//                for (int ii=0;ii<3;ii++)
+//                {
+//                    for (int jj=0;jj<3;jj++)
+//                    {
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+//                        {
+//                            flag = 0;
+//                            break;
+//                        }
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+//                        }
+//                        else
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+//                        }
+//                    }
+//                    if (flag == 0)
+//                    {
+//                        break;
+//                    }
+//                }
+//                if (flag == 0)
+//                {
+//                    break;
+//                }
+//            }
+//            if (flag == 0)
+//            {
+//                continue;
+//            }
+//            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
+//            {
+//                Conv_Score_max[0] = Conv_Score[0];
+//                Conv_Score_max_i[0] = i;
+//                Conv_Score_max_j[0] = j;
+//            }
+//        }
+//    }
+//
+//    if (Conv_Score_max[0] >= 9)
+//    {
+//        return 1;
+//    }
+//    else
+//    {
+//        return 0;
+//    }
+//}
 
-uint8 Check_RightCircle(void)
-{
-    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{1,1,1},{1,1,-1},{1,-1,-1}}};
-    //Conv_Core(1).core = [1 1 1
-//                         1 1 -1
-//                         1 -1 -1];
-
-
-    int Conv_Score_max[1] = {-9};
-    int Conv_Score_max_i[1] = {0};
-    int Conv_Score_max_j[1] = {0};
-    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
-    {
-        for (int j=1;j<width_Inverse_Perspective-1;j++)
-        {
-            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
-            int Conv_Score[1] = {0};//存储2类卷积结果
-            int flag = 1;//卷积合不合法
-            for (int k=0;k<1;k++)
-            {
-                for (int ii=0;ii<3;ii++)
-                {
-                    for (int jj=0;jj<3;jj++)
-                    {
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
-                        {
-                            flag = 0;
-                            break;
-                        }
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
-                        {
-                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
-                        }
-                        else
-                        {
-                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
-                        }
-                    }
-                    if (flag == 0)
-                    {
-                        break;
-                    }
-                }
-                if (flag == 0)
-                {
-                    break;
-                }
-            }
-            if (flag == 0)
-            {
-                continue;
-            }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7 && i>height_Inverse_Perspective*0.3 && j>width_Inverse_Perspective*0.5)
-            {
-                Conv_Score_max[0] = Conv_Score[0];
-                Conv_Score_max_i[0] = i;
-                Conv_Score_max_j[0] = j;
-            }
-        }
-    }
-
-    if (Conv_Score_max[0] >= 9)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-uint8 Check_LeftCircle(void)
-{
-    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[1][3][3] = {{{1,1,1},{-1,1,1},{-1,-1,1}}};
-    //Conv_Core(1).core = [1 1 1
-//                        -1 1 1
-//                       -1 -1 1];
-
-
-    int Conv_Score_max[1] = {-9};
-    int Conv_Score_max_i[1] = {0};
-    int Conv_Score_max_j[1] = {0};
-    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
-    {
-        for (int j=1;j<width_Inverse_Perspective-1;j++)
-        {
-            // 对于每个中心点(i,j)，计算1类卷积值，分别取最大值保留
-            int Conv_Score[1] = {0};//存储2类卷积结果
-            int flag = 1;//卷积合不合法
-            for (int k=0;k<1;k++)
-            {
-                for (int ii=0;ii<3;ii++)
-                {
-                    for (int jj=0;jj<3;jj++)
-                    {
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
-                        {
-                            flag = 0;
-                            break;
-                        }
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
-                        {
-                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
-                        }
-                        else
-                        {
-                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
-                        }
-                    }
-                    if (flag == 0)
-                    {
-                        break;
-                    }
-                }
-                if (flag == 0)
-                {
-                    break;
-                }
-            }
-            if (flag == 0)
-            {
-                continue;
-            }
-            if (Conv_Score[0] > Conv_Score_max[0] && i<height_Inverse_Perspective*0.7  && i>height_Inverse_Perspective*0.3 && j<width_Inverse_Perspective*0.5)
-            {
-                Conv_Score_max[0] = Conv_Score[0];
-                Conv_Score_max_i[0] = i;
-                Conv_Score_max_j[0] = j;
-            }
-        }
-    }
-
-    if (Conv_Score_max[0] >= 9)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-
-uint8 Check_ThreeRoads(void)
-{
-    int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
-    int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
-    int check_lines = 2;
-    uint8 result = 0;
-    for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
-    {
-        if (check_lines==0)
-        {
-            break;
-        }
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
-        {
-            start_Row = start_Row - 1;
-            continue;
-        }
-        uint8 black_cnt = 0;
-        uint8 black_cnt_limit = 3;
-        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 255)
-        {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]]==0)
-            {
-                black_cnt++;
-            }
-            start_Col[0]--;
-        }
-        if (black_cnt>black_cnt_limit)
-        {
-            break;
-        }
-        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 255)
-        {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]]==0)
-            {
-                black_cnt++;
-            }
-            start_Col[1]++;
-        }
-        if (black_cnt>black_cnt_limit)
-        {
-            break;
-        }
-        check_lines--;
-        if (check_lines==0)
-        {
-            result=1;
-            break;
-        }
-    }
-    return result;
-}
+//
+//uint8 Check_ThreeRoads(void)
+//{
+//    int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
+//    int start_Col[2] = {width_Inverse_Perspective/2,width_Inverse_Perspective/2};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
+//    int check_lines = 2;
+//    uint8 result = 0;
+//    for (int i=0;i<search_Lines;i++)//从最后一行开始逐行扫描，一共扫描search_Lines行
+//    {
+//        if (check_lines==0)
+//        {
+//            break;
+//        }
+//        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+//        {
+//            start_Row = start_Row - 1;
+//            continue;
+//        }
+//        uint8 black_cnt = 0;
+//        uint8 black_cnt_limit = 3;
+//        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 255)
+//        {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]]==0)
+//            {
+//                black_cnt++;
+//            }
+//            start_Col[0]--;
+//        }
+//        if (black_cnt>black_cnt_limit)
+//        {
+//            break;
+//        }
+//        while(mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 255)
+//        {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]]==0)
+//            {
+//                black_cnt++;
+//            }
+//            start_Col[1]++;
+//        }
+//        if (black_cnt>black_cnt_limit)
+//        {
+//            break;
+//        }
+//        check_lines--;
+//        if (check_lines==0)
+//        {
+//            result=1;
+//            break;
+//        }
+//    }
+//    return result;
+//}
 
 uint8 Check_ThreeRoads_New(void)
 {
-    uint8 water_i = 0.2*height_Inverse_Perspective, water_j = 0.5*width_Inverse_Perspective;
+    uint8 water_i = Search_Range[ROW][BEGIN]+0.2*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
     int8 direction = 1;
     int8 cnt = 0;
     int8 last_angle = 1;
@@ -1217,7 +1217,7 @@ uint8 Check_ThreeRoads_New(void)
 
     last_angle_down = last_angle;
     uint8 last_water_i = water_i;
-    water_i = 0.2*height_Inverse_Perspective, water_j = 0.5*width_Inverse_Perspective;
+    water_i = Search_Range[ROW][BEGIN]+0.2*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
     direction = 1;
     cnt = 0;
     last_angle = 1;
@@ -1271,7 +1271,7 @@ uint8 Check_ThreeRoads_New(void)
 
 uint8 Check_RightCircle_New(void)
 {
-    uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
+    uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.8*Search_Range[COL][LINES];
     int8 direction = -1;
     int8 cnt = 0;
     int8 last_angle = 1;
@@ -1308,7 +1308,7 @@ uint8 Check_RightCircle_New(void)
 
     last_angle_down = last_angle;
     uint8 last_water_i = water_i;
-    water_i = 0.2*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
+    water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.8*Search_Range[COL][LINES];
     direction = -1;
     cnt = 0;
     last_angle = 1;
@@ -1360,7 +1360,7 @@ uint8 Check_RightCircle_New(void)
 
 uint8 Check_LeftCircle_New(void)
 {
-    uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
+    uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.2*Search_Range[COL][LINES];
     int8 direction = 1;
     int8 cnt = 0;
     int8 last_angle = 1;
@@ -1398,7 +1398,7 @@ uint8 Check_LeftCircle_New(void)
 
     last_angle_down = last_angle;
     uint8 last_water_i = water_i;
-    water_i = 0.2*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
+    water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.2*Search_Range[COL][LINES];
     direction = 1;
     cnt = 0;
     last_angle = 1;
@@ -1453,12 +1453,12 @@ uint8 Check_LeftCircle_New(void)
 
 void Find_First_Dot(int mode)
 {
-    int dot_i = 0, dot_j = width_Inverse_Perspective/2;
+    int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
     first_Dot[0] = -2;
     first_Dot[1] = -2;
     if (mode == 1)
     {
-        for (int i=0;i<(width_Inverse_Perspective -1 - dot_j);i++)
+        for (int i=0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES] -1 - dot_j);i++)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i][dot_j+i] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i][dot_j+i+1] == 0)
             {
@@ -1470,7 +1470,7 @@ void Find_First_Dot(int mode)
     }
     else if (mode == 0)
     {
-        for (int i=0;i<dot_j;i++)
+        for (int i=0;i<dot_j-Search_Range[COL][BEGIN];i++)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i][dot_j-i] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i][dot_j-i-1] == 0)
             {
@@ -1488,7 +1488,7 @@ void Find_Second_Dot(int mode)
     second_Dot[1] = -2;
     if (mode == 1)
     {
-        uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.8*width_Inverse_Perspective;
+        uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.8*Search_Range[COL][LINES];
         int8 direction = -1;
         int8 cnt = 0;
         while(1)
@@ -1517,7 +1517,7 @@ void Find_Second_Dot(int mode)
     }
     else if (mode == 0)
     {
-        uint8 water_i = 0.05*height_Inverse_Perspective, water_j = 0.2*width_Inverse_Perspective;
+        uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.2*Search_Range[COL][LINES];
         int8 direction = 1;
         int8 cnt = 0;
         while(1)
@@ -1558,7 +1558,7 @@ void Find_Third_Dot(int mode)
         {
             uint8 water_i = second_Dot[0], water_j = second_Dot[1];
             uint8 water_j_temp = water_j;
-            for (int i = 0;i<(width_Inverse_Perspective-1-water_j_temp);i++)
+            for (int i = 0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1-water_j_temp);i++)
             {
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]==255)
                 {
@@ -1569,12 +1569,12 @@ void Find_Third_Dot(int mode)
                     water_j+=1;
                 }
             }//往右查找直到右侧为255区域
-            if (water_j!= (width_Inverse_Perspective-2))
+            if (water_j!= (Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-2))
             {
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
                 {
                     uint8 water_i_temp = water_i;
-                    for (int i = 0;i<water_i_temp;i++)
+                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
                     {
                         water_i--;
                         if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]!=255)
@@ -1595,7 +1595,7 @@ void Find_Third_Dot(int mode)
                 else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
                 {
                     uint8 water_i_temp = water_i;
-                    for (int i = 0;i<(height_Inverse_Perspective - 1 - water_i_temp);i++)
+                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
                     {
                         water_i++;
                         if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
@@ -1620,7 +1620,7 @@ void Find_Third_Dot(int mode)
         {
             uint8 water_i = second_Dot[0], water_j = second_Dot[1];
             uint8 water_j_temp = water_j;
-            for (int i = 0;i<water_j_temp;i++)
+            for (int i = 0;i<water_j_temp-Search_Range[COL][BEGIN];i++)
             {
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]==255)
                 {
@@ -1631,12 +1631,12 @@ void Find_Third_Dot(int mode)
                     water_j-=1;
                 }
             }//往左查找直到左侧为255区域
-            if (water_j!= 1)
+            if (water_j!= Search_Range[COL][BEGIN]+1)
             {
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
                 {
                     uint8 water_i_temp = water_i;
-                    for (int i = 0;i<water_i_temp;i++)
+                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
                     {
                         water_i--;
                         if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]!=255)
@@ -1657,7 +1657,7 @@ void Find_Third_Dot(int mode)
                 else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
                 {
                     uint8 water_i_temp = water_i;
-                    for (int i = 0;i<(height_Inverse_Perspective - 1 - water_i_temp);i++)
+                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
                     {
                         water_i++;
                         if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
@@ -1800,28 +1800,28 @@ uint8 Check_Left_for_RightCircle(void)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Left;
     int d_Col_Left_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*0.5f;i++)
+    for (i=height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Left[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
             {
-                d_Col_Left_Num = search_Lines*0.5f-i-1;
+                d_Col_Left_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Left_Num<=15)
+    if (d_Col_Left_Num<=0.7f*0.5f*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -1882,28 +1882,28 @@ uint8 Check_Right_for_RightCircle(void)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Right;
     int d_Col_Right_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*0.5f;i++)
+    for (i=height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Right[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
-                d_Col_Right_Num = search_Lines*0.5f-i-1;
+                d_Col_Right_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Right_Num<=15)
+    if (d_Col_Right_Num<=0.7f*0.5f*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -1973,28 +1973,28 @@ uint8 Check_Left_for_LeftCircle(void)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Left;
     int d_Col_Left_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*0.5f;i++)
+    for (i=height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Left[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Left[i]-1] == 0)
             {
-                d_Col_Left_Num = search_Lines*0.5f-i-1;
+                d_Col_Left_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Left_Num<=15)
+    if (d_Col_Left_Num<=0.7f*0.5f*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -2055,28 +2055,28 @@ uint8 Check_Right_for_LeftCircle(void)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
     }
 
-    start_Row = height_Inverse_Perspective-1;
+    start_Row = Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];
     int d_Col_Right;
     int d_Col_Right_Num=0;
 
     int i;
-    for (i=0;i<search_Lines*0.5f;i++)
+    for (i=height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Right[i] !=-2)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][Col_Right[i]-1] == 1)
             {
-                d_Col_Right_Num = search_Lines*0.5f-i-1;
+                d_Col_Right_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-            else
-            {
-                return 0;
-            }
+//            else
+//            {
+//                return 0;
+//            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Right_Num<=15)
+    if (d_Col_Right_Num<=0.7f*0.5f*Search_Range[ROW][LINES])
     {
         return 0;
     }

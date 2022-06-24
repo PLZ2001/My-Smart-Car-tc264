@@ -38,7 +38,7 @@ void UART_ColCenter(void);
 void UART_ColLeft(void);
 void UART_ColRight(void);
 
-uint8 Check_Straight(void);
+uint8 Check_Straight(float ratio);
 uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float ratio);
 uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float ratio);
 uint8 Check_LeftCircle(void);

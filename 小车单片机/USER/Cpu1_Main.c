@@ -81,7 +81,8 @@ void core1_main(void)
 
             InsertTimer1Point(3);
 
-
+            //窗口默认处于中下位置
+            Set_Search_Range(height_Inverse_Perspective/2,height_Inverse_Perspective-height_Inverse_Perspective/2,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
@@ -213,7 +214,7 @@ void core1_main(void)
                     {
                         flag_For_Left_Circle = 0;
                     }
-                    if (Check_Straight())
+                    if (Check_Straight(1.0f))
                     {
                         classification_Result = 6;//6直道
                     }
@@ -253,14 +254,15 @@ void core1_main(void)
                         }
                         if (classification_Result == 9)//9未知
                         {
-                            if(Check_Left_Straight(2,-2,1))
+                            if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
                             {
                                 classification_Result = 7;//7靠左
                             }
-                            if(Check_Right_Straight(2,-2,1))
+                            if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
                             {
                                 classification_Result = 8;//8靠右
                             }
+
                         }
 
                     }

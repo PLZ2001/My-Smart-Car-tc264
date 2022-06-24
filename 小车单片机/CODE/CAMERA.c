@@ -149,6 +149,9 @@ uint8 Inverse_Perspective_Table_Col[height_Inverse_Perspective_Max][width_Invers
 
 uint8 Thresholding_Value_Init_Flag = 0;//表示是否初始化了二值化阈值
 
+
+uint8 Search_Range[2][2]={{0,height_Inverse_Perspective_Max},{0,width_Inverse_Perspective_Max}};//用来描述扫描的范围：{{起始行,扫描多少行},{起始列,扫描多少列}}
+
 void My_Init_Camera(void)
 {
     mt9v03x_init();
@@ -675,89 +678,89 @@ void Get_Inverse_Perspective_Image(void)
 //        return 9;//9代表未知
 //    }
 //}
-
-void Get25(float* arg)
-{
-    int col_edge[6],row_edge[6];
-    col_edge[0] = 0;
-    col_edge[1] = width_Inverse_Perspective/5;
-    col_edge[2] = 2*col_edge[1];
-    col_edge[3] = 3*col_edge[1];
-    col_edge[4] = 4*col_edge[1];
-    col_edge[5] = width_Inverse_Perspective-1;
-    row_edge[0] = 0;
-    row_edge[1] = height_Inverse_Perspective/5;
-    row_edge[2] = 2*row_edge[1];
-    row_edge[3] = 3*row_edge[1];
-    row_edge[4] = 4*row_edge[1];
-    row_edge[5] = height_Inverse_Perspective-1;
-
-    int white_cnt[25] = {0};
-    int black_cnt[25] = {0};
-    for (int i = 0;i<height_Inverse_Perspective;i++)
-    {
-        for (int j = 0;j<width_Inverse_Perspective;j++)
-        {
-            white_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
-            black_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
-        }
-    }
-    for (int i = 0;i<25;i++)
-    {
-        if ((white_cnt[i]+black_cnt[i]) == 0)
-        {
-           arg[i] = 0;
-        }
-        else
-        {
-           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
-        }
-    }
-}
-
-void New_Get25(float* arg)
-{
-    float col_edge,row_edge;
-    col_edge = width_Inverse_Perspective/5.0f;
-    row_edge = height_Inverse_Perspective/5.0f;
-
-    int white_cnt[25] = {0};
-    int black_cnt[25] = {0};
-    for (int i = 0;i<height_Inverse_Perspective;i++)
-    {
-        for (int j = 0;j<width_Inverse_Perspective;j++)
-        {
-            white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
-            black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
-        }
-    }
-    for (int i = 0;i<25;i++)
-    {
-        if ((white_cnt[i]+black_cnt[i]) == 0)
-        {
-           arg[i] = 0;
-        }
-        else
-        {
-           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
-        }
-    }
-}
+//
+//void Get25(float* arg)
+//{
+//    int col_edge[6],row_edge[6];
+//    col_edge[0] = 0;
+//    col_edge[1] = width_Inverse_Perspective/5;
+//    col_edge[2] = 2*col_edge[1];
+//    col_edge[3] = 3*col_edge[1];
+//    col_edge[4] = 4*col_edge[1];
+//    col_edge[5] = width_Inverse_Perspective-1;
+//    row_edge[0] = 0;
+//    row_edge[1] = height_Inverse_Perspective/5;
+//    row_edge[2] = 2*row_edge[1];
+//    row_edge[3] = 3*row_edge[1];
+//    row_edge[4] = 4*row_edge[1];
+//    row_edge[5] = height_Inverse_Perspective-1;
+//
+//    int white_cnt[25] = {0};
+//    int black_cnt[25] = {0};
+//    for (int i = 0;i<height_Inverse_Perspective;i++)
+//    {
+//        for (int j = 0;j<width_Inverse_Perspective;j++)
+//        {
+//            white_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
+//            black_cnt[5*(i/row_edge[1]) + j/col_edge[1]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[5*(i/row_edge[1]) + j/col_edge[1]];
+//        }
+//    }
+//    for (int i = 0;i<25;i++)
+//    {
+//        if ((white_cnt[i]+black_cnt[i]) == 0)
+//        {
+//           arg[i] = 0;
+//        }
+//        else
+//        {
+//           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+//        }
+//    }
+//}
+//
+//void New_Get25(float* arg)
+//{
+//    float col_edge,row_edge;
+//    col_edge = width_Inverse_Perspective/5.0f;
+//    row_edge = height_Inverse_Perspective/5.0f;
+//
+//    int white_cnt[25] = {0};
+//    int black_cnt[25] = {0};
+//    for (int i = 0;i<height_Inverse_Perspective;i++)
+//    {
+//        for (int j = 0;j<width_Inverse_Perspective;j++)
+//        {
+//            white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
+//            black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[(int)(5*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1)];
+//        }
+//    }
+//    for (int i = 0;i<25;i++)
+//    {
+//        if ((white_cnt[i]+black_cnt[i]) == 0)
+//        {
+//           arg[i] = 0;
+//        }
+//        else
+//        {
+//           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+//        }
+//    }
+//}
 
 void New_Get36(float* arg)
 {
     float col_edge,row_edge;
-    col_edge = width_Inverse_Perspective/6.0f;
-    row_edge = height_Inverse_Perspective/6.0f;
+    col_edge = Search_Range[COL][LINES]/6.0f;
+    row_edge = Search_Range[ROW][LINES]/6.0f;
 
     static uint8 flag = 1;
     if (flag == 1)
     {
-        for (int i = 0;i<height_Inverse_Perspective;i++)
+        for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
         {
-            for (int j = 0;j<width_Inverse_Perspective;j++)
+            for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
             {
-                arg_Classification_36_Table[i][j] = (uint8)(6*(ceil((i+1)/row_edge)-1) + (ceil((j+1)/col_edge))-1);
+                arg_Classification_36_Table[i][j] = (uint8)(6*(ceil((i-Search_Range[ROW][BEGIN]+1)/row_edge)-1) + (ceil((j-Search_Range[COL][BEGIN]+1)/col_edge))-1);
             }
         }
         flag = 0;
@@ -765,9 +768,9 @@ void New_Get36(float* arg)
 
     int white_cnt[36] = {0};
     int black_cnt[36] = {0};
-    for (int i = 0;i<height_Inverse_Perspective;i++)
+    for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
     {
-        for (int j = 0;j<width_Inverse_Perspective;j++)
+        for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
         {
             white_cnt[arg_Classification_36_Table[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[arg_Classification_36_Table[i][j]];
             black_cnt[arg_Classification_36_Table[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[arg_Classification_36_Table[i][j]];
@@ -785,281 +788,281 @@ void New_Get36(float* arg)
         }
     }
 }
-
-uint8 Classification_25(void)
-{
-    Get25(arg_Classification_25);
-    float classification_Data[CLASS_NUM] = {0};
-    float classification_Data_max1=0;
-    uint8 classification_Result_temp1=0;
-    float classification_Data_max2=0;
-    uint8 classification_Result_temp2=0;
-    for (uint8 i = 0;i<CLASS_NUM;i++)
-    {
-        classification_Data[i] = arg_Classification_25[0]*BayesTable_25[0][i]+
-                arg_Classification_25[1]*BayesTable_25[1][i]+
-                arg_Classification_25[2]*BayesTable_25[2][i]+
-                arg_Classification_25[3]*BayesTable_25[3][i]+
-                arg_Classification_25[4]*BayesTable_25[4][i]+
-                arg_Classification_25[5]*BayesTable_25[5][i]+
-                arg_Classification_25[6]*BayesTable_25[6][i]+
-                arg_Classification_25[7]*BayesTable_25[7][i]+
-                arg_Classification_25[8]*BayesTable_25[8][i]+
-                arg_Classification_25[9]*BayesTable_25[9][i]+
-                arg_Classification_25[11]*BayesTable_25[10][i]+
-                arg_Classification_25[12]*BayesTable_25[11][i]+
-                arg_Classification_25[13]*BayesTable_25[12][i]+
-                arg_Classification_25[16]*BayesTable_25[13][i]+
-                arg_Classification_25[17]*BayesTable_25[14][i]+
-                arg_Classification_25[18]*BayesTable_25[15][i]+
-                BayesTable_25[16][i];
-
-
-        if (classification_Data[i]>classification_Data_max1)
-        {
-            classification_Data_max2 = classification_Data_max1;
-            classification_Result_temp2 = classification_Result_temp1;
-            classification_Data_max1 = classification_Data[i];
-            classification_Result_temp1 = i;
-        }
-        else if (classification_Data[i]>classification_Data_max2)
-        {
-            classification_Data_max2 = classification_Data[i];
-            classification_Result_temp2 = i;
-        }
-    }
-    if ((classification_Data_max1-classification_Data_max2) > CLASSIFICATION_25_VALID)
-    {
-        return classification_Result_temp1;
-    }
-    else
-    {
-        return 9;//9代表未知
-    }
-}
-
-uint8 Classification_Classic(void)
-{
-    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
-    int Conv_Core[7][3][3] = {{{1,1,-1},{1,1,-1},{-1,-1,-1}},
-                              {{-1,1,1},{-1,1,1},{-1,-1,-1}},
-                              {{1,1,1},{1,1,-1},{1,-1,-1}},
-                              {{1,-1,-1},{1,-1,-1},{1,-1,-1}},
-                              {{-1,-1,1},{-1,-1,1},{-1,-1,1}},
-                              {{1,1,1},{1,1,-1},{1,-1,-1}},
-                              {{1,1,1},{-1,1,1},{-1,-1,1}}};
-    //十字路口
-    //Conv_Core(0).core = [1 1 -1
-//                         1 1 -1
-//                        -1 -1 -1];
-    //Conv_Core(1).core = [-1 1 1
-//                         -1 1 1
-//                        -1 -1 -1];
-    //右圆环
-    //Conv_Core(2).core = [1 1 1
-//                         1 1 -1
-//                         1 -1 -1];
-    //Conv_Core(3).core = [1 -1 -1
-//                         1 -1 -1
-//                         1 -1 -1];
-    //Conv_Core(4).core = [-1 -1 1
-//                         -1 -1 1
-//                         -1 -1 1];
-    //三岔路口
-    //Conv_Core(5).core = [1 1 1
-//                         1 1 -1
-//                         1 -1 -1];
-    //Conv_Core(6).core = [1 1 1
-//                        -1 1 1
-//                        -1 -1 1];
-    int Conv_Score_max[7] = {-9,-9,-9,-9,-9,-9,-9};
-    int Conv_Score_max_i[7] = {0,0,0,0,0,0,0};
-    int Conv_Score_max_j[7] = {0,0,0,0,0,0,0};
-    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
-    {
-        for (int j=1;j<width_Inverse_Perspective-1;j++)
-        {
-            // 对于每个中心点(i,j)，计算7类卷积值，分别取最大值保留
-            int Conv_Score[7] = {0,0,0,0,0,0,0};//存储7类卷积结果
-            int flag = 1;//卷积合不合法
-            for (int k=0;k<7;k++)
-            {
-                for (int ii=0;ii<3;ii++)
-                {
-                    for (int jj=0;jj<3;jj++)
-                    {
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
-                        {
-                            flag = 0;
-                            break;
-                        }
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
-                        {
-                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
-                        }
-                        else
-                        {
-                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
-                        }
-                    }
-                    if (flag == 0)
-                    {
-                        break;
-                    }
-                }
-                if (flag == 0)
-                {
-                    break;
-                }
-            }
-            if (flag == 0)
-            {
-                continue;
-            }
-            //十字路口
-            //Conv_Core(0).core = [1 1 -1
-        //                         1 1 -1
-        //                        -1 -1 -1];
-            //Conv_Core(1).core = [-1 1 1
-        //                         -1 1 1
-        //                        -1 -1 -1];
-            //右圆环
-            //Conv_Core(2).core = [1 1 1
-        //                         1 1 -1
-        //                         1 -1 -1];
-            //Conv_Core(3).core = [1 -1 -1
-        //                         1 -1 -1
-        //                         1 -1 -1];
-            //Conv_Core(4).core = [-1 -1 1
-        //                         -1 -1 1
-        //                         -1 -1 1];
-            //三岔路口
-            //Conv_Core(5).core = [1 1 1
-        //                         1 1 -1
-        //                         1 -1 -1];
-            //Conv_Core(6).core = [1 1 1
-        //                        -1 1 1
-        //                        -1 -1 1];
-            //十字路口
-            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.6)
-            {
-                Conv_Score_max[0] = Conv_Score[0];
-                Conv_Score_max_i[0] = i;
-                Conv_Score_max_j[0] = j;
-            }
-            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.4)
-            {
-                Conv_Score_max[1] = Conv_Score[1];
-                Conv_Score_max_i[1] = i;
-                Conv_Score_max_j[1] = j;
-            }
-            //右圆环
-            if (Conv_Score[2] > Conv_Score_max[2] && i<height_Inverse_Perspective*0.5)
-            {
-                Conv_Score_max[2] = Conv_Score[2];
-                Conv_Score_max_i[2] = i;
-                Conv_Score_max_j[2] = j;
-            }
-            if (Conv_Score[3] > Conv_Score_max[3] && j<width_Inverse_Perspective*0.5)
-            {
-                Conv_Score_max[3] = Conv_Score[3];
-                Conv_Score_max_i[3] = i;
-                Conv_Score_max_j[3] = j;
-            }
-            if (Conv_Score[4] > Conv_Score_max[4] && j>width_Inverse_Perspective*0.5)
-            {
-                Conv_Score_max[4] = Conv_Score[4];
-                Conv_Score_max_i[4] = i;
-                Conv_Score_max_j[4] = j;
-            }
-            //三岔路口
-            if (Conv_Score[5] > Conv_Score_max[5] && j>width_Inverse_Perspective*0.6)
-            {
-                Conv_Score_max[5] = Conv_Score[5];
-                Conv_Score_max_i[5] = i;
-                Conv_Score_max_j[5] = j;
-            }
-            if (Conv_Score[6] > Conv_Score_max[6] && j<width_Inverse_Perspective*0.4)
-            {
-                Conv_Score_max[6] = Conv_Score[6];
-                Conv_Score_max_i[6] = i;
-                Conv_Score_max_j[6] = j;
-            }
-        }
-    }
-    //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
-    if (Conv_Score_max[0] >= 9 && Conv_Score_max[1] >= 9)
-    {
-        return 5;
-    }
-    else if (Conv_Score_max[2] >= 9 && Conv_Score_max[3] >= 9 && Conv_Score_max[4] >= 9)
-    //else if (Conv_Score_max[2] >= 9)
-    {
-        return 3;
-    }
-    else if (Conv_Score_max[5] >= 9 && Conv_Score_max[6] >= 9)
-    {
-        return 4;
-    }
-    else
-    {
-        return 9;//9未知
-    }
-
-}
-
-uint8 Classification_Classic25(void)
-{
-    New_Get25(arg_Classification_25);
-    float max_Score = -25;
-    float score = 0;
-    uint8 max_Socre_Result = 9;//9未知
-    for (int i = 0; i < 5; i++)
-    {
-        for (int j = 0; j < 5; j++)
-        {
-            fuzzy_Image_25[i][j] = arg_Classification_25[i*5+j]>fuzzy_thresholdingValue_25;
-        }
-    }
-    for (int k = 0; k < 4; k++)
-    {
-        score = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5 ; j++)
-            {
-                score = score + arg_Classification_25[i*5+j]*ModelTable_25[k][i][j];
-            }
-        }
-        if (score > max_Score)
-        {
-            max_Score = score;
-            max_Socre_Result = k;
-        }
-    }
-
-    if (max_Socre_Result!=9 && max_Score>=ModelTable_25_Score[max_Socre_Result]*(0.1+fuzzy_thresholdingValue_25))
-    {
-        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
-        switch(max_Socre_Result)
-        {
-            case 0:
-                return 4;
-            case 1:
-                return 5;
-            case 2:
-                return 3;
-            case 3:
-                return 2;
-            default:
-                return 9;//未知
-        }
-    }
-    else
-    {
-        return 9;//未知
-    }
-}
+//
+//uint8 Classification_25(void)
+//{
+//    Get25(arg_Classification_25);
+//    float classification_Data[CLASS_NUM] = {0};
+//    float classification_Data_max1=0;
+//    uint8 classification_Result_temp1=0;
+//    float classification_Data_max2=0;
+//    uint8 classification_Result_temp2=0;
+//    for (uint8 i = 0;i<CLASS_NUM;i++)
+//    {
+//        classification_Data[i] = arg_Classification_25[0]*BayesTable_25[0][i]+
+//                arg_Classification_25[1]*BayesTable_25[1][i]+
+//                arg_Classification_25[2]*BayesTable_25[2][i]+
+//                arg_Classification_25[3]*BayesTable_25[3][i]+
+//                arg_Classification_25[4]*BayesTable_25[4][i]+
+//                arg_Classification_25[5]*BayesTable_25[5][i]+
+//                arg_Classification_25[6]*BayesTable_25[6][i]+
+//                arg_Classification_25[7]*BayesTable_25[7][i]+
+//                arg_Classification_25[8]*BayesTable_25[8][i]+
+//                arg_Classification_25[9]*BayesTable_25[9][i]+
+//                arg_Classification_25[11]*BayesTable_25[10][i]+
+//                arg_Classification_25[12]*BayesTable_25[11][i]+
+//                arg_Classification_25[13]*BayesTable_25[12][i]+
+//                arg_Classification_25[16]*BayesTable_25[13][i]+
+//                arg_Classification_25[17]*BayesTable_25[14][i]+
+//                arg_Classification_25[18]*BayesTable_25[15][i]+
+//                BayesTable_25[16][i];
+//
+//
+//        if (classification_Data[i]>classification_Data_max1)
+//        {
+//            classification_Data_max2 = classification_Data_max1;
+//            classification_Result_temp2 = classification_Result_temp1;
+//            classification_Data_max1 = classification_Data[i];
+//            classification_Result_temp1 = i;
+//        }
+//        else if (classification_Data[i]>classification_Data_max2)
+//        {
+//            classification_Data_max2 = classification_Data[i];
+//            classification_Result_temp2 = i;
+//        }
+//    }
+//    if ((classification_Data_max1-classification_Data_max2) > CLASSIFICATION_25_VALID)
+//    {
+//        return classification_Result_temp1;
+//    }
+//    else
+//    {
+//        return 9;//9代表未知
+//    }
+//}
+//
+//uint8 Classification_Classic(void)
+//{
+//    int full_Lines = height_Inverse_Perspective;//一共要从上往下扫描多少行，最大是图片宽
+//    int Conv_Core[7][3][3] = {{{1,1,-1},{1,1,-1},{-1,-1,-1}},
+//                              {{-1,1,1},{-1,1,1},{-1,-1,-1}},
+//                              {{1,1,1},{1,1,-1},{1,-1,-1}},
+//                              {{1,-1,-1},{1,-1,-1},{1,-1,-1}},
+//                              {{-1,-1,1},{-1,-1,1},{-1,-1,1}},
+//                              {{1,1,1},{1,1,-1},{1,-1,-1}},
+//                              {{1,1,1},{-1,1,1},{-1,-1,1}}};
+//    //十字路口
+//    //Conv_Core(0).core = [1 1 -1
+////                         1 1 -1
+////                        -1 -1 -1];
+//    //Conv_Core(1).core = [-1 1 1
+////                         -1 1 1
+////                        -1 -1 -1];
+//    //右圆环
+//    //Conv_Core(2).core = [1 1 1
+////                         1 1 -1
+////                         1 -1 -1];
+//    //Conv_Core(3).core = [1 -1 -1
+////                         1 -1 -1
+////                         1 -1 -1];
+//    //Conv_Core(4).core = [-1 -1 1
+////                         -1 -1 1
+////                         -1 -1 1];
+//    //三岔路口
+//    //Conv_Core(5).core = [1 1 1
+////                         1 1 -1
+////                         1 -1 -1];
+//    //Conv_Core(6).core = [1 1 1
+////                        -1 1 1
+////                        -1 -1 1];
+//    int Conv_Score_max[7] = {-9,-9,-9,-9,-9,-9,-9};
+//    int Conv_Score_max_i[7] = {0,0,0,0,0,0,0};
+//    int Conv_Score_max_j[7] = {0,0,0,0,0,0,0};
+//    for (int i=1;i<full_Lines-1;i++)//从第一行开始逐行扫描
+//    {
+//        for (int j=1;j<width_Inverse_Perspective-1;j++)
+//        {
+//            // 对于每个中心点(i,j)，计算7类卷积值，分别取最大值保留
+//            int Conv_Score[7] = {0,0,0,0,0,0,0};//存储7类卷积结果
+//            int flag = 1;//卷积合不合法
+//            for (int k=0;k<7;k++)
+//            {
+//                for (int ii=0;ii<3;ii++)
+//                {
+//                    for (int jj=0;jj<3;jj++)
+//                    {
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 255)
+//                        {
+//                            flag = 0;
+//                            break;
+//                        }
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[i-1+ii][j-1+jj] == 0)
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +1*Conv_Core[k][ii][jj];
+//                        }
+//                        else
+//                        {
+//                            Conv_Score[k] = Conv_Score[k] +(-1)*Conv_Core[k][ii][jj];
+//                        }
+//                    }
+//                    if (flag == 0)
+//                    {
+//                        break;
+//                    }
+//                }
+//                if (flag == 0)
+//                {
+//                    break;
+//                }
+//            }
+//            if (flag == 0)
+//            {
+//                continue;
+//            }
+//            //十字路口
+//            //Conv_Core(0).core = [1 1 -1
+//        //                         1 1 -1
+//        //                        -1 -1 -1];
+//            //Conv_Core(1).core = [-1 1 1
+//        //                         -1 1 1
+//        //                        -1 -1 -1];
+//            //右圆环
+//            //Conv_Core(2).core = [1 1 1
+//        //                         1 1 -1
+//        //                         1 -1 -1];
+//            //Conv_Core(3).core = [1 -1 -1
+//        //                         1 -1 -1
+//        //                         1 -1 -1];
+//            //Conv_Core(4).core = [-1 -1 1
+//        //                         -1 -1 1
+//        //                         -1 -1 1];
+//            //三岔路口
+//            //Conv_Core(5).core = [1 1 1
+//        //                         1 1 -1
+//        //                         1 -1 -1];
+//            //Conv_Core(6).core = [1 1 1
+//        //                        -1 1 1
+//        //                        -1 -1 1];
+//            //十字路口
+//            if (Conv_Score[0] > Conv_Score_max[0] && j<width_Inverse_Perspective*0.6)
+//            {
+//                Conv_Score_max[0] = Conv_Score[0];
+//                Conv_Score_max_i[0] = i;
+//                Conv_Score_max_j[0] = j;
+//            }
+//            if (Conv_Score[1] > Conv_Score_max[1] && j>width_Inverse_Perspective*0.4)
+//            {
+//                Conv_Score_max[1] = Conv_Score[1];
+//                Conv_Score_max_i[1] = i;
+//                Conv_Score_max_j[1] = j;
+//            }
+//            //右圆环
+//            if (Conv_Score[2] > Conv_Score_max[2] && i<height_Inverse_Perspective*0.5)
+//            {
+//                Conv_Score_max[2] = Conv_Score[2];
+//                Conv_Score_max_i[2] = i;
+//                Conv_Score_max_j[2] = j;
+//            }
+//            if (Conv_Score[3] > Conv_Score_max[3] && j<width_Inverse_Perspective*0.5)
+//            {
+//                Conv_Score_max[3] = Conv_Score[3];
+//                Conv_Score_max_i[3] = i;
+//                Conv_Score_max_j[3] = j;
+//            }
+//            if (Conv_Score[4] > Conv_Score_max[4] && j>width_Inverse_Perspective*0.5)
+//            {
+//                Conv_Score_max[4] = Conv_Score[4];
+//                Conv_Score_max_i[4] = i;
+//                Conv_Score_max_j[4] = j;
+//            }
+//            //三岔路口
+//            if (Conv_Score[5] > Conv_Score_max[5] && j>width_Inverse_Perspective*0.6)
+//            {
+//                Conv_Score_max[5] = Conv_Score[5];
+//                Conv_Score_max_i[5] = i;
+//                Conv_Score_max_j[5] = j;
+//            }
+//            if (Conv_Score[6] > Conv_Score_max[6] && j<width_Inverse_Perspective*0.4)
+//            {
+//                Conv_Score_max[6] = Conv_Score[6];
+//                Conv_Score_max_i[6] = i;
+//                Conv_Score_max_j[6] = j;
+//            }
+//        }
+//    }
+//    //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+//    if (Conv_Score_max[0] >= 9 && Conv_Score_max[1] >= 9)
+//    {
+//        return 5;
+//    }
+//    else if (Conv_Score_max[2] >= 9 && Conv_Score_max[3] >= 9 && Conv_Score_max[4] >= 9)
+//    //else if (Conv_Score_max[2] >= 9)
+//    {
+//        return 3;
+//    }
+//    else if (Conv_Score_max[5] >= 9 && Conv_Score_max[6] >= 9)
+//    {
+//        return 4;
+//    }
+//    else
+//    {
+//        return 9;//9未知
+//    }
+//
+//}
+//
+//uint8 Classification_Classic25(void)
+//{
+//    New_Get25(arg_Classification_25);
+//    float max_Score = -25;
+//    float score = 0;
+//    uint8 max_Socre_Result = 9;//9未知
+//    for (int i = 0; i < 5; i++)
+//    {
+//        for (int j = 0; j < 5; j++)
+//        {
+//            fuzzy_Image_25[i][j] = arg_Classification_25[i*5+j]>fuzzy_thresholdingValue_25;
+//        }
+//    }
+//    for (int k = 0; k < 4; k++)
+//    {
+//        score = 0;
+//        for (int i = 0; i < 5; i++)
+//        {
+//            for (int j = 0; j < 5 ; j++)
+//            {
+//                score = score + arg_Classification_25[i*5+j]*ModelTable_25[k][i][j];
+//            }
+//        }
+//        if (score > max_Score)
+//        {
+//            max_Score = score;
+//            max_Socre_Result = k;
+//        }
+//    }
+//
+//    if (max_Socre_Result!=9 && max_Score>=ModelTable_25_Score[max_Socre_Result]*(0.1+fuzzy_thresholdingValue_25))
+//    {
+//        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口"
+//        switch(max_Socre_Result)
+//        {
+//            case 0:
+//                return 4;
+//            case 1:
+//                return 5;
+//            case 2:
+//                return 3;
+//            case 3:
+//                return 2;
+//            default:
+//                return 9;//未知
+//        }
+//    }
+//    else
+//    {
+//        return 9;//未知
+//    }
+//}
 
 uint8 Classification_Classic36(void)
 {
@@ -1157,4 +1160,12 @@ void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
         last_classification_Result = classification_Result_tmp;
         Classification_counter=0;
     }
+}
+
+void Set_Search_Range(uint8 row_start,uint8 row_lines,uint8 col_start,uint8 col_lines)
+{
+    Search_Range[0][0] = row_start;
+    Search_Range[0][1] = row_lines;
+    Search_Range[1][0] = col_start;
+    Search_Range[1][1] = col_lines;
 }

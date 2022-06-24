@@ -49,6 +49,8 @@ extern uint8 flag_For_Left_Circle;
 extern uint8 flag_For_Right_T;
 extern uint8 flag_For_Left_T;
 
+extern uint8 Search_Range[2][2];
+
 
 void My_Init_Camera(void);
 
@@ -78,6 +80,11 @@ void Get_Inverse_Perspective_Table(void);
 void Get_Thresholding_Image(void);
 void Get_Inverse_Perspective_Image(void);
 
+void Set_Search_Range(uint8 row_start,uint8 row_lines,uint8 col_start,uint8 col_lines);
+#define ROW 0
+#define BEGIN 0
+#define LINES 1
+#define COL 1
 
 
 
