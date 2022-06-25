@@ -6,6 +6,7 @@
 #include "MOTOR_CTL.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
+float d_steering_Error = 0;
 int STEERING_DUTY_CENTER=777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
@@ -133,6 +134,7 @@ void Cal_Steering_Target(void)
     //由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
     Steering_PID.last_error = Steering_PID.current_error;
     Steering_PID.current_error = steering_Error;
+    d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
@@ -226,11 +228,6 @@ void OLED_temp(void)
     {
         OLED_PRINTF(0,3,"SUB");
     }
-}
-
-float Get_d_steering_Error(void)
-{
-    return (Steering_PID.current_error-Steering_PID.last_error)>=0?(Steering_PID.current_error-Steering_PID.last_error):-(Steering_PID.current_error-Steering_PID.last_error);
 }
 
 void Change_Steering_PID(float kp, float ki, float kd)

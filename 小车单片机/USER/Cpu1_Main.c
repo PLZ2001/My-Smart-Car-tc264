@@ -269,7 +269,7 @@ void core1_main(void)
                     Check_Classification(classification_Result,1);
 
                     //以下是新窗口的识别
-                    Set_Search_Range(0,height_Inverse_Perspective/2,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
                     if (Check_Straight(0.5f))
                      {
                          classification_Result_1 = 6;//6直道
@@ -346,7 +346,7 @@ void core1_main(void)
             //Cal_Steering_Error(Get_d_steering_Error()<30.0f?0.5f:(Get_d_steering_Error()>120.0f?0.55f:((Get_d_steering_Error()-30.0f)/(120.0f-30.0f)*(0.55f-0.5f)+0.5f)));//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-            if (((Get_d_steering_Error()>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
+            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
             {
                 Cal_Steering_Error(SightForward);
                 speed_Target = speed_Target_Min;
@@ -389,6 +389,16 @@ void core1_main(void)
             if(Long_Straight_Flag == 1)
             {
                 speed_Target = 2.0*speed_Target_Max;
+                time_up[6] = 1.2f/(2.0f*speed_Target_Max);
+                Start_Timer(6);
+            }
+            else if (Read_Timer_Status(6) == RUNNING)
+            {
+                speed_Target = 2.0*speed_Target_Max;
+                if (Read_Timer(6)>time_up[6])
+                {
+                    Reset_Timer(6);
+                }
             }
 
 

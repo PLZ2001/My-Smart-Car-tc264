@@ -70,19 +70,19 @@ void Update_OLED_per10ms(void)
                if (pointer_temp == 0)
                {
                    OLED_PRINTF(0,0,"->DR:%01.02f ",Differential_Ratio);
-                   OLED_PRINTF(0,1,"InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
                }
                else if (pointer_temp == 1)
                {
                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
-                   OLED_PRINTF(0,1,"->InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,1,"->InnerSide:%02.02f ",InnerSide_Ratio);
                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
                }
                else if (pointer_temp == 2)
                {
                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
-                   OLED_PRINTF(0,1,"InnerSide:%01.02f ",InnerSide_Ratio);
+                   OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
                    OLED_PRINTF(0,2,"->SightForward:%01.02f ",SightForward);
                }
                if (up_Down == 1)
@@ -103,12 +103,13 @@ void Update_OLED_per10ms(void)
                {
                    OLED_PRINTF(0,3,"LOADING~");
                }
-               OLED_PRINTF(100,0,"%03.01f  ",steering_Error);
-               OLED_PRINTF(100,1,"%02.02f  ",steering_Target);
+               OLED_PRINTF(100,0,"%d  ",(int)d_steering_Error);
+               OLED_PRINTF(100,1,"%d  ",(int)(steering_Error));
+               OLED_PRINTF(100,2,"%d  ",(int)steering_Target);
                OLED_PRINTF(100,3,"%d  ",thresholding_Value);
-               OLED_PRINTF(100,4,"%d  ",classification_Result_1);
-               OLED_PRINTF(100,5,"%d  ",classification_Result);
-               OLED_PRINTF(100,6,"%d  ",Long_Straight_Flag);
+               OLED_PRINTF(100,5,"%d  ",classification_Result_1);
+               OLED_PRINTF(100,6,"%d  ",classification_Result);
+               OLED_PRINTF(100,7,"%d  ",Long_Straight_Flag);
                break;
            case MotorPID_Page:
                if (pointer_temp == 0)
@@ -140,8 +141,9 @@ void Update_OLED_per10ms(void)
                break;
 
            case Circle_Page:
-               OLED_PRINTF(0,0,"%d:%d   ",Circle_lines,last_angle_up);
-               OLED_PRINTF(0,1,"1:%d    ",last_angle_down);
+               OLED_PRINTF(0,0,"%d:%d   ",ThreeRoads_lines[1],last_angle_upup);
+               OLED_PRINTF(0,1,"%d:%d   ",ThreeRoads_lines[0],last_angle_up);
+               OLED_PRINTF(0,2,"1:%d    ",last_angle_down);
                break;
            case Steering_Center_Page:
                if (pointer_temp == 0)

@@ -58,6 +58,16 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 	if (emergency_Stop == 0)
 	{
 	   	//由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
+	    InnerSide_Ratio = 1.05f+0.2f*(d_steering_Error/10.0f*(steering_Target>0?1.0f:-1.0f));//尝试解决转向过度、转向不足时自动改变内侧差速
+	    if (InnerSide_Ratio>1.25f)
+	    {
+	        InnerSide_Ratio = 1.25f;
+	    }
+        if (InnerSide_Ratio<0.85f)
+        {
+            InnerSide_Ratio = 0.85f;
+        }
+
         if (start_Flag==1)
         {
             Differential_Motor();

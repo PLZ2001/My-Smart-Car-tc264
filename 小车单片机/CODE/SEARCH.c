@@ -36,14 +36,15 @@ int8 Circle_d_target[2] = {0,17};//{3,15};
 //int8 Circle_d_target[2] = {3,12};
 int8 Circle_lines = 3;
 
-int8 ThreeRoads_target_down[2] = {2,10};//{1,10};
-int8 ThreeRoads_target_up[2] = {5,15};//{5,16};//{5,19};
-int8 ThreeRoads_d_target[2] = {0,13};//{1,14};//{1,9};
-int8 ThreeRoads_lines = 3;
+//int8 ThreeRoads_target_down[2] = {2,10};//{1,10};
+//int8 ThreeRoads_target_up[2] = {5,15};//{5,16};//{5,19};
+//int8 ThreeRoads_d_target[2] = {0,13};//{1,14};//{1,9};
+int8 ThreeRoads_lines[2] = {5,9};
 //11¡¢20ÊÇ¼ÙÈý²í
 
 int8 last_angle_down;
 int8 last_angle_up;
+int8 last_angle_upup;
 
 int8 first_Dot[2];
 int8 second_Dot[2];
@@ -1179,7 +1180,7 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 
 uint8 Check_ThreeRoads_New(void)
 {
-    uint8 water_i = Search_Range[ROW][BEGIN]+0.2*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+    uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
     int8 direction = 1;
     int8 cnt = 0;
     int8 last_angle = 1;
@@ -1192,6 +1193,15 @@ uint8 Check_ThreeRoads_New(void)
             water_i++;
             cnt = 0;
         }
+        else if ((water_j+direction)<0||(water_j+direction)>(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1))
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
+        }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
             water_j+=direction;
@@ -1200,7 +1210,7 @@ uint8 Check_ThreeRoads_New(void)
                 last_angle++;
             }
         }
-        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]!=0 || cnt<=1)
         {
             direction = -direction;
             cnt++;
@@ -1217,7 +1227,8 @@ uint8 Check_ThreeRoads_New(void)
 
     last_angle_down = last_angle;
     uint8 last_water_i = water_i;
-    water_i = Search_Range[ROW][BEGIN]+0.2*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+
+    water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
     direction = 1;
     cnt = 0;
     last_angle = 1;
@@ -1225,10 +1236,19 @@ uint8 Check_ThreeRoads_New(void)
 
     while(1)
     {
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-ThreeRoads_lines+1)
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-ThreeRoads_lines[0]+1)
         {
             water_i++;
             cnt = 0;
+        }
+        else if ((water_j+direction)<0||(water_j+direction)>(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1))
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
         {
@@ -1238,7 +1258,7 @@ uint8 Check_ThreeRoads_New(void)
                 last_angle++;
             }
         }
-        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==1 || cnt<=1)
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]!=0 || cnt<=1)
         {
             direction = -direction;
             cnt++;
@@ -1255,9 +1275,57 @@ uint8 Check_ThreeRoads_New(void)
 
     last_angle_up = last_angle;
 
-    if ((last_angle_up - last_angle_down) >= ThreeRoads_d_target[0] && (last_angle_up - last_angle_down) <= ThreeRoads_d_target[1]
-          && last_angle_down >= ThreeRoads_target_down[0] && last_angle_down <= ThreeRoads_target_down[1]
-          && last_angle_up >= ThreeRoads_target_up[0] && last_angle_up <= ThreeRoads_target_up[1])
+
+    water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+    direction = 1;
+    cnt = 0;
+    last_angle = 1;
+
+
+    while(1)
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0 && water_i!=last_water_i-ThreeRoads_lines[1]+1)
+        {
+            water_i++;
+            cnt = 0;
+        }
+        else if ((water_j+direction)<0||(water_j+direction)>(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1))
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
+        {
+            water_j+=direction;
+            if (cnt==1)
+            {
+                last_angle++;
+            }
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]!=0 || cnt<=1)
+        {
+            direction = -direction;
+            cnt++;
+            if (cnt>=4)
+            {
+                break;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    last_angle_upup = last_angle;
+
+    float para[4]={-0.00016216f,-1.3793f,0.5517f,11.1404f};//{-0.0249f,-1.9503f,0.7702f,16.5409f};//{-0.4f,-1.2f,0.32f,15.64f};
+
+    if ((last_angle_down*para[0]+last_angle_up*para[1]+last_angle_upup*para[2]+para[3])>0)
     {
         return 1;
     }

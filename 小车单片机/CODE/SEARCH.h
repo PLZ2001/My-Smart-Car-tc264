@@ -26,6 +26,8 @@ extern float rightCircle_BannedTime;
 extern float T_Time;
 extern int8 last_angle_down;
 extern int8 last_angle_up;
+extern int8 last_angle_upup;
+extern int8 ThreeRoads_lines[2];
 extern int8 Circle_lines;
 
 extern int8 first_Dot[2];
