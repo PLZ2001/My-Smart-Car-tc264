@@ -1548,6 +1548,28 @@ void Find_First_Dot(int mode)
             }
         }
     }
+    else if (mode == 2)
+    {
+        int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+        int flag=0;
+        for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+        {
+            for (int i=0;i<dot_j-Search_Range[COL][BEGIN];i++)
+            {
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j-i] == 0 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j-i-1] == 1)
+                {
+                    first_Dot[0] = dot_i+j;
+                    first_Dot[1] = dot_j-i-1;
+                    flag=1;
+                    break;
+                }
+            }
+            if (flag==1)
+            {
+                break;
+            }
+        }
+    }
 }
 
 void Find_Second_Dot(int mode)
@@ -1612,144 +1634,217 @@ void Find_Second_Dot(int mode)
             }
         }
     }
-
-}
-
-
-void Find_Third_Dot(int mode)
-{
-    third_Dot[0] = -2;
-    third_Dot[1] = -2;
-    if(second_Dot[0]!=-2)
+    else if (mode == 2)
     {
-        if (mode == 1)
+        uint8 water_i = Search_Range[ROW][BEGIN]+0.05*Search_Range[ROW][LINES], water_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+        int8 direction = 1;
+        int8 cnt = 0;
+        int8 flag = 0;
+        uint8 dot_i[2]={0,0};
+        uint8 dot_j[2]={0,0};
+        while(1)
         {
-            uint8 water_i = second_Dot[0], water_j = second_Dot[1];
-            uint8 water_j_temp = water_j;
-            for (int i = 0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1-water_j_temp);i++)
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0)
             {
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]==255)
-                {
-                    break;
-                }
-                else
-                {
-                    water_j+=1;
-                }
-            }//往右查找直到右侧为255区域
-            if (water_j!= (Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-2))
+                water_i++;
+                cnt = 0;
+            }
+            else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
             {
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
+                water_j+=direction;
+            }
+            else
+            {
+                direction = -direction;
+                cnt++;
+                if (cnt>=4 && direction == -1)
                 {
-                    uint8 water_i_temp = water_i;
-                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
+                    dot_i[0] = water_i;
+                    dot_j[0] = water_j;
+                    if (flag==1)
                     {
-                        water_i--;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]!=255)
-                        {
-                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]!=255)
-                            {
-                                water_j++;
-                            }
-                        }//上移一格，并往右查找直到右侧为255区域
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
-                        {
-                            third_Dot[0] = water_i;
-                            third_Dot[1] = water_j;
-                            break;
-                        }
+                        second_Dot[0] = 0.5*(dot_i[0]+dot_i[1]);
+                        second_Dot[1] = 0.5*(dot_j[0]+dot_j[1]);
+                        break;
+                    }
+                    else
+                    {
+                        flag=1;
                     }
                 }
-                else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
+                if (cnt>=4 && direction == 1)
                 {
-                    uint8 water_i_temp = water_i;
-                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
+                    dot_i[1] = water_i;
+                    dot_j[1] = water_j;
+                    if (flag==1)
                     {
-                        water_i++;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
-                        {
-                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
-                            {
-                                water_j--;
-                            }
-                        }//下移一格，并往左查找直到右侧为255区域
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
-                        {
-                            third_Dot[0] = water_i-1;
-                            third_Dot[1] = water_j;
-                            break;
-                        }
+                        second_Dot[0] = 0.5*(dot_i[0]+dot_i[1]);
+                        second_Dot[1] = 0.5*(dot_j[0]+dot_j[1]);
+                        break;
+                    }
+                    else
+                    {
+                        flag=1;
                     }
                 }
-
             }
         }
-        else if (mode == 0)
-        {
-            uint8 water_i = second_Dot[0], water_j = second_Dot[1];
-            uint8 water_j_temp = water_j;
-            for (int i = 0;i<water_j_temp-Search_Range[COL][BEGIN];i++)
-            {
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]==255)
-                {
-                    break;
-                }
-                else
-                {
-                    water_j-=1;
-                }
-            }//往左查找直到左侧为255区域
-            if (water_j!= Search_Range[COL][BEGIN]+1)
-            {
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
-                {
-                    uint8 water_i_temp = water_i;
-                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
-                    {
-                        water_i--;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]!=255)
-                        {
-                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]!=255)
-                            {
-                                water_j--;
-                            }
-                        }//上移一格，并往左查找直到左侧为255区域
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
-                        {
-                            third_Dot[0] = water_i;
-                            third_Dot[1] = water_j;
-                            break;
-                        }
-                    }
-                }
-                else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
-                {
-                    uint8 water_i_temp = water_i;
-                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
-                    {
-                        water_i++;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
-                        {
-                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
-                            {
-                                water_j++;
-                            }
-                        }//下移一格，并往右查找直到左侧为255区域
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
-                        {
-                            third_Dot[0] = water_i-1;
-                            third_Dot[1] = water_j;
-                            break;
-                        }
-                    }
-                }
-
-            }
-        }
-
     }
 
+
 }
+
+
+//void Find_Third_Dot(int mode)
+//{
+//    third_Dot[0] = -2;
+//    third_Dot[1] = -2;
+//    if(second_Dot[0]!=-2)
+//    {
+//        if (mode == 1)
+//        {
+//            uint8 water_i = second_Dot[0], water_j = second_Dot[1];
+//            uint8 water_j_temp = water_j;
+//            for (int i = 0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1-water_j_temp);i++)
+//            {
+//                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]==255)
+//                {
+//                    break;
+//                }
+//                else
+//                {
+//                    water_j+=1;
+//                }
+//            }//往右查找直到右侧为255区域
+//            if (water_j!= (Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-2))
+//            {
+//                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
+//                {
+//                    uint8 water_i_temp = water_i;
+//                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
+//                    {
+//                        water_i--;
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]!=255)
+//                        {
+//                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]!=255)
+//                            {
+//                                water_j++;
+//                            }
+//                        }//上移一格，并往右查找直到右侧为255区域
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
+//                        {
+//                            third_Dot[0] = water_i;
+//                            third_Dot[1] = water_j;
+//                            break;
+//                        }
+//                    }
+//                }
+//                else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
+//                {
+//                    uint8 water_i_temp = water_i;
+//                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
+//                    {
+//                        water_i++;
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
+//                        {
+//                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
+//                            {
+//                                water_j--;
+//                            }
+//                        }//下移一格，并往左查找直到右侧为255区域
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
+//                        {
+//                            third_Dot[0] = water_i-1;
+//                            third_Dot[1] = water_j;
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//        else if (mode == 0)
+//        {
+//            uint8 water_i = second_Dot[0], water_j = second_Dot[1];
+//            uint8 water_j_temp = water_j;
+//            for (int i = 0;i<water_j_temp-Search_Range[COL][BEGIN];i++)
+//            {
+//                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]==255)
+//                {
+//                    break;
+//                }
+//                else
+//                {
+//                    water_j-=1;
+//                }
+//            }//往左查找直到左侧为255区域
+//            if (water_j!= Search_Range[COL][BEGIN]+1)
+//            {
+//                if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
+//                {
+//                    uint8 water_i_temp = water_i;
+//                    for (int i = 0;i<water_i_temp-Search_Range[ROW][BEGIN];i++)
+//                    {
+//                        water_i--;
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]!=255)
+//                        {
+//                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]!=255)
+//                            {
+//                                water_j--;
+//                            }
+//                        }//上移一格，并往左查找直到左侧为255区域
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
+//                        {
+//                            third_Dot[0] = water_i;
+//                            third_Dot[1] = water_j;
+//                            break;
+//                        }
+//                    }
+//                }
+//                else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 0)
+//                {
+//                    uint8 water_i_temp = water_i;
+//                    for (int i = 0;i<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - water_i_temp);i++)
+//                    {
+//                        water_i++;
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
+//                        {
+//                            while (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j]==255)
+//                            {
+//                                water_j++;
+//                            }
+//                        }//下移一格，并往右查找直到左侧为255区域
+//                        if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j] == 1)
+//                        {
+//                            third_Dot[0] = water_i-1;
+//                            third_Dot[1] = water_j;
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//
+//    }
+//    else if (mode == 2)
+//    {
+//        int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+//        for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+//        {
+//            for (int i=0;i<dot_j-Search_Range[COL][BEGIN];i++)
+//            {
+//                if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j-i] == 0 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j-i-1] == 1)
+//                {
+//                    first_Dot[0] = dot_i+j;
+//                    first_Dot[1] = dot_j-i-1;
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//}
 
 void Find_Third_Dot_New(int mode)
 {
@@ -1819,7 +1914,30 @@ void Find_Third_Dot_New(int mode)
             third_Dot[0] = water_i-1;
             third_Dot[1] = water_j;
         }
+        else if (mode == 2)
+        {
+            int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.5*Search_Range[COL][LINES];
+            int flag=0;
+            for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+            {
+                for (int i=0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES] - 1 - dot_j);i++)
+                {
+                    if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j+i] == 0 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j+i+1] == 1)
+                    {
+                        third_Dot[0] = dot_i+j;
+                        third_Dot[1] = dot_j+i+1;
+                        flag=1;
+                        break;
+                    }
+                }
+                if (flag==1)
+                {
+                    break;
+                }
+            }
+        }
     }
+
 }
 
 uint8 Check_RightCircle_New2(void)
@@ -1883,6 +2001,38 @@ uint8 Check_LeftCircle_New2(void)
         }
     }
 }
+
+uint8 Check_ThreeRoad_New2(void)
+{
+    Find_First_Dot(2);
+    Find_Second_Dot(2);
+    Find_Third_Dot_New(2);
+
+    if ( (first_Dot[0]==-2 )||(second_Dot[0]==-2 )||(third_Dot[0]==-2 )) {
+        return 0;
+    }
+
+    else{
+        int a_b_x = first_Dot[0] - second_Dot[0];
+        int a_b_y = first_Dot[1] - second_Dot[1];
+        int c_b_x = third_Dot[0] - second_Dot[0];
+        int c_b_y = third_Dot[1] - second_Dot[1];
+        int ab_mul_cb = a_b_x * c_b_x + a_b_y * c_b_y;
+        float dist_ab = sqrt(a_b_x * a_b_x + a_b_y * a_b_y);
+        float dist_cd = sqrt(c_b_x * c_b_x + c_b_y * c_b_y);
+        float cosValue = ab_mul_cb / (dist_ab * dist_cd);
+
+        arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
+
+        if (arccosValue > 110 && arccosValue < 130){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+    }
+}
+
 
 uint8 Check_Left_for_RightCircle(void)
 {

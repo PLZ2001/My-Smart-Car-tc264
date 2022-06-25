@@ -141,7 +141,7 @@ uint8 ModelTable_25_Score[4] = {9,8,6,6};//{11,9,9,9};
 //                                                                                                                                                                                        { 0, 0, 1, 1, 0, 0},
 //                                                                                                                                                                                        { 0, 0, 0, 0, 0, 0}}};
 
-float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-10,-10,1, 1},
+float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-20,-20,1, 1},
                                            { 1, 1, 0, 0, 1, 1},
                                            { 1, 1, 1, 1, 1, 1},
                                            { 1, 1, 1, 1, 1, 1},
@@ -183,7 +183,7 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-10,-10,1, 1},
 //uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
 //float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
 uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,20};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.0,0.2,0.2,0.2,0.2,0.2,0.2};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.2,0.2,0.2};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
