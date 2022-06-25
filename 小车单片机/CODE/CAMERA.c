@@ -526,12 +526,12 @@ void Get_Thresholding_Value(void)
 
 void Get_Thresholding_Image(void)
 {
-    //Kmeans法更新二值化阈值
-    if (Read_Timer(3) > time_up[3] && classification_Result == 6) {
-        Reset_Timer(3);
-        Get_Thresholding_Value();
-        Start_Timer(3);
-    }
+//    //Kmeans法更新二值化阈值
+//    if (Read_Timer(3) > time_up[3] && classification_Result == 6) {
+//        Reset_Timer(3);
+//        Get_Thresholding_Value();
+//        Start_Timer(3);
+//    }
 
 //    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
 //    {
@@ -1184,26 +1184,28 @@ uint8 Classification_Classic36(uint8 window_ID)
                 score[k] = score[k] + arg_Classification_36[i*6+j]*ModelTable_36[k][i][j];
             }
         }
-//        if (k==2 || k==3)//额外的判断：环岛中间必须全部大于0.2
-//        {
-//            if (arg_Classification_36[2] > 0.2
-//                    && arg_Classification_36[3] > 0.2
-//                    && arg_Classification_36[8] > 0.2
-//                    && arg_Classification_36[9] > 0.2
-//                    && arg_Classification_36[14] > 0.2
-//                    && arg_Classification_36[15] > 0.2
-//                    && arg_Classification_36[20] > 0.2
-//                    && arg_Classification_36[21] > 0.2
-//                    && arg_Classification_36[26] > 0.2
-//                    && arg_Classification_36[27] > 0.2)
-//            {
-//                ;
-//            }
-//            else
-//            {
-//                score[k] = 0;
-//            }
-//        }
+        if (k==2 || k==3)//额外的判断：环岛中间两竖列白色占比必须全部大于0.4，可以避免一些误识别
+        {
+            if (arg_Classification_36[2] > 0.4
+                    && arg_Classification_36[3] > 0.4
+                    && arg_Classification_36[8] > 0.4
+                    && arg_Classification_36[9] > 0.4
+                    && arg_Classification_36[14] > 0.4
+                    && arg_Classification_36[15] > 0.4
+                    && arg_Classification_36[20] > 0.4
+                    && arg_Classification_36[21] > 0.4
+                    && arg_Classification_36[26] > 0.4
+                    && arg_Classification_36[27] > 0.4
+                    && arg_Classification_36[32] > 0.4
+                    && arg_Classification_36[33] > 0.4)
+            {
+                ;
+            }
+            else
+            {
+                score[k] = -72;
+            }
+        }
         if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
         {
             max_Score = (score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36);
