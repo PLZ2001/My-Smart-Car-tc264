@@ -1186,18 +1186,18 @@ uint8 Classification_Classic36(uint8 window_ID)
         }
         if (k==2 || k==3)//额外的判断：环岛中间两竖列白色占比必须全部大于0.4，可以避免一些误识别
         {
-            if (arg_Classification_36[2] > 0.4
-                    && arg_Classification_36[3] > 0.4
-                    && arg_Classification_36[8] > 0.4
-                    && arg_Classification_36[9] > 0.4
-                    && arg_Classification_36[14] > 0.4
-                    && arg_Classification_36[15] > 0.4
-                    && arg_Classification_36[20] > 0.4
-                    && arg_Classification_36[21] > 0.4
-                    && arg_Classification_36[26] > 0.4
-                    && arg_Classification_36[27] > 0.4
-                    && arg_Classification_36[32] > 0.4
-                    && arg_Classification_36[33] > 0.4)
+            if (arg_Classification_36[2] > 0.15
+                    && arg_Classification_36[3] > 0.15
+                    && arg_Classification_36[8] > 0.15
+                    && arg_Classification_36[9] > 0.15
+                    && arg_Classification_36[14] > 0.15
+                    && arg_Classification_36[15] > 0.15
+                    && arg_Classification_36[20] > 0.15
+                    && arg_Classification_36[21] > 0.15
+                    && arg_Classification_36[26] > 0.15
+                    && arg_Classification_36[27] > 0.15
+                    && arg_Classification_36[32] > 0.15
+                    && arg_Classification_36[33] > 0.15)
             {
                 ;
             }

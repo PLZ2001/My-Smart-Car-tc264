@@ -82,7 +82,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
             //窗口默认处于中下位置
-            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
@@ -324,7 +324,7 @@ void core1_main(void)
                          classification_Result_1=6;
                      }
                      //改回默认窗口
-                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
                      //检查长直道是否满足
                      if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
@@ -389,7 +389,8 @@ void core1_main(void)
             if(Long_Straight_Flag == 1)
             {
                 speed_Target = 2.0*speed_Target_Max;
-                time_up[6] = 1.2f/(2.0f*speed_Target_Max);
+                time_up[6] = 0.8f/(2.0f*speed_Target_Max);
+                Reset_Timer(6);
                 Start_Timer(6);
             }
             else if (Read_Timer_Status(6) == RUNNING)
@@ -400,6 +401,25 @@ void core1_main(void)
                     Reset_Timer(6);
                 }
             }
+
+            if(classification_Result == 14)//T字
+            {
+                speed_Target = 0.7*speed_Target_Min;
+                Change_Steering_PID(0.30f,0,0.30f);
+                time_up[7] = T_Time;
+                Reset_Timer(7);
+                Start_Timer(7);
+            }
+            else if (Read_Timer_Status(7) == RUNNING)
+            {
+                speed_Target = 0.7*speed_Target_Min;
+                Change_Steering_PID(0.30f,0,0.30f);
+                if (Read_Timer(7)>time_up[7])
+                {
+                    Reset_Timer(7);
+                }
+            }
+
 
 
 
