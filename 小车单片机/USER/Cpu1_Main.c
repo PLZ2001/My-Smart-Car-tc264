@@ -29,6 +29,7 @@
 #include "MOTOR1.h"//直流电机相关
 #include "MOTOR2.h"//直流电机相关
 #include "MOTOR_CTL.h"
+#include "SWITCH.h"
 
 
 
@@ -63,8 +64,8 @@ void core1_main(void)
 
             InsertTimer1Point(1);
 
-            Get_ADC_DATA();
-            //Get_ICM_DATA();//更新陀螺仪数据
+            Get_ADC_DATA();//更新电压读取
+            Get_ICM_DATA();//更新陀螺仪数据
 
             if (Thresholding_Value_Init_Flag == 0)
             {
@@ -221,51 +222,9 @@ void core1_main(void)
                     }
                     else
                     {
-                        classification_Result = Classification_Classic36(0);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
-                        if (classification_Result == 13)//右丁字
-                        {
-                            flag_For_Right_T = 1;
-                            flag_For_Left_T = 0;
-                        }
-                        if (classification_Result == 12)//左丁字
-                        {
-                            flag_For_Right_T = 0;
-                            flag_For_Left_T = 1;
-                        }
-                        if (classification_Result ==3)//3右环岛
-                        {
-                            if(flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
-                            {
-                                classification_Result = 9;//9未知
-                            }
-                        }
-                        if (classification_Result ==2)//2左环岛
-                        {
-                            if(flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
-                            {
-                                classification_Result = 9;//9未知
-                            }
-                        }
-                        if (classification_Result ==4)//4三岔路口
-                        {
-                            if(!(Check_ThreeRoads_New()&&Check_ThreeRoad_New2()))
-                            {
-                                classification_Result = 9;//9未知
-                            }
-                        }
-                        if (classification_Result == 9)//9未知
-                        {
-                            if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
-                            {
-                                classification_Result = 7;//7靠左
-                            }
-                            if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
-                            {
-                                classification_Result = 8;//8靠右
-                            }
-
-                        }
-
+                        Classification_Classic36(0,&classification_Result,&classification_Result_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                        Check(&classification_Result,classification_Result_2nd);
+                        Check(&classification_Result,9);
                     }
                     Check_Classification(classification_Result,1);
 
@@ -277,43 +236,9 @@ void core1_main(void)
                      }
                      else
                      {
-                         classification_Result_1 = Classification_Classic36(1);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
-
-                         if (classification_Result_1 ==3)//3右环岛
-                         {
-//                             if(flag_For_Right_Circle!=0 || !((Check_RightCircle_New() || Check_RightCircle_New2())&&Check_RightCircle_New3()))
-                             if(flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
-                             {
-                                 classification_Result_1 = 9;//9未知
-                             }
-                         }
-                         if (classification_Result_1 ==2)//2左环岛
-                         {
-//                             if(flag_For_Left_Circle!=0 || !((Check_LeftCircle_New() || Check_LeftCircle_New2())&&Check_LeftCircle_New3()))
-                             if(flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
-                             {
-                                 classification_Result_1 = 9;//9未知
-                             }
-                         }
-                         if (classification_Result_1 ==4)//4三岔路口
-                         {
-                             if(!(Check_ThreeRoads_New()&&Check_ThreeRoad_New2()))
-                             {
-                                 classification_Result_1 = 9;//9未知
-                             }
-                         }
-                         if (classification_Result_1 == 9)//9未知
-                         {
-                             if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
-                             {
-                                 classification_Result_1 = 7;//7靠左
-                             }
-                             if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
-                             {
-                                 classification_Result_1 = 8;//8靠右
-                             }
-
-                         }
+                         Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                         Check(&classification_Result_1,classification_Result_1_2nd);
+                         Check(&classification_Result_1,9);
 
                      }
                      Check_Classification(classification_Result_1,1);
@@ -350,7 +275,7 @@ void core1_main(void)
 //            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
 //            {
 //                Cal_Steering_Error(SightForward);
-//                speed_Target = speed_Target_Min;
+//                speed_Target = speed_Target_Low;
 //
 //                //Differential_Ratio = 2.5f;//1.3f;
 //
@@ -363,7 +288,7 @@ void core1_main(void)
 //                {
 //                    Change_Steering_PID(0.24f,0,0.20f);
 //                }
-//                else if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
+//                else if (speed_Target_Low >= 2.2f && speed_Target_High >= 2.4f)//只有2.1/1.9以上才可以
 //                {
 //                    Change_Steering_PID(0.27f,0,0.30f);
 //                }
@@ -371,7 +296,7 @@ void core1_main(void)
 //            else
 //            {
 //                Cal_Steering_Error(SightForward);
-//                speed_Target = speed_Target_Max;
+//                speed_Target = speed_Target_High;
 //
 //                //Differential_Ratio = 2.5f;//1.3f
 //                Change_Steering_PID(0.25f,0,0.30f);
@@ -397,6 +322,7 @@ void core1_main(void)
             //"14T字"
 
             uint8 set_flag=0;//表示这次是否设置了速度
+
 
             if(Long_Straight_Flag == 1)
             {
@@ -448,7 +374,7 @@ void core1_main(void)
                 }
             }
 
-            if(d_steering_Error>20||d_steering_Error<-20)
+            if(d_steering_Error>30||d_steering_Error<-30)
             {
                 speed_Status = Lowest;
                 set_flag=1;
@@ -462,44 +388,49 @@ void core1_main(void)
 
 
             //根据速度状态进行相关计算
-            speed_Target_Highest = 2.0*speed_Target_Max;
-            speed_Target_Lowest = 0.7*speed_Target_Min;
+
+            enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+switch_Status[Switch2];
+            if (speed_Mode_temp!=speed_Mode)
+            {
+                speed_Mode = speed_Mode_temp;
+                Update_Speed_Mode();
+            }
             switch(speed_Status)
             {
                 case Highest:
                 {
-                    Cal_Steering_Error(SightForward);
+                    SightForward = SightForward_Highest;
                     speed_Target = speed_Target_Highest;
-                    InnerSide_Ratio = 1.50f;
-                    Change_Steering_PID(0.25f,0,0.30f);
+                    InnerSide_Ratio = InnerSide_Ratio_Highest;
+                    Change_Steering_PID(Steering_PID_Highest[0],Steering_PID_Highest[1],Steering_PID_Highest[2]);
                     break;
                 }
                 case High:
                 {
-                    Cal_Steering_Error(SightForward);
-                    speed_Target = speed_Target_Max;
-                    InnerSide_Ratio = 1.20f;
-                    Change_Steering_PID(0.25f,0,0.30f);
+                    SightForward = SightForward_High;
+                    speed_Target = speed_Target_High;
+                    InnerSide_Ratio = InnerSide_Ratio_High;
+                    Change_Steering_PID(Steering_PID_High[0],Steering_PID_High[1],Steering_PID_High[2]);
                     break;
                 }
                 case Low:
                 {
-                    Cal_Steering_Error(SightForward);
-                    speed_Target = speed_Target_Min;
-                    InnerSide_Ratio = 1.00f;
-                    Change_Steering_PID(0.25f,0,0.30f);
+                    SightForward = SightForward_Low;
+                    speed_Target = speed_Target_Low;
+                    InnerSide_Ratio = InnerSide_Ratio_Low;
+                    Change_Steering_PID(Steering_PID_Low[0],Steering_PID_Low[1],Steering_PID_Low[2]);
                     break;
                 }
                 case Lowest:
                 {
-                    Cal_Steering_Error(SightForward);
+                    SightForward = SightForward_Lowest;
                     speed_Target = speed_Target_Lowest;
-                    InnerSide_Ratio = 1.00f;
-                    Change_Steering_PID(0.30f,0,0.30f);
+                    InnerSide_Ratio = InnerSide_Ratio_Lowest;
+                    Change_Steering_PID(Steering_PID_Lowest[0],Steering_PID_Lowest[1],Steering_PID_Lowest[2]);
                     break;
                 }
             }
-
+            Cal_Steering_Error(SightForward);
 
 
 

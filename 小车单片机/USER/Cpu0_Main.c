@@ -20,6 +20,7 @@
 
 #include "headfile.h"
 #include "CAMERA.h"//摄像头、图像处理相关
+#include "SWITCH.h"
 #include "KEY.h"//按键扫描相关
 #include "OLED.h"//显示屏相关
 #include "STEERING.h"//舵机相关
@@ -55,13 +56,14 @@ int core0_main(void)
 	My_Init_SpeedSensor2();//我的初始化编码器
     My_Init_OLED();//我的初始化OLED
     My_Init_Camera();//我的初始化摄像头
+    My_Init_Switch();//我的初始化拨盘
     My_Init_Key();//我的初始化按键
     My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
     My_Init_Timer();//我的初始化TIMER
 
     My_Init_ADC();//我的初始化ADC
-    //My_Init_ICM();//我的初始化ICM
+    My_Init_ICM();//我的初始化ICM
 
     //My_Init_Wifi();//我的初始化WIFI通信
 

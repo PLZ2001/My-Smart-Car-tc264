@@ -11,6 +11,10 @@ extern float d_steering_Error;
 extern struct steerpid Steering_PID;
 extern int STEERING_DUTY_CENTER;
 extern float SightForward;
+extern float SightForward_Highest;
+extern float SightForward_High;
+extern float SightForward_Low;
+extern float SightForward_Lowest;
 
 void My_Init_Steering(void);
 void UART_Steering(void);

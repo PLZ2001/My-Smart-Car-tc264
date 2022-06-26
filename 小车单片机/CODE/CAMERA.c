@@ -10,7 +10,9 @@
 //需要串口通信输出去，但不用传过来的变量
 //IFX_ALIGN(4) uint8 mt9v03x_image_cutted[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];//裁剪后的原始图像
 uint8 classification_Result;
+uint8 classification_Result_2nd;
 uint8 classification_Result_1;
+uint8 classification_Result_1_2nd;
 
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
@@ -171,19 +173,19 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-20,-20,1, 1},
                                                                                                                                                                  {  1, 1, 1, 1,0,-10},
                                                                                                                                                                  {  1, 1, 1, 1,0,-10},
                                                                                                                                                                  {  1, 1, 1, 1,0,-10},
-                                                                                                                                                                 {  0, 0, 1, 1,0,-10}},  {{-10,-10,-10,-10,-10,-10},
+                                                                                                                                                                 {  0, 0, 1, 1,0,-10}},  {{  0,  0,  0,  0,  0,  0},
+                                                                                                                                                                                          {-10,-10,-10,-10,-10,-10},
                                                                                                                                                                                           {  0,  0,  0,  0,  0,  0},
                                                                                                                                                                                           {  1,  1,  1,  1,  1,  1},
                                                                                                                                                                                           {  1,  1,  1,  1,  1,  1},
-                                                                                                                                                                                          {  1,  1,  1,  1,  1,  1},
-                                                                                                                                                                                          {  0,  0,  1,  1,  0,  0}}};
+                                                                                                                                                                                          {  0,  1,  1,  1,  1,  0}}};
 
 // 三岔路口、十字路口、右环岛、左环岛、右丁字、左丁字、T字路口
 //表示标准的道路得分情况
 //uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
 //float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
-uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,20};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.2,0.2,0.2};
+uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,16};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.1,0.1,-0.1};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
@@ -1155,7 +1157,7 @@ void New_Get36_1(float* arg)
 //    }
 //}
 
-uint8 Classification_Classic36(uint8 window_ID)
+void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_address,uint8 *classification_Result_2nd_address)
 {
     if (window_ID==0)
     {
@@ -1166,7 +1168,9 @@ uint8 Classification_Classic36(uint8 window_ID)
         New_Get36_1(arg_Classification_36);
     }
     uint8 max_Socre_Result = 9;//9未知
+    uint8 second_Score_Result = 9;
     max_Score = -72;
+    float second_Score = -72;
     for (int i = 0; i < 6; i++)
     {
         for (int j = 0; j < 6; j++)
@@ -1208,8 +1212,15 @@ uint8 Classification_Classic36(uint8 window_ID)
         }
         if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
         {
+            second_Score = max_Score;
+            second_Score_Result = max_Socre_Result;
             max_Score = (score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36);
             max_Socre_Result = k;
+        }
+        else if((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > second_Score)
+        {
+            second_Score = (score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36);
+            second_Score_Result = k;
         }
     }
 
@@ -1219,26 +1230,68 @@ uint8 Classification_Classic36(uint8 window_ID)
         switch(max_Socre_Result)
         {
             case 0:
-                return 4;
+                *classification_Result_address = 4;
+                break;
             case 1:
-                return 5;
+                *classification_Result_address = 5;
+                break;
             case 2:
-                return 3;
+                *classification_Result_address = 3;
+                break;
             case 3:
-                return 2;
+                *classification_Result_address = 2;
+                break;
             case 4:
-                return 13;
+                *classification_Result_address = 13;
+                break;
             case 5:
-                return 12;
+                *classification_Result_address = 12;
+                break;
             case 6:
-                return 14;
+                *classification_Result_address = 14;
+                break;
             default:
-                return 9;//未知
+                *classification_Result_address = 9;//未知
         }
     }
     else
     {
-        return 9;//未知
+        *classification_Result_address = 9;//未知
+    }
+
+    if (second_Score_Result!=9 && second_Score>ModelTable_36_Score_Required[second_Score_Result])
+    {
+        //"2左环岛", "3右环岛", "4三岔路口", "5十字路口", "12左丁字", "13右丁字", "14T字"
+        switch(second_Score_Result)
+        {
+            case 0:
+                *classification_Result_2nd_address = 4;
+                break;
+            case 1:
+                *classification_Result_2nd_address = 5;
+                break;
+            case 2:
+                *classification_Result_2nd_address = 3;
+                break;
+            case 3:
+                *classification_Result_2nd_address = 2;
+                break;
+            case 4:
+                *classification_Result_2nd_address = 13;
+                break;
+            case 5:
+                *classification_Result_2nd_address = 12;
+                break;
+            case 6:
+                *classification_Result_2nd_address = 14;
+                break;
+            default:
+                *classification_Result_2nd_address = 9;//未知
+        }
+    }
+    else
+    {
+        *classification_Result_2nd_address = 9;//未知
     }
 }
 
@@ -1268,4 +1321,59 @@ void Set_Search_Range(uint8 row_start,uint8 row_lines,uint8 col_start,uint8 col_
     Search_Range[0][1] = row_lines;
     Search_Range[1][0] = col_start;
     Search_Range[1][1] = col_lines;
+}
+
+void Check(uint8 *classification_Result,uint8 else_result)
+{
+    if (*classification_Result == 13)//右丁字
+    {
+        flag_For_Right_T = 1;
+        flag_For_Left_T = 0;
+    }
+    if (*classification_Result == 12)//左丁字
+    {
+        flag_For_Right_T = 0;
+        flag_For_Left_T = 1;
+    }
+    if (*classification_Result ==3)//3右环岛
+    {
+        if(flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
+        {
+            *classification_Result = else_result;
+        }
+    }
+    if (*classification_Result ==2)//2左环岛
+    {
+        if(flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
+        {
+            *classification_Result = else_result;
+        }
+    }
+    if (*classification_Result ==4)//4三岔路口
+    {
+        if(!(Check_ThreeRoads_New()&&Check_ThreeRoad_New2()))
+        {
+            *classification_Result = else_result;
+        }
+    }
+    if (*classification_Result ==14)//14 T字
+    {
+        if((Check_ThreeRoads_New()&&Check_ThreeRoad_New2()))
+        {
+            *classification_Result = else_result;
+        }
+    }
+    if (*classification_Result == 9)//9未知
+    {
+        if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
+        {
+            *classification_Result = 7;//7靠左
+        }
+        if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
+        {
+            *classification_Result = 8;//8靠右
+        }
+
+    }
+
 }

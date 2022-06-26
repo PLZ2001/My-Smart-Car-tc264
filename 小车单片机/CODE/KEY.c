@@ -300,20 +300,20 @@ void Key2_Action(void)
             break;
         case Speed_Page:{
             static int8 direction = 1;
-            if (speed_Target_Max>=2.6)
+            if (speed_Target_High>=2.6)
             {
-                speed_Target_Max+=0.1*direction;
+                speed_Target_High+=0.1*direction;
             }
             else
             {
-                speed_Target_Max+=0.2*direction;
+                speed_Target_High+=0.2*direction;
             }
 
-            if (speed_Target_Max>=4)
+            if (speed_Target_High>=4)
             {
                 direction = -1;
             }
-            if (speed_Target_Max<=-4)
+            if (speed_Target_High<=-4)
             {
                 direction = 1;
             }
@@ -330,20 +330,20 @@ void Key3_Action(void)
     {
         case Speed_Page:{
             static int8 direction = 1;
-            if (speed_Target_Min>=2.6)
+            if (speed_Target_Low>=2.6)
             {
-                speed_Target_Min+=0.1*direction;
+                speed_Target_Low+=0.1*direction;
             }
             else
             {
-                speed_Target_Min+=0.2*direction;
+                speed_Target_Low+=0.2*direction;
             }
 
-            if (speed_Target_Min>=4)
+            if (speed_Target_Low>=4)
             {
                 direction = -1;
             }
-            if (speed_Target_Min<=-4)
+            if (speed_Target_Low<=-4)
             {
                 direction = 1;
             }

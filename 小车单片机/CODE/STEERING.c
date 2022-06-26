@@ -10,6 +10,10 @@ float d_steering_Error = 0;
 int STEERING_DUTY_CENTER=777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
+float SightForward_Highest = 0.25f;
+float SightForward_High = 0.25f;
+float SightForward_Low = 0.25f;
+float SightForward_Lowest = 0.25f;
 
 struct steerpid
 {

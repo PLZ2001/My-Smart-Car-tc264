@@ -36,6 +36,7 @@ extern float cameraThetaDown;//需要校正
 extern float ratioOfMaxDisToHG;//仅影响显示距离
 extern float ratioOfPixelToHG;//仅影响分辨率
 extern uint8 classification_Result;
+extern uint8 classification_Result_2nd;
 extern uint8 Thresholding_Value_Init_Flag;//表示是否初始化了二值化阈值
 extern uint8 fuzzy_Image_25[5][5];
 extern uint8 fuzzy_Image_36[6][6];
@@ -52,6 +53,8 @@ extern uint8 flag_For_Left_T;
 extern uint8 Search_Range[2][2];
 extern uint8 Long_Straight_Flag;
 extern uint8 classification_Result_1;
+extern uint8 classification_Result_1_2nd;
+
 
 
 

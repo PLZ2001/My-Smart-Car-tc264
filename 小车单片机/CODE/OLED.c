@@ -125,8 +125,8 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(100,1,"%d  ",(int)(steering_Error));
                OLED_PRINTF(100,2,"%d  ",(int)steering_Target);
                OLED_PRINTF(100,3,"%d  ",thresholding_Value);
-               OLED_PRINTF(100,5,"%d  ",classification_Result_1);
-               OLED_PRINTF(100,6,"%d  ",classification_Result);
+               OLED_PRINTF(100,5,"%d  ",classification_Result);
+               OLED_PRINTF(100,6,"%d  ",classification_Result_2nd);
                OLED_PRINTF(100,7,"%d  ",Long_Straight_Flag);
                break;
            case MotorPID_Page:
@@ -249,8 +249,8 @@ void Update_OLED_per10ms(void)
                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
-               OLED_PRINTF(0,3,"SpeedTargetMax:%01.01fm/s   ",speed_Target_Max*60.0f/68.0f);
-               OLED_PRINTF(0,4,"SpeedTargetMin:%01.01fm/s   ",speed_Target_Min*60.0f/68.0f);
+               OLED_PRINTF(0,3,"SpeedTargetHigh:%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+               OLED_PRINTF(0,4,"SpeedTargetLow :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
                OLED_PRINTF(0,5,"Class:%d     ",classification_Result);
                OLED_PRINTF(0,6,"2-value:%d     ",thresholding_Value);
                if (start_Flag == 1)
