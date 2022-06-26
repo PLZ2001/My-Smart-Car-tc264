@@ -30,6 +30,7 @@
 #include "MOTOR1.h"
 #include "MOTOR2.h"
 #include "MOTOR_CTL.h"
+#include "ADC.h"
 
 
 //PIT中断函数  示例
@@ -94,15 +95,15 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 //        {
 //            InnerSide_Ratio = 0.85f;
 //        }
-        InnerSide_Ratio = 1.05f+0.4f*(d_steering_Error/10.0f*(steering_Target>0?1.0f:-1.0f));
-        if (InnerSide_Ratio>1.45f)
-        {
-            InnerSide_Ratio = 1.45f;
-        }
-        if (InnerSide_Ratio<0.65f)
-        {
-            InnerSide_Ratio = 0.65f;
-        }
+//        InnerSide_Ratio = 1.05f+0.4f*(d_steering_Error/10.0f*(steering_Target>0?1.0f:-1.0f));
+//        if (InnerSide_Ratio>1.45f)
+//        {
+//            InnerSide_Ratio = 1.45f;
+//        }
+//        if (InnerSide_Ratio<0.65f)
+//        {
+//            InnerSide_Ratio = 0.65f;
+//        }
 
         if (start_Flag==1)
         {

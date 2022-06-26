@@ -31,7 +31,7 @@
 #include "MOTOR1.h"//直流电机相关
 #include "MOTOR2.h"//直流电机相关
 #include "ICM.h"
-
+#include "ADC.h"
 
 
 #pragma section all "cpu0_dsram"
@@ -60,7 +60,7 @@ int core0_main(void)
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
     My_Init_Timer();//我的初始化TIMER
 
-
+    My_Init_ADC();//我的初始化ADC
     //My_Init_ICM();//我的初始化ICM
 
     //My_Init_Wifi();//我的初始化WIFI通信

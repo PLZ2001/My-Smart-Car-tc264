@@ -63,6 +63,7 @@ void core1_main(void)
 
             InsertTimer1Point(1);
 
+            Get_ADC_DATA();
             //Get_ICM_DATA();//更新陀螺仪数据
 
             if (Thresholding_Value_Init_Flag == 0)
@@ -82,7 +83,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
             //窗口默认处于中下位置
-            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
@@ -324,7 +325,7 @@ void core1_main(void)
                          classification_Result_1=6;
                      }
                      //改回默认窗口
-                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
                      //检查长直道是否满足
                      if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
@@ -346,77 +347,156 @@ void core1_main(void)
             //Cal_Steering_Error(Get_d_steering_Error()<30.0f?0.5f:(Get_d_steering_Error()>120.0f?0.55f:((Get_d_steering_Error()-30.0f)/(120.0f-30.0f)*(0.55f-0.5f)+0.5f)));//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
-            {
-                Cal_Steering_Error(SightForward);
-                speed_Target = speed_Target_Min;
+//            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
+//            {
+//                Cal_Steering_Error(SightForward);
+//                speed_Target = speed_Target_Min;
+//
+//                //Differential_Ratio = 2.5f;//1.3f;
+//
+//                Change_Steering_PID(0.25f,0,0.30f);
+//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
+//                {
+//                    Change_Steering_PID(0.24f,0,0.20f);
+//                }
+//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+//                {
+//                    Change_Steering_PID(0.24f,0,0.20f);
+//                }
+//                else if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
+//                {
+//                    Change_Steering_PID(0.27f,0,0.30f);
+//                }
+//            }
+//            else
+//            {
+//                Cal_Steering_Error(SightForward);
+//                speed_Target = speed_Target_Max;
+//
+//                //Differential_Ratio = 2.5f;//1.3f
+//                Change_Steering_PID(0.25f,0,0.30f);
+//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
+//                {
+//                    Change_Steering_PID(0.24f,0,0.20f);
+//                }
+//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+//                {
+//                    Change_Steering_PID(0.24f,0,0.20f);
+//                }
+//
+//
+//            }
 
-                //Differential_Ratio = 2.5f;//1.3f;
+            //确定速度状态
+            //"0左弯", "1右弯",
+            //"2左环岛", "3右环岛",
+            //"4三岔路口", "5十字路口",
+            //"6直道","7靠左（临时使用）","8靠右（临时使用）",
+            //"9未知","10左直线","11右直线",
+            //"12左丁字","13右丁字",
+            //"14T字"
 
-                Change_Steering_PID(0.25f,0,0.30f);
-                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-                {
-                    Change_Steering_PID(0.24f,0,0.20f);
-                }
-                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-                {
-                    Change_Steering_PID(0.24f,0,0.20f);
-                }
-                else if (speed_Target_Min >= 2.2f && speed_Target_Max >= 2.4f)//只有2.1/1.9以上才可以
-                {
-                    Change_Steering_PID(0.27f,0,0.30f);
-                }
-            }
-            else
-            {
-                Cal_Steering_Error(SightForward);
-                speed_Target = speed_Target_Max;
-
-                //Differential_Ratio = 2.5f;//1.3f
-                Change_Steering_PID(0.25f,0,0.30f);
-                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-                {
-                    Change_Steering_PID(0.24f,0,0.20f);
-                }
-                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-                {
-                    Change_Steering_PID(0.24f,0,0.20f);
-                }
-
-
-            }
+            uint8 set_flag=0;//表示这次是否设置了速度
 
             if(Long_Straight_Flag == 1)
             {
-                speed_Target = 2.0*speed_Target_Max;
-                time_up[6] = 0.8f/(2.0f*speed_Target_Max);
+                speed_Status = Highest;
+                set_flag=1;
+                time_up[6] = 0.8f/(speed_Target_Highest);
                 Reset_Timer(6);
                 Start_Timer(6);
             }
             else if (Read_Timer_Status(6) == RUNNING)
             {
-                speed_Target = 2.0*speed_Target_Max;
+                speed_Status = Highest;
+                set_flag=1;
                 if (Read_Timer(6)>time_up[6])
                 {
                     Reset_Timer(6);
                 }
             }
 
+//            if(classification_Result == 3||classification_Result == 2)//左右环岛
+//            {
+//                speed_Status = Low;
+//                set_flag=1;
+//                Reset_Timer(6);
+//            }
+
+            if(steering_Target>35||steering_Target<-35)
+            {
+                speed_Status = Low;
+                set_flag=1;
+                Reset_Timer(6);
+            }
+
             if(classification_Result == 14)//T字
             {
-                speed_Target = 0.7*speed_Target_Min;
-                Change_Steering_PID(0.30f,0,0.30f);
+                speed_Status = Lowest;
+                set_flag=1;
                 time_up[7] = T_Time;
                 Reset_Timer(7);
                 Start_Timer(7);
             }
             else if (Read_Timer_Status(7) == RUNNING)
             {
-                speed_Target = 0.7*speed_Target_Min;
-                Change_Steering_PID(0.30f,0,0.30f);
+                speed_Status = Lowest;
+                set_flag=1;
                 if (Read_Timer(7)>time_up[7])
                 {
                     Reset_Timer(7);
+                }
+            }
+
+            if(d_steering_Error>20||d_steering_Error<-20)
+            {
+                speed_Status = Lowest;
+                set_flag=1;
+                Reset_Timer(6);
+            }
+
+            if(set_flag==0)
+            {
+                speed_Status = High;
+            }
+
+
+            //根据速度状态进行相关计算
+            speed_Target_Highest = 2.0*speed_Target_Max;
+            speed_Target_Lowest = 0.7*speed_Target_Min;
+            switch(speed_Status)
+            {
+                case Highest:
+                {
+                    Cal_Steering_Error(SightForward);
+                    speed_Target = speed_Target_Highest;
+                    InnerSide_Ratio = 1.50f;
+                    Change_Steering_PID(0.25f,0,0.30f);
+                    break;
+                }
+                case High:
+                {
+                    Cal_Steering_Error(SightForward);
+                    speed_Target = speed_Target_Max;
+                    InnerSide_Ratio = 1.20f;
+                    Change_Steering_PID(0.25f,0,0.30f);
+                    break;
+                }
+                case Low:
+                {
+                    Cal_Steering_Error(SightForward);
+                    speed_Target = speed_Target_Min;
+                    InnerSide_Ratio = 1.00f;
+                    Change_Steering_PID(0.25f,0,0.30f);
+                    break;
+                }
+                case Lowest:
+                {
+                    Cal_Steering_Error(SightForward);
+                    speed_Target = speed_Target_Lowest;
+                    InnerSide_Ratio = 1.00f;
+                    Change_Steering_PID(0.30f,0,0.30f);
+                    break;
                 }
             }
 
@@ -435,6 +515,10 @@ void core1_main(void)
         {
             PID_mode1 = OPEN_LOOP1;
         }
+        else if (speed_Target1 < 2.2 && speed_Target1 > -2.2 && speed_Measured1 < 2.2 && speed_Measured1 > -2.2)
+        {
+            PID_mode1 = PID_CLOSED_LOOP1;
+        }
         else
         {
             if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
@@ -450,6 +534,10 @@ void core1_main(void)
         if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
         {
             PID_mode2 = OPEN_LOOP2;
+        }
+        else if (speed_Target2 < 2.2 && speed_Target2 > -2.2 && speed_Measured2 < 2.2 && speed_Measured2 > -2.2)
+        {
+            PID_mode2 = PID_CLOSED_LOOP2;
         }
         else
         {

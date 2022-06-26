@@ -46,6 +46,24 @@ void Update_OLED_per10ms(void)
 //               OLED_PRINTF(0,4,"width:%d ",width_Inverse_Perspective);
 //               OLED_PRINTF(0,5,"height:%d ",height_Inverse_Perspective);
                break;
+           case Speed_Page2:
+               if (speed_Status == Highest)
+               {
+                   OLED_PRINTF(0,0,"status:Highest ");
+               }
+               else if (speed_Status == High)
+               {
+                   OLED_PRINTF(0,0,"status:High    ");
+               }
+               else if (speed_Status == Low)
+               {
+                   OLED_PRINTF(0,0,"status:Low     ");
+               }
+               else if (speed_Status == Lowest)
+               {
+                   OLED_PRINTF(0,0,"status:Lowest  ");
+               }
+               break;
            case Volt_Page:
                if (pointer_temp == 0)
                {

@@ -13,8 +13,11 @@
 
 
 float speed_Target;//目标速度
-float speed_Target_Min = 2.8;//"2.8m/s"实际是2.5m/s
-float speed_Target_Max = 2.8;
+float speed_Target_Min = 1.7;//2.8;//"2.8m/s"实际是2.5m/s
+float speed_Target_Max = 2.1;//2.8;
+float speed_Target_Highest = 2.0*2.8;
+float speed_Target_Lowest = 0.7*2.8;
+
 
 uint8 start_Flag = 0;//1表示启动差速函数
 uint8 emergency_Stop = 0;//1表示紧急停车
@@ -24,6 +27,8 @@ float InnerSide_Ratio = 1.05f;//1.0f;//0.85f;
 
 float Base_Volt = 8.30f;//基准电压
 float Real_Volt = 8.30f;//真实电压
+
+enum SpeedStatus speed_Status = High;
 
 void Differential_Motor(void)
 {
