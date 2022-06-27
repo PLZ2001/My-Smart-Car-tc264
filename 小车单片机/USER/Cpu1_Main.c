@@ -389,7 +389,7 @@ void core1_main(void)
 
             //根据速度状态进行相关计算
 
-            enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+switch_Status[Switch2];
+            enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+2*switch_Status[Switch2];
             if (speed_Mode_temp!=speed_Mode)
             {
                 speed_Mode = speed_Mode_temp;

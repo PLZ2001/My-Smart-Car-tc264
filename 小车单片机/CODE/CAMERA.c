@@ -1210,6 +1210,28 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
                 score[k] = -72;
             }
         }
+        if (k==1)//额外的判断：十字路口中间两竖列白色占比必须全部大于0.3，可以避免一些误识别
+        {
+            if (arg_Classification_36[2] > 0.3
+                    && arg_Classification_36[3] > 0.3
+                    && arg_Classification_36[8] > 0.3
+                    && arg_Classification_36[9] > 0.3
+                    && arg_Classification_36[14] > 0.3
+                    && arg_Classification_36[15] > 0.3
+                    && arg_Classification_36[20] > 0.3
+                    && arg_Classification_36[21] > 0.3
+                    && arg_Classification_36[26] > 0.3
+                    && arg_Classification_36[27] > 0.3
+                    && arg_Classification_36[32] > 0.3
+                    && arg_Classification_36[33] > 0.3)
+            {
+                ;
+            }
+            else
+            {
+                score[k] = -72;
+            }
+        }
         if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
         {
             second_Score = max_Score;
