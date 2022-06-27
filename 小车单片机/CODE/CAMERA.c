@@ -185,7 +185,7 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-20,-20,1, 1},
 //uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
 //float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
 uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,16};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.1,0.1,-0.1};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.1,0.1,0.0};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
@@ -1359,6 +1359,10 @@ void Check(uint8 *classification_Result,uint8 else_result)
     if (*classification_Result ==14)//14 T×Ö
     {
         if((Check_ThreeRoads_New()&&Check_ThreeRoad_New2()))
+        {
+            *classification_Result = else_result;
+        }
+        else if(!(Check_TRoad(0.2)&&Check_TRoad(0.3)))
         {
             *classification_Result = else_result;
         }

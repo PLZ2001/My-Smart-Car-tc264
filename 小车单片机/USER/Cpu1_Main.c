@@ -442,43 +442,157 @@ void core1_main(void)
 
 
         //低速目标且低速时，开环
-        if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
+        switch(speed_Mode)
         {
-            PID_mode1 = OPEN_LOOP1;
-        }
-        else if (speed_Target1 < 2.2 && speed_Target1 > -2.2 && speed_Measured1 < 2.2 && speed_Measured1 > -2.2)
-        {
-            PID_mode1 = PID_CLOSED_LOOP1;
-        }
-        else
-        {
-            if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+            case Lowest_Mode:
             {
-                PID_mode1 = BANGBANG_CLOSED_LOOP1;
-            }
-            else
-            {
-                PID_mode1 = PID_CLOSED_LOOP1;
-            }
-        }
+                if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
+                {
+                    PID_mode1 = OPEN_LOOP1;
+                }
+                else
+                {
+                    PID_mode1 = PID_CLOSED_LOOP1;
+                }
 
-        if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
-        {
-            PID_mode2 = OPEN_LOOP2;
-        }
-        else if (speed_Target2 < 2.2 && speed_Target2 > -2.2 && speed_Measured2 < 2.2 && speed_Measured2 > -2.2)
-        {
-            PID_mode2 = PID_CLOSED_LOOP2;
-        }
-        else
-        {
-            if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
-            {
-                PID_mode2 = BANGBANG_CLOSED_LOOP2;
+                if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
+                {
+                    PID_mode2 = OPEN_LOOP2;
+                }
+                else
+                {
+                    PID_mode2 = PID_CLOSED_LOOP2;
+                }
+                break;
             }
-            else
+            case Low_Mode:
             {
-                PID_mode2 = PID_CLOSED_LOOP2;
+                if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
+                {
+                    PID_mode1 = OPEN_LOOP1;
+                }
+                else if (speed_Target1 < 2.2 && speed_Target1 > -2.2 && speed_Measured1 < 2.2 && speed_Measured1 > -2.2)
+                {
+                    PID_mode1 = PID_CLOSED_LOOP1;
+                }
+                else
+                {
+                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    {
+                        PID_mode1 = BANGBANG_CLOSED_LOOP1;
+                    }
+                    else
+                    {
+                        PID_mode1 = PID_CLOSED_LOOP1;
+                    }
+                }
+
+                if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
+                {
+                    PID_mode2 = OPEN_LOOP2;
+                }
+                else if (speed_Target2 < 2.2 && speed_Target2 > -2.2 && speed_Measured2 < 2.2 && speed_Measured2 > -2.2)
+                {
+                    PID_mode2 = PID_CLOSED_LOOP2;
+                }
+                else
+                {
+                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    {
+                        PID_mode2 = BANGBANG_CLOSED_LOOP2;
+                    }
+                    else
+                    {
+                        PID_mode2 = PID_CLOSED_LOOP2;
+                    }
+                }
+                break;
+            }
+            case High_Mode:
+            {
+                if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
+                {
+                    PID_mode1 = OPEN_LOOP1;
+                }
+                else if (speed_Target1 < 2.2 && speed_Target1 > -2.2 && speed_Measured1 < 2.2 && speed_Measured1 > -2.2)
+                {
+                    PID_mode1 = PID_CLOSED_LOOP1;
+                }
+                else
+                {
+                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    {
+                        PID_mode1 = BANGBANG_CLOSED_LOOP1;
+                    }
+                    else
+                    {
+                        PID_mode1 = PID_CLOSED_LOOP1;
+                    }
+                }
+
+                if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
+                {
+                    PID_mode2 = OPEN_LOOP2;
+                }
+                else if (speed_Target2 < 2.2 && speed_Target2 > -2.2 && speed_Measured2 < 2.2 && speed_Measured2 > -2.2)
+                {
+                    PID_mode2 = PID_CLOSED_LOOP2;
+                }
+                else
+                {
+                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    {
+                        PID_mode2 = BANGBANG_CLOSED_LOOP2;
+                    }
+                    else
+                    {
+                        PID_mode2 = PID_CLOSED_LOOP2;
+                    }
+                }
+                break;
+            }
+            case Highest_Mode:
+            {
+                if (speed_Target1 < 0.5 && speed_Target1 > -0.5 && speed_Measured1 < 0.5 && speed_Measured1 > -0.5)
+                {
+                    PID_mode1 = OPEN_LOOP1;
+                }
+                else if (speed_Target1 < 2.2 && speed_Target1 > -2.2 && speed_Measured1 < 2.2 && speed_Measured1 > -2.2)
+                {
+                    PID_mode1 = PID_CLOSED_LOOP1;
+                }
+                else
+                {
+                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    {
+                        PID_mode1 = BANGBANG_CLOSED_LOOP1;
+                    }
+                    else
+                    {
+                        PID_mode1 = PID_CLOSED_LOOP1;
+                    }
+                }
+
+                if (speed_Target2 < 0.5 && speed_Target2 > -0.5 && speed_Measured2 < 0.5 && speed_Measured2 > -0.5)
+                {
+                    PID_mode2 = OPEN_LOOP2;
+                }
+                else if (speed_Target2 < 2.2 && speed_Target2 > -2.2 && speed_Measured2 < 2.2 && speed_Measured2 > -2.2)
+                {
+                    PID_mode2 = PID_CLOSED_LOOP2;
+                }
+                else
+                {
+                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    {
+                        PID_mode2 = BANGBANG_CLOSED_LOOP2;
+                    }
+                    else
+                    {
+                        PID_mode2 = PID_CLOSED_LOOP2;
+                    }
+                }
+                break;
             }
         }
 
