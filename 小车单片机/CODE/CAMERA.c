@@ -1406,11 +1406,11 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result == 9)//9Î´Öª
     {
-        if(Check_Left_Straight(2,-2,1) && !Check_Right_Straight(2,-2,1))
+        if(Check_Left_Straight_ForRoad(2,-2,1) && !Check_Right_Straight_ForRoad(2,-2,1))
         {
             *classification_Result = 7;//7¿¿×ó
         }
-        if(Check_Right_Straight(2,-2,1) && !Check_Left_Straight(2,-2,1))
+        if(Check_Right_Straight_ForRoad(2,-2,1) && !Check_Left_Straight_ForRoad(2,-2,1))
         {
             *classification_Result = 8;//8¿¿ÓÒ
         }
