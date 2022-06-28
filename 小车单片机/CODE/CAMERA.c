@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "OLED.h"
 #include "TIME.h"
-
+#include "SEARCH.h"
 //摄像头高度约为19.5cm
 
 //需要串口通信输出去，但不用传过来的变量
@@ -185,7 +185,7 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-20,-20,1, 1},
 //uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
 //float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
 uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,16};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.1,0.1,0.0};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.15,0.15,0.0};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
@@ -1347,15 +1347,30 @@ void Set_Search_Range(uint8 row_start,uint8 row_lines,uint8 col_start,uint8 col_
 
 void Check(uint8 *classification_Result,uint8 else_result)
 {
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     if (*classification_Result == 13)//右丁字
     {
-        flag_For_Right_T = 1;
-        flag_For_Left_T = 0;
+        if(!Check_Left_Straight(2,-2,0.5))
+        {
+            *classification_Result = else_result;
+        }
+        else
+        {
+            flag_For_Right_T = 1;
+            flag_For_Left_T = 0;
+        }
     }
     if (*classification_Result == 12)//左丁字
     {
-        flag_For_Right_T = 0;
-        flag_For_Left_T = 1;
+        if(!Check_Right_Straight(2,-2,0.5))
+        {
+            *classification_Result = else_result;
+        }
+        else
+        {
+            flag_For_Right_T = 0;
+            flag_For_Left_T = 1;
+        }
     }
     if (*classification_Result ==3)//3右环岛
     {

@@ -46,6 +46,7 @@
 //简单点说实际上进入中断后TC系列的硬件自动调用了disableInterrupts();来拒绝响应任何的中断，因此需要我们自己手动调用enableInterrupts();来开启中断的响应。
 int core0_main(void)
 {
+    disableInterrupts();
 	get_clk();//获取时钟频率  务必保留
 	//用户在此处调用各种初始化函数等
 

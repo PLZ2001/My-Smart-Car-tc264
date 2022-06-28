@@ -18,6 +18,7 @@ extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中
 extern int Col_Left[height_Inverse_Perspective_Max];
 extern int Col_Right[height_Inverse_Perspective_Max];
 extern int search_Lines;
+extern int road_width;
 
 extern float threeRoads_RightTime;
 extern float rightCircle_RightTime;
