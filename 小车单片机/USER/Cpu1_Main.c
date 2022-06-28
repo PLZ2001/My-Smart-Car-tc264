@@ -349,11 +349,11 @@ void core1_main(void)
 
 
             static uint8 status_switch_1=0;
-            if(steering_Target>35||steering_Target<-35)
+            if(steering_Target>37||steering_Target<-37)
             {
                 status_switch_1=1;
             }
-            if (steering_Target<28 && steering_Target>-28)
+            if (steering_Target<25 && steering_Target>-25)
             {
                 status_switch_1=0;
             }
