@@ -26,7 +26,7 @@ float threeRoads_RightTime = 0.15f;
 float rightCircle_RightTime = 0.5f;
 float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
-float T_Time = 0.5f;
+float T_Time = 1.0f;
 
 int8 Circle_target_down[2] = {1,8};
 int8 Circle_target_up[2] = {5,18};

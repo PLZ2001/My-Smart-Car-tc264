@@ -77,6 +77,7 @@ uint8 Classification_25(void);
 uint8 Classification_Classic(void);
 uint8 Classification_Classic25(void);
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
+void GetBinThreshold_OSTU(void);
 
 
 

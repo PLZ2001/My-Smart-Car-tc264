@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "OLED.h"
 #include "TIME.h"
+#include "STEERING.h"
 #include "SEARCH.h"
 //摄像头高度约为19.5cm
 
@@ -529,11 +530,13 @@ void Get_Thresholding_Value(void)
 void Get_Thresholding_Image(void)
 {
 //    //Kmeans法更新二值化阈值
-//    if (Read_Timer(3) > time_up[3] && classification_Result == 6) {
-//        Reset_Timer(3);
+    //if (Read_Timer(3) > time_up[3] && steering_Target>=-5 && steering_Target>=5) {
+    if (steering_Target>=-5 && steering_Target<=5) {
+        Reset_Timer(3);
 //        Get_Thresholding_Value();
-//        Start_Timer(3);
-//    }
+        GetBinThreshold_OSTU();//大津法二值化
+        Start_Timer(3);
+    }
 
 //    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
 //    {
@@ -1421,4 +1424,103 @@ void Check(uint8 *classification_Result,uint8 else_result)
 
     }
 
+}
+
+
+
+
+
+
+
+
+/****************************************************************
+ * 函数名: GetBinThreshold_OSTU
+ * 功  能: 使用大律法获得二值化阈值
+ * 输  入: image    -->    灰度图像
+ ****************************************************************/
+/* 计算类间方差使用的图像范围, 若使用全图, 依次为0, 0, IMAGE_WIDTH, IMAGE_HEIGHT*/
+#define OSTU_START_U (20)
+#define OSTU_START_V (15)
+#define OSTU_END_U   (X_WIDTH_CAMERA-20)
+#define OSTU_END_V   (Y_WIDTH_CAMERA-10)
+/* 计算类间方差的总像素点数 */
+void GetBinThreshold_OSTU(void)
+{
+    uint16 i, j;
+    uint16 histogram[256];
+    uint16 backPixel = 0, forePixel;
+    uint8 minGray = 0xFF, maxGray = 0, threshold = 0;
+    uint32 pixelGraySum = 0, backPixelGraySum = 0, forePixelGraySum = 0;
+    float32 diff, interclassVariance, maxInterclassVariance = -1;
+
+    static uint8 flag=0;
+    static int OSTU_PIXEL_NUMBER=0;
+
+    /* 初始化灰度直方图 */
+    for (i = 0; i < 256; ++i)
+    {
+        histogram[i] = 0;
+    }
+
+    /* 统计灰度级中每个像素在整幅图像中的个数并记录最大和最小灰度 */
+    for (i = OSTU_START_V; i < OSTU_END_V; i+=3)
+    {
+        for (j = OSTU_START_U; j < OSTU_END_U; j+=3)
+        {
+            ++histogram[mt9v03x_image[i][j]];
+            pixelGraySum += mt9v03x_image[i][j];
+            if (mt9v03x_image[i][j] < minGray)
+            {
+                minGray = mt9v03x_image[i][j];
+            }
+            if (mt9v03x_image[i][j] > maxGray)
+            {
+                maxGray = mt9v03x_image[i][j];
+            }
+
+
+            if (flag==0)
+            {
+                OSTU_PIXEL_NUMBER++;
+            }
+        }
+    }
+
+    /* 只有一种或两种灰度 */
+    if (minGray == maxGray || minGray+1 == maxGray)
+    {
+        thresholding_Value =  minGray;
+    }
+
+
+    uint8 min,max;
+    /* 求最大类间方差 */
+    if (flag==0)
+    {
+        min = minGray;
+        max = maxGray;
+    }
+    else
+    {
+        min = minGray>(thresholding_Value-80)?minGray:(thresholding_Value-80);
+        max = maxGray<(thresholding_Value+80)?maxGray:(thresholding_Value+80);
+    }
+    for (i = min; i <= max; ++i)
+    {
+        backPixel += histogram[i];
+        forePixel = OSTU_PIXEL_NUMBER - backPixel;
+        backPixelGraySum += i * histogram[i];
+        forePixelGraySum = pixelGraySum - backPixelGraySum;
+        diff = (float)backPixelGraySum/backPixel - (float)forePixelGraySum/forePixel;
+        interclassVariance =
+               diff * diff  * (float)backPixel * forePixel;// / OSTU_PIXEL_NUMBER / OSTU_PIXEL_NUMBER;
+        if (interclassVariance > maxInterclassVariance)
+        {
+            maxInterclassVariance = interclassVariance;
+            threshold = (uint8)i;
+        }
+    }
+
+    flag=1;
+    thresholding_Value = threshold;
 }

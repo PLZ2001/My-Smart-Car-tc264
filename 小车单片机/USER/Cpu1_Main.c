@@ -70,12 +70,14 @@ void core1_main(void)
             if (Thresholding_Value_Init_Flag == 0)
             {
                 Get_Inverse_Perspective_Table();//求逆透视表
-                Get_Thresholding_Value();//求二值化阈值
-                time_up[3]=1.0f;
+                //Get_Thresholding_Value();//求二值化阈值
+                GetBinThreshold_OSTU();//大津法二值化
+                time_up[3]=0.5f;
                 Start_Timer(3);//启动计时
                 Thresholding_Value_Init_Flag = 1;
             }
             Get_Thresholding_Image();
+
 
             InsertTimer1Point(2);
             Get_Inverse_Perspective_Image();
@@ -371,7 +373,7 @@ void core1_main(void)
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[7] = T_Time;
+                time_up[7] = 0.5*T_Time;
                 Reset_Timer(7);
                 Start_Timer(7);
             }
