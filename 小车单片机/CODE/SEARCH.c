@@ -2462,12 +2462,115 @@ void Compensate_ColCenter(void)
 
 }
 
-uint8 Check_TRoad(float pos)
+uint8 Check_TRoad(uint8 mode,float pos)
 {
     uint8 water_i = Search_Range[ROW][BEGIN]+(1-pos)*Search_Range[ROW][LINES];
-    for (int j=Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+    if (mode==1)
     {
-        if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==0)
+        for (int j=Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+        {
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==0)
+            {
+                return 0;
+            }
+        }
+        return 1;
+    }
+    else if (mode==0)
+    {
+        for (int j=Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+        {
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==1)
+            {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+}
+
+uint8 Check_Up_Straight(int8 max_d_Row_Up, int8 min_d_Row_Up)
+{
+    int start_Col = 0;
+    int start_Row = height_Inverse_Perspective*0.8;
+    int8 Row_Up[width_Inverse_Perspective_Max]={0};
+    for (int i=0;i<width_Inverse_Perspective;i++)
+    {
+        Row_Up[i] = -2;
+    }
+    for (int i=0;i<width_Inverse_Perspective;i++)
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col] == 255)
+        {
+            start_Col = start_Col + 1;
+            continue;
+        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col] == 1) //如果左线发现1区域（道路）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col] == 1 && start_Row>=1)
+            {
+                start_Row = start_Row - 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }
+            start_Row = start_Row + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row-1][start_Col] == 0)//查看此时是否是0区域（背景）
+            {
+                Row_Up[i] = start_Row;//只有是0区域的才可以将列号存储到左线里
+            }
+        }
+        else//如果左线发现0区域（背景）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col] == 0 && start_Row<=height_Inverse_Perspective-2)
+            {
+                start_Row = start_Row + 1;
+                cnt_temp = cnt_temp + 1;
+            }
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col] == 1)//查看此时是否是1区域（道路）
+            {
+                Row_Up[i] = start_Row;//只有是1区域的才可以将列号存储到左线里
+            }
+        }
+
+        start_Col = start_Col + 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
+    }
+
+    start_Col = Search_Range[COL][BEGIN];
+    int d_Row_Up;
+    int d_Row_Up_Num=0;
+
+    int i;
+    for (i=Search_Range[COL][BEGIN];i<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];i++)
+    {
+        if (Row_Up[i] !=-2)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[Row_Up[i]-1][start_Col] == 0)
+            {
+                d_Row_Up_Num = Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-i-1;
+                break;
+            }
+        }
+        start_Col = start_Col + 1;
+    }
+    if (d_Row_Up_Num<=0.1f*Search_Range[COL][LINES])
+    {
+        return 0;
+    }
+    for (int j=0;j<d_Row_Up_Num;j++)
+    {
+        d_Row_Up = Row_Up[i+1]-Row_Up[i];
+        i++;
+        if (d_Row_Up < min_d_Row_Up || d_Row_Up > max_d_Row_Up)
         {
             return 0;
         }

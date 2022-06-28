@@ -71,13 +71,13 @@ void Update_Speed_Mode(void)
             speed_Target_Highest =1.5*2.1f;
             SightForward_Highest = 0.25f;
             InnerSide_Ratio_Highest = 1.50f;
-            Steering_PID_Highest[0]=0.22f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
+            Steering_PID_Highest[0]=0.18f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
 
 
             speed_Target_High = 2.1f;//¼´1.9
             SightForward_High = 0.25f;
             InnerSide_Ratio_High = 1.20f;
-            Steering_PID_High[0]=0.22f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
+            Steering_PID_High[0]=0.18f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
 
 
             speed_Target_Low = 1.7f;//¼´1.5
