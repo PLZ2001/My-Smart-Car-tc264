@@ -95,22 +95,22 @@ void Update_Speed_Mode(void)
         }
         case Low_Mode:
         {
-            speed_Target_Highest = 2.0*2.5f;
+            speed_Target_Highest = 1.5*2.5f;
             SightForward_Highest = 0.25f;
-            InnerSide_Ratio_Highest = 1.50f;
-            Steering_PID_Highest[0]=0.25f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
+            InnerSide_Ratio_Highest = 1.15f;
+            Steering_PID_Highest[0]=0.18f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
 
 
             speed_Target_High = 2.5f;//¼´2.2
             SightForward_High = 0.25f;
-            InnerSide_Ratio_High = 1.20f;
-            Steering_PID_High[0]=0.25f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
+            InnerSide_Ratio_High = 1.10f;
+            Steering_PID_High[0]=0.18f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
 
 
             speed_Target_Low = 2.1f;//¼´1.9
             SightForward_Low = 0.25f;
-            InnerSide_Ratio_Low = 1.00f;
-            Steering_PID_Low[0]=0.25f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
+            InnerSide_Ratio_Low = 1.05f;
+            Steering_PID_Low[0]=0.22f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
 
 
             speed_Target_Lowest = 0.7*2.1f;

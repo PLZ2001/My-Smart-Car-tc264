@@ -342,23 +342,34 @@ void core1_main(void)
                 }
             }
 
-//            if(classification_Result == 3||classification_Result == 2)//×óÓÒ»·µº
-//            {
-//                speed_Status = Low;
-//                set_flag=1;
-//                Reset_Timer(6);
-//            }
+            if(classification_Result == 4)
+            {
+                Reset_Timer(6);
+            }
 
+
+            static uint8 status_switch_1=0;
             if(steering_Target>35||steering_Target<-35)
+            {
+                status_switch_1=1;
+            }
+            if (steering_Target<28 && steering_Target>-28)
+            {
+                status_switch_1=0;
+            }
+            if (status_switch_1==1)
             {
                 speed_Status = Low;
                 set_flag=1;
                 Reset_Timer(6);
             }
 
+
+
             if(classification_Result == 14)//T×Ö
             {
                 speed_Status = Lowest;
+                Reset_Timer(6);
                 set_flag=1;
                 time_up[7] = T_Time;
                 Reset_Timer(7);
@@ -374,16 +385,28 @@ void core1_main(void)
                 }
             }
 
+
+            static uint8 status_switch_2=0;
             if(d_steering_Error>30||d_steering_Error<-30)
+            {
+                status_switch_2=1;
+            }
+            if(d_steering_Error<24&&d_steering_Error>-24)
+            {
+                status_switch_2=0;
+            }
+            if (status_switch_2==1)
             {
                 speed_Status = Lowest;
                 set_flag=1;
                 Reset_Timer(6);
             }
 
+
             if(set_flag==0)
             {
                 speed_Status = High;
+                Reset_Timer(6);
             }
 
 
