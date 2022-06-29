@@ -55,6 +55,7 @@ extern uint8 Long_Straight_Flag;
 extern uint8 classification_Result_1;
 extern uint8 classification_Result_1_2nd;
 
+extern float ModelTable_36[CLASS_NUM_NEW][6][6];
 
 
 

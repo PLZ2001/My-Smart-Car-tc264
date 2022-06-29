@@ -179,15 +179,19 @@ void Update_OLED_per10ms(void)
                 break;
             case Camera_Page:
                 //oled_dis_bmp(height_Inverse_Perspective, width_Inverse_Perspective, *mt9v03x_image_cutted_thresholding_inversePerspective, 0);
-                OLED_PRINTF(0,0,"%d %d %d %d %d %d",fuzzy_Image_36[0][0],fuzzy_Image_36[0][1],fuzzy_Image_36[0][2],fuzzy_Image_36[0][3],fuzzy_Image_36[0][4],fuzzy_Image_36[0][5]);
-                OLED_PRINTF(0,1,"%d %d %d %d %d %d",fuzzy_Image_36[1][0],fuzzy_Image_36[1][1],fuzzy_Image_36[1][2],fuzzy_Image_36[1][3],fuzzy_Image_36[1][4],fuzzy_Image_36[1][5]);
-                OLED_PRINTF(0,2,"%d %d %d %d %d %d",fuzzy_Image_36[2][0],fuzzy_Image_36[2][1],fuzzy_Image_36[2][2],fuzzy_Image_36[2][3],fuzzy_Image_36[2][4],fuzzy_Image_36[2][5]);
-                OLED_PRINTF(0,3,"%d %d %d %d %d %d",fuzzy_Image_36[3][0],fuzzy_Image_36[3][1],fuzzy_Image_36[3][2],fuzzy_Image_36[3][3],fuzzy_Image_36[3][4],fuzzy_Image_36[3][5]);
-                OLED_PRINTF(0,4,"%d %d %d %d %d %d",fuzzy_Image_36[4][0],fuzzy_Image_36[4][1],fuzzy_Image_36[4][2],fuzzy_Image_36[4][3],fuzzy_Image_36[4][4],fuzzy_Image_36[4][5]);
-                OLED_PRINTF(0,5,"%d %d %d %d %d %d",fuzzy_Image_36[5][0],fuzzy_Image_36[5][1],fuzzy_Image_36[5][2],fuzzy_Image_36[5][3],fuzzy_Image_36[5][4],fuzzy_Image_36[5][5]);
+//                OLED_PRINTF(0,0,"%d %d %d %d %d %d",fuzzy_Image_36[0][0],fuzzy_Image_36[0][1],fuzzy_Image_36[0][2],fuzzy_Image_36[0][3],fuzzy_Image_36[0][4],fuzzy_Image_36[0][5]);
+//                OLED_PRINTF(0,1,"%d %d %d %d %d %d",fuzzy_Image_36[1][0],fuzzy_Image_36[1][1],fuzzy_Image_36[1][2],fuzzy_Image_36[1][3],fuzzy_Image_36[1][4],fuzzy_Image_36[1][5]);
+//                OLED_PRINTF(0,2,"%d %d %d %d %d %d",fuzzy_Image_36[2][0],fuzzy_Image_36[2][1],fuzzy_Image_36[2][2],fuzzy_Image_36[2][3],fuzzy_Image_36[2][4],fuzzy_Image_36[2][5]);
+//                OLED_PRINTF(0,3,"%d %d %d %d %d %d",fuzzy_Image_36[3][0],fuzzy_Image_36[3][1],fuzzy_Image_36[3][2],fuzzy_Image_36[3][3],fuzzy_Image_36[3][4],fuzzy_Image_36[3][5]);
+//                OLED_PRINTF(0,4,"%d %d %d %d %d %d",fuzzy_Image_36[4][0],fuzzy_Image_36[4][1],fuzzy_Image_36[4][2],fuzzy_Image_36[4][3],fuzzy_Image_36[4][4],fuzzy_Image_36[4][5]);
+//                OLED_PRINTF(0,5,"%d %d %d %d %d %d",fuzzy_Image_36[5][0],fuzzy_Image_36[5][1],fuzzy_Image_36[5][2],fuzzy_Image_36[5][3],fuzzy_Image_36[5][4],fuzzy_Image_36[5][5]);
                 //OLED_PRINTF(0,6,"Class:%d Value:%01.02f",classification_Result,fuzzy_thresholdingValue_36);
-                OLED_PRINTF(0,6,"Class:%d Max:%01.02f",classification_Result,max_Score);
-                OLED_PRINTF(0,7,"%02.01f %02.01f %02.01f %02.01f",score[0],score[1],score[2],score[3]);
+//                OLED_PRINTF(0,6,"Class:%d Max:%01.02f",classification_Result,max_Score);
+//                OLED_PRINTF(0,7,"%02.01f %02.01f %02.01f %02.01f",score[0],score[1],score[2],score[3]);
+                OLED_PRINTF(0,1,"Near1:%d Near2:%d  ",classification_Result,classification_Result_2nd);
+                OLED_PRINTF(0,2,"Far_1:%d Far_2:%d  ",classification_Result_1,classification_Result_1_2nd);
+                OLED_PRINTF(0,3,"%02.01f %02.01f %02.01f %02.01f ",Score(0),Score(1),Score(2),Score(3));
+                OLED_PRINTF(0,4,"%02.01f %02.01f %02.01f  ",Score(4),Score(5),Score(6));
                 break;
             case UART_Debug_Page:
                 //显示内容由Cpu0_Main.c的串口通信部分完成

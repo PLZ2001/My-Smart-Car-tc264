@@ -533,7 +533,8 @@ void Get_Thresholding_Image(void)
 //    //Kmeans法更新二值化阈值
     //if (Read_Timer(3) > time_up[3] && steering_Target>=-5 && steering_Target>=5) {
 //    if (steering_Target>=-5 && steering_Target<=5) {
-    if ((classification_Result==9||classification_Result==6)&&(steering_Target>=-5 && steering_Target<=5)&&(speed_Status!=Highest)) {
+//    if ((classification_Result==9||classification_Result==6)&&(steering_Target>=-5 && steering_Target<=5)&&(speed_Status!=Highest)) {
+    if ((steering_Target>=-3 && steering_Target<=3)&&(speed_Status==Low)) {
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
@@ -1344,6 +1345,11 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
     }
 }
 
+float Score(uint8 k)
+{
+    return ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36));
+}
+
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter)
 {
     static uint8 Classification_counter=0;
@@ -1519,16 +1525,16 @@ void GetBinThreshold_OSTU(void)
 
     uint8 min,max;
     /* 求最大类间方差 */
-    if (flag==0)
-    {
+//    if (flag==0)
+//    {
         min = minGray;
         max = maxGray;
-    }
-    else
-    {
-        min = minGray>(thresholding_Value-80)?minGray:(thresholding_Value-80);
-        max = maxGray<(thresholding_Value+80)?maxGray:(thresholding_Value+80);
-    }
+//    }
+//    else
+//    {
+//        min = minGray>(thresholding_Value-80)?minGray:(thresholding_Value-80);
+//        max = maxGray<(thresholding_Value+80)?maxGray:(thresholding_Value+80);
+//    }
     for (i = min; i <= max; ++i)
     {
         backPixel += histogram[i];
