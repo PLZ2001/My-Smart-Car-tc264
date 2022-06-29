@@ -330,7 +330,7 @@ void core1_main(void)
             {
                 speed_Status = Highest;
                 set_flag=1;
-                time_up[6] = 0.8f/(speed_Target_Highest);
+                time_up[6] = 0.6f/(speed_Target_Highest);
                 Reset_Timer(6);
                 Start_Timer(6);
             }

@@ -12,6 +12,7 @@ void My_Init_ADC(void)
 
 void Get_ADC_DATA(void)
 {
-    int adc_result = adc_mean_filter(ADC_0, ADC0_CH7_A7, ADC_12BIT, 10);//采集10次求平均  分辨率12位
-    Real_Volt = adc_result/4095.0f*3.30f*((4.7f+1.0f)/1.0f);
+    int adc_result = adc_mean_filter(ADC_0, ADC0_CH7_A7, ADC_12BIT, 50);//采集50次求平均  分辨率12位
+    float Error = 0.10f;
+    Real_Volt = adc_result/4095.0f*3.30f*((4.7f+1.0f)/1.0f)+Error;
 }

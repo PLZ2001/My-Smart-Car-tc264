@@ -1,8 +1,6 @@
 #ifndef __MOTOR_CTL_h__
 #define __MOTOR_CTL_h__
 
-#define BANGBANG_UP 0.2
-#define BANGBANG_DOWN 0.3
 
 enum SpeedMode
 {
@@ -43,6 +41,9 @@ extern float Real_Volt;
 
 extern enum SpeedStatus speed_Status;
 extern enum SpeedMode speed_Mode;
+
+extern float BANGBANG_UP;
+extern float BANGBANG_DOWN;
 
 void Differential_Motor(void);
 

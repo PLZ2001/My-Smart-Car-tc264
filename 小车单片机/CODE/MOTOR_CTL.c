@@ -42,6 +42,10 @@ float Real_Volt = 8.30f;//真实电压
 enum SpeedStatus speed_Status = High;
 enum SpeedMode speed_Mode = 10;//不等于0、1、2、3就行
 
+
+float BANGBANG_UP=0.2;
+float BANGBANG_DOWN=0.3;
+
 void Differential_Motor(void)
 {
     if (steering_Error>=0)
@@ -95,6 +99,9 @@ void Update_Speed_Mode(void)
         }
         case Low_Mode:
         {
+            BANGBANG_UP = 0.2;
+            BANGBANG_DOWN = 0.3;
+
             speed_Target_Highest = 1.5*2.5f;
             SightForward_Highest = 0.25f;
             InnerSide_Ratio_Highest = 1.15f;
@@ -115,13 +122,16 @@ void Update_Speed_Mode(void)
 
             speed_Target_Lowest = 0.7*2.1f;
             SightForward_Lowest = 0.25f;
-            InnerSide_Ratio_Lowest = 1.00f;
-            Steering_PID_Lowest[0]=0.30f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
+            InnerSide_Ratio_Lowest = 1.20f;
+            Steering_PID_Lowest[0]=0.40f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
 
             break;
         }
         case High_Mode:
         {
+            BANGBANG_UP=0.2;
+            BANGBANG_DOWN=0.3;
+
             speed_Target_Highest = 2.0*2.8f;
             SightForward_Highest = 0.25f;
             InnerSide_Ratio_Highest = 1.50f;
@@ -149,6 +159,9 @@ void Update_Speed_Mode(void)
         }
         case Highest_Mode:
         {
+            BANGBANG_UP=0.2;
+            BANGBANG_DOWN=0.3;
+
             speed_Target_Highest = 2.0*3.1f;
             SightForward_Highest = 0.25f;
             InnerSide_Ratio_Highest = 1.50f;

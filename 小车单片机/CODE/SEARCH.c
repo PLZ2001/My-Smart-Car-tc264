@@ -355,14 +355,14 @@ uint8 Check_Left_Straight_ForRoad(int8 max_d_Col_Left, int8 min_d_Col_Left, floa
                 d_Col_Left_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Left_Num<=0.9f*ratio*Search_Range[ROW][LINES])
+    if (d_Col_Left_Num<=0.8f*ratio*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -448,14 +448,14 @@ uint8 Check_Right_Straight_ForRoad(int8 max_d_Col_Right, int8 min_d_Col_Right, f
                 d_Col_Right_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
-    if (d_Col_Right_Num<=0.9f*ratio*Search_Range[ROW][LINES])
+    if (d_Col_Right_Num<=0.8f*ratio*Search_Range[ROW][LINES])
     {
         return 0;
     }
@@ -887,11 +887,11 @@ void DrawCenterLinewithConfig_CrossRoad(void)
 {
     int Conv_Core[2][3][3] = {{{1,1,-1},{1,1,-1},{-1,-1,-1}},{{-1,1,1},{-1,1,1},{-1,-1,-1}}};
     //Conv_Core(1).core = [1 1 -1
-//                         1 1 -1
-//                        -1 -1 -1];
+    //                         1 1 -1
+    //                        -1 -1 -1];
     //Conv_Core(2).core = [-1 1 1
-//                         -1 1 1
-//                        -1 -1 -1];
+    //                         -1 1 1
+    //                        -1 -1 -1];
 
     int Conv_Score_max[2] = {-9,-9};
     int Conv_Score_max_i[2] = {0,0};
@@ -1422,8 +1422,8 @@ uint8 Check_RightCircle_New(void)
     last_angle_up = last_angle;
 
     if ((last_angle_up - last_angle_down) >= Circle_d_target[0] && (last_angle_up - last_angle_down) <= Circle_d_target[1]
-         && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
-         && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
+                                                                                                                        && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
+                                                                                                                                                                                                             && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
     {
         return 1;
     }
@@ -1512,8 +1512,8 @@ uint8 Check_LeftCircle_New(void)
     last_angle_up = last_angle;
 
     if ((last_angle_up - last_angle_down) >= Circle_d_target[0] && (last_angle_up - last_angle_down) <= Circle_d_target[1]
-          && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
-          && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
+                                                                                                                        && last_angle_down >= Circle_target_down[0] && last_angle_down <= Circle_target_down[1]
+                                                                                                                                                                                                             && last_angle_up >= Circle_target_up[0] && last_angle_up <= Circle_target_up[1])
     {
         return 1;
     }
@@ -1590,13 +1590,15 @@ void Find_Second_Dot(int mode)
         int8 cnt = 0;
         while(1)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0)
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j-1]==0)
             {
                 water_i++;
+                water_j--;
                 cnt = 0;
             }
-            else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
+            else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+direction][water_j+direction]==0)
             {
+                water_i+=direction;
                 water_j+=direction;
             }
             else
@@ -1619,13 +1621,15 @@ void Find_Second_Dot(int mode)
         int8 cnt = 0;
         while(1)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j]==0)
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i+1][water_j+1]==0)
             {
                 water_i++;
+                water_j++;
                 cnt = 0;
             }
-            else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+direction]==0)
+            else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i-direction][water_j+direction]==0)
             {
+                water_i-=direction;
                 water_j+=direction;
             }
             else
@@ -1861,7 +1865,7 @@ void Find_Third_Dot_New(int mode)
     {
         if (mode == 1)
         {
-            uint8 water_i = second_Dot[0]+1, water_j = second_Dot[1];
+            uint8 water_i = second_Dot[0]+5, water_j = second_Dot[1];
             uint8 water_j_temp = water_j;
             for (int i = 0;i<(Search_Range[COL][BEGIN]+Search_Range[COL][LINES]-1-water_j_temp);i++)
             {
@@ -1892,7 +1896,7 @@ void Find_Third_Dot_New(int mode)
         }
         else if (mode == 0)
         {
-            uint8 water_i = second_Dot[0]+1, water_j = second_Dot[1];
+            uint8 water_i = second_Dot[0]+5, water_j = second_Dot[1];
             uint8 water_j_temp = water_j;
             for (int i = 0;i<water_j_temp-Search_Range[COL][BEGIN];i++)
             {
@@ -1947,7 +1951,47 @@ void Find_Third_Dot_New(int mode)
 
 }
 
-uint8 Check_RightCircle_New2(void)
+
+uint8 Check_LeftP(void)
+{
+    Find_First_Dot(0);
+    Find_Second_Dot(0);
+    Find_Third_Dot_New(0);
+
+    if ( (first_Dot[0]==-2 )||(second_Dot[0]==-2 )||(third_Dot[0]==-2 )) {
+        return 0;
+    }
+
+    else{
+        int a_b_x = first_Dot[0] - second_Dot[0];
+        int a_b_y = first_Dot[1] - second_Dot[1];
+        int c_b_x = third_Dot[0] - second_Dot[0];
+        int c_b_y = third_Dot[1] - second_Dot[1];
+        int ab_mul_cb = a_b_x * c_b_x + a_b_y * c_b_y;
+        float dist_ab = sqrt(a_b_x * a_b_x + a_b_y * a_b_y);
+        float dist_cd = sqrt(c_b_x * c_b_x + c_b_y * c_b_y);
+        float cosValue = ab_mul_cb / (dist_ab * dist_cd);
+
+        arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
+
+        if (arccosValue > 80 && arccosValue < 100)
+        {
+            if (second_Dot[1]-third_Dot[1]>=2)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+uint8 Check_RightP(void)
 {
     Find_First_Dot(1);
     Find_Second_Dot(1);
@@ -1969,18 +2013,11 @@ uint8 Check_RightCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 80 && arccosValue > 0)
+        if (arccosValue > 80 && arccosValue < 100)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            if (third_Dot[1]-second_Dot[1]>=2)
             {
-                if (third_Dot[1]-second_Dot[1]>=4)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
-                }
+                return 1;
             }
             else
             {
@@ -2020,7 +2057,7 @@ uint8 Check_LeftCircle_New2(void)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (second_Dot[1]-third_Dot[1]>=4)
+                if (second_Dot[1]-third_Dot[1]>=8)
                 {
                     return 1;
                 }
@@ -2040,6 +2077,54 @@ uint8 Check_LeftCircle_New2(void)
         }
     }
 }
+
+uint8 Check_RightCircle_New2(void)
+{
+    Find_First_Dot(1);
+    Find_Second_Dot(1);
+    Find_Third_Dot_New(1);
+
+    if ( (first_Dot[0]==-2 )||(second_Dot[0]==-2 )||(third_Dot[0]==-2 )) {
+        return 0;
+    }
+
+    else{
+        int a_b_x = first_Dot[0] - second_Dot[0];
+        int a_b_y = first_Dot[1] - second_Dot[1];
+        int c_b_x = third_Dot[0] - second_Dot[0];
+        int c_b_y = third_Dot[1] - second_Dot[1];
+        int ab_mul_cb = a_b_x * c_b_x + a_b_y * c_b_y;
+        float dist_ab = sqrt(a_b_x * a_b_x + a_b_y * a_b_y);
+        float dist_cd = sqrt(c_b_x * c_b_x + c_b_y * c_b_y);
+        float cosValue = ab_mul_cb / (dist_ab * dist_cd);
+
+        arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
+
+        if (arccosValue < 80 && arccosValue > 0)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            {
+                if (third_Dot[1]-second_Dot[1]>=8)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+
 
 uint8 Check_ThreeRoad_New2(void)
 {
@@ -2142,10 +2227,10 @@ uint8 Check_Left_for_RightCircle(void)
                 d_Col_Left_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
@@ -2224,10 +2309,10 @@ uint8 Check_Right_for_RightCircle(void)
                 d_Col_Right_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
@@ -2315,10 +2400,10 @@ uint8 Check_Left_for_LeftCircle(void)
                 d_Col_Left_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
@@ -2397,10 +2482,10 @@ uint8 Check_Right_for_LeftCircle(void)
                 d_Col_Right_Num = height_Inverse_Perspective-(Search_Range[ROW][BEGIN]+(1.0f-0.5f)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
@@ -2647,10 +2732,10 @@ uint8 Check_Left_Straight(int8 max_d_Col_Left, int8 min_d_Col_Left, float ratio)
                 d_Col_Left_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }
@@ -2739,10 +2824,10 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float rat
                 d_Col_Right_Num = height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES])-i-1;
                 break;
             }
-//            else
-//            {
-//                return 0;
-//            }
+            //            else
+            //            {
+            //                return 0;
+            //            }
         }
         start_Row = start_Row - 1;
     }

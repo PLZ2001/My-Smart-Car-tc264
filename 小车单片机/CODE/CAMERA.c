@@ -6,6 +6,7 @@
 #include "TIME.h"
 #include "STEERING.h"
 #include "SEARCH.h"
+#include "MOTOR_CTL.h"
 //摄像头高度约为19.5cm
 
 //需要串口通信输出去，但不用传过来的变量
@@ -531,7 +532,8 @@ void Get_Thresholding_Image(void)
 {
 //    //Kmeans法更新二值化阈值
     //if (Read_Timer(3) > time_up[3] && steering_Target>=-5 && steering_Target>=5) {
-    if (steering_Target>=-5 && steering_Target<=5) {
+//    if (steering_Target>=-5 && steering_Target<=5) {
+    if ((classification_Result==9||classification_Result==6)&&(steering_Target>=-5 && steering_Target<=5)&&(speed_Status!=Highest)) {
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
@@ -1235,6 +1237,28 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
                 score[k] = -72;
             }
         }
+//        if (k==4||k==5)//额外的判断：左右丁字中间两竖列白色占比必须全部大于0.3，可以避免一些误识别
+//        {
+//            if (arg_Classification_36[2] > 0.3
+//                    && arg_Classification_36[3] > 0.3
+//                    && arg_Classification_36[8] > 0.3
+//                    && arg_Classification_36[9] > 0.3
+//                    && arg_Classification_36[14] > 0.3
+//                    && arg_Classification_36[15] > 0.3
+//                    && arg_Classification_36[20] > 0.3
+//                    && arg_Classification_36[21] > 0.3
+//                    && arg_Classification_36[26] > 0.3
+//                    && arg_Classification_36[27] > 0.3
+//                    && arg_Classification_36[32] > 0.3
+//                    && arg_Classification_36[33] > 0.3)
+//            {
+//                ;
+//            }
+//            else
+//            {
+//                score[k] = -72;
+//            }
+//        }
         if ((score[k] - ModelTable_36_Score[k]*fuzzy_thresholdingValue_36)/(ModelTable_36_Score[k]*fuzzy_thresholdingValue_36) > max_Score)
         {
             second_Score = max_Score;
@@ -1353,7 +1377,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     if (*classification_Result == 13)//右丁字
     {
-        if(!Check_Left_Straight(2,-2,0.5))
+        if(!(Check_RightP()&&Check_Left_Straight(2,-2,0.4)))
         {
             *classification_Result = else_result;
         }
@@ -1365,7 +1389,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result == 12)//左丁字
     {
-        if(!Check_Right_Straight(2,-2,0.5))
+        if(!(Check_LeftP()&&Check_Right_Straight(2,-2,0.4)))
         {
             *classification_Result = else_result;
         }
@@ -1413,11 +1437,11 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result == 9)//9未知
     {
-        if(Check_Left_Straight_ForRoad(2,-2,1) && !Check_Right_Straight_ForRoad(2,-2,1))
+        if(Check_Left_Straight_ForRoad(2,-2,0.5) && !Check_Right_Straight_ForRoad(2,-2,0.5))
         {
             *classification_Result = 7;//7靠左
         }
-        if(Check_Right_Straight_ForRoad(2,-2,1) && !Check_Left_Straight_ForRoad(2,-2,1))
+        if(Check_Right_Straight_ForRoad(2,-2,0.5) && !Check_Left_Straight_ForRoad(2,-2,0.5))
         {
             *classification_Result = 8;//8靠右
         }
@@ -1440,9 +1464,9 @@ void Check(uint8 *classification_Result,uint8 else_result)
  ****************************************************************/
 /* 计算类间方差使用的图像范围, 若使用全图, 依次为0, 0, IMAGE_WIDTH, IMAGE_HEIGHT*/
 #define OSTU_START_U (20)
-#define OSTU_START_V (15)
+#define OSTU_START_V (40)
 #define OSTU_END_U   (X_WIDTH_CAMERA-20)
-#define OSTU_END_V   (Y_WIDTH_CAMERA-10)
+#define OSTU_END_V   (Y_WIDTH_CAMERA)
 /* 计算类间方差的总像素点数 */
 void GetBinThreshold_OSTU(void)
 {
