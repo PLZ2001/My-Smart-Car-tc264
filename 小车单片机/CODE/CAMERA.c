@@ -570,7 +570,7 @@ void Get_Thresholding_Image(void)
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
-        thresholding_Value = Filter(1,thresholding_Value,0.001);
+        thresholding_Value = Filter(1,thresholding_Value,0.005);
         Start_Timer(3);
     }
 
@@ -1465,7 +1465,8 @@ void Check(uint8 *classification_Result,uint8 else_result)
         {
             *classification_Result = else_result;
         }
-        else if(!(Check_TRoad(0,0.65)&&Check_TRoad(1,0.32)))
+//        else if(!(Check_TRoad(0,0.65)&&Check_TRoad(1,0.32)))
+        else if(!(Check_TRoad(0,0.80)&&Check_TRoad(1,0.37)))
         {
             *classification_Result = else_result;
         }

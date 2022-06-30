@@ -2552,22 +2552,32 @@ uint8 Check_TRoad(uint8 mode,float pos)
     uint8 water_i = Search_Range[ROW][BEGIN]+(1-pos)*Search_Range[ROW][LINES];
     if (mode==1)
     {
+        uint8 cnt=0;
         for (int j=Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
         {
             if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==0)
             {
-                return 0;
+                cnt++;
+                if (cnt>=3)
+                {
+                    return 0;
+                }
             }
         }
         return 1;
     }
     else if (mode==0)
     {
+        uint8 cnt=0;
         for (int j=Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
         {
             if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==1)
             {
-                return 0;
+                cnt++;
+                if (cnt>=3)
+                {
+                    return 0;
+                }
             }
         }
         return 1;

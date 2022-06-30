@@ -30,6 +30,7 @@
 #include "MOTOR2.h"//直流电机相关
 #include "MOTOR_CTL.h"
 #include "SWITCH.h"
+#include "LED.h"
 
 
 
@@ -148,7 +149,7 @@ void core1_main(void)
                         }
                         else if (flag_For_Left_T == 1)
                         {
-                            flag_For_Right_T = 0;
+                            flag_For_Left_T = 0;
                             classification_Result = 8;//8靠右
                             time_up[0] = T_Time;
                             Start_Timer(0);
@@ -314,6 +315,19 @@ void core1_main(void)
 //
 //            }
 
+
+
+            //LED指示
+            if(classification_Result==14)
+            {
+                LED_ON(1);
+            }
+            else
+            {
+                LED_OFF(1);
+            }
+
+
             //确定速度状态
             //"0左弯", "1右弯",
             //"2左环岛", "3右环岛",
@@ -346,6 +360,7 @@ void core1_main(void)
 
             if(classification_Result == 4)
             {
+                set_flag=0;
                 Reset_Timer(6);
             }
 

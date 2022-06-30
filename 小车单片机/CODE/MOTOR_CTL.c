@@ -74,6 +74,10 @@ void Update_Speed_Mode(void)
     {
         case Lowest_Mode:
         {
+            Differential_Ratio = 1.0f;
+
+            T_Time = 1.0f;
+
             Highest_Distance = 0.7f;
 
             speed_Target_Highest =1.5*2.1f;
@@ -103,6 +107,10 @@ void Update_Speed_Mode(void)
         }
         case Low_Mode:
         {
+            Differential_Ratio = 1.0f;
+
+            T_Time = 1.0f;
+
             Highest_Distance = 0.5f;
 
             BANGBANG_UP = 0.3;//0.2;
@@ -129,44 +137,52 @@ void Update_Speed_Mode(void)
             speed_Target_Lowest = 0.7*2.1f;
             SightForward_Lowest = 0.28f;
             InnerSide_Ratio_Lowest = 1.20f;
-            Steering_PID_Lowest[0]=0.40f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
+            Steering_PID_Lowest[0]=0.50f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
 
             break;
         }
         case High_Mode:
         {
-            Highest_Distance = 0.5f;
+            Differential_Ratio = 0.85f;
 
-            BANGBANG_UP=0.2;
-            BANGBANG_DOWN=0.3;
+            T_Time = 0.4f;
 
-            speed_Target_Highest = 2.0*2.8f;
-            SightForward_Highest = 0.25f;
-            InnerSide_Ratio_Highest = 1.50f;
-            Steering_PID_Highest[0]=0.25f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
+            Highest_Distance = 0.35f;
+
+            BANGBANG_UP = 0.2;//0.2;
+            BANGBANG_DOWN = 0.4;//0.3;
+
+            speed_Target_Highest = 1.5*2.8f;
+            SightForward_Highest = 0.28f;
+            InnerSide_Ratio_Highest = 1.00f;
+            Steering_PID_Highest[0]=0.17f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
 
 
             speed_Target_High = 2.8f;//¼´2.5
-            SightForward_High = 0.25f;
-            InnerSide_Ratio_High = 1.20f;
-            Steering_PID_High[0]=0.25f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
+            SightForward_High = 0.28f;
+            InnerSide_Ratio_High = 1.00f;
+            Steering_PID_High[0]=0.17f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
 
 
-            speed_Target_Low = 2.4f;//¼´2.1
-            SightForward_Low = 0.25f;
-            InnerSide_Ratio_Low = 1.00f;
-            Steering_PID_Low[0]=0.25f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
+            speed_Target_Low = 2.5f;//¼´2.2
+            SightForward_Low = 0.28f;
+            InnerSide_Ratio_Low = 1.10f;
+            Steering_PID_Low[0]=0.21f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
 
 
-            speed_Target_Lowest = 0.7*2.4f;
-            SightForward_Lowest = 0.25f;
-            InnerSide_Ratio_Lowest = 1.00f;
-            Steering_PID_Lowest[0]=0.30f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.30f;
+            speed_Target_Lowest = 0.7*2.5f;
+            SightForward_Lowest = 0.28f;
+            InnerSide_Ratio_Lowest = 1.60f;
+            Steering_PID_Lowest[0]=0.80f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.10f;
 
             break;
         }
         case Highest_Mode:
         {
+            Differential_Ratio = 0.8f;
+
+            T_Time = 0.7f;
+
             Highest_Distance = 0.5f;
 
             BANGBANG_UP=0.2;

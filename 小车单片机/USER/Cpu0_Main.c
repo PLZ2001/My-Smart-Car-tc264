@@ -33,6 +33,7 @@
 #include "MOTOR2.h"//直流电机相关
 #include "ICM.h"
 #include "ADC.h"
+#include "LED.h"
 
 
 #pragma section all "cpu0_dsram"
@@ -66,6 +67,7 @@ int core0_main(void)
     My_Init_ADC();//我的初始化ADC
     My_Init_ICM();//我的初始化ICM
 
+    My_Init_LED();
     //My_Init_Wifi();//我的初始化WIFI通信
 
     //等待所有核心初始化完毕
