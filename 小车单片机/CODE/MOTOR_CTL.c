@@ -46,6 +46,8 @@ enum SpeedMode speed_Mode = 10;//不等于0、1、2、3就行
 float BANGBANG_UP=0.2;
 float BANGBANG_DOWN=0.3;
 
+float Highest_Distance = 0.6f;
+
 void Differential_Motor(void)
 {
     if (steering_Error>=0)
@@ -72,6 +74,8 @@ void Update_Speed_Mode(void)
     {
         case Lowest_Mode:
         {
+            Highest_Distance = 0.7f;
+
             speed_Target_Highest =1.5*2.1f;
             SightForward_Highest = 0.25f;
             InnerSide_Ratio_Highest = 1.50f;
@@ -99,25 +103,27 @@ void Update_Speed_Mode(void)
         }
         case Low_Mode:
         {
-            BANGBANG_UP = 0.2;
-            BANGBANG_DOWN = 0.3;
+            Highest_Distance = 0.5f;
+
+            BANGBANG_UP = 0.3;//0.2;
+            BANGBANG_DOWN = 0.5;//0.3;
 
             speed_Target_Highest = 1.5*2.5f;
             SightForward_Highest = 0.28f;
-            InnerSide_Ratio_Highest = 1.15f;
+            InnerSide_Ratio_Highest = 1.05f;
             Steering_PID_Highest[0]=0.18f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.20f;
 
 
             speed_Target_High = 2.5f;//即2.2
             SightForward_High = 0.28f;
             InnerSide_Ratio_High = 1.10f;
-            Steering_PID_High[0]=0.21f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.20f;
+            Steering_PID_High[0]=0.19f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.20f;
 
 
             speed_Target_Low = 2.1f;//即1.9
             SightForward_Low = 0.28f;
             InnerSide_Ratio_Low = 1.05f;
-            Steering_PID_Low[0]=0.25f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.20f;
+            Steering_PID_Low[0]=0.23f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.20f;
 
 
             speed_Target_Lowest = 0.7*2.1f;
@@ -129,6 +135,8 @@ void Update_Speed_Mode(void)
         }
         case High_Mode:
         {
+            Highest_Distance = 0.5f;
+
             BANGBANG_UP=0.2;
             BANGBANG_DOWN=0.3;
 
@@ -159,6 +167,8 @@ void Update_Speed_Mode(void)
         }
         case Highest_Mode:
         {
+            Highest_Distance = 0.5f;
+
             BANGBANG_UP=0.2;
             BANGBANG_DOWN=0.3;
 

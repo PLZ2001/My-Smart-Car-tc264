@@ -527,6 +527,37 @@ void Get_Thresholding_Value(void)
     thresholding_Value = (uint8)(0.5*(m[0][0]+m[1][0]));//二值化阈值更新结果
 }
 
+float Filter(uint8 ID,float value,float ratio)
+{
+    switch(ID)
+    {
+        case 1:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        default:
+        {
+            return value;
+            break;
+        }
+    }
+}
+
 
 void Get_Thresholding_Image(void)
 {
@@ -539,6 +570,7 @@ void Get_Thresholding_Image(void)
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
+        thresholding_Value = Filter(1,thresholding_Value,0.001);
         Start_Timer(3);
     }
 

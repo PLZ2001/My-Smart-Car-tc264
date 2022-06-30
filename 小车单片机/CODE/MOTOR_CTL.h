@@ -45,6 +45,9 @@ extern enum SpeedMode speed_Mode;
 extern float BANGBANG_UP;
 extern float BANGBANG_DOWN;
 
+extern float Highest_Distance;
+
+
 void Differential_Motor(void);
 
 #endif

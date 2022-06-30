@@ -1974,7 +1974,7 @@ uint8 Check_LeftP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 80 && arccosValue < 100)
+        if (arccosValue > 85 && arccosValue < 100)
         {
             if (second_Dot[1]-third_Dot[1]>=2)
             {
@@ -2013,7 +2013,7 @@ uint8 Check_RightP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 80 && arccosValue < 100)
+        if (arccosValue > 85 && arccosValue < 100)
         {
             if (third_Dot[1]-second_Dot[1]>=2)
             {
@@ -2053,7 +2053,7 @@ uint8 Check_LeftCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 80 && arccosValue > 0)
+        if (arccosValue < 85 && arccosValue > 0)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
@@ -2100,7 +2100,7 @@ uint8 Check_RightCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 80 && arccosValue > 0)
+        if (arccosValue < 85 && arccosValue > 0)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
