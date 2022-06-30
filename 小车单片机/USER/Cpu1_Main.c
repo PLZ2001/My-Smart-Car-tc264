@@ -31,6 +31,7 @@
 #include "MOTOR_CTL.h"
 #include "SWITCH.h"
 #include "LED.h"
+#include "ICM.h"
 
 
 
@@ -65,11 +66,10 @@ void core1_main(void)
 
             InsertTimer1Point(1);
 
-            Get_ADC_DATA();//更新电压读取
-            Get_ICM_DATA();//更新陀螺仪数据
 
             if (Thresholding_Value_Init_Flag == 0)
             {
+
                 Get_Inverse_Perspective_Table();//求逆透视表
                 //Get_Thresholding_Value();//求二值化阈值
                 GetBinThreshold_OSTU();//大津法二值化

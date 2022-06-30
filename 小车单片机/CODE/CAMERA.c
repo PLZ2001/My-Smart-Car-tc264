@@ -550,6 +550,120 @@ float Filter(uint8 ID,float value,float ratio)
             }
             break;
         }
+        case 2:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        case 3:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        case 4:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        case 5:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        case 6:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
+        case 7:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
         default:
         {
             return value;

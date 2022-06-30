@@ -9,6 +9,7 @@
 #include "MOTOR2.h"
 #include "MOTOR_CTL.h"
 #include "SEARCH.h"
+#include "ICM.h"
 
 
 enum OLEDPage OLED_Page = Camera_Page2;//SteeringPID_Page;//Speed_Page;//Circle_Page;//Steering_Center_Page;//Camera_Page;//TimeSet_Page;
@@ -113,7 +114,7 @@ void Update_OLED_per10ms(void)
                 }
                 break;
             case Camera_Page2:
-                if (OLED_Camera_flag==1)
+                if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
                     my_oled_dis_bmp();
                 }
@@ -299,12 +300,18 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(0,1,"Timer4 Now: %.3f s   ",Read_Timer(4));
                 break;
             case Gyroscope_Page:
-                OLED_PRINTF(0,0,"gyro_x: %d     ",icm_gyro_x);
-                OLED_PRINTF(0,1,"gyro_y: %d     ",icm_gyro_y);
-                OLED_PRINTF(0,2,"gyro_z: %d     ",icm_gyro_z);
-                OLED_PRINTF(0,3,"acc_x: %d     ",icm_acc_x);
-                OLED_PRINTF(0,4,"acc_y: %d     ",icm_acc_y);
-                OLED_PRINTF(0,5,"acc_z: %d     ",icm_acc_z);
+                OLED_PRINTF(0,0,"gyro_x: %03.02f deg/s ",my_gyro_x);
+                OLED_PRINTF(0,1,"gyro_y: %03.02f deg/s ",my_gyro_y);
+                OLED_PRINTF(0,2,"gyro_z: %03.02f deg/s ",my_gyro_z);
+                OLED_PRINTF(0,3,"acc_x : %01.02f g ",my_acc_x);
+                OLED_PRINTF(0,4,"acc_y : %01.02f g ",my_acc_y);
+                OLED_PRINTF(0,5,"acc_z : %01.02f g ",my_acc_z);
+//                OLED_PRINTF(0,0,"gyro_x: %.2f     ",(float)icm_gyro_x);
+//                OLED_PRINTF(0,1,"gyro_y: %.2f     ",(float)icm_gyro_y);
+//                OLED_PRINTF(0,2,"gyro_z: %.2f     ",(float)icm_gyro_z);
+//                OLED_PRINTF(0,3,"acc_x : %.2f     ",(float)icm_acc_x);
+//                OLED_PRINTF(0,4,"acc_y : %.2f     ",(float)icm_acc_y);
+//                OLED_PRINTF(0,5,"acc_z : %.2f     ",(float)icm_acc_z);
                 break;
             case Timer_Page2:
                 //显示内容由Cpu1_Main.c部分完成

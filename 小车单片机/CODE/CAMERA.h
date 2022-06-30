@@ -89,6 +89,9 @@ void Get_Inverse_Perspective_Table(void);
 void Get_Thresholding_Image(void);
 void Get_Inverse_Perspective_Image(void);
 
+float Filter(uint8 ID,float value,float ratio);
+
+
 void Set_Search_Range(uint8 row_start,uint8 row_lines,uint8 col_start,uint8 col_lines);
 #define ROW 0
 #define BEGIN 0
