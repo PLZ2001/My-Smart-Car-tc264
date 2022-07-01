@@ -251,9 +251,9 @@ void Update_OLED_per10ms(void)
                 }
                 break;
             case Speed_Page:
-                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
-                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
-                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
+//                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
+//                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
+//                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
                 OLED_PRINTF(0,3,"SpeedTargetHigh:%01.01fm/s ",speed_Target_High*60.0f/68.0f);
                 OLED_PRINTF(0,4,"SpeedTargetLow :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
                 OLED_PRINTF(0,5,"Class:%d     ",classification_Result);

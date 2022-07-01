@@ -1,7 +1,12 @@
 #ifndef __ICM_h__
 #define __ICM_h__
 
+#define GYRO_Y_VALUE 60.0f
+#define ACC_Z_VALUE 0.25f
+
 extern uint8 flag_for_ICM_Init;
+extern uint8 is_Slope;
+
 
 extern float my_acc_x;
 extern float my_acc_y;

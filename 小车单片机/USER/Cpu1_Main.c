@@ -327,6 +327,16 @@ void core1_main(void)
                 LED_OFF(1);
             }
 
+            //LED指示
+            if(is_Slope==1)
+            {
+                LED_ON(2);
+            }
+            else
+            {
+//                LED_OFF(2);
+            }
+
 
             //确定速度状态
             //"0左弯", "1右弯",

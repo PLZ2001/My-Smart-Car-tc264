@@ -87,6 +87,7 @@ int core0_main(void)
 
         Get_ADC_DATA();//更新电压读取
         Get_ICM_DATA();//更新陀螺仪数据
+        Check_Slope_with_YHF();
 
 	    if (UART_EN == TRUE)
 	    {

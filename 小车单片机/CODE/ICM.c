@@ -18,6 +18,10 @@ float icm_gyro_x_bias;
 float icm_gyro_y_bias;
 float icm_gyro_z_bias;
 
+float angle=0;
+
+uint8 is_Slope = 0;//1表示检测到坡道，0表示没有
+
 void My_Init_ICM(void)
 {
     icm20602_init();
@@ -42,8 +46,11 @@ void UART_ICM(void)
     uart_putchar(DEBUG_UART,0x14);
     uart_putchar(DEBUG_UART,0x01);//发送数据头
     int16 gyro_y = (int16)round(100*my_gyro_y);
+    int16 acc_z = (int16)round(10000*my_acc_z);
     uart_putchar(DEBUG_UART, gyro_y>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, gyro_y&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, acc_z>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, acc_z&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x14);
@@ -74,4 +81,22 @@ void Get_Zero_Bias(void)
     icm_gyro_x_bias = gyro[0]/times;
     icm_gyro_y_bias = gyro[1]/times;
     icm_gyro_z_bias = gyro[2]/times;
+}
+
+uint8 Check_Slope_with_YHF(void)
+{
+    if(my_gyro_y>GYRO_Y_VALUE)
+    {
+        is_Slope = 1;
+    }
+    else
+    {
+        is_Slope = 0;
+    }
+}
+
+uint8 Check_SLope_with_PLZ(void)
+{
+    //校正零漂
+//    if (my_acc_z)
 }
