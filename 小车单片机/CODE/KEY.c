@@ -8,6 +8,7 @@
 #include "STEERING.h"
 #include "MOTOR1.h"
 #include "MOTOR2.h"
+//#include "EEPROM.h"
 
 
 
@@ -257,6 +258,7 @@ void Key2_Action(void)
                 default:
                     break;
             }
+//            EEPROM_Write_Data(ID_STEERING_DUTY_CENTER, &STEERING_DUTY_CENTER);
             break;
         case TimeSet_Page:
             switch (pointer_temp)

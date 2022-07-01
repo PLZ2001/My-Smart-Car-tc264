@@ -318,7 +318,7 @@ void core1_main(void)
 
 
             //LED指示
-            if(classification_Result==14)
+            if(Read_Timer_Status(0) == RUNNING)
             {
                 LED_ON(1);
             }
@@ -439,6 +439,11 @@ void core1_main(void)
 
             //根据速度状态进行相关计算
 
+            float steeringPID_ratio = 1.0f;
+            if (classification_Result==2||classification_Result==3)
+            {
+                steeringPID_ratio = 0.85f;
+            }
             enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+2*switch_Status[Switch2];
             if (speed_Mode_temp!=speed_Mode)
             {
@@ -452,7 +457,7 @@ void core1_main(void)
                     SightForward = SightForward_Highest;
                     speed_Target = speed_Target_Highest;
                     InnerSide_Ratio = InnerSide_Ratio_Highest;
-                    Change_Steering_PID(Steering_PID_Highest[0],Steering_PID_Highest[1],Steering_PID_Highest[2]);
+                    Change_Steering_PID(Steering_PID_Highest[0]*steeringPID_ratio,Steering_PID_Highest[1],Steering_PID_Highest[2]);
                     break;
                 }
                 case High:
@@ -460,7 +465,7 @@ void core1_main(void)
                     SightForward = SightForward_High;
                     speed_Target = speed_Target_High;
                     InnerSide_Ratio = InnerSide_Ratio_High;
-                    Change_Steering_PID(Steering_PID_High[0],Steering_PID_High[1],Steering_PID_High[2]);
+                    Change_Steering_PID(Steering_PID_High[0]*steeringPID_ratio,Steering_PID_High[1],Steering_PID_High[2]);
                     break;
                 }
                 case Low:
@@ -468,7 +473,7 @@ void core1_main(void)
                     SightForward = SightForward_Low;
                     speed_Target = speed_Target_Low;
                     InnerSide_Ratio = InnerSide_Ratio_Low;
-                    Change_Steering_PID(Steering_PID_Low[0],Steering_PID_Low[1],Steering_PID_Low[2]);
+                    Change_Steering_PID(Steering_PID_Low[0]*steeringPID_ratio,Steering_PID_Low[1],Steering_PID_Low[2]);
                     break;
                 }
                 case Lowest:
@@ -476,7 +481,7 @@ void core1_main(void)
                     SightForward = SightForward_Lowest;
                     speed_Target = speed_Target_Lowest;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest;
-                    Change_Steering_PID(Steering_PID_Lowest[0],Steering_PID_Lowest[1],Steering_PID_Lowest[2]);
+                    Change_Steering_PID(Steering_PID_Lowest[0]*steeringPID_ratio,Steering_PID_Lowest[1],Steering_PID_Lowest[2]);
                     break;
                 }
             }

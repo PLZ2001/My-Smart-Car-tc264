@@ -34,6 +34,7 @@
 #include "ICM.h"
 #include "ADC.h"
 #include "LED.h"
+//#include "EEPROM.h"
 
 
 #pragma section all "cpu0_dsram"
@@ -50,6 +51,9 @@ int core0_main(void)
     disableInterrupts();
 	get_clk();//获取时钟频率  务必保留
 	//用户在此处调用各种初始化函数等
+//    EEPROM_Write_Data(ID_STEERING_DUTY_CENTER, &STEERING_DUTY_CENTER);//先写进去
+//	STEERING_DUTY_CENTER = EEPROM_Read_Data(ID_STEERING_DUTY_CENTER,uint32);//再读取
+
 
 	My_Init_Steering();//我的初始化舵机
 	My_Init_Motor1();//我的初始化直流电机

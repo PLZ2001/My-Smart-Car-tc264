@@ -9,7 +9,7 @@ extern float steering_Target;
 extern float steering_Error;
 extern float d_steering_Error;
 extern struct steerpid Steering_PID;
-extern int STEERING_DUTY_CENTER;
+extern uint32 STEERING_DUTY_CENTER;
 extern float SightForward;
 extern float SightForward_Highest;
 extern float SightForward_High;
