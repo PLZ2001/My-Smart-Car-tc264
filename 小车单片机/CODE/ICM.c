@@ -29,14 +29,14 @@ void My_Init_ICM(void)
 
 void Get_ICM_DATA(void)
 {
-    get_icm20602_accdata();
-    my_acc_x = Filter(2,icm_acc_x,0.01)/4096.0f;
-    my_acc_y = Filter(3,icm_acc_y,0.01)/4096.0f;
-    my_acc_z = Filter(4,icm_acc_z,0.01)/4096.0f;
+//    get_icm20602_accdata();
+//    my_acc_x = Filter(2,icm_acc_x,0.01)/4096.0f;
+//    my_acc_y = Filter(3,icm_acc_y,0.01)/4096.0f;
+//    my_acc_z = Filter(4,icm_acc_z,0.01)/4096.0f;
     get_icm20602_gyro();
-    my_gyro_x = Filter(5,icm_gyro_x-icm_gyro_x_bias,0.01)/16.4f;
+//    my_gyro_x = Filter(5,icm_gyro_x-icm_gyro_x_bias,0.01)/16.4f;
     my_gyro_y = Filter(6,icm_gyro_y-icm_gyro_y_bias,0.01)/16.4f;
-    my_gyro_z = Filter(7,icm_gyro_z-icm_gyro_z_bias,0.01)/16.4f;
+//    my_gyro_z = Filter(7,icm_gyro_z-icm_gyro_z_bias,0.01)/16.4f;
 }
 
 void UART_ICM(void)
