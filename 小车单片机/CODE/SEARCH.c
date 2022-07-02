@@ -315,10 +315,10 @@ uint8 Check_Left_Straight_ForRoad(int8 max_d_Col_Left, int8 min_d_Col_Left, floa
                 break;
             }
             start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
-            {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
+//            {
                 Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
-            }
+//            }
         }
         else//如果左线发现0区域（背景）
         {
@@ -332,10 +332,10 @@ uint8 Check_Left_Straight_ForRoad(int8 max_d_Col_Left, int8 min_d_Col_Left, floa
             {
                 break;
             }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
-            {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
+//            {
                 Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
-            }
+//            }
         }
 
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
@@ -407,10 +407,10 @@ uint8 Check_Right_Straight_ForRoad(int8 max_d_Col_Right, int8 min_d_Col_Right, f
             {
                 break;
             }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
-            {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+//            {
                 Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
-            }
+//            }
         }
         else//如果右线发现1区域（道路）
         {
@@ -425,10 +425,10 @@ uint8 Check_Right_Straight_ForRoad(int8 max_d_Col_Right, int8 min_d_Col_Right, f
                 break;
             }
             start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
-            {
+//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
+//            {
                 Col_Right[i] = start_Col[1];//只有是0区域的才可以将列号存储到右线里
-            }
+//            }
         }
 
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
@@ -1883,6 +1883,12 @@ void Find_Third_Dot_New(int mode)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]==1)
                 {
                     water_j+=1;
+//                    if (water_j>=0.94f*Search_Range[COL][LINES]+Search_Range[COL][BEGIN])
+//                    {
+//                        third_Dot[0] = water_i-1;
+//                        third_Dot[1] = water_j;
+//                        break;
+//                    }
                 }
                 else
                 {
@@ -1914,6 +1920,12 @@ void Find_Third_Dot_New(int mode)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]==1)
                 {
                     water_j-=1;
+//                    if (water_j<=(1-0.94f)*Search_Range[COL][LINES]+Search_Range[COL][BEGIN])
+//                    {
+//                        third_Dot[0] = water_i-1;
+//                        third_Dot[1] = water_j;
+//                        break;
+//                    }
                 }
                 else
                 {
@@ -2327,7 +2339,8 @@ uint8 Check_Right_for_RightCircle(void)
 
 uint8 Check_RightCircle_New3(void)
 {
-    return (Check_Right_for_RightCircle()||Check_Left_for_RightCircle());
+    //return (Check_Right_for_RightCircle()||Check_Left_for_RightCircle());
+    return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
 }
 
 
@@ -2498,7 +2511,8 @@ uint8 Check_Right_for_LeftCircle(void)
 
 uint8 Check_LeftCircle_New3(void)
 {
-    return (Check_Right_for_LeftCircle()||Check_Left_for_LeftCircle());
+//    return (Check_Right_for_LeftCircle()||Check_Left_for_LeftCircle());
+    return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
 }
 void Compensate_ColCenter(void)
 {

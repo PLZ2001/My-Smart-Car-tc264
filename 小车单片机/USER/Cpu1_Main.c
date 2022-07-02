@@ -395,7 +395,7 @@ void core1_main(void)
 
             if(classification_Result == 14)//T×Ö
             {
-                speed_Status = Lowest;
+                speed_Status = Lowest_ForT;
                 Reset_Timer(6);
                 set_flag=1;
                 time_up[7] = 0.5*T_Time;
@@ -404,7 +404,7 @@ void core1_main(void)
             }
             else if (Read_Timer_Status(7) == RUNNING)
             {
-                speed_Status = Lowest;
+                speed_Status = Lowest_ForT;
                 set_flag=1;
                 if (Read_Timer(7)>time_up[7])
                 {
@@ -482,6 +482,14 @@ void core1_main(void)
                     speed_Target = speed_Target_Lowest;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest;
                     Change_Steering_PID(Steering_PID_Lowest[0]*steeringPID_ratio,Steering_PID_Lowest[1],Steering_PID_Lowest[2]);
+                    break;
+                }
+                case Lowest_ForT:
+                {
+                    SightForward = SightForward_Lowest_ForT;
+                    speed_Target = speed_Target_Lowest_ForT;
+                    InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT;
+                    Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]);
                     break;
                 }
             }

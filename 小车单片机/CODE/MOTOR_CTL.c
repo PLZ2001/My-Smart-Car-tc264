@@ -18,6 +18,7 @@ float speed_Target_Low = 1.7;//2.8;//"2.8m/s"实际是2.5m/s
 float speed_Target_High = 2.1;//2.8;
 float speed_Target_Highest = 2.0*2.8;
 float speed_Target_Lowest = 0.7*2.8;
+float speed_Target_Lowest_ForT = 0.7*2.8;
 
 
 uint8 start_Flag = 0;//1表示启动差速函数
@@ -29,11 +30,13 @@ float InnerSide_Ratio_Highest = 1.05f;
 float InnerSide_Ratio_High = 1.05f;
 float InnerSide_Ratio_Low = 1.05f;
 float InnerSide_Ratio_Lowest = 1.05f;
+float InnerSide_Ratio_Lowest_ForT = 1.05f;
 
 float Steering_PID_Highest[3]={0.25f,0,0.30f};
 float Steering_PID_High[3]={0.25f,0,0.30f};
 float Steering_PID_Low[3]={0.25f,0,0.30f};
 float Steering_PID_Lowest[3]={0.25f,0,0.30f};
+float Steering_PID_Lowest_ForT[3]={0.25f,0,0.30f};
 
 
 float Base_Volt = 8.30f;//基准电压
@@ -103,6 +106,11 @@ void Update_Speed_Mode(void)
             InnerSide_Ratio_Lowest = 1.00f;
             Steering_PID_Lowest[0]=0.30f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.30f;
 
+            speed_Target_Lowest_ForT = 0.7*1.7f;
+            SightForward_Lowest_ForT = 0.25f;
+            InnerSide_Ratio_Lowest_ForT = 1.00f;
+            Steering_PID_Lowest_ForT[0]=0.30f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.30f;
+
             break;
         }
         case Low_Mode:
@@ -138,6 +146,11 @@ void Update_Speed_Mode(void)
             SightForward_Lowest = 0.28f;
             InnerSide_Ratio_Lowest = 1.20f;
             Steering_PID_Lowest[0]=0.50f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
+
+            speed_Target_Lowest_ForT = 0.7*2.1f;
+            SightForward_Lowest_ForT = 0.28f;
+            InnerSide_Ratio_Lowest_ForT = 1.20f;
+            Steering_PID_Lowest_ForT[0]=0.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.20f;
 
             break;
         }
@@ -175,6 +188,11 @@ void Update_Speed_Mode(void)
             InnerSide_Ratio_Lowest = 1.60f;
             Steering_PID_Lowest[0]=0.80f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.10f;
 
+            speed_Target_Lowest_ForT = 0.7*2.5f;
+            SightForward_Lowest_ForT = 0.30f;
+            InnerSide_Ratio_Lowest_ForT = 1.60f;
+            Steering_PID_Lowest_ForT[0]=0.80f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+
             break;
         }
         case Highest_Mode:
@@ -189,27 +207,32 @@ void Update_Speed_Mode(void)
             BANGBANG_DOWN = 0.2;
 
             speed_Target_Highest = 1.5*3.4f;
-            SightForward_Highest = 0.40f;
+            SightForward_Highest = 0.35f;
             InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.19f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
+            Steering_PID_Highest[0]=0.18f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.40f;
 
 
             speed_Target_High = 3.4f;//即3.0
-            SightForward_High = 0.40f;
+            SightForward_High = 0.34f;
             InnerSide_Ratio_High = 1.10f;//1.15f;
-            Steering_PID_High[0]=0.19f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
+            Steering_PID_High[0]=0.18f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.40f;
 
 
             speed_Target_Low = 2.9f;//即2.6
-            SightForward_Low = 0.40f;
+            SightForward_Low = 0.33f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.23f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
+            Steering_PID_Low[0]=0.19f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.40f;
 
 
             speed_Target_Lowest = 0.7*2.9f;
-            SightForward_Lowest = 0.40f;
-            InnerSide_Ratio_Lowest = 1.70f;
-            Steering_PID_Lowest[0]=2.50f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.10f;
+            SightForward_Lowest = 0.32f;
+            InnerSide_Ratio_Lowest = 1.00f;
+            Steering_PID_Lowest[0]=0.23f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.30f;
+
+            speed_Target_Lowest_ForT = 0.7*2.9f;
+            SightForward_Lowest_ForT = 0.40f;
+            InnerSide_Ratio_Lowest_ForT = 1.70f;
+            Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
 
             break;
         }
