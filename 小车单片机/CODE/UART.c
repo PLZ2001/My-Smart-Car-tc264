@@ -93,8 +93,11 @@ void UART(enum UARTstate state)
             //发送增量式PID参数，数据头00-FF-13-01，数据长度6字节，数据尾00-FF-13-02
             UART_PID2();
 
-            //发送gyro_y参数，数据头00-FF-14-01，数据长度2字节，数据尾00-FF-14-02
+            //发送gyro_y参数，数据头00-FF-14-01，数据长度4字节，数据尾00-FF-14-02
             UART_ICM();
+
+            //发送总速度目标参数，数据头00-FF-15-01，数据长度2字节，数据尾00-FF-15-02
+            UART_Speed_Mode();
 
             UART_Flag_TX = FALSE;
         }
@@ -309,6 +312,10 @@ void UART(enum UARTstate state)
 
             //发送gyro_y参数，数据头00-FF-14-01，数据长度4字节，数据尾00-FF-14-02
             UART_ICM();
+
+            //发送总速度目标参数，数据头00-FF-15-01，数据长度12字节，数据尾00-FF-15-02
+            UART_Speed_Mode();
+
 
             UART_Flag_TX = FALSE;
         }

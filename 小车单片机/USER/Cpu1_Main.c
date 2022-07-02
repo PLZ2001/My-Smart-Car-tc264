@@ -450,6 +450,9 @@ void core1_main(void)
                 speed_Mode = speed_Mode_temp;
                 Update_Speed_Mode();
             }
+
+
+            speed_Status = Filter_Speed_Status(speed_Status,10);
             switch(speed_Status)
             {
                 case Highest:
@@ -496,6 +499,10 @@ void core1_main(void)
             Cal_Steering_Error(SightForward);
 
 
+            if(Check_TRoad(0,0.1))
+            {
+                emergency_Stop=1;
+            }
 
             UART_Flag_TX = TRUE;
 

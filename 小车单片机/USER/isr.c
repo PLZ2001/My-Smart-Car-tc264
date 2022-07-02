@@ -121,7 +121,6 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
 	}
 	else
 	{
-	    OLED_PRINTF(0,0,"hey");
 	    start_Flag = 0;
 	    speed_Target = 0;
 	    speed_Target1 = 0;

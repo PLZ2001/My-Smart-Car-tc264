@@ -55,7 +55,6 @@ void Differential_Motor(void)
 {
     if (steering_Error>=0)
     {
-        //我艹有bug
         speed_Target2 = speed_Target + speed_Target*Differential_Ratio*steering_Target*4.0f/1062.5f;//左轮目标速度（m/s）
         speed_Target1 = speed_Target - speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f;
 //        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//左轮目标速度（m/s）
@@ -70,7 +69,35 @@ void Differential_Motor(void)
     }
 }
 
-
+void UART_Speed_Mode(void)
+{
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x15);
+    uart_putchar(DEBUG_UART,0x01);//发送数据头
+    int16 speed_target = (int16)round(1000*speed_Target);
+    int16 speed_target1 = (int16)round(1000*speed_Target1);
+    int16 speed_target2 = (int16)round(1000*speed_Target2);
+    int16 speed_measured1 = (int16)round(1000*speed_Measured1);
+    int16 speed_measured2 = (int16)round(1000*speed_Measured2);
+    int16 steering_target = (int16)round(100*steering_Target);
+    uart_putchar(DEBUG_UART, speed_target>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_target&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_target1>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_target1&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_target2>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_target2&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_measured1>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_measured1&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_measured2>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, speed_measured2&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, steering_target>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, steering_target&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART,0x00);
+    uart_putchar(DEBUG_UART,0xff);
+    uart_putchar(DEBUG_UART,0x15);
+    uart_putchar(DEBUG_UART,0x02);//发送数据尾
+}
 void Update_Speed_Mode(void)
 {
     switch (speed_Mode)
@@ -201,7 +228,7 @@ void Update_Speed_Mode(void)
 
             T_Time = 0.4f;
 
-            Highest_Distance = 0.35f;
+            Highest_Distance = 0.2f;
 
             BANGBANG_UP = 0.2;
             BANGBANG_DOWN = 0.2;
@@ -214,14 +241,14 @@ void Update_Speed_Mode(void)
 
             speed_Target_High = 3.4f;//即3.0
             SightForward_High = 0.34f;
-            InnerSide_Ratio_High = 1.10f;//1.15f;
+            InnerSide_Ratio_High = 1.12f;//1.15f;
             Steering_PID_High[0]=0.18f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.40f;
 
 
             speed_Target_Low = 2.9f;//即2.6
             SightForward_Low = 0.33f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.19f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.40f;
+            Steering_PID_Low[0]=0.18f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.40f;
 
 
             speed_Target_Lowest = 0.7*2.9f;
@@ -237,4 +264,42 @@ void Update_Speed_Mode(void)
             break;
         }
     }
+}
+
+
+int Filter_Speed_Status(int status,int cnt_limit)
+{
+    static int last_status;//上一次的
+    static int filter_status;//稳定的结果
+    static int cnt_now=0;
+    static int flag = 0;//用来初始化
+    if (flag == 0)
+    {
+        last_status = status;
+        filter_status = status;
+        flag=1;
+    }
+    else
+    {
+        if (status<last_status)
+        {
+            cnt_now=0;
+            last_status = status;
+            filter_status = status;
+        }
+        else if (status == last_status)
+        {
+            cnt_now++;
+            if (cnt_now>=cnt_limit)
+            {
+                filter_status = status;
+            }
+        }
+        else
+        {
+            cnt_now=0;
+            last_status = status;
+        }
+    }
+    return filter_status;
 }
