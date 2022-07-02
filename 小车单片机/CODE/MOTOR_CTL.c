@@ -251,12 +251,12 @@ void Update_Speed_Mode(void)
             Steering_PID_Low[0]=0.18f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.40f;
 
 
-            speed_Target_Lowest = 0.7*2.9f;
+            speed_Target_Lowest = 2.6f;//¼´2.3
             SightForward_Lowest = 0.32f;
-            InnerSide_Ratio_Lowest = 1.00f;
-            Steering_PID_Lowest[0]=0.23f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.30f;
+            InnerSide_Ratio_Lowest = 1.10f;
+            Steering_PID_Lowest[0]=0.19f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.40f;
 
-            speed_Target_Lowest_ForT = 0.7*2.9f;
+            speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
             InnerSide_Ratio_Lowest_ForT = 1.70f;
             Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
@@ -281,7 +281,7 @@ int Filter_Speed_Status(int status,int cnt_limit)
     }
     else
     {
-        if (status<last_status)
+        if (status<last_status||status == 4)//4¼´Highest
         {
             cnt_now=0;
             last_status = status;
