@@ -17,6 +17,8 @@ float SightForward_Low = 0.25f;
 float SightForward_Lowest = 0.25f;
 float SightForward_Lowest_ForT = 0.25f;
 
+float kp;
+
 struct steerpid
 {
     float last_error;//上次
@@ -142,17 +144,19 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
+    float K=2.5f;
+    kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K;
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
     switch(classification_Result){
         case 5:
         {
-             steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+             steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
              break;
         }
         case 6:
         {
-            steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
 //        case 7:
@@ -162,7 +166,7 @@ void Cal_Steering_Target(void)
         case 10:
         case 11:
         {
-            steering_Target = (Steering_PID.KP/1.3f * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
 //        case 0:
@@ -175,7 +179,7 @@ void Cal_Steering_Target(void)
 
         default:
         {
-            steering_Target = (Steering_PID.KP * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
     }
@@ -238,10 +242,6 @@ void OLED_temp(void)
 
 void Change_Steering_PID(float kp, float ki, float kd)
 {
-    if (start_Flag == 0)
-    {
-        return;
-    }
     Steering_PID.KP = kp;
     Steering_PID.KI = ki;
     Steering_PID.KD = kd;

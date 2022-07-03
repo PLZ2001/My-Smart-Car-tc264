@@ -11,7 +11,7 @@ float Col_Center[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中
 int Col_Left[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储左线的列号结果，不合法的全部为-2
 int Col_Right[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储右线的列号结果，不合法的全部为-2
 
-
+float left_empty,right_empty;
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
 
@@ -530,13 +530,14 @@ float Check_Left_Empty(float ratio)
     int cnt=0;
 
     int i;
-    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES]);i++)
+    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1.0f-ratio)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Left[i] ==-2)
         {
            cnt++;
         }
     }
+    left_empty = cnt/(Search_Range[ROW][LINES]*ratio);
     return cnt/(Search_Range[ROW][LINES]*ratio);
 }
 
@@ -599,13 +600,14 @@ float Check_Right_Empty(float ratio)
     int cnt=0;
 
     int i;
-    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1-ratio)*Search_Range[ROW][LINES]);i++)
+    for (i=height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES]);i<height_Inverse_Perspective - (Search_Range[ROW][BEGIN]+(1.0f-ratio)*Search_Range[ROW][LINES]);i++)
     {
         if (Col_Right[i] ==-2)
         {
            cnt++;
         }
     }
+    right_empty = cnt/(Search_Range[ROW][LINES]*ratio);
     return cnt/(Search_Range[ROW][LINES]*ratio);
 }
 

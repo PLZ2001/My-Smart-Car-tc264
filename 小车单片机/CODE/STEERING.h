@@ -16,6 +16,7 @@ extern float SightForward_High;
 extern float SightForward_Low;
 extern float SightForward_Lowest;
 extern float SightForward_Lowest_ForT;
+extern float kp;
 
 void My_Init_Steering(void);
 void UART_Steering(void);
