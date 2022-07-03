@@ -452,7 +452,7 @@ void core1_main(void)
             }
 
 
-            speed_Status = Filter_Speed_Status(speed_Status,10);
+            speed_Status = Filter_Speed_Status(speed_Status,10,15);
             switch(speed_Status)
             {
                 case Highest:

@@ -246,15 +246,15 @@ void Update_Speed_Mode(void)
 
 
             speed_Target_Low = 3.1f;//即2.7
-            SightForward_Low = 0.33f;
+            SightForward_Low = 0.32f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.18f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.40f;
+            Steering_PID_Low[0]=0.18f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.35f;
 
 
-            speed_Target_Lowest = 2.6f;//即2.3
+            speed_Target_Lowest = 2.65f;//即2.34
             SightForward_Lowest = 0.32f;
             InnerSide_Ratio_Lowest = 1.10f;
-            Steering_PID_Lowest[0]=0.19f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.40f;
+            Steering_PID_Lowest[0]=0.18f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.35f;
 
             speed_Target_Lowest_ForT = 2.4f;//即2.1
             SightForward_Lowest_ForT = 0.40f;
@@ -267,7 +267,7 @@ void Update_Speed_Mode(void)
 }
 
 
-int Filter_Speed_Status(int status,int cnt_limit)
+int Filter_Speed_Status(int status,int cnt_limit,int cnt_limit_toHigh)
 {
     static int last_status;//上一次的
     static int filter_status;//稳定的结果
@@ -290,10 +290,21 @@ int Filter_Speed_Status(int status,int cnt_limit)
         else if (status == last_status)
         {
             cnt_now++;
-            if (cnt_now>=cnt_limit)
+            if (status == 3)//3即High
             {
-                filter_status = status;
+                if (cnt_now>=cnt_limit_toHigh)
+                {
+                    filter_status = status;
+                }
             }
+            else
+            {
+                if (cnt_now>=cnt_limit)
+                {
+                    filter_status = status;
+                }
+            }
+
         }
         else
         {
