@@ -2480,8 +2480,8 @@ uint8 Check_Right_for_RightCircle(void)
 
 uint8 Check_RightCircle_New3(void)
 {
-    //return (Check_Right_for_RightCircle()||Check_Left_for_RightCircle());
-    return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
+    return (Check_Right_for_RightCircle()||Check_Left_for_RightCircle());
+//    return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
 }
 
 
@@ -2652,8 +2652,8 @@ uint8 Check_Right_for_LeftCircle(void)
 
 uint8 Check_LeftCircle_New3(void)
 {
-//    return (Check_Right_for_LeftCircle()||Check_Left_for_LeftCircle());
-    return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
+    return (Check_Right_for_LeftCircle()||Check_Left_for_LeftCircle());
+   // return (Check_Right_Straight_ForRoad(2, -2, 0.4)&&Check_Left_Straight_ForRoad(2, -2, 0.4));
 }
 void Compensate_ColCenter(void)
 {
