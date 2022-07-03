@@ -251,7 +251,7 @@ void Update_Speed_Mode(void)
             Steering_PID_Low[0]=0.12f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.0f;
 
 
-            speed_Target_Lowest = 2.65f;//¼´2.34
+            speed_Target_Lowest = 2.8f;//¼´2.5
             SightForward_Lowest = 0.32f;
             InnerSide_Ratio_Lowest = 1.10f;
             Steering_PID_Lowest[0]=0.12f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.0f;
