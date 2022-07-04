@@ -144,7 +144,7 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K=2.5f;
+    float K=3.6f;
     kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K;
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
