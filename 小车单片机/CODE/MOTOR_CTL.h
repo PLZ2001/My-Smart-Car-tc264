@@ -50,6 +50,8 @@ extern float BANGBANG_UP;
 extern float BANGBANG_DOWN;
 
 extern float Highest_Distance;
+extern float Volt_kd;
+
 
 
 void Differential_Motor(void);

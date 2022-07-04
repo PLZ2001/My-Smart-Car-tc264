@@ -128,9 +128,10 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(100,1,"%d  ",(int)(steering_Error));
                 OLED_PRINTF(100,2,"%d  ",(int)steering_Target);
                 OLED_PRINTF(100,3,"%1.2f ",kp);
-                OLED_PRINTF(100,4,"%d  ",thresholding_Value);
-                OLED_PRINTF(100,5,"%d  ",classification_Result);
-                OLED_PRINTF(100,6,"%d  ",classification_Result_2nd);
+                OLED_PRINTF(100,4,"%1.2f ",Volt_kd);
+                OLED_PRINTF(100,5,"%d  ",thresholding_Value);
+                OLED_PRINTF(100,6,"%d  ",classification_Result);
+                //OLED_PRINTF(100,6,"%d  ",classification_Result_2nd);
                 OLED_PRINTF(100,7,"%d  ",Long_Straight_Flag);
 
 

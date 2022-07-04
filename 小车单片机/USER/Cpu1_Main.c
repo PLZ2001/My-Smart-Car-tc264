@@ -444,15 +444,24 @@ void core1_main(void)
             {
                 steeringPID_ratio = 0.85f;
             }
-            enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+2*switch_Status[Switch2];
-            if (speed_Mode_temp!=speed_Mode)
+
+            if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
             {
-                speed_Mode = speed_Mode_temp;
-                Update_Speed_Mode();
+                static uint8 flag_Get_Volt_kd = 0;
+                if (flag_Get_Volt_kd == 0)
+                {
+                    flag_Get_Volt_kd = 1;
+                    Get_Volt_kd();
+                }
+                enum SpeedMode speed_Mode_temp = switch_Status[Switch1]+2*switch_Status[Switch2];
+                if (speed_Mode_temp!=speed_Mode)
+                {
+                    speed_Mode = speed_Mode_temp;
+                    Update_Speed_Mode();
+                }
             }
 
-
-            speed_Status = Filter_Speed_Status(speed_Status,10,15);
+            speed_Status = Filter_Speed_Status(speed_Status,10,18);
             switch(speed_Status)
             {
                 case Highest:

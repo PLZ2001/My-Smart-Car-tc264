@@ -51,6 +51,8 @@ float BANGBANG_DOWN=0.3;
 
 float Highest_Distance = 0.6f;
 
+float Volt_kd=0;
+
 void Differential_Motor(void)
 {
     if (steering_Error>=0)
@@ -236,25 +238,25 @@ void Update_Speed_Mode(void)
             speed_Target_Highest = 1.5*3.6f;
             SightForward_Highest = 0.30f;
             InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.12f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.0f;
+            Steering_PID_Highest[0]=0.12f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=Volt_kd;
 
 
             speed_Target_High = 3.6f;//¼´3.2
             SightForward_High = 0.30f;
-            InnerSide_Ratio_High = 1.12f;//1.15f;
-            Steering_PID_High[0]=0.12f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.0f;
+            InnerSide_Ratio_High = 1.15f;//1.15f;
+            Steering_PID_High[0]=0.12f;Steering_PID_High[1]=0;Steering_PID_High[2]=Volt_kd;
 
 
             speed_Target_Low = 3.1f;//¼´2.7
             SightForward_Low = 0.30f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.12f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.0f;
+            Steering_PID_Low[0]=0.12f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=Volt_kd;
 
 
             speed_Target_Lowest = 2.65f;//¼´2.34
             SightForward_Lowest = 0.30f;
-            InnerSide_Ratio_Lowest = 1.10f;
-            Steering_PID_Lowest[0]=0.12f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.0f;
+            InnerSide_Ratio_Lowest = 1.15f;
+            Steering_PID_Lowest[0]=0.12f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=Volt_kd;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
@@ -313,4 +315,20 @@ int Filter_Speed_Status(int status,int cnt_limit,int cnt_limit_toHigh)
         }
     }
     return filter_status;
+}
+
+void Get_Volt_kd(void)
+{
+    if (Real_Volt>8.30f)
+    {
+        Volt_kd = 1.20f;
+    }
+    else if (Real_Volt<8.20f)
+    {
+        Volt_kd = 1.00f;
+    }
+    else
+    {
+        Volt_kd = 1.00f+(1.20f-1.00f)/(8.30f-8.20f)*(Real_Volt-8.20f);
+    }
 }
