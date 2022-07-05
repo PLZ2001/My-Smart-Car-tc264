@@ -620,10 +620,10 @@ void core1_main(void)
                 {
                     PID_mode1 = OPEN_LOOP1;
                 }
-                else if (speed_Measured1 < 1.0 && speed_Measured1 > -1.0)
-                {
-                    PID_mode1 = PID_CLOSED_LOOP1;
-                }
+//                else if (speed_Measured1 < 1.0 && speed_Measured1 > -1.0)
+//                {
+//                    PID_mode1 = PID_CLOSED_LOOP1;
+//                }
                 else
                 {
                     if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
@@ -640,10 +640,10 @@ void core1_main(void)
                 {
                     PID_mode2 = OPEN_LOOP2;
                 }
-                else if (speed_Measured2 < 1.0 && speed_Measured2 > -1.0)
-                {
-                    PID_mode2 = PID_CLOSED_LOOP2;
-                }
+//                else if (speed_Measured2 < 1.0 && speed_Measured2 > -1.0)
+//                {
+//                    PID_mode2 = PID_CLOSED_LOOP2;
+//                }
                 else
                 {
                     if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)

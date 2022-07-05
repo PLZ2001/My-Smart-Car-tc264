@@ -264,7 +264,7 @@ void Update_Speed_Mode(void)
         }
         case Highest_Mode:
         {
-            Differential_Ratio = 2.0f;
+            Differential_Ratio = 1.8f;
 
             T_Time = 0.4f;
 
