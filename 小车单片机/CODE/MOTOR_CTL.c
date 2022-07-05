@@ -268,7 +268,7 @@ void Update_Speed_Mode(void)
 
             T_Time = 0.4f;
 
-            Highest_Distance = 0.2f;
+            Highest_Distance = 0.1f;
 
             BANGBANG_UP = 0.2;
             BANGBANG_DOWN = 0.2;
