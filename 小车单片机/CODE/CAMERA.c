@@ -684,7 +684,7 @@ void Get_Thresholding_Image(void)
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
-        thresholding_Value = Filter(1,thresholding_Value,0.005);
+        thresholding_Value = Filter(1,thresholding_Value,0.01);
         Start_Timer(3);
     }
 

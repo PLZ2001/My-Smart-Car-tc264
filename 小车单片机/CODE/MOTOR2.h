@@ -4,9 +4,9 @@
 //2表示左电机
 
 #define SPEED_MEASURING_PERIOD_ms2 10
-#define SPEED_MAX2 9.5
-#define SPEED_MIN2 -9.5
-#define MOTOR_DUTY_MAX2 6750
+#define SPEED_MAX2 14.14//9.5
+#define SPEED_MIN2 -14.14//-9.5
+#define MOTOR_DUTY_MAX2 10000//6750
 
 enum PID_Mode2
 {

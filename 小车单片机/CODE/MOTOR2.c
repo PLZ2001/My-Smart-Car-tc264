@@ -130,25 +130,32 @@ void Get_Speed(void)
 void Cal_Speed_Output2(void)
 {
     static int flag = 3;
+    static float speed_Error[3];
     if (PID_mode2 == OPEN_LOOP2)
     {
-        flag = 3;//重置PID闭环
+        if (flag>=1)
+        {
+            flag--;
+        }
+        speed_Error[2] = speed_Error[1];
+        speed_Error[1] = speed_Error[0];
+        speed_Error[0] = speed_Target2 - speed_Measured2;
+
         speed_Output2 = speed_Target2;
     }
     else if (PID_mode2 == PID_CLOSED_LOOP2)
     {
-        flag--;
-        static float speed_Error[3];
+        if (flag>=1)
+        {
+            flag--;
+        }
         speed_Error[2] = speed_Error[1];
         speed_Error[1] = speed_Error[0];
         speed_Error[0] = speed_Target2 - speed_Measured2;
-//        if (speed_Error[0]<0.1 && speed_Error[0]>-0.1)
-//        {
-//            speed_Error[0] = 0;
-//        }//带死区的增量式pid
+
         if (flag == 0)
         {
-            flag++;
+//            flag++;
             float delta_Speed = PID_KP2*(speed_Error[0]-speed_Error[1]) + PID_KI2*speed_Error[0] + PID_KD2*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
             speed_Output2 = speed_Output2 + delta_Speed;
         }
@@ -159,10 +166,17 @@ void Cal_Speed_Output2(void)
     }
     else if (PID_mode2 == BANGBANG_CLOSED_LOOP2)
     {
-        flag = 3;//重置PID闭环
+        if (flag>=1)
+        {
+            flag--;
+        }
+        speed_Error[2] = speed_Error[1];
+        speed_Error[1] = speed_Error[0];
+        speed_Error[0] = speed_Target2 - speed_Measured2;
+
         if (speed_Measured2 > speed_Target2+BANGBANG_UP)
         {
-            speed_Output2 = 0.2f*SPEED_MIN2;
+            speed_Output2 = 0.2f*SPEED_MIN2;//0.2f*SPEED_MIN2;
         }
         if  (speed_Measured2 < speed_Target2-BANGBANG_DOWN)
         {
@@ -178,9 +192,9 @@ void Set_Speed2(void)
     uint32 duty;
     duty = (speed_Output2>=0?speed_Output2:(-speed_Output2))*700 +100;//地面开环用它
     duty = (uint32)(duty*Base_Volt/Real_Volt);
-    if (duty>(uint32)(MOTOR_DUTY_MAX2*Base_Volt/Real_Volt))//保护电机
+    if (duty>(uint32)(MOTOR_DUTY_MAX2))//保护电机
     {
-        duty = (uint32)(MOTOR_DUTY_MAX2*Base_Volt/Real_Volt);
+        duty = (uint32)(MOTOR_DUTY_MAX2);
     }
     if (speed_Output2 == 0)
     {
