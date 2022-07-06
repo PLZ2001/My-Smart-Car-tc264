@@ -19,7 +19,7 @@ float speed_Target2 = 0;//目标速度（m/s），更新函数Set_Speed_Target2(uint8 val)
 //其他变量
 float speed_Output2 = 0;//输出速度（m/s）
 float PID_KP2=7.0f/1.0f;//7.0f/0.5f;//7.0f/3.0f;
-float PID_KI2=0.15f;//0.04f;//0.01f;
+float PID_KI2=0.45f;//0.04f;//0.01f;
 float PID_KD2=0.0f;//0.0f;
 
 enum PID_Mode2 PID_mode2 = PID_CLOSED_LOOP2;//PID模式选择
@@ -156,8 +156,17 @@ void Cal_Speed_Output2(void)
         if (flag == 0)
         {
 //            flag++;
-            float delta_Speed = PID_KP2*(speed_Error[0]-speed_Error[1]) + PID_KI2*speed_Error[0] + PID_KD2*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
-            speed_Output2 = speed_Output2 + delta_Speed;
+            if (speed_Error[0]<0.5 && speed_Error[0]>-0.5)
+            {
+                float delta_Speed = PID_KP2*(speed_Error[0]-speed_Error[1]) + PID_KD2*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
+                speed_Output2 = speed_Output2 + delta_Speed;
+            }
+            else
+            {
+                float delta_Speed = PID_KP2*(speed_Error[0]-speed_Error[1]) + PID_KI2*speed_Error[0] + PID_KD2*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
+                speed_Output2 = speed_Output2 + delta_Speed;
+            }
+
         }
     }
     else if (PID_mode2 == FUZZY_PID_CLOSED_LOOP2)
@@ -180,7 +189,7 @@ void Cal_Speed_Output2(void)
         }
         if  (speed_Measured2 < speed_Target2-BANGBANG_DOWN)
         {
-            speed_Output2 = SPEED_MAX2;
+            speed_Output2 = 0.8f*SPEED_MAX2;
         }
     }
 }
