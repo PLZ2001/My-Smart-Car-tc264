@@ -58,15 +58,15 @@ void Differential_Motor(void)
     float last_steering_Target=0;
     if (steering_Error>=0)
     {
-        speed_Target2 = speed_Target + speed_Target*Differential_Ratio*steering_Target*4.0f/1062.5f+1.0f*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
-        speed_Target1 = speed_Target - speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f - 1.0f*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
+        speed_Target2 = speed_Target + speed_Target*Differential_Ratio*steering_Target*4.0f/1062.5f+0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
+        speed_Target1 = speed_Target - speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f - 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//左轮目标速度（m/s）
 //        speed_Target1 = speed_Target - 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);
     }
     else
     {
-        speed_Target1 = speed_Target - speed_Target*Differential_Ratio*steering_Target*4.0f/1062.5f- 1.0f*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
-        speed_Target2 = speed_Target + speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 1.0f*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
+        speed_Target1 = speed_Target - speed_Target*Differential_Ratio*steering_Target*4.0f/1062.5f- 0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
+        speed_Target2 = speed_Target + speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target1 = speed_Target - steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//右轮目标速度（m/s）
 //        speed_Target2 = speed_Target + 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);;
     }
@@ -85,6 +85,8 @@ void UART_Speed_Mode(void)
     int16 speed_measured1 = (int16)round(1000*speed_Measured1);
     int16 speed_measured2 = (int16)round(1000*speed_Measured2);
     int16 steering_target = (int16)round(100*steering_Target);
+    int16 steering_error = (int16)round(10*steering_Error);
+    int16 d_steering_error = (int16)round(100*d_steering_Error);
     uart_putchar(DEBUG_UART, speed_target>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_target&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_target1>>8);//先传高8位，再传低8位
@@ -97,6 +99,10 @@ void UART_Speed_Mode(void)
     uart_putchar(DEBUG_UART, speed_measured2&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, steering_target>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, steering_target&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, steering_error>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, steering_error&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, d_steering_error>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, d_steering_error&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x15);
@@ -264,37 +270,37 @@ void Update_Speed_Mode(void)
         }
         case Highest_Mode:
         {
-            Differential_Ratio = 1.8f;
+            Differential_Ratio = 1.2f;
 
             T_Time = 0.4f;
 
             Highest_Distance = 0.1f;
 
-            BANGBANG_UP = 0.2;
-            BANGBANG_DOWN = 0.2;
+            BANGBANG_UP = 0.3;
+            BANGBANG_DOWN = 0.5;
 
             speed_Target_Highest = 1.5*4.1f;
-            SightForward_Highest = 0.32f;
-            InnerSide_Ratio_Highest = 0.8f;
-            Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.50f;
+            SightForward_Highest = 0.35f;
+            InnerSide_Ratio_Highest = 1.1f;
+            Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
 
 
             speed_Target_High = 4.1f;//即3.6
-            SightForward_High = 0.32f;
-            InnerSide_Ratio_High = 0.8f;//1.15f;
-            Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.50f;
+            SightForward_High = 0.33f;
+            InnerSide_Ratio_High = 1.1f;//1.15f;
+            Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.1f;
 
 
             speed_Target_Low = 3.5f;//即3.1
-            SightForward_Low = 0.32f;
-            InnerSide_Ratio_Low = 0.8f;//1.25;
-            Steering_PID_Low[0]=0.14f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.50f;
+            SightForward_Low = 0.33f;
+            InnerSide_Ratio_Low = 1.2f;//1.25;
+            Steering_PID_Low[0]=0.15f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.2f;
 
 
             speed_Target_Lowest = 2.9f;//即2.6
-            SightForward_Lowest = 0.32f;
-            InnerSide_Ratio_Lowest = 0.8f;
-            Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.50f;
+            SightForward_Lowest = 0.33f;
+            InnerSide_Ratio_Lowest = 1.2f;
+            Steering_PID_Lowest[0]=0.15f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.2f;
 
             speed_Target_Lowest_ForT = 2.4f;//即2.1
             SightForward_Lowest_ForT = 0.40f;

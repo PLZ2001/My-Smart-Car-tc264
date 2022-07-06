@@ -17,7 +17,7 @@ float SightForward_Low = 0.25f;
 float SightForward_Lowest = 0.25f;
 float SightForward_Lowest_ForT = 0.25f;
 
-float kp;
+float kp,kd;
 
 struct steerpid
 {
@@ -117,6 +117,7 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
     int cnt = 0;
     int cnt_start = 0;
     float di = Cal_Steering_Range_of_Img/0.5f;
+    float last_Col_Center=-2;
     for (float temp_i=0;temp_i<(search_Lines*Cal_Steering_Range_of_Img);temp_i+=di)
     {
         int i = floor(temp_i+0.5);
@@ -129,6 +130,12 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
             }
             float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.1f-0.9f)+1.1f;
             steering_Error_tmp = steering_Error_tmp + (Col_Center[i] - Col_Center_Init)*ratio;
+            last_Col_Center = Col_Center[i];
+        }
+        else if (Col_Center[i] == -2 && cnt>=1)
+        {
+            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.1f-0.9f)+1.1f;
+            steering_Error_tmp = steering_Error_tmp + (last_Col_Center - Col_Center_Init)*ratio;
         }
     }
 
@@ -144,19 +151,20 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K=3.6f;
-    kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K;
+    float K_kp=3.6f,K_kd=3.6f;
+    kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
+    kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
     switch(classification_Result){
         case 5:
         {
-             steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+             steering_Target = (kp/1.3f * Steering_PID.current_error) +kd/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
              break;
         }
         case 6:
         {
-            steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp/1.3f * Steering_PID.current_error) +kd/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
 //        case 7:
@@ -166,7 +174,7 @@ void Cal_Steering_Target(void)
         case 10:
         case 11:
         {
-            steering_Target = (kp/1.3f * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp/1.3f * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
 //        case 0:
@@ -179,7 +187,7 @@ void Cal_Steering_Target(void)
 
         default:
         {
-            steering_Target = (kp * Steering_PID.current_error) +Steering_PID.KD*( Steering_PID.current_error - Steering_PID.last_error );
+            steering_Target = (kp * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
     }

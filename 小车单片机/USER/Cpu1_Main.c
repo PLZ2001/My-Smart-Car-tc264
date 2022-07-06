@@ -414,11 +414,11 @@ void core1_main(void)
 
 
             static uint8 status_switch_2=0;
-            if(d_steering_Error>30||d_steering_Error<-30)
+            if(d_steering_Error>50||d_steering_Error<-50)
             {
                 status_switch_2=1;
             }
-            if(d_steering_Error<24&&d_steering_Error>-24)
+            if(steering_Target<10&&steering_Target>-10)
             {
                 status_switch_2=0;
             }
@@ -461,7 +461,12 @@ void core1_main(void)
                 }
             }
 
+
             speed_Status = Filter_Speed_Status(speed_Status,12,18);
+            if (classification_Result==2||classification_Result==3)
+            {
+                speed_Status = Low;
+            }
             switch(speed_Status)
             {
                 case Highest:
