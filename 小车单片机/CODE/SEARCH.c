@@ -2127,7 +2127,7 @@ uint8 Check_LeftP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 85 && arccosValue < 100)
+        if (arccosValue > 80 && arccosValue < 100)
         {
             if (second_Dot[1]-third_Dot[1]>=2)
             {
@@ -2166,7 +2166,7 @@ uint8 Check_RightP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 85 && arccosValue < 100)
+        if (arccosValue > 80 && arccosValue < 100)
         {
             if (third_Dot[1]-second_Dot[1]>=2)
             {
@@ -2704,7 +2704,7 @@ void Compensate_ColCenter(void)
 
 uint8 Check_TRoad(uint8 mode,float pos)
 {
-    uint8 water_i = Search_Range[ROW][BEGIN]+(1-pos)*Search_Range[ROW][LINES];
+    uint8 water_i = Search_Range[ROW][BEGIN]+(1.0f-pos)*Search_Range[ROW][LINES];
     if (mode==1)
     {
         uint8 cnt=0;

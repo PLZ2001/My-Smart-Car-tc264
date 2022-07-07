@@ -9,7 +9,7 @@
 #endif
 
 #ifndef height_Inverse_Perspective_Max
-#define height_Inverse_Perspective_Max 128
+#define height_Inverse_Perspective_Max 64
 #endif
 
 #define CLASS_NUM 6
@@ -54,6 +54,8 @@ extern uint8 Search_Range[2][2];
 extern uint8 Long_Straight_Flag;
 extern uint8 classification_Result_1;
 extern uint8 classification_Result_1_2nd;
+extern uint8 classification_Result_2;
+extern uint8 classification_Result_2_2nd;
 
 extern float ModelTable_36[CLASS_NUM_NEW][6][6];
 

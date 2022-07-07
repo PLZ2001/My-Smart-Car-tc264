@@ -40,7 +40,7 @@
 
 void core1_main(void)
 {
-	disableInterrupts();
+    disableInterrupts();
     IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
     //用户在此处调用各种初始化函数等
 
@@ -48,9 +48,9 @@ void core1_main(void)
 
 
 
-	//等待所有核心初始化完毕
-	IfxCpu_emitEvent(&g_cpuSyncEvent);
-	IfxCpu_waitEvent(&g_cpuSyncEvent, 0xFFFF);
+    //等待所有核心初始化完毕
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent, 0xFFFF);
     enableInterrupts();
     while (TRUE)
     {
@@ -234,40 +234,61 @@ void core1_main(void)
                     //以下是新窗口的识别
                     Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
                     if (Check_Straight(0.5f))
-                     {
-                         classification_Result_1 = 6;//6直道
-                     }
-                     else
-                     {
-                         Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
-                         Check(&classification_Result_1,classification_Result_1_2nd);
-                         Check(&classification_Result_1,9);
+                    {
+                        classification_Result_1 = 6;//6直道
+                    }
+                    else
+                    {
+                        Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                        Check(&classification_Result_1,classification_Result_1_2nd);
+                        Check(&classification_Result_1,9);
 
-                     }
-                     Check_Classification(classification_Result_1,1);
+                    }
+                    Check_Classification(classification_Result_1,1);
 
-                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
-                     if (Check_Straight(0.6f))
-                     {
-                         classification_Result=6;
-                         classification_Result_1=6;
-                     }
-                     //改回默认窗口
-                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    //以下是新窗口的识别
+                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    if (Check_Straight(0.5f))
+                    {
+                        classification_Result_2 = 6;//6直道
+                    }
+                    else
+                    {
+                        Classification_Classic36(2,&classification_Result_2,&classification_Result_2_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                        Check(&classification_Result_2,classification_Result_2_2nd);
+                        Check(&classification_Result_2,9);
 
-                     //检查长直道是否满足
-                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
-                     {
-                         Long_Straight_Flag = 1;//长直道
-                     }
-                     else
-                     {
-                         Long_Straight_Flag = 0;//长直道
-                     }
+                    }
+                    Check_Classification(classification_Result_2,1);
+
+                    Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    if (Check_Straight(0.6f))
+                    {
+                        classification_Result=6;
+                        classification_Result_1=6;
+                    }
+                    //改回默认窗口
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+
+                    //2号窗口作为1号窗口的辅助
+                    if ((classification_Result == 9||classification_Result == 7||classification_Result == 8) && (classification_Result_2 == 3 || classification_Result_2 == 2 || classification_Result_2 == 4|| classification_Result_2 == 12|| classification_Result_2 == 13 || classification_Result_2 == 14))
+                    {
+                        classification_Result = classification_Result_2;
+                    }
+
+                    //检查长直道是否满足
+                    if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
+                    {
+                        Long_Straight_Flag = 1;//长直道
+                    }
+                    else
+                    {
+                        Long_Straight_Flag = 0;//长直道
+                    }
                 }
             }
             DrawCenterLine();
-//            Compensate_ColCenter();
+            //            Compensate_ColCenter();
 
 
             //由处理后的图像等信息，获取速度、转向角度的目标值
@@ -275,45 +296,45 @@ void core1_main(void)
             //Cal_Steering_Error(Get_d_steering_Error()<30.0f?0.5f:(Get_d_steering_Error()>120.0f?0.55f:((Get_d_steering_Error()-30.0f)/(120.0f-30.0f)*(0.55f-0.5f)+0.5f)));//根据Col_Center和扫描范围search_Lines计算误差（全局变量，待定义）
             //if ((steering_Error>130||steering_Error<-130) && classification_Result == 9)
             //进入条件：识别类型为9或者处于环岛，且误差变化率大的；处于环岛入口阶段的
-//            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
-//            {
-//                Cal_Steering_Error(SightForward);
-//                speed_Target = speed_Target_Low;
-//
-//                //Differential_Ratio = 2.5f;//1.3f;
-//
-//                Change_Steering_PID(0.25f,0,0.30f);
-//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-//                {
-//                    Change_Steering_PID(0.24f,0,0.20f);
-//                }
-//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-//                {
-//                    Change_Steering_PID(0.24f,0,0.20f);
-//                }
-//                else if (speed_Target_Low >= 2.2f && speed_Target_High >= 2.4f)//只有2.1/1.9以上才可以
-//                {
-//                    Change_Steering_PID(0.27f,0,0.30f);
-//                }
-//            }
-//            else
-//            {
-//                Cal_Steering_Error(SightForward);
-//                speed_Target = speed_Target_High;
-//
-//                //Differential_Ratio = 2.5f;//1.3f
-//                Change_Steering_PID(0.25f,0,0.30f);
-//                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
-//                {
-//                    Change_Steering_PID(0.24f,0,0.20f);
-//                }
-//                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
-//                {
-//                    Change_Steering_PID(0.24f,0,0.20f);
-//                }
-//
-//
-//            }
+            //            if ((((d_steering_Error>0?d_steering_Error:-d_steering_Error)>30) && (classification_Result == 9 || (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1) ) )  )
+            //            {
+            //                Cal_Steering_Error(SightForward);
+            //                speed_Target = speed_Target_Low;
+            //
+            //                //Differential_Ratio = 2.5f;//1.3f;
+            //
+            //                Change_Steering_PID(0.25f,0,0.30f);
+            //                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
+            //                {
+            //                    Change_Steering_PID(0.24f,0,0.20f);
+            //                }
+            //                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+            //                {
+            //                    Change_Steering_PID(0.24f,0,0.20f);
+            //                }
+            //                else if (speed_Target_Low >= 2.2f && speed_Target_High >= 2.4f)//只有2.1/1.9以上才可以
+            //                {
+            //                    Change_Steering_PID(0.27f,0,0.30f);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                Cal_Steering_Error(SightForward);
+            //                speed_Target = speed_Target_High;
+            //
+            //                //Differential_Ratio = 2.5f;//1.3f
+            //                Change_Steering_PID(0.25f,0,0.30f);
+            //                if (Read_Timer_Status(0) == RUNNING && (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1))//进圆环瞬间单独设转向pid
+            //                {
+            //                    Change_Steering_PID(0.24f,0,0.20f);
+            //                }
+            //                else if (flag_For_Right_Circle == 1 || flag_For_Left_Circle == 1)
+            //                {
+            //                    Change_Steering_PID(0.24f,0,0.20f);
+            //                }
+            //
+            //
+            //            }
 
 
 
@@ -334,7 +355,7 @@ void core1_main(void)
             }
             else
             {
-//                LED_OFF(2);
+                //                LED_OFF(2);
             }
 
 
@@ -466,6 +487,10 @@ void core1_main(void)
             if (classification_Result==2||classification_Result==3)
             {
                 speed_Status = Low;
+            }
+            if (classification_Result==12||classification_Result==13)
+            {
+                speed_Status = Lowest;
             }
             switch(speed_Status)
             {
@@ -625,10 +650,10 @@ void core1_main(void)
                 {
                     PID_mode1 = OPEN_LOOP1;
                 }
-//                else if (speed_Measured1 < 1.0 && speed_Measured1 > -1.0)
-//                {
-//                    PID_mode1 = PID_CLOSED_LOOP1;
-//                }
+                //                else if (speed_Measured1 < 1.0 && speed_Measured1 > -1.0)
+                //                {
+                //                    PID_mode1 = PID_CLOSED_LOOP1;
+                //                }
                 else
                 {
                     if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
@@ -645,10 +670,10 @@ void core1_main(void)
                 {
                     PID_mode2 = OPEN_LOOP2;
                 }
-//                else if (speed_Measured2 < 1.0 && speed_Measured2 > -1.0)
-//                {
-//                    PID_mode2 = PID_CLOSED_LOOP2;
-//                }
+                //                else if (speed_Measured2 < 1.0 && speed_Measured2 > -1.0)
+                //                {
+                //                    PID_mode2 = PID_CLOSED_LOOP2;
+                //                }
                 else
                 {
                     if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
