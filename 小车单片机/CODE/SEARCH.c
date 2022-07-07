@@ -1718,6 +1718,19 @@ void Find_First_Dot(int mode)
             }
         }
     }
+    else if (mode == 3)
+    {
+        int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.25f*Search_Range[COL][LINES];
+        for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j+1][dot_j] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j] == 0)
+            {
+                first_Dot[0] = dot_i+j;
+                first_Dot[1] = dot_j;
+                break;
+            }
+        }
+    }
 }
 
 void Find_Second_Dot(int mode)
@@ -1839,6 +1852,19 @@ void Find_Second_Dot(int mode)
                         flag=1;
                     }
                 }
+            }
+        }
+    }
+    else if (mode == 3)
+    {
+        int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.5f*Search_Range[COL][LINES];
+        for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j+1][dot_j] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j] == 0)
+            {
+                second_Dot[0] = dot_i+j;
+                second_Dot[1] = dot_j;
+                break;
             }
         }
     }
@@ -2100,7 +2126,21 @@ void Find_Third_Dot_New(int mode)
                 }
             }
         }
+        else if (mode == 3)
+        {
+            int dot_i = Search_Range[ROW][BEGIN], dot_j = Search_Range[COL][BEGIN]+0.75f*Search_Range[COL][LINES];
+            for (int j=0;j<(Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES] - 1 - dot_i);j++)
+            {
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j+1][dot_j] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[dot_i+j][dot_j] == 0)
+                {
+                    third_Dot[0] = dot_i+j;
+                    third_Dot[1] = dot_j;
+                    break;
+                }
+            }
+        }
     }
+
 
 }
 
@@ -3010,4 +3050,30 @@ uint8 Check_Right_Straight(int8 max_d_Col_Right, int8 min_d_Col_Right, float rat
         }
     }
     return 1;
+}
+
+uint8 Check_TRoad_New(void)
+{
+    Find_First_Dot(3);
+    Find_Second_Dot(3);
+    Find_Third_Dot_New(3);
+
+    if ( (first_Dot[0]==-2 )||(second_Dot[0]==-2 )||(third_Dot[0]==-2 )) {
+        return 0;
+    }
+
+    else{
+        int a_b_x = first_Dot[0] - second_Dot[0];
+        int c_b_x = third_Dot[0] - second_Dot[0];
+
+
+        if ((a_b_x+c_b_x)>=-2 && (a_b_x+c_b_x)<=2)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 }

@@ -292,7 +292,7 @@ void Update_Speed_Mode(void)
             Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
 
 
-            speed_Target_High = 3.8f;//¼´3.3
+            speed_Target_High = 4.1f;//¼´3.6
             SightForward_High = 0.31f;
             InnerSide_Ratio_High = 1.20f;//1.15f;
             Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.2f;
@@ -392,10 +392,10 @@ float Cal_Differential_Ratio(void)
     }
     else if (Real_Volt<8.20f)
     {
-        Volt_DR= 1.70f;
+        Volt_DR= 1.65f;
     }
     else
     {
-        Volt_DR= (1.70f+(1.30f-1.70f)/(8.30f-8.20f)*(Real_Volt-8.20f));
+        Volt_DR= (1.65f+(1.30f-1.65f)/(8.30f-8.20f)*(Real_Volt-8.20f));
     }
 }
