@@ -52,6 +52,7 @@ float BANGBANG_DOWN=0.3;
 float Highest_Distance = 0.6f;
 
 float Volt_kd=0;
+float Volt_DR=0;
 
 void Differential_Motor(void)
 {
@@ -273,7 +274,7 @@ void Update_Speed_Mode(void)
         }
         case Highest_Mode:
         {
-            Differential_Ratio = 1.5f;
+            Differential_Ratio = Volt_DR;
 
             T_Time = 0.4f;
 
@@ -283,26 +284,26 @@ void Update_Speed_Mode(void)
             BANGBANG_DOWN = 1.0;
 
             speed_Target_Highest = 1.5*4.1f;
-            SightForward_Highest = 0.35f;
+            SightForward_Highest = 0.31f;
             InnerSide_Ratio_Highest = 1.15f;
             Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
 
 
-            speed_Target_High = 4.1f;//¼´3.6
-            SightForward_High = 0.33f;
-            InnerSide_Ratio_High = 1.15f;//1.15f;
+            speed_Target_High = 3.8f;//¼´3.3
+            SightForward_High = 0.31f;
+            InnerSide_Ratio_High = 1.20f;//1.15f;
             Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.2f;
 
 
-            speed_Target_Low = 3.5f;//¼´3.1
-            SightForward_Low = 0.33f;
-            InnerSide_Ratio_Low = 1.17f;//1.25;
+            speed_Target_Low = 3.4f;//¼´3.0
+            SightForward_Low = 0.31f;
+            InnerSide_Ratio_Low = 1.25f;//1.25;
             Steering_PID_Low[0]=0.14f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.2f;
 
 
             speed_Target_Lowest = 2.9f;//¼´2.6
-            SightForward_Lowest = 0.33f;
-            InnerSide_Ratio_Lowest = 1.17f;
+            SightForward_Lowest = 0.31f;
+            InnerSide_Ratio_Lowest = 1.20f;
             Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.4f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
@@ -377,5 +378,21 @@ void Get_Volt_kd(void)
     else
     {
         Volt_kd = 1.10f+(1.20f-1.10f)/(8.30f-8.20f)*(Real_Volt-8.20f);
+    }
+}
+
+float Cal_Differential_Ratio(void)
+{
+    if (Real_Volt>8.30f)
+    {
+        Volt_DR= 1.30f;
+    }
+    else if (Real_Volt<8.20f)
+    {
+        Volt_DR= 1.70f;
+    }
+    else
+    {
+        Volt_DR= (1.70f+(1.30f-1.70f)/(8.30f-8.20f)*(Real_Volt-8.20f));
     }
 }
