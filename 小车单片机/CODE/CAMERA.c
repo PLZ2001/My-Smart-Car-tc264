@@ -684,7 +684,7 @@ void Get_Thresholding_Image(void)
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
-        thresholding_Value = Filter(1,thresholding_Value,0.01);
+        thresholding_Value = Filter(1,thresholding_Value,1);
         Start_Timer(3);
     }
 
@@ -1580,7 +1580,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
             *classification_Result = else_result;
         }
 //        else if(!(Check_TRoad(0,0.65)&&Check_TRoad(1,0.32)))
-        else if(!(Check_TRoad(0,0.80)&&Check_TRoad(1,0.37)))
+        else if(!(Check_TRoad(0,0.70)&&Check_TRoad(1,0.27)))
         {
             *classification_Result = else_result;
         }
@@ -1616,9 +1616,9 @@ void Check(uint8 *classification_Result,uint8 else_result)
  * 输  入: image    -->    灰度图像
  ****************************************************************/
 /* 计算类间方差使用的图像范围, 若使用全图, 依次为0, 0, IMAGE_WIDTH, IMAGE_HEIGHT*/
-#define OSTU_START_U (20)
-#define OSTU_START_V (40)
-#define OSTU_END_U   (X_WIDTH_CAMERA-20)
+#define OSTU_START_U (0)
+#define OSTU_START_V (20)
+#define OSTU_END_U   (X_WIDTH_CAMERA)
 #define OSTU_END_V   (Y_WIDTH_CAMERA)
 /* 计算类间方差的总像素点数 */
 void GetBinThreshold_OSTU(void)

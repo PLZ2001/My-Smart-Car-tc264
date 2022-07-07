@@ -89,6 +89,7 @@ void UART_Speed_Mode(void)
     int16 steering_error = (int16)round(10*steering_Error);
     int16 d_steering_error = (int16)round(100*d_steering_Error);
     int16 speed_status = (int16)round(speed_Status);
+    int16 class = (int16)round(classification_Result);
     uart_putchar(DEBUG_UART, speed_target>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_target&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_target1>>8);//先传高8位，再传低8位
@@ -107,6 +108,8 @@ void UART_Speed_Mode(void)
     uart_putchar(DEBUG_UART, d_steering_error&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_status>>8);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART, speed_status&0x00FF);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, class>>8);//先传高8位，再传低8位
+    uart_putchar(DEBUG_UART, class&0x00FF);//先传高8位，再传低8位
     uart_putchar(DEBUG_UART,0x00);
     uart_putchar(DEBUG_UART,0xff);
     uart_putchar(DEBUG_UART,0x15);
