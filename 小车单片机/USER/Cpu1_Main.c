@@ -478,10 +478,16 @@ void core1_main(void)
 
             //根据速度状态进行相关计算
 
-            float steeringPID_ratio = 1.0f;
+            float steeringPID_ratio_kp = 1.0f;
+            float steeringPID_ratio_kd = 1.0f;
+            float SightForward_ratio = 1.0f;
+            float InnerSide_Ratio_ratio = 1.0f;
             if (classification_Result==2||classification_Result==3)
             {
-                steeringPID_ratio = 0.95f;//0.85f;
+                steeringPID_ratio_kp = 1.6f;//0.85f;
+                steeringPID_ratio_kd = 0.5f;
+                SightForward_ratio = 0.6f;
+                InnerSide_Ratio_ratio = 1.2f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
@@ -511,42 +517,42 @@ void core1_main(void)
             {
                 case Highest:
                 {
-                    SightForward = SightForward_Highest;
+                    SightForward = SightForward_Highest*SightForward_ratio;
                     speed_Target = speed_Target_Highest;
-                    InnerSide_Ratio = InnerSide_Ratio_Highest;
-                    Change_Steering_PID(Steering_PID_Highest[0]*steeringPID_ratio,Steering_PID_Highest[1],Steering_PID_Highest[2]);
+                    InnerSide_Ratio = InnerSide_Ratio_Highest*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_Highest[0]*steeringPID_ratio_kp,Steering_PID_Highest[1],Steering_PID_Highest[2]*steeringPID_ratio_kd);
                     break;
                 }
                 case High:
                 {
-                    SightForward = SightForward_High;
+                    SightForward = SightForward_High*SightForward_ratio;
                     speed_Target = speed_Target_High;
-                    InnerSide_Ratio = InnerSide_Ratio_High;
-                    Change_Steering_PID(Steering_PID_High[0]*steeringPID_ratio,Steering_PID_High[1],Steering_PID_High[2]);
+                    InnerSide_Ratio = InnerSide_Ratio_High*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_High[0]*steeringPID_ratio_kp,Steering_PID_High[1],Steering_PID_High[2]*steeringPID_ratio_kd);
                     break;
                 }
                 case Low:
                 {
-                    SightForward = SightForward_Low;
+                    SightForward = SightForward_Low*SightForward_ratio;
                     speed_Target = speed_Target_Low;
-                    InnerSide_Ratio = InnerSide_Ratio_Low;
-                    Change_Steering_PID(Steering_PID_Low[0]*steeringPID_ratio,Steering_PID_Low[1],Steering_PID_Low[2]);
+                    InnerSide_Ratio = InnerSide_Ratio_Low*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_Low[0]*steeringPID_ratio_kp,Steering_PID_Low[1],Steering_PID_Low[2]*steeringPID_ratio_kd);
                     break;
                 }
                 case Lowest:
                 {
-                    SightForward = SightForward_Lowest;
+                    SightForward = SightForward_Lowest*SightForward_ratio;
                     speed_Target = speed_Target_Lowest;
-                    InnerSide_Ratio = InnerSide_Ratio_Lowest;
-                    Change_Steering_PID(Steering_PID_Lowest[0]*steeringPID_ratio,Steering_PID_Lowest[1],Steering_PID_Lowest[2]);
+                    InnerSide_Ratio = InnerSide_Ratio_Lowest*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_Lowest[0]*steeringPID_ratio_kp,Steering_PID_Lowest[1],Steering_PID_Lowest[2]*steeringPID_ratio_kd);
                     break;
                 }
                 case Lowest_ForT:
                 {
-                    SightForward = SightForward_Lowest_ForT;
+                    SightForward = SightForward_Lowest_ForT*SightForward_ratio;
                     speed_Target = speed_Target_Lowest_ForT;
-                    InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT;
-                    Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]);
+                    InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);
                     break;
                 }
             }
