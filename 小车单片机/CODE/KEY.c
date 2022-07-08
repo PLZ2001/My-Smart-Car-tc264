@@ -212,6 +212,9 @@ void Key2_Action(void)
                 direction = 1;
             }
             break;}
+        case Camera_Page2:{
+            DrawLineFilter = (DrawLineFilter==1?0:1);
+            break;}
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;

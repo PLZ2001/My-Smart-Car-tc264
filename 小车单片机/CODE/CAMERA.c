@@ -667,6 +667,25 @@ float Filter(uint8 ID,float value,float ratio)
             }
             break;
         }
+        case 8:
+        {
+            static uint8 flag=0;
+            static float last_value=0;
+            float new_value;
+            if (flag==0)
+            {
+                last_value=value;
+                flag=1;
+                return value;
+            }
+            else if(flag==1)
+            {
+                new_value=ratio*value+(1-ratio)*last_value;
+                last_value = new_value;
+                return new_value;
+            }
+            break;
+        }
         default:
         {
             return value;
@@ -1627,7 +1646,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
             *classification_Result = else_result;
         }
 //        else if(!(Check_TRoad(0,0.65)&&Check_TRoad(1,0.32)))
-        else if(!(Check_TRoad_New()&&Check_TRoad(0,0.70)&&Check_TRoad(1,0.27)))
+        else if(!(Check_TRoad_New()&&Check_TRoad(0,0.60)&&Check_TRoad(1,0.17)))
         {
             *classification_Result = else_result;
         }

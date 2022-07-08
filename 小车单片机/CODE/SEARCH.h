@@ -38,6 +38,7 @@ extern int8 second_Dot[2];
 extern int8 third_Dot[2];
 extern float arccosValue;
 
+extern uint8 DrawLineFilter;
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);
@@ -56,6 +57,13 @@ void DrawCenterLinewithConfig_CrossRoad(void);
 void Find_First_Dot(int mode);
 void Find_Second_Dot(int mode);
 void Find_Third_Dot(int mode);
+
+float Filter_Col_Left(uint8 flag,float value,float ratio);
+float Filter_Col_Right(uint8 flag,float value,float ratio);
+float min(float a,float b);
+float max(float a,float b);
+
+
 
 
 
