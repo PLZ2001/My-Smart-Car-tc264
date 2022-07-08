@@ -388,14 +388,14 @@ float Cal_Differential_Ratio(void)
 {
     if (Real_Volt>8.30f)
     {
-        Volt_DR= 1.25f;
+        Volt_DR= 1.35f;
     }
-    else if (Real_Volt<8.20f)
+    else if (Real_Volt<8.15f)
     {
-        Volt_DR= 1.65f;
+        Volt_DR= 1.80f;
     }
     else
     {
-        Volt_DR= (1.65f+(1.25f-1.65f)/(8.30f-8.20f)*(Real_Volt-8.20f));
+        Volt_DR= (1.80f+(1.35f-1.80f)/(8.30f-8.15f)*(Real_Volt-8.15f));
     }
 }

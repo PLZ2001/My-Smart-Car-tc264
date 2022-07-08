@@ -481,7 +481,7 @@ void core1_main(void)
             float steeringPID_ratio = 1.0f;
             if (classification_Result==2||classification_Result==3)
             {
-                steeringPID_ratio = 1.0f;//0.85f;
+                steeringPID_ratio = 0.95f;//0.85f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
