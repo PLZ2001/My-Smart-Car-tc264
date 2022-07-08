@@ -437,7 +437,7 @@ void core1_main(void)
             {
                 status_switch_2=1;
             }
-            if(steering_Target<10&&steering_Target>-10&&d_steering_Error<10&&d_steering_Error>-10)
+            if(steering_Target<10&&steering_Target>-10)
             {
                 status_switch_2=0;
             }
@@ -453,7 +453,7 @@ void core1_main(void)
                 speed_Status = Lowest_ForT;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[7] = 0.3*T_Time;
+                time_up[7] = 0.15*T_Time;
                 Reset_Timer(7);
                 Start_Timer(7);
             }

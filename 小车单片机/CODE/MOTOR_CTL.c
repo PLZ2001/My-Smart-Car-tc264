@@ -279,7 +279,7 @@ void Update_Speed_Mode(void)
         {
             Differential_Ratio = Volt_DR;
 
-            T_Time = 0.4f;
+            T_Time = 0.8f;
 
             Highest_Distance = 0.1f;
 
