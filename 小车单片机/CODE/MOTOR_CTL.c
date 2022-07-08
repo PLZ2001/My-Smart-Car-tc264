@@ -281,37 +281,37 @@ void Update_Speed_Mode(void)
 
             T_Time = 0.8f;
 
-            Highest_Distance = 0.1f;
+            Highest_Distance = 0.05f;
 
             BANGBANG_UP = 1.0;
             BANGBANG_DOWN = 1.0;
 
             speed_Target_Highest = 1.5*3.9f;
-            SightForward_Highest = 0.38f;
+            SightForward_Highest = 0.44f;
             InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.12f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.6f;
+            Steering_PID_Highest[0]=0.10f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.6f;
 
 
             speed_Target_High = 3.9f;//¼´3.4
-            SightForward_High = 0.38f;
+            SightForward_High = 0.44f;
             InnerSide_Ratio_High = 1.10f;//1.15f;
-            Steering_PID_High[0]=0.12f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
+            Steering_PID_High[0]=0.10f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
 
 
             speed_Target_Low = 3.4f;//¼´3.0
-            SightForward_Low = 0.38f;
+            SightForward_Low = 0.44f;
             InnerSide_Ratio_Low = 1.1f;//1.25;
-            Steering_PID_Low[0]=0.13f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.6f;
+            Steering_PID_Low[0]=0.11f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.6f;
 
 
-            speed_Target_Lowest = 2.9f;//¼´2.6
-            SightForward_Lowest = 0.38f;
+            speed_Target_Lowest = 3.1f;//¼´2.7
+            SightForward_Lowest = 0.44f;
             InnerSide_Ratio_Lowest = 1.10f;
-            Steering_PID_Lowest[0]=0.12f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.6f;
+            Steering_PID_Lowest[0]=0.10f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.6f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
-            SightForward_Lowest_ForT = 0.40f;
-            InnerSide_Ratio_Lowest_ForT = 1.70f;
+            SightForward_Lowest_ForT = 0.44f;
+            InnerSide_Ratio_Lowest_ForT = 2.50f;
             Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
 
             break;
@@ -388,7 +388,7 @@ float Cal_Differential_Ratio(void)
 {
     if (Real_Volt>8.30f)
     {
-        Volt_DR= 1.20f;
+        Volt_DR= 1.25f;
     }
     else if (Real_Volt<8.20f)
     {
@@ -396,6 +396,6 @@ float Cal_Differential_Ratio(void)
     }
     else
     {
-        Volt_DR= (1.65f+(1.20f-1.65f)/(8.30f-8.20f)*(Real_Volt-8.20f));
+        Volt_DR= (1.65f+(1.25f-1.65f)/(8.30f-8.20f)*(Real_Volt-8.20f));
     }
 }
