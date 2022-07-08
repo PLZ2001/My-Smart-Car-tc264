@@ -244,7 +244,20 @@ void core1_main(void)
                          Check(&classification_Result_1,9);
 
                      }
-                     Check_Classification(classification_Result_1,1);
+
+                     //以下是新窗口的识别
+                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     if (Check_Straight(0.5f))
+                      {
+                          classification_Result_2 = 6;//6直道
+                      }
+                      else
+                      {
+                          Classification_Classic36(2,&classification_Result_2,&classification_Result_2_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+                          Check(&classification_Result_2,classification_Result_2_2nd);
+                          Check(&classification_Result_2,9);
+                      }
+
 
                      Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
                      if (Check_Straight(0.6f))
@@ -263,6 +276,14 @@ void core1_main(void)
                      else
                      {
                          Long_Straight_Flag = 0;//长直道
+                     }
+
+                     if (classification_Result_2==2||classification_Result_2==3)
+                     {
+                         if (classification_Result == 7 || classification_Result == 8 || classification_Result == 9)
+                         {
+                             classification_Result = classification_Result_2;
+                         }
                      }
                 }
             }
@@ -432,7 +453,7 @@ void core1_main(void)
                 speed_Status = Lowest_ForT;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[7] = 0.5*T_Time;
+                time_up[7] = 0.3*T_Time;
                 Reset_Timer(7);
                 Start_Timer(7);
             }

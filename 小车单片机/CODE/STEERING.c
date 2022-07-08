@@ -151,7 +151,7 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K_kp=3.6f,K_kd=3.6f;
+    float K_kp=1.0f,K_kd=1.0f;
     kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
     kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
@@ -167,8 +167,30 @@ void Cal_Steering_Target(void)
             steering_Target = (kp/1.3f * Steering_PID.current_error) +kd/1.3f*( Steering_PID.current_error - Steering_PID.last_error );
             break;
         }
-//        case 7:
-//        case 8:
+        case 7:
+        {
+            if (speed_Status == Lowest_ForT)
+            {
+                steering_Target = STEERING_MIN;
+            }
+            else
+            {
+                steering_Target = (kp * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
+            }
+            break;
+        }
+        case 8:
+        {
+            if (speed_Status == Lowest_ForT)
+            {
+                steering_Target = STEERING_MAX;
+            }
+            else
+            {
+                steering_Target = (kp * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
+            }
+            break;
+        }
 //        case 2:
 //        case 3:
         case 10:

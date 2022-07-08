@@ -15,7 +15,8 @@ uint8 classification_Result;
 uint8 classification_Result_2nd;
 uint8 classification_Result_1;
 uint8 classification_Result_1_2nd;
-
+uint8 classification_Result_2;
+uint8 classification_Result_2_2nd;
 
 //需要串口通信传过来的变量（必须配以执行变量更新的函数）
 uint8 thresholding_Value = 128; //对应的更新函数为：void Set_Thresholding_Value(uint8 val);
@@ -75,6 +76,8 @@ float arg_Classification_25[25];
 float arg_Classification_36[36];
 uint8 arg_Classification_36_Table[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
 uint8 arg_Classification_36_Table_1[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+uint8 arg_Classification_36_Table_2[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+
 
 uint8 fuzzy_Image_25[5][5];
 uint8 fuzzy_Image_36[6][6];
@@ -1033,7 +1036,47 @@ void New_Get36_1(float* arg)
     }
 }
 
+void New_Get36_2(float* arg)
+{
+    float col_edge,row_edge;
+    col_edge = Search_Range[COL][LINES]/6.0f;
+    row_edge = Search_Range[ROW][LINES]/6.0f;
 
+    static uint8 flag = 1;
+    if (flag == 1)
+    {
+        for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
+        {
+            for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+            {
+                arg_Classification_36_Table_2[i][j] = (uint8)(6*(ceil((i-Search_Range[ROW][BEGIN]+1)/row_edge)-1) + (ceil((j-Search_Range[COL][BEGIN]+1)/col_edge))-1);
+            }
+        }
+        flag = 0;
+    }
+
+    int white_cnt[36] = {0};
+    int black_cnt[36] = {0};
+    for (int i = Search_Range[ROW][BEGIN];i<Search_Range[ROW][BEGIN]+Search_Range[ROW][LINES];i++)
+    {
+        for (int j = Search_Range[COL][BEGIN];j<Search_Range[COL][BEGIN]+Search_Range[COL][LINES];j++)
+        {
+            white_cnt[arg_Classification_36_Table_2[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1) + white_cnt[arg_Classification_36_Table_2[i][j]];
+            black_cnt[arg_Classification_36_Table_2[i][j]] = (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0) + black_cnt[arg_Classification_36_Table_2[i][j]];
+        }
+    }
+    for (int i = 0;i<36;i++)
+    {
+        if ((white_cnt[i]+black_cnt[i]) == 0)
+        {
+           arg[i] = 0;
+        }
+        else
+        {
+           arg[i] = white_cnt[i]*1.0f/(white_cnt[i]+black_cnt[i]);
+        }
+    }
+}
 //
 //uint8 Classification_25(void)
 //{
@@ -1319,6 +1362,10 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
     else if (window_ID==1)
     {
         New_Get36_1(arg_Classification_36);
+    }
+    else if (window_ID==2)
+    {
+        New_Get36_2(arg_Classification_36);
     }
     uint8 max_Socre_Result = 9;//9未知
     uint8 second_Score_Result = 9;
