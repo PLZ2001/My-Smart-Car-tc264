@@ -4,6 +4,7 @@
 #include "fastlz.h"//压缩算法
 #include <stdlib.h>
 #include "OLED.h"
+#include "ICM.h"
 
 
 //需要串口通信输出去，但不用传过来的变量
@@ -113,8 +114,12 @@ void DrawCenterLine(void)
         Col_Center[i] = -2;
     }
 
+    if(is_Slope==1)
+    {
+        DrawCenterLinewithConfig(0.7);
+    }
     // 对于6直道，可以采用，特征是滤波是较大正数，用于避免中心线有过大的波动
-    if (classification_Result == 6)
+    else if (classification_Result == 6)
     {
         DrawCenterLinewithConfig(0.7);
     }
@@ -646,25 +651,28 @@ void DrawCenterLinewithConfig(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.1f);
-                flag_left = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] == 1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0)
-                {
-                    start_Col[0] = start_Col_temp;
-                    Col_Left[i] = start_Col[0];
-                }
-                else
-                {
-                    if (cnt_temp>2*road_width)
-                    {
-                        break;
-                    }
-                    start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
+//                if (cnt_temp>2*road_width)
+//                {
+//                    break;
+//                }
+                start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
 
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
+                {
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                    if (start_Col_temp>start_Col[0])
                     {
-                       Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
+                        start_Col[0] = start_Col_temp;
+                        Col_Left[i] = start_Col[0];
+                        flag_left = 1;
+                    }
+                    else
+                    {
+                        flag_left = 0;
+                        start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                        flag_left = 1;
+                        Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
                     }
                 }
             }
@@ -695,25 +703,29 @@ void DrawCenterLinewithConfig(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.1f);
-                flag_left = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)
+//                if (cnt_temp>2*road_width)
+//                {
+//                    break;
+//                }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Left[i] = start_Col[0];
-                }
-                else
-                {
-                    if (cnt_temp>2*road_width)
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                    if (start_Col_temp>start_Col[0])
                     {
-                        break;
-                    }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
+                        start_Col[0] = start_Col_temp;
+                        Col_Left[i] = start_Col[0];
+                        flag_left = 1;
+                    }
+                    else
                     {
-                        Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+                        flag_left = 0;
+                        start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                        flag_left = 1;
+                        Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
                     }
                 }
+
             }
             else
             {
@@ -739,22 +751,25 @@ void DrawCenterLinewithConfig(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.1f);
-                flag_right = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+//                if (cnt_temp>2*road_width)
+//                {
+//                    break;
+//                }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Right[i] = start_Col[1];
-                }
-                else
-                {
-                    if (cnt_temp>2*road_width)
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                    if (start_Col_temp<start_Col[1])
                     {
-                        break;
-                    }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+                        start_Col[1] = start_Col_temp;
+                        Col_Right[i] = start_Col[1];
+                        flag_right = 1;
+                    }
+                    else
                     {
+                        flag_right = 0;
+                        start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                        flag_right = 1;
                         Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
                     }
                 }
@@ -782,26 +797,30 @@ void DrawCenterLinewithConfig(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.1f);
-                flag_right = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)
+//                if (cnt_temp>2*road_width)
+//                {
+//                    break;
+//                }
+                start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Right[i] = start_Col[1];
-                }
-                else
-                {
-                    if (cnt_temp>2*road_width)
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                    if (start_Col_temp<start_Col[1])
                     {
-                        break;
+                        start_Col[1] = start_Col_temp;
+                        Col_Right[i] = start_Col[1];
+                        flag_right = 1;
                     }
-                    start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
+                    else
                     {
-                        Col_Right[i] = start_Col[1];//只有是0区域的才可以将列号存储到右线里
+                        flag_right = 0;
+                        start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                        flag_right = 1;
+                        Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
                     }
                 }
+
             }
             else
             {
@@ -899,25 +918,29 @@ void DrawCenterLinewithConfig_RightBased(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.1f);
-                flag_right = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+//                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Right[i] = start_Col[1];
-                }
-                else
-                {
-                    if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                    if (start_Col_temp<start_Col[1])
                     {
-                        break;
+                        start_Col[1] = start_Col_temp;
+                        Col_Right[i] = start_Col[1];
+                        flag_right = 1;
                     }
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+                    else
                     {
+                        flag_right = 0;
+                        start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                        flag_right = 1;
                         Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
                     }
                 }
+
             }
             else
             {
@@ -943,26 +966,30 @@ void DrawCenterLinewithConfig_RightBased(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.1f);
-                flag_right = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)
+//                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
+                start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Right[i] = start_Col[1];
-                }
-                else
-                {
-                    if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                    if (start_Col_temp<start_Col[1])
                     {
-                        break;
+                        start_Col[1] = start_Col_temp;
+                        Col_Right[i] = start_Col[1];
+                        flag_right = 1;
                     }
-                    start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
+                    else
                     {
-                        Col_Right[i] = start_Col[1];//只有是0区域的才可以将列号存储到右线里
+                        flag_right = 0;
+                        start_Col_temp = Filter_Col_Right(flag_right,start_Col[1],0.01f);
+                        flag_right = 1;
+                        Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
                     }
                 }
+
             }
             else
             {
@@ -1097,26 +1124,31 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.1f);
-                flag_left = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0)
+
+//                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
+                start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Left[i] = start_Col[0];
-                }
-                else
-                {
-                    if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                    if (start_Col_temp>start_Col[0])
                     {
-                        break;
+                        start_Col[0] = start_Col_temp;
+                        Col_Left[i] = start_Col[0];
+                        flag_left = 1;
                     }
-                    start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
+                    else
                     {
+                        flag_left = 0;
+                        start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                        flag_left = 1;
                         Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
                     }
                 }
+
             }
             else
             {
@@ -1144,25 +1176,30 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
 
             if (DrawLineFilter==1)
             {
-                int start_Col_temp;
-                start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.1f);
-                flag_left = 1;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col_temp] ==1 && mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)
+
+//                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
                 {
-                    start_Col[0] = start_Col_temp;
-                    Col_Left[i] = start_Col[0];
-                }
-                else
-                {
-                    if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+                    int start_Col_temp;
+                    start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                    if (start_Col_temp>start_Col[0])
                     {
-                        break;
+                        start_Col[0] = start_Col_temp;
+                        Col_Left[i] = start_Col[0];
+                        flag_left = 1;
                     }
-                    if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
+                    else
                     {
-                        Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+                        flag_left = 0;
+                        start_Col_temp = Filter_Col_Left(flag_left,start_Col[0],0.01f);
+                        flag_left = 1;
+                        Col_Left[i] = start_Col[0];//只有是0区域的才可以将列号存储到左线里
                     }
                 }
+
             }
             else
             {

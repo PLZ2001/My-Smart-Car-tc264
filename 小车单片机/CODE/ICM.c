@@ -1,6 +1,7 @@
 #include "headfile.h"
 #include "ICM.h"
 #include "CAMERA.h"
+#include "TIME.h"
 
 uint8 flag_for_ICM_Init=0;
 
@@ -85,14 +86,39 @@ void Get_Zero_Bias(void)
 
 uint8 Check_Slope_with_YHF(void)
 {
-    if(my_gyro_y>GYRO_Y_VALUE)
+    if (Read_Timer_Status(10) == PAUSED)
     {
-        is_Slope = 1;
+        if(my_gyro_y>GYRO_Y_VALUE)
+        {
+            is_Slope = 1;
+            time_up[9] = 0.2f;
+            Start_Timer(9);
+        }
+        if (Read_Timer_Status(9) == RUNNING)
+        {
+            is_Slope = 1;
+            if (Read_Timer(9)>time_up[9])
+            {
+                is_Slope = 0;
+                Reset_Timer(9);
+                Reset_Timer(10);
+                time_up[10] = 2.0f;
+                Start_Timer(10);
+            }
+        }
+        else
+        {
+            is_Slope = 0;
+        }
     }
     else
     {
-        is_Slope = 0;
+        if (Read_Timer(10)>time_up[10])
+        {
+            Reset_Timer(10);
+        }
     }
+
 }
 
 uint8 Check_SLope_with_PLZ(void)

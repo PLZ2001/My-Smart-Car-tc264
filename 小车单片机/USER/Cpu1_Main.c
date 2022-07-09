@@ -117,6 +117,11 @@ void core1_main(void)
                         time_up[0] = threeRoads_RightTime;
                         Start_Timer(0);
                         break;
+                    case 5:
+                        classification_Result = 5;//5三岔路口
+                        time_up[0] = 0.1f;
+                        Start_Timer(0);
+                        break;
                     case 10://左直线
                         if (flag_For_Right_Circle == 1) //说明准备出右环岛
                         {
@@ -355,7 +360,7 @@ void core1_main(void)
             }
             else
             {
-//                LED_OFF(2);
+                LED_OFF(2);
             }
 
 
@@ -448,6 +453,11 @@ void core1_main(void)
                 Reset_Timer(6);
             }
 
+            if(is_Slope==1)
+            {
+                speed_Status = Lowest;
+            }
+
             if(classification_Result == 14)//T字
             {
                 speed_Status = Lowest_ForT;
@@ -488,6 +498,11 @@ void core1_main(void)
                 steeringPID_ratio_kd = 0.5f;
                 SightForward_ratio = 0.6f;
                 InnerSide_Ratio_ratio = 1.2f;
+            }
+
+            if (is_Slope==1)
+            {
+                SightForward_ratio = 0.5f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
