@@ -89,6 +89,9 @@ void core1_main(void)
             //窗口默认处于中下位置
             Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
+            //计算左中右的笔直程度
+            Select_Left_Unknown_or_Right(6);
+
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -198,7 +201,8 @@ void core1_main(void)
                 //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Check_Left_Straight(2,0,1) == 0)
+//                    if (Check_Left_Straight(2,0,1) == 0)
+                    if(Left_Straight_Score<=5.3f)
                     {
                         classification_Result = 3;//8;
                     }
@@ -210,7 +214,8 @@ void core1_main(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 1)
                 {
-                    if (Check_Right_Straight(0,-2,1) == 0)
+//                    if (Check_Right_Straight(0,-2,1) == 0)
+                    if(Right_Straight_Score<=5.3f)
                     {
                         classification_Result = 2;//7;
                     }
@@ -481,7 +486,7 @@ void core1_main(void)
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[8] = 0.5f;
+                time_up[8] = 0.2f;
                 Reset_Timer(8);
                 Start_Timer(8);
             }

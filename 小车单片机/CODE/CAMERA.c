@@ -1666,7 +1666,6 @@ void Check(uint8 *classification_Result,uint8 else_result)
 //            *classification_Result = 8;//8©©ср
 //        }
 
-        Select_Left_Unknown_or_Right(6);
 
         if (Left_Straight_Score>=3.0f &&Left_Straight_Score>Unknown_Straight_Score+0.3f && Left_Straight_Score>Right_Straight_Score+0.3f)
         {
