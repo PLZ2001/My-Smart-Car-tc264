@@ -25,7 +25,7 @@ int search_Lines_Straight;//指直线检测的有效扫描行数
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
 
 float threeRoads_RightTime = 0.15f;
-float rightCircle_RightTime = 0.5f;
+float rightCircle_RightTime = 0.2f;
 float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 1.0f;

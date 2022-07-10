@@ -283,7 +283,7 @@ void core1_main(void)
                          Long_Straight_Flag = 0;//³¤Ö±µÀ
                      }
 
-                     if (classification_Result_2==2||classification_Result_2==3)
+                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==4)
                      {
                          if (classification_Result == 7 || classification_Result == 8 || classification_Result == 9)
                          {
@@ -494,10 +494,10 @@ void core1_main(void)
             float InnerSide_Ratio_ratio = 1.0f;
             if (classification_Result==2||classification_Result==3)
             {
-                steeringPID_ratio_kp = 1.6f;//0.85f;
+                steeringPID_ratio_kp = 1.8f;//0.85f;
                 steeringPID_ratio_kd = 0.5f;
                 SightForward_ratio = 0.6f;
-                InnerSide_Ratio_ratio = 1.2f;
+                InnerSide_Ratio_ratio = 1.8f;
             }
 
             if (is_Slope==1)

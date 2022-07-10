@@ -190,7 +190,7 @@ float ModelTable_36[CLASS_NUM_NEW][6][6]={{{ 1,1,-20,-20,1, 1},
 //uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {12,14,12,12,11,11,10};
 //float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {0.6,0.8,0.6,0.6,0.6,0.6,0.6};
 uint8 ModelTable_36_Score[CLASS_NUM_NEW] = {22,24,19,19,18,18,16};
-float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.2,0.2,0.2,0.15,0.15,-100.0};
+float ModelTable_36_Score_Required[CLASS_NUM_NEW] = {-0.1,0.1,0.2,0.2,0.15,0.15,-100.0};
 
 float score[CLASS_NUM_NEW] = {0};
 float max_Score = -72;
@@ -1431,18 +1431,18 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
         }
         if (k==1)//额外的判断：十字路口中间两竖列白色占比必须全部大于0.3，可以避免一些误识别
         {
-            if (arg_Classification_36[2] > 0.3
-                    && arg_Classification_36[3] > 0.3
-                    && arg_Classification_36[8] > 0.3
-                    && arg_Classification_36[9] > 0.3
-                    && arg_Classification_36[14] > 0.3
-                    && arg_Classification_36[15] > 0.3
-                    && arg_Classification_36[20] > 0.3
-                    && arg_Classification_36[21] > 0.3
-                    && arg_Classification_36[26] > 0.3
-                    && arg_Classification_36[27] > 0.3
-                    && arg_Classification_36[32] > 0.3
-                    && arg_Classification_36[33] > 0.3)
+            if (arg_Classification_36[2] > 0.15
+                    && arg_Classification_36[3] > 0.15
+                    && arg_Classification_36[8] > 0.15
+                    && arg_Classification_36[9] > 0.15
+                    && arg_Classification_36[14] > 0.15
+                    && arg_Classification_36[15] > 0.15
+                    && arg_Classification_36[20] > 0.15
+                    && arg_Classification_36[21] > 0.15
+                    && arg_Classification_36[26] > 0.15
+                    && arg_Classification_36[27] > 0.15
+                    && arg_Classification_36[32] > 0.15
+                    && arg_Classification_36[33] > 0.15)
             {
                 ;
             }
@@ -1657,22 +1657,22 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result == 9)//9未知
     {
-//        if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
-//        {
-//            *classification_Result = 7;//7靠左
-//        }
-//        if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
-//        {
-//            *classification_Result = 8;//8靠右
-//        }
-
-        Select_Left_Unknown_or_Right(4);
-
-        if (Left_Straight_Score>Unknown_Straight_Score+0.5f && Left_Straight_Score>Right_Straight_Score+0.5f)
+        if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
         {
             *classification_Result = 7;//7靠左
         }
-        else if(Right_Straight_Score>Unknown_Straight_Score+0.5f && Right_Straight_Score>Left_Straight_Score+0.5f)
+        if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
+        {
+            *classification_Result = 8;//8靠右
+        }
+
+        Select_Left_Unknown_or_Right(6);
+
+        if (Left_Straight_Score>Unknown_Straight_Score+0.3f && Left_Straight_Score>Right_Straight_Score+0.3f)
+        {
+            *classification_Result = 7;//7靠左
+        }
+        else if(Right_Straight_Score>Unknown_Straight_Score+0.3f && Right_Straight_Score>Left_Straight_Score+0.3f)
         {
             *classification_Result = 8;//8靠右
         }
