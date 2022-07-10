@@ -487,7 +487,6 @@ void core1_main(void)
                 Reset_Timer(6);
                 set_flag=1;
                 time_up[8] = 0.2f;
-                Reset_Timer(8);
                 Start_Timer(8);
             }
             else if (Read_Timer_Status(8) == RUNNING)
