@@ -13,6 +13,7 @@
 
 #define STRAIGHT_CONDITION 3
 
+#define MAX_Row_Index 9
 
 extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 extern int Col_Left[height_Inverse_Perspective_Max];
@@ -40,6 +41,8 @@ extern float arccosValue;
 
 extern uint8 DrawLineFilter;
 
+extern float Left_Straight_Score,Unknown_Straight_Score,Right_Straight_Score;
+
 void UART_ColCenter(void);
 void UART_ColLeft(void);
 void UART_ColRight(void);
@@ -62,6 +65,12 @@ float Filter_Col_Left(uint8 flag,float value,float ratio);
 float Filter_Col_Right(uint8 flag,float value,float ratio);
 float min(float a,float b);
 float max(float a,float b);
+
+uint8 Check_Left_All_Road(float ratio,int zero_limit);
+uint8 Check_Right_All_Road(float ratio,int zero_limit);
+
+float Get_Straight_Score(int dot_num);
+uint8 Select_Left_Unknown_or_Right(int dot_num);
 
 
 

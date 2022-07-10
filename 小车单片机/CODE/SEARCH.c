@@ -9,6 +9,7 @@
 
 //需要串口通信输出去，但不用传过来的变量
 float Col_Center[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
+float Col_Center_Backup[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
 int Col_Left[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储左线的列号结果，不合法的全部为-2
 int Col_Right[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储右线的列号结果，不合法的全部为-2
 
@@ -53,6 +54,9 @@ int8 third_Dot[2];
 float arccosValue;
 
 uint8 DrawLineFilter = 0;
+
+float Left_Straight_Score=0,Unknown_Straight_Score=0,Right_Straight_Score=0;
+
 
 void UART_ColCenter(void)
 {
@@ -3417,5 +3421,156 @@ float Filter_Col_Right(uint8 flag,float value,float ratio)
     }
 }
 
+uint8 Check_Left_All_Road(float ratio,int zero_limit)
+{
+    int cnt=0;
+    for (int i=0;i<height_Inverse_Perspective;i++)
+    {
+        uint8 flag=0;
+        for (int j=0;j<width_Inverse_Perspective-1;j++)
+        {
+            int k_limit = zero_limit<(width_Inverse_Perspective-1-j)?zero_limit:(width_Inverse_Perspective-1-j);
+            for (int k=1;k<=k_limit;k++)
+            {
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==255 && mt9v03x_image_cutted_thresholding_inversePerspective[i][j+k]==1)
+                {
+                    cnt++;
+                    flag=1;
+                    break;
+                }
+            }
+            if (flag==1)
+            {
+                break;
+            }
+        }
+    }
+    float Real_Ratio = cnt*1.0f/height_Inverse_Perspective;
+    if (Real_Ratio>=ratio)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
+uint8 Check_Right_All_Road(float ratio,int zero_limit)
+{
+    int cnt=0;
+    for (int i=0;i<height_Inverse_Perspective;i++)
+    {
+        uint8 flag=0;
+        for (int j=width_Inverse_Perspective-2;j>=0;j--)
+        {
+            int k_limit = zero_limit<(width_Inverse_Perspective-1-j)?zero_limit:(width_Inverse_Perspective-1-j);
+            for (int k=1;k<=k_limit;k++)
+            {
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==1 && mt9v03x_image_cutted_thresholding_inversePerspective[i][j+k]==255)
+                {
+                    cnt++;
+                    flag=1;
+                    break;
+                }
+            }
+            if (flag==1)
+            {
+                break;
+            }
+        }
+    }
+    float Real_Ratio = cnt*1.0f/height_Inverse_Perspective;
+    if (Real_Ratio>=ratio)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+uint8 Select_Left_Unknown_or_Right(int dot_num)
+{
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center_Backup[i]=Col_Center[i];
+        Col_Center[i] = -2;
+    }
+    DrawCenterLinewithConfig_RightBased(0);
+    Right_Straight_Score = Get_Straight_Score(dot_num);
+
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = -2;
+    }
+    DrawCenterLinewithConfig_LeftBased(0);
+    Left_Straight_Score = Get_Straight_Score(dot_num);
+
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = -2;
+    }
+    DrawCenterLinewithConfig(0);
+    Unknown_Straight_Score = Get_Straight_Score(dot_num);
+
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = Col_Center_Backup[i];
+    }
+}
+
+float Get_Straight_Score(int dot_num)
+{
+    uint8 area_divide = dot_num-1;
+    uint8 Row_Index[MAX_Row_Index];
+    float K[MAX_Row_Index];
+    Row_Index[0] = (uint8)round(height_Inverse_Perspective*0.1f);
+    Row_Index[dot_num-1] = (uint8)round(height_Inverse_Perspective*0.9f);
+    float Col_Center_Init = width_Inverse_Perspective/2;
+    for (int i=1;i<=dot_num-2;i++)
+    {
+        Row_Index[i] = (uint8)round(height_Inverse_Perspective*1.0f/area_divide*i);
+    }
+    uint8 cnt=0;
+    float K_Ave=0;
+    for (int i=0;i<=dot_num-1;i++)
+    {
+        K[i]=-2;
+        if (Col_Center[Row_Index[i]]!=-2)
+        {
+            K[i] = (Col_Center[Row_Index[i]]-Col_Center_Init)/Row_Index[i];
+            cnt++;
+        }
+    }
+    if (cnt==0)
+    {
+        return 0;
+    }
+    for (int i=0;i<=dot_num-1;i++)
+    {
+        if (K[i]!=-2)
+        {
+            K_Ave+=K[i];
+        }
+    }
+    K_Ave = K_Ave/cnt;
+    float score=0;
+    for (int i=0;i<=dot_num-1;i++)
+    {
+        if (K[i]!=-2)
+        {
+            score+=1-fabsf(K[i]-K_Ave);
+        }
+    }
+    return score;
+
+}
 

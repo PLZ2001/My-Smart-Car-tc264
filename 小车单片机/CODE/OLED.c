@@ -130,10 +130,13 @@ void Update_OLED_per10ms(void)
 //                OLED_PRINTF(100,3,"%1.2f ",kp);
 //                OLED_PRINTF(100,4,"%1.2f ",kd);
 //                OLED_PRINTF(100,5,"%1.2f ",Volt_DR);
-                OLED_PRINTF(100,3,"%d ",classification_Result_1);
-                OLED_PRINTF(100,4,"%d ",classification_Result_2);
-                OLED_PRINTF(100,5,"%d ",classification_Result);
-                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
+//                OLED_PRINTF(100,3,"%d ",classification_Result_1);
+//                OLED_PRINTF(100,4,"%d ",classification_Result_2);
+                OLED_PRINTF(100,3,"%1.2f ",Left_Straight_Score);
+                OLED_PRINTF(100,4,"%1.2f ",Unknown_Straight_Score);
+                OLED_PRINTF(100,5,"%1.2f ",Right_Straight_Score);
+                OLED_PRINTF(100,6,"%d ",classification_Result);
+//                OLED_PRINTF(100,7,"%d  ",thresholding_Value);
 //                OLED_PRINTF(100,7,"%d  ",classification_Result);
 //                OLED_PRINTF(100,7,"%d  ",Long_Straight_Flag);
 

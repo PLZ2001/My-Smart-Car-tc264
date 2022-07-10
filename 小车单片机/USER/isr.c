@@ -114,7 +114,6 @@ IFX_INTERRUPT(cc61_pit_ch0_isr, 0, CCU6_1_CH0_ISR_PRIORITY)
         Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
         Cal_Speed_Output1();
         Cal_Speed_Output2();
-        Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
         Set_Speed1();
         Set_Speed2();
         Set_Steering();

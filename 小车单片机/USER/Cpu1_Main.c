@@ -572,7 +572,7 @@ void core1_main(void)
                 }
             }
             Cal_Steering_Error(SightForward);
-
+            Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
             if(Check_TRoad(0,0.1))
             {
