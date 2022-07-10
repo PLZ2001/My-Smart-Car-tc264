@@ -170,7 +170,7 @@ void Cal_Steering_Target(void)
         }
         case 7:
         {
-            if (speed_Status == Lowest_ForT)
+            if (flag_For_T == 2)
             {
                 steering_Target = STEERING_MIN;
             }
@@ -182,7 +182,7 @@ void Cal_Steering_Target(void)
         }
         case 8:
         {
-            if (speed_Status == Lowest_ForT)
+            if (flag_For_T == 2)
             {
                 steering_Target = STEERING_MAX;
             }

@@ -279,7 +279,7 @@ void Update_Speed_Mode(void)
         {
             Differential_Ratio = Volt_DR;
 
-            T_Time = 0.8f;
+            T_Time = 0.12f;
 
             Highest_Distance = 0.05f;
 
@@ -294,7 +294,7 @@ void Update_Speed_Mode(void)
 
             speed_Target_High = 3.9f;//¼´3.4
             SightForward_High = 0.44f;
-            InnerSide_Ratio_High = 1.15f;//1.15f;
+            InnerSide_Ratio_High = 1.20f;//1.15f;
             Steering_PID_High[0]=0.11f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
 
 
@@ -311,8 +311,9 @@ void Update_Speed_Mode(void)
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.44f;
-            InnerSide_Ratio_Lowest_ForT = 2.50f;
-            Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+            InnerSide_Ratio_Lowest_ForT = 3.00f;
+            //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+            Steering_PID_Lowest_ForT[0]=0.10f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.6f;
 
             break;
         }

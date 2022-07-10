@@ -58,6 +58,8 @@ uint8 DrawLineFilter = 0;
 float Left_Straight_Score=0,Unknown_Straight_Score=0,Right_Straight_Score=0;
 
 
+uint8 flag_For_T = 0;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -844,7 +846,8 @@ void DrawCenterLinewithConfig(float filter)
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
 
         //下面是中心线计算
-        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
+//        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
+        if (start_Col[0]>start_Col[1])
         {
             continue;
         }
@@ -885,7 +888,14 @@ void DrawCenterLinewithConfig(float filter)
         }
         else //左线非法，右线非法
         {
-
+            if (Col_Center[i-1]!=-2)
+            {
+                Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*(width_Inverse_Perspective/2);
+            }
+            else
+            {
+                Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(width_Inverse_Perspective/2);
+            }
         }
         //中心线计算完毕
     }

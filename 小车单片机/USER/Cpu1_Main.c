@@ -145,19 +145,17 @@ void core1_main(void)
                         }
                         break;
                     case 14://T字
-                        if (flag_For_Right_T == 1) //说明准备出右丁字
+                        if (flag_For_T == 0)
                         {
-                            flag_For_Right_T = 0;
-                            classification_Result = 7;//7靠左
-                            time_up[0] = T_Time;
-                            Start_Timer(0);
-                        }
-                        else if (flag_For_Left_T == 1)
-                        {
-                            flag_For_Left_T = 0;
-                            classification_Result = 8;//8靠右
-                            time_up[0] = T_Time;
-                            Start_Timer(0);
+                            if (flag_For_Right_T == 1||flag_For_Left_T == 1)
+                            {
+                                classification_Result = 14;
+                                flag_For_T = 1;
+                            }
+                            else
+                            {
+                                flag_For_T = 0;
+                            }
                         }
                         break;
                     default:
@@ -187,6 +185,13 @@ void core1_main(void)
                     Reset_Timer(5);
                 }
             }
+            if (Read_Timer_Status(7) == RUNNING)
+            {
+                if (Read_Timer(7)>time_up[7])
+                {
+                    Reset_Timer(7);
+                }
+            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -212,6 +217,36 @@ void core1_main(void)
                     else
                     {
                         classification_Result = 11;//11右直线
+                    }
+                }
+                else if (flag_For_T == 1)
+                {
+                    classification_Result = 14;
+                    if (Check_TRoad(1,0.25f) == 1)
+                    {
+                        flag_For_T = 2;
+                        time_up[7] = T_Time;
+                        Start_Timer(7);
+                    }
+                }
+                else if (flag_For_T == 2)
+                {
+                    if (Read_Timer_Status(7) == PAUSED)
+                    {
+                        flag_For_T=0;
+                    }
+                    else
+                    {
+                        if (flag_For_Right_T == 1)
+                        {
+                            classification_Result = 7;//靠左
+                            flag_For_Right_T = 0;
+                        }
+                        if (flag_For_Left_T == 1)
+                         {
+                             classification_Result = 8;//靠右
+                             flag_For_Left_T = 0;
+                         }
                     }
                 }
                 else
@@ -417,25 +452,6 @@ void core1_main(void)
                 Reset_Timer(6);
             }
 
-            if(classification_Result == 12||classification_Result == 13)
-            {
-                speed_Status = Low;
-                Reset_Timer(6);
-                set_flag=1;
-                time_up[8] = 1.5f;
-                Reset_Timer(8);
-                Start_Timer(8);
-            }
-            else if (Read_Timer_Status(8) == RUNNING)
-            {
-                speed_Status = Low;
-                set_flag=1;
-                if (Read_Timer(8)>time_up[8])
-                {
-                    Reset_Timer(8);
-                }
-            }
-
 
             static uint8 status_switch_2=0;
             if(d_steering_Error>50||d_steering_Error<-50)
@@ -455,28 +471,43 @@ void core1_main(void)
 
             if(is_Slope==1)
             {
+                Reset_Timer(6);
                 speed_Status = Lowest;
+                set_flag=1;
             }
 
-            if(classification_Result == 14)//T字
+            if(classification_Result == 12||classification_Result == 13)
+            {
+                speed_Status = Lowest;
+                Reset_Timer(6);
+                set_flag=1;
+                time_up[8] = 0.5f;
+                Reset_Timer(8);
+                Start_Timer(8);
+            }
+            else if (Read_Timer_Status(8) == RUNNING)
+            {
+                speed_Status = Lowest;
+                set_flag=1;
+                if (Read_Timer(8)>time_up[8])
+                {
+                    Reset_Timer(8);
+                }
+            }
+
+
+            if(flag_For_T == 1)//T字
             {
                 speed_Status = Lowest_ForT;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[7] = 0.15*T_Time;
-                Reset_Timer(7);
-                Start_Timer(7);
             }
-            else if (Read_Timer_Status(7) == RUNNING)
+            else if(flag_For_T == 2)//T字
             {
                 speed_Status = Lowest_ForT;
+                Reset_Timer(6);
                 set_flag=1;
-                if (Read_Timer(7)>time_up[7])
-                {
-                    Reset_Timer(7);
-                }
             }
-
 
 
             if(set_flag==0)

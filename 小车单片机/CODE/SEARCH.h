@@ -43,6 +43,9 @@ extern uint8 DrawLineFilter;
 
 extern float Left_Straight_Score,Unknown_Straight_Score,Right_Straight_Score;
 
+extern uint8 flag_For_T;
+
+
 void UART_ColCenter(void);
 void UART_ColLeft(void);
 void UART_ColRight(void);
