@@ -1657,14 +1657,14 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result == 9)//9Î´Öª
     {
-        if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
-        {
-            *classification_Result = 7;//7¿¿×ó
-        }
-        if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
-        {
-            *classification_Result = 8;//8¿¿ÓÒ
-        }
+//        if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
+//        {
+//            *classification_Result = 7;//7¿¿×ó
+//        }
+//        if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
+//        {
+//            *classification_Result = 8;//8¿¿ÓÒ
+//        }
 
         Select_Left_Unknown_or_Right(6);
 

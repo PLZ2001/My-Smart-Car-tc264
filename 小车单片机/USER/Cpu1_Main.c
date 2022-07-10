@@ -283,7 +283,7 @@ void core1_main(void)
                          Long_Straight_Flag = 0;//³¤Ö±µÀ
                      }
 
-                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==4)
+                     if (classification_Result_2==2||classification_Result_2==3)
                      {
                          if (classification_Result == 7 || classification_Result == 8 || classification_Result == 9)
                          {
