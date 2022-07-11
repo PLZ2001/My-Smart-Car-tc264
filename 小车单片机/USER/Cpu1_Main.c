@@ -94,7 +94,7 @@ void core1_main(void)
 
             //检查斑马线数据
             Check_Zebra(0.6f);
-            if (White2Black_cnt>=10 && zebra_status == finding)
+            if (White2Black_cnt>=14 && zebra_status == finding)
             {
                 Zebra_times++;
                 if (Zebra_times<Zebra_times_Max)
@@ -247,7 +247,7 @@ void core1_main(void)
                 else if (flag_For_Right_Circle == 2)
                 {
 //                    if (Check_Left_Straight(2,0,1) == 0)
-                    if(Left_Straight_Score<=5.3f)
+                    if(Left_Straight_Score<=5.5f)
                     {
                         classification_Result = 3;//8;
                     }
@@ -260,7 +260,7 @@ void core1_main(void)
                 else if (flag_For_Left_Circle == 2)
                 {
 //                    if (Check_Right_Straight(0,-2,1) == 0)
-                    if(Right_Straight_Score<=5.3f)
+                    if(Right_Straight_Score<=5.5f)
                     {
                         classification_Result = 2;//7;
                     }
