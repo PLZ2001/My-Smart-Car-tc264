@@ -102,8 +102,8 @@ void core1_main(void)
                         {
                             flag_For_Left_Circle = 1;
                             //classification_Result = 7;//7靠左
-                            time_up[0] = rightCircle_RightTime;
-                            Start_Timer(0);
+//                            time_up[0] = rightCircle_RightTime;
+//                            Start_Timer(0);
                         }
                         break;
                     case 3://右环岛
@@ -111,8 +111,8 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             //classification_Result = 8;//8靠右
-                            time_up[0] = rightCircle_RightTime;
-                            Start_Timer(0);
+//                            time_up[0] = rightCircle_RightTime;
+//                            Start_Timer(0);
                         }
                         break;
                     case 4:
@@ -126,23 +126,23 @@ void core1_main(void)
                         Start_Timer(0);
                         break;
                     case 10://左直线
-                        if (flag_For_Right_Circle == 1) //说明准备出右环岛
+                        if (flag_For_Right_Circle == 2) //说明准备出右环岛
                         {
-                            flag_For_Right_Circle = 2;
+                            flag_For_Right_Circle = 3;
                             //classification_Result = 7;//7靠左
-                            time_up[0] = rightCircle_LeftTime;
-                            Start_Timer(0);
+//                            time_up[0] = rightCircle_LeftTime;
+//                            Start_Timer(0);
                             time_up[4] = rightCircle_BannedTime;
                             Start_Timer(4);
                         }
                         break;
                     case 11://右直线
-                        if (flag_For_Left_Circle == 1) //说明准备出左环岛
+                        if (flag_For_Left_Circle == 2) //说明准备出左环岛
                         {
-                            flag_For_Left_Circle = 2;
+                            flag_For_Left_Circle = 3;
                             //classification_Result = 8;//8靠右
-                            time_up[0] = rightCircle_LeftTime;
-                            Start_Timer(0);
+//                            time_up[0] = rightCircle_LeftTime;
+//                            Start_Timer(0);
                             time_up[5] = rightCircle_BannedTime;
                             Start_Timer(5);
                         }
@@ -188,18 +188,32 @@ void core1_main(void)
                     Reset_Timer(5);
                 }
             }
-            if (Read_Timer_Status(7) == RUNNING)
-            {
-                if (Read_Timer(7)>time_up[7])
-                {
-                    Reset_Timer(7);
-                }
-            }
+//            if (Read_Timer_Status(7) == RUNNING)
+//            {
+//                if (Read_Timer(7)>time_up[7])
+//                {
+//                    Reset_Timer(7);
+//                }
+//            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
-                //小车处于右圆环状态
                 if (flag_For_Right_Circle == 1)
+                {
+                    if (Left_Straight_Score<=3.0f)
+                    {
+                        flag_For_Right_Circle = 2;
+                    }
+                }
+                else if (flag_For_Left_Circle == 1)
+                {
+                    if (Right_Straight_Score<=3.0f)
+                    {
+                        flag_For_Left_Circle = 2;
+                    }
+                }
+                //小车处于右圆环状态
+                else if (flag_For_Right_Circle == 2)
                 {
 //                    if (Check_Left_Straight(2,0,1) == 0)
                     if(Left_Straight_Score<=5.3f)
@@ -212,7 +226,7 @@ void core1_main(void)
                     }
                 }
                 //小车处于左圆环状态
-                else if (flag_For_Left_Circle == 1)
+                else if (flag_For_Left_Circle == 2)
                 {
 //                    if (Check_Right_Straight(0,-2,1) == 0)
                     if(Right_Straight_Score<=5.3f)
@@ -230,13 +244,14 @@ void core1_main(void)
                     if (Check_TRoad(1,0.25f) == 1)
                     {
                         flag_For_T = 2;
-                        time_up[7] = T_Time;
-                        Start_Timer(7);
+//                        time_up[7] = T_Time;
+//                        Start_Timer(7);
                     }
                 }
                 else if (flag_For_T == 2)
                 {
-                    if (Read_Timer_Status(7) == PAUSED)
+//                    if (Read_Timer_Status(7) == PAUSED)
+                    if (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f)
                     {
                         flag_For_T=0;
                     }
@@ -256,11 +271,11 @@ void core1_main(void)
                 }
                 else
                 {//正常识别
-                    if (flag_For_Right_Circle == 2 && Read_Timer_Status(4) == PAUSED)
+                    if (flag_For_Right_Circle == 3 && Read_Timer_Status(4) == PAUSED)
                     {
                         flag_For_Right_Circle = 0;
                     }
-                    if (flag_For_Left_Circle == 2 && Read_Timer_Status(5) == PAUSED)
+                    if (flag_For_Left_Circle == 3 && Read_Timer_Status(5) == PAUSED)
                     {
                         flag_For_Left_Circle = 0;
                     }
@@ -486,7 +501,7 @@ void core1_main(void)
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[8] = 0.2f;
+                time_up[8] = 0.3f;
                 Start_Timer(8);
             }
             else if (Read_Timer_Status(8) == RUNNING)

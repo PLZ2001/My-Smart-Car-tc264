@@ -194,7 +194,7 @@ void Cal_Steering_Target(void)
         }
         case 2:
         {
-            if (Read_Timer_Status(0) == RUNNING && flag_For_Left_Circle==1)
+            if (flag_For_Left_Circle==1)
             {
                 steering_Target = STEERING_MIN;
             }
@@ -206,7 +206,7 @@ void Cal_Steering_Target(void)
         }
         case 3:
         {
-            if (Read_Timer_Status(0) == RUNNING && flag_For_Right_Circle==1)
+            if (flag_For_Right_Circle==1)
             {
                 steering_Target = STEERING_MAX;
             }
