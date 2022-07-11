@@ -244,7 +244,7 @@ void Cal_Steering_Target(void)
         if (steering_Target_Remember_flag==0)
         {
             steering_Target=0;
-            if (Check_TRoad(1,0.25f) == 1)
+            if (Check_TRoad(1,0.15f) == 1)
             {
                 if(zebra_start_direction==1)
                 {
@@ -265,7 +265,7 @@ void Cal_Steering_Target(void)
             steering_Target = steering_Target_Remember;
         }
 
-        if (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f)
+        if (Left_Straight_Score>=2.0f||Unknown_Straight_Score>=2.0f||Right_Straight_Score>=2.0f)
         {
             zebra_status=finding;
         }

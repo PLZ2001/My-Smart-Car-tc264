@@ -93,7 +93,7 @@ void core1_main(void)
             Select_Left_Unknown_or_Right(6);
 
             //检查斑马线数据
-            if (steering_Target<=20 && steering_Target>=-20)
+            if (steering_Target<=34 && steering_Target>=-34)
             {
                 Check_Zebra(0.6f);
                 if (White2Black_cnt>=14 && zebra_status == finding)
@@ -249,8 +249,8 @@ void core1_main(void)
                 //小车处于右圆环状态
                 else if (flag_For_Right_Circle == 2)
                 {
-//                    if (Check_Left_Straight(2,0,1) == 0)
-                    if(Left_Straight_Score<=5.5f)
+                    if (Check_Left_Straight(2,0,1) == 0)
+//                    if(Left_Straight_Score<=5.5f)
                     {
                         classification_Result = 3;//8;
                     }
@@ -262,8 +262,8 @@ void core1_main(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 2)
                 {
-//                    if (Check_Right_Straight(0,-2,1) == 0)
-                    if(Right_Straight_Score<=5.5f)
+                    if (Check_Right_Straight(0,-2,1) == 0)
+//                    if(Right_Straight_Score<=5.5f)
                     {
                         classification_Result = 2;//7;
                     }
