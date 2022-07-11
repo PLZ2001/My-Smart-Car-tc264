@@ -205,14 +205,14 @@ void core1_main(void)
             {
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Left_Straight_Score<=2.5f)
+                    if (Left_Straight_Score<=2.7f)
                     {
                         flag_For_Right_Circle = 2;
                     }
                 }
                 else if (flag_For_Left_Circle == 1)
                 {
-                    if (Right_Straight_Score<=2.5f)
+                    if (Right_Straight_Score<=2.7f)
                     {
                         flag_For_Left_Circle = 2;
                     }
@@ -556,10 +556,10 @@ void core1_main(void)
             float InnerSide_Ratio_ratio = 1.0f;
             if (classification_Result==2||classification_Result==3)
             {
-                steeringPID_ratio_kp = 1.8f;//0.85f;
-                steeringPID_ratio_kd = 0.5f;
+                steeringPID_ratio_kp = 1.5f;//0.85f;
+                steeringPID_ratio_kd = 0.1f;
                 SightForward_ratio = 0.6f;
-                InnerSide_Ratio_ratio = 1.8f;
+                InnerSide_Ratio_ratio = 1.0f;
             }
 
             if (is_Slope==1)

@@ -9,7 +9,7 @@
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 float d_steering_Error = 0;
-uint32 STEERING_DUTY_CENTER=774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
+uint32 STEERING_DUTY_CENTER=779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
 float SightForward_Highest = 0.25f;
@@ -196,7 +196,7 @@ void Cal_Steering_Target(void)
         {
             if (flag_For_Left_Circle==1)
             {
-                steering_Target = STEERING_MIN;
+                steering_Target = -35.0f;
             }
             else
             {
@@ -208,7 +208,7 @@ void Cal_Steering_Target(void)
         {
             if (flag_For_Right_Circle==1)
             {
-                steering_Target = STEERING_MAX;
+                steering_Target = 35.0f;
             }
             else
             {
