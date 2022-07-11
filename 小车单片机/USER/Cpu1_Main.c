@@ -200,14 +200,14 @@ void core1_main(void)
             {
                 if (flag_For_Right_Circle == 1)
                 {
-                    if (Left_Straight_Score<=3.0f)
+                    if (Left_Straight_Score<=2.5f)
                     {
                         flag_For_Right_Circle = 2;
                     }
                 }
                 else if (flag_For_Left_Circle == 1)
                 {
-                    if (Right_Straight_Score<=3.0f)
+                    if (Right_Straight_Score<=2.5f)
                     {
                         flag_For_Left_Circle = 2;
                     }
