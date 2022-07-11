@@ -3637,18 +3637,40 @@ void Check_Zebra(float pos)
         }
         Right_dot = X_WIDTH_CAMERA-1;
     }
-    White2Black_cnt = white2black_cnt;
-    float direction = 0.5f*(Right_dot+Left_dot);
-    if (direction>0 && direction<(X_WIDTH_CAMERA-1)*0.5f)
+
+    static uint8 last_white2black_cnt=0;
+    static uint8 cnt_filter=0;
+    int valid_flag = 0;
+    if (last_white2black_cnt==white2black_cnt)
     {
-        zebra_direction = -1;
-    }
-    else if (direction>(X_WIDTH_CAMERA-1)*0.5f && direction<(X_WIDTH_CAMERA-1))
-    {
-        zebra_direction = 1;
+        cnt_filter++;
+        if (cnt_filter>=1)
+        {
+            valid_flag=1;
+        }
     }
     else
     {
-        zebra_direction = 0;
+        cnt_filter=0;
+        last_white2black_cnt = white2black_cnt;
+    }
+
+    if (valid_flag==1)
+    {
+        White2Black_cnt = white2black_cnt;
+
+        float direction = 0.5f*(Right_dot+Left_dot);
+        if (direction>0 && direction<(X_WIDTH_CAMERA-1)*0.5f)
+        {
+            zebra_direction = -1;
+        }
+        else if (direction>(X_WIDTH_CAMERA-1)*0.5f && direction<(X_WIDTH_CAMERA-1))
+        {
+            zebra_direction = 1;
+        }
+        else
+        {
+            zebra_direction = 0;
+        }
     }
 }

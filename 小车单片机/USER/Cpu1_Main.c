@@ -93,20 +93,23 @@ void core1_main(void)
             Select_Left_Unknown_or_Right(6);
 
             //检查斑马线数据
-            Check_Zebra(0.6f);
-            if (White2Black_cnt>=14 && zebra_status == finding)
+            if (steering_Target<=20 && steering_Target>=-20)
             {
-                Zebra_times++;
-                if (Zebra_times<Zebra_times_Max)
+                Check_Zebra(0.6f);
+                if (White2Black_cnt>=14 && zebra_status == finding)
                 {
-                    zebra_status = banning;
-                    time_up[11] = 3.0f;
-                    Reset_Timer(11);
-                    Start_Timer(11);
-                }
-                else
-                {
-                    zebra_status = finishing;
+                    Zebra_times++;
+                    if (Zebra_times<Zebra_times_Max)
+                    {
+                        zebra_status = banning;
+                        time_up[11] = 3.0f;
+                        Reset_Timer(11);
+                        Start_Timer(11);
+                    }
+                    else
+                    {
+                        zebra_status = finishing;
+                    }
                 }
             }
             if (Read_Timer_Status(11) == RUNNING)
