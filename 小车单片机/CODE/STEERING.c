@@ -172,7 +172,7 @@ void Cal_Steering_Target(void)
         {
             if (flag_For_T == 2)
             {
-                steering_Target = STEERING_MIN;
+                steering_Target = STEERING_MIN-10;
             }
             else
             {
@@ -184,7 +184,7 @@ void Cal_Steering_Target(void)
         {
             if (flag_For_T == 2)
             {
-                steering_Target = STEERING_MAX;
+                steering_Target = STEERING_MAX+10;
             }
             else
             {
@@ -237,7 +237,69 @@ void Cal_Steering_Target(void)
         }
     }
 
+    if (zebra_status==starting)
+    {
+        static float steering_Target_Remember = 0;
+        static uint8 steering_Target_Remember_flag=0;
+        if (steering_Target_Remember_flag==0)
+        {
+            steering_Target=0;
+            if (Check_TRoad(1,0.25f) == 1)
+            {
+                if(zebra_start_direction==1)
+                {
+                    steering_Target = STEERING_MAX+10;
+                    steering_Target_Remember = steering_Target;
+                    steering_Target_Remember_flag=1;
+                }
+                else if(zebra_start_direction==-1)
+                {
+                    steering_Target = STEERING_MIN-10;
+                    steering_Target_Remember = steering_Target;
+                    steering_Target_Remember_flag=1;
+                }
+            }
+        }
+        else
+        {
+            steering_Target = steering_Target_Remember;
+        }
 
+        if (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f)
+        {
+            zebra_status=finding;
+        }
+    }
+
+    if (zebra_status==finishing)
+    {
+        static float steering_Target_Remember = 0;
+        static uint8 steering_Target_Remember_flag=0;
+        if (steering_Target_Remember_flag==0)
+        {
+            if (zebra_direction==-1)
+            {
+                steering_Target = STEERING_MIN-10;
+                steering_Target_Remember = steering_Target;
+                steering_Target_Remember_flag=1;
+            }
+            else if(zebra_direction==1)
+            {
+                steering_Target = STEERING_MAX+10;
+                steering_Target_Remember = steering_Target;
+                steering_Target_Remember_flag=1;
+            }
+        }
+        else
+        {
+            steering_Target = steering_Target_Remember;
+        }
+
+        if (Left_Straight_Score<=1.50f&&Unknown_Straight_Score<=1.50f&&Right_Straight_Score<=1.50f)
+        {
+            emergency_Stop=1;
+        }
+    }
 
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
     if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;

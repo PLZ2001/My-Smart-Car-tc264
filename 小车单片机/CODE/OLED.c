@@ -47,6 +47,13 @@ void Update_OLED_per10ms(void)
                 //               OLED_PRINTF(0,4,"width:%d ",width_Inverse_Perspective);
                 //               OLED_PRINTF(0,5,"height:%d ",height_Inverse_Perspective);
                 break;
+            case Zebra_Page:
+                OLED_PRINTF(0,0,"W2B:%d ",White2Black_cnt);
+                OLED_PRINTF(0,1,"Status:%d ",zebra_status);
+                OLED_PRINTF(0,2,"Times:%d ",Zebra_times);
+                OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
+                OLED_PRINTF(0,4,"StartDir:%d ",zebra_start_direction);
+                break;
             case Speed_Page2:
                 if (speed_Status == Highest)
                 {
@@ -136,6 +143,7 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(100,4,"%1.2f ",Unknown_Straight_Score);
                 OLED_PRINTF(100,5,"%1.2f ",Right_Straight_Score);
                 OLED_PRINTF(100,6,"%d ",classification_Result);
+                OLED_PRINTF(100,7,"%d ",White2Black_cnt);
 //                OLED_PRINTF(100,7,"%d  ",thresholding_Value);
 //                OLED_PRINTF(100,7,"%d  ",classification_Result);
 //                OLED_PRINTF(100,7,"%d  ",Long_Straight_Flag);

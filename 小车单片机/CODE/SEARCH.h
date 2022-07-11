@@ -1,6 +1,15 @@
 #ifndef __SEARCH_h__
 #define __SEARCH_h__
 
+enum ZEBRA_STATUS
+{
+    starting,
+    finding,
+    banning,
+    finishing
+};
+
+
 #ifndef width_Inverse_Perspective_Max
 #define width_Inverse_Perspective_Max 128
 #endif
@@ -45,6 +54,16 @@ extern float Left_Straight_Score,Unknown_Straight_Score,Right_Straight_Score;
 
 extern uint8 flag_For_T;
 extern uint8 flag_For_ThreeRoad;
+extern uint8 White2Black_cnt;
+extern enum ZEBRA_STATUS zebra_status;
+extern uint8 Zebra_times;
+extern uint8 Zebra_times_Max;
+extern int zebra_direction;
+extern int zebra_start_direction;
+
+
+
+
 
 
 

@@ -92,6 +92,32 @@ void core1_main(void)
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(6);
 
+            //检查斑马线数据
+            Check_Zebra(0.6f);
+            if (White2Black_cnt>=10 && zebra_status == finding)
+            {
+                Zebra_times++;
+                if (Zebra_times<Zebra_times_Max)
+                {
+                    zebra_status = banning;
+                    time_up[11] = 3.0f;
+                    Reset_Timer(11);
+                    Start_Timer(11);
+                }
+                else
+                {
+                    zebra_status = finishing;
+                }
+            }
+            if (Read_Timer_Status(11) == RUNNING)
+            {
+                if (Read_Timer(11)>time_up[11])
+                {
+                    Reset_Timer(11);
+                    zebra_status = finding;
+                }
+            }
+
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -411,7 +437,7 @@ void core1_main(void)
 
 
             //LED指示
-            if(Read_Timer_Status(0) == RUNNING)
+            if(Read_Timer_Status(0) == RUNNING || zebra_status == banning)
             {
                 LED_ON(1);
             }
@@ -540,6 +566,19 @@ void core1_main(void)
                 set_flag=1;
             }
 
+            if (zebra_status == starting)
+            {
+                speed_Status = Lowest_ForT;
+                Reset_Timer(6);
+                set_flag=1;
+            }
+            else if (zebra_status == finishing)
+            {
+                speed_Status = Lowest_ForZebra;
+                Reset_Timer(6);
+                set_flag=1;
+            }
+
 
             if(set_flag==0)
             {
@@ -628,6 +667,14 @@ void core1_main(void)
                 {
                     SightForward = SightForward_Lowest_ForT*SightForward_ratio;
                     speed_Target = speed_Target_Lowest_ForT;
+                    InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
+                    Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);
+                    break;
+                }
+                case Lowest_ForZebra:
+                {
+                    SightForward = SightForward_Lowest_ForT*SightForward_ratio;
+                    speed_Target = 0;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
                     Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);
                     break;

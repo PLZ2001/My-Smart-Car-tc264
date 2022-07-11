@@ -190,6 +190,9 @@ void Key1_Action(void)
         case Speed_Page:
             start_Flag = start_Flag?0:1;
             break;
+        case Zebra_Page:
+            Zebra_times_Max-=1;
+            break;
         default:
             break;
     }
@@ -215,6 +218,9 @@ void Key2_Action(void)
         case Camera_Page2:{
             DrawLineFilter = (DrawLineFilter==1?0:1);
             break;}
+        case Zebra_Page:
+            zebra_start_direction = (zebra_start_direction==1?-1:1);
+            break;
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;
@@ -353,6 +359,9 @@ void Key3_Action(void)
                 direction = 1;
             }
             break;}
+        case Zebra_Page:
+            Zebra_times_Max+=1;
+            break;
         default:
             break;
     }

@@ -61,6 +61,13 @@ float Left_Straight_Score=0,Unknown_Straight_Score=0,Right_Straight_Score=0;
 uint8 flag_For_T = 0;
 uint8 flag_For_ThreeRoad = 0;
 
+uint8 White2Black_cnt = 0;
+enum ZEBRA_STATUS zebra_status = starting;
+uint8 Zebra_times=0;
+uint8 Zebra_times_Max=2;
+int zebra_direction = 0;
+int zebra_start_direction = 1;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -3585,3 +3592,63 @@ float Get_Straight_Score(int dot_num)
 
 }
 
+void Check_Zebra(float pos)
+{
+    uint8 white2black_cnt=0;
+    uint8 i = (1.0f-pos)*Y_WIDTH_CAMERA;
+    int Left_dot=-2;
+    int Right_dot=-2;
+    if (mt9v03x_image[i][0]>thresholding_Value)
+    {
+        white2black_cnt++;
+        if (Left_dot==-2)
+        {
+            Left_dot = 0;
+        }
+        Right_dot = 0;
+    }
+    for (int j=0;j<X_WIDTH_CAMERA-2;j++)
+    {
+        if (mt9v03x_image[i][j]>thresholding_Value && mt9v03x_image[i][j+1]<=thresholding_Value)
+        {
+            white2black_cnt++;
+            if (Left_dot==-2)
+            {
+                Left_dot = j;
+            }
+            Right_dot = j;
+        }
+        if (mt9v03x_image[i][j]<=thresholding_Value && mt9v03x_image[i][j+1]>thresholding_Value)
+        {
+            white2black_cnt++;
+            if (Left_dot==-2)
+            {
+                Left_dot = j;
+            }
+            Right_dot = j;
+        }
+    }
+    if (mt9v03x_image[i][X_WIDTH_CAMERA-1]>thresholding_Value)
+    {
+        white2black_cnt++;
+        if (Left_dot==-2)
+        {
+            Left_dot = X_WIDTH_CAMERA-1;
+        }
+        Right_dot = X_WIDTH_CAMERA-1;
+    }
+    White2Black_cnt = white2black_cnt;
+    float direction = 0.5f*(Right_dot+Left_dot);
+    if (direction>0 && direction<(X_WIDTH_CAMERA-1)*0.5f)
+    {
+        zebra_direction = -1;
+    }
+    else if (direction>(X_WIDTH_CAMERA-1)*0.5f && direction<(X_WIDTH_CAMERA-1))
+    {
+        zebra_direction = 1;
+    }
+    else
+    {
+        zebra_direction = 0;
+    }
+}

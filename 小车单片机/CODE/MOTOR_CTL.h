@@ -12,6 +12,7 @@ enum SpeedMode
 
 enum SpeedStatus
 {
+    Lowest_ForZebra,
     Lowest_ForT,
     Lowest,
     Low,
