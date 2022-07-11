@@ -116,12 +116,17 @@ void core1_main(void)
                         }
                         break;
                     case 4:
-                        classification_Result = 4;//4三岔路口
-                        time_up[0] = threeRoads_RightTime;
-                        Start_Timer(0);
+                        if (flag_For_ThreeRoad==0)
+                        {
+                            classification_Result = 4;//4三岔路口
+                            flag_For_ThreeRoad = 1;
+                        }
+
+//                        time_up[0] = threeRoads_RightTime;
+//                        Start_Timer(0);
                         break;
                     case 5:
-                        classification_Result = 5;//5三岔路口
+                        classification_Result = 5;//5十字路口
                         time_up[0] = 0.1f;
                         Start_Timer(0);
                         break;
@@ -278,6 +283,13 @@ void core1_main(void)
                     if (flag_For_Left_Circle == 3 && Read_Timer_Status(5) == PAUSED)
                     {
                         flag_For_Left_Circle = 0;
+                    }
+                    if (flag_For_ThreeRoad == 1)
+                    {
+                        if(Left_Straight_Score<=2.7f)
+                        {
+                            flag_For_ThreeRoad = 0;
+                        }
                     }
                     if (Check_Straight(1.0f))
                     {

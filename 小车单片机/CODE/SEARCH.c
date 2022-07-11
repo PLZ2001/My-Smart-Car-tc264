@@ -59,6 +59,7 @@ float Left_Straight_Score=0,Unknown_Straight_Score=0,Right_Straight_Score=0;
 
 
 uint8 flag_For_T = 0;
+uint8 flag_For_ThreeRoad = 0;
 
 void UART_ColCenter(void)
 {
