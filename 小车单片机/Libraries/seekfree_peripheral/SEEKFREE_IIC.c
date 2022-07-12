@@ -31,6 +31,7 @@
 
 
 #define SDA             gpio_get (SEEKFREE_SDA)
+#define SCL             gpio_get (SEEKFREE_SCL)
 #define SDA0()          gpio_set (SEEKFREE_SDA, 0)		//IO口输出低电平
 #define SDA1()          gpio_set (SEEKFREE_SDA, 1)		//IO口输出高电平  
 #define SCL0()          gpio_set (SEEKFREE_SCL, 0)		//IO口输出低电平

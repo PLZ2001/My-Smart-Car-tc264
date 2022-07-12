@@ -15,6 +15,9 @@ extern float my_gyro_x;
 extern float my_gyro_y;
 extern float my_gyro_z;
 
+extern uint16 Lazer_Data;
+
+
 void My_Init_ICM(void);
 void Get_ICM_DATA(void);
 

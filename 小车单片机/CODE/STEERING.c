@@ -194,26 +194,26 @@ void Cal_Steering_Target(void)
         }
         case 2:
         {
-            if (flag_For_Left_Circle==1)
-            {
-                steering_Target = -35.0f;
-            }
-            else
-            {
+//            if (flag_For_Left_Circle==1)
+//            {
+//                steering_Target = -35.0f;
+//            }
+//            else
+//            {
                 steering_Target = (kp * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
-            }
+//            }
             break;
         }
         case 3:
         {
-            if (flag_For_Right_Circle==1)
-            {
-                steering_Target = 35.0f;
-            }
-            else
-            {
+//            if (flag_For_Right_Circle==1)
+//            {
+//                steering_Target = 35.0f;
+//            }
+//            else
+//            {
                 steering_Target = (kp * Steering_PID.current_error) +kd*( Steering_PID.current_error - Steering_PID.last_error );
-            }
+//            }
             break;
         }
         case 10:
