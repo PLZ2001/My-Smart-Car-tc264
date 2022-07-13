@@ -99,7 +99,10 @@ int core0_main(void)
         {
             Lazer_Data = Lazer_Data_temp;
         }
-        Check_Slope_with_Lazer();
+        if (Lazer_On == 1)
+        {
+            Check_Slope_with_Lazer();
+        }
 
 //        Get_ICM_DATA();//更新陀螺仪数据
 //        Check_Slope_with_Gyro();

@@ -47,13 +47,24 @@ void Update_OLED_per10ms(void)
                 //               OLED_PRINTF(0,4,"width:%d ",width_Inverse_Perspective);
                 //               OLED_PRINTF(0,5,"height:%d ",height_Inverse_Perspective);
                 break;
+            case Lazer_Page:
+                OLED_PRINTF(0,1,"Lazer:%.1f cm    ",Lazer_Data);
+                if (Lazer_On ==1)
+                {
+                    OLED_PRINTF(0,2,"Lazer On ");
+                }
+                else
+                {
+                    OLED_PRINTF(0,2,"Lazer Off");
+
+                }
+                break;
             case Zebra_Page:
                 OLED_PRINTF(0,0,"W2B:%d ",White2Black_cnt);
                 OLED_PRINTF(0,1,"Status:%d ",zebra_status);
                 OLED_PRINTF(0,2,"Times:%d ",Zebra_times);
                 OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
                 OLED_PRINTF(0,4,"StartDir:%d ",zebra_start_direction);
-                OLED_PRINTF(0,6,"Lazer:%.1f cm    ",Lazer_Data);
 
 
                 break;

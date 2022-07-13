@@ -8,6 +8,7 @@
 #include "STEERING.h"
 #include "MOTOR1.h"
 #include "MOTOR2.h"
+#include "ICM.h"
 //#include "EEPROM.h"
 
 
@@ -220,6 +221,9 @@ void Key2_Action(void)
             break;}
         case Zebra_Page:
             zebra_start_direction = (zebra_start_direction==1?-1:1);
+            break;
+        case Lazer_Page:
+            Lazer_On = (Lazer_On==1?0:1);
             break;
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;

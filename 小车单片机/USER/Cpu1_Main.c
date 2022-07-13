@@ -600,9 +600,9 @@ void core1_main(void)
             float speed_Target_ratio = 1.0f;
             if (classification_Result==2||classification_Result==3)
             {
-                speed_Target_ratio = 1.0f;
-                steeringPID_ratio_kp = 1.5f;//0.85f;
-                steeringPID_ratio_kd = 0.4f;
+                speed_Target_ratio = 0.9f;
+                steeringPID_ratio_kp = 1.7f;//0.85f;
+                steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.1f;
