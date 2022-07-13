@@ -93,10 +93,10 @@ void core1_main(void)
             Select_Left_Unknown_or_Right(6);
 
             //检查斑马线数据
-            if (steering_Target<=34 && steering_Target>=-34)
+            if (steering_Target<=46 && steering_Target>=-46)
             {
                 Check_Zebra(0.6f);
-                if (White2Black_cnt>=14 && zebra_status == finding)
+                if (White2Black_cnt>=10 && zebra_status == finding)
                 {
                     Zebra_times++;
                     if (Zebra_times<Zebra_times_Max)
@@ -612,7 +612,7 @@ void core1_main(void)
             {
                 speed_Target_ratio = 0.9f;
                 steeringPID_ratio_kp = 1.7f;//0.85f;
-                steeringPID_ratio_kd = 1.0f;
+                steeringPID_ratio_kd = 1.2f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.1f;
