@@ -53,7 +53,7 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(0,2,"Times:%d ",Zebra_times);
                 OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
                 OLED_PRINTF(0,4,"StartDir:%d ",zebra_start_direction);
-                OLED_PRINTF(0,6,"Lazer:%d     ",Lazer_Data);
+                OLED_PRINTF(0,6,"Lazer:%.1f cm    ",Lazer_Data);
 
 
                 break;

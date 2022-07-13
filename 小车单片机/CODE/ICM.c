@@ -2,6 +2,7 @@
 #include "ICM.h"
 #include "CAMERA.h"
 #include "TIME.h"
+#include "STEERING.h"
 
 uint8 flag_for_ICM_Init=0;
 
@@ -23,7 +24,7 @@ float angle=0;
 
 uint8 is_Slope = 0;//1表示检测到坡道，0表示没有
 
-uint16 Lazer_Data=0;
+float Lazer_Data=0;
 
 void My_Init_ICM(void)
 {
@@ -86,7 +87,7 @@ void Get_Zero_Bias(void)
     icm_gyro_z_bias = gyro[2]/times;
 }
 
-uint8 Check_Slope_with_YHF(void)
+void Check_Slope_with_Gyro(void)
 {
     if (Read_Timer_Status(10) == PAUSED)
     {
@@ -123,8 +124,66 @@ uint8 Check_Slope_with_YHF(void)
 
 }
 
-uint8 Check_SLope_with_PLZ(void)
+void Check_Slope_with_Lazer(void)
 {
-    //校正零漂
-//    if (my_acc_z)
+    if(is_Slope == 0)
+    {
+        if (Lazer_Data<75.0f)
+        {
+            is_Slope = 1;//进入上坡
+        }
+    }
+
+    static int cnt = 0;
+    if (is_Slope == 1)
+    {
+        if (Lazer_Data>800.0f)
+        {
+            cnt++;
+            if (cnt>=1)
+            {
+                cnt = 0;
+                is_Slope = 2;//进入平坡
+            }
+        }
+        else
+        {
+            cnt = 0;
+        }
+    }
+
+    if (is_Slope == 2)
+    {
+        if (Lazer_Data<70.0f)
+        {
+            is_Slope = 3;//进入下坡
+        }
+    }
+
+    static int cnt_1 = 0;
+    if (is_Slope == 3)
+    {
+        if (steering_Target<15 && steering_Target>-15)
+        {
+            is_Slope = 0;//离开坡道
+        }
+    }
+
+    static int cnt_2 = 0;
+    if (Lazer_Data>800.0f)
+    {
+        cnt_2++;
+        if (cnt_2>=10)
+        {
+            cnt_2 = 0;
+            is_Slope = 0;//已经进入到正常道路
+        }
+    }
+    else
+    {
+        cnt_2 = 0;
+    }
+
+
 }
+

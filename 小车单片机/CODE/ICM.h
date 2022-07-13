@@ -15,11 +15,13 @@ extern float my_gyro_x;
 extern float my_gyro_y;
 extern float my_gyro_z;
 
-extern uint16 Lazer_Data;
+extern float Lazer_Data;
 
 
 void My_Init_ICM(void);
 void Get_ICM_DATA(void);
+void Check_Slope_with_Gyro(void);
+void Check_Slope_with_Lazer(void);
 
 
 

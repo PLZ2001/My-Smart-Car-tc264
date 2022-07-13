@@ -94,11 +94,15 @@ static VL53L0X_RangingMeasurementData_t* TestData=&TestData_s;
 */
 void VL53L0X_Init(void)
 {
+    simiic_init();
+    systick_delay_ms(STM0, 10);  //上电延时
+
+
 	TestDev->I2cDevAddr=0x52;
 	VL53L0X_SetDeviceAddress(TestDev,0x52);//设置地址
 	VL53L0X_SetPowerMode(TestDev,VL53L0X_POWERMODE_STANDBY_LEVEL2);//设定最不省电模式
-	VL53L0X_SetDeviceMode(TestDev,VL53L0X_DEVICEMODE_SINGLE_RANGING);//设定单次读取模式
-	VL53L0X_SetInterMeasurementPeriodMilliSeconds(TestDev,10);//设定采样时间
+    VL53L0X_SetDeviceMode(TestDev,VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);//设定连续读取模式
+    VL53L0X_SetInterMeasurementPeriodMilliSeconds(TestDev,10);//设定采样时间
 	VL53L0X_DataInit(TestDev);
 }
 /** 
@@ -113,8 +117,7 @@ uint16 VL53L0X_GetValue(void)
 {
 		VL53L0X_PerformSingleMeasurement(TestDev);//简单测量
 		VL53L0X_GetRangingMeasurementData(TestDev,TestData);
-		return TestData->RangeMilliMeter;
-//      return TestData->RangeDMaxMilliMeter;
-//		return TestData->RangeStatus;
-
+        return TestData->RangeMilliMeter;
 }
+
+

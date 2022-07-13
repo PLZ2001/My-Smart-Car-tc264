@@ -440,7 +440,7 @@ void core1_main(void)
 
 
             //LEDָʾ
-            if(Read_Timer_Status(0) == RUNNING || zebra_status == banning)
+            if(Read_Timer_Status(0) == RUNNING || zebra_status == banning || is_Slope==2)
             {
                 LED_ON(1);
             }
@@ -530,7 +530,7 @@ void core1_main(void)
                 Reset_Timer(6);
             }
 
-            if(is_Slope==1)
+            if(is_Slope==1 || is_Slope == 2 || is_Slope == 3)
             {
                 Reset_Timer(6);
                 speed_Status = Lowest;
@@ -608,10 +608,17 @@ void core1_main(void)
                 InnerSide_Ratio_ratio = 1.1f;
             }
 
-            if (is_Slope==1)
+            if (is_Slope==1||is_Slope==2)
             {
-                speed_Target_ratio = 0.1f;
+                speed_Target_ratio = 0.4f;
                 SightForward_ratio = 0.5f;
+                steeringPID_ratio_kp = 2.0f;
+            }
+            if (is_Slope==3)
+            {
+                speed_Target_ratio = 0.4f;
+                SightForward_ratio = 1.0f;
+                steeringPID_ratio_kp = 1.3f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)

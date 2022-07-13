@@ -85,18 +85,24 @@ int core0_main(void)
 	{
         if (flag_for_ICM_Init == 0)
         {
-//            VL53L0X_Init();
-            My_Init_ICM();//我的初始化ICM
-            Get_Zero_Bias();//求陀螺仪零漂值
+            VL53L0X_Init();
+//            My_Init_ICM();//我的初始化ICM
+//            Get_Zero_Bias();//求陀螺仪零漂值
             flag_for_ICM_Init = 1;
         }
 
         Get_ADC_DATA();//更新电压读取
 
-//        Lazer_Data = VL53L0X_GetValue();
 
-        Get_ICM_DATA();//更新陀螺仪数据
-        Check_Slope_with_YHF();
+        float Lazer_Data_temp = VL53L0X_GetValue()/10.0f;
+        if (Lazer_Data_temp>2.1f)
+        {
+            Lazer_Data = Lazer_Data_temp;
+        }
+        Check_Slope_with_Lazer();
+
+//        Get_ICM_DATA();//更新陀螺仪数据
+//        Check_Slope_with_Gyro();
 
 	    if (UART_EN == TRUE)
 	    {
