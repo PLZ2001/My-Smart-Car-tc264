@@ -277,7 +277,7 @@ void core1_main(void)
                 else if (flag_For_T == 1)
                 {
                     classification_Result = 14;
-                    if (Check_TRoad(1,0.15f) == 1)
+                    if (Check_TRoad(1,0.18f) == 1)
                     {
                         flag_For_T = 2;
 //                        time_up[7] = T_Time;
