@@ -98,7 +98,7 @@ void core1_main(void)
             if ((Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
                 Check_Zebra(0.6f);
-                if (White2Black_cnt>=12 && White2Black_cnt<=18 && zebra_status == finding)
+                if (White2Black_cnt>=10 && White2Black_cnt<=18 && zebra_status == finding)
                 {
                     Zebra_times++;
                     if (Zebra_times<Zebra_times_Max)
