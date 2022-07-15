@@ -95,9 +95,9 @@ void core1_main(void)
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
-            if ((Left_Straight_Score>=2.5f||Unknown_Straight_Score>=2.5f||Right_Straight_Score>=2.5f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
+            if ((Left_Straight_Score>=2.7f||Unknown_Straight_Score>=2.7f||Right_Straight_Score>=2.7f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
-                Check_Zebra(0.55f);
+                Check_Zebra(0.6f);
                 if (White2Black_cnt>=10 && zebra_status == finding)
                 {
                     Zebra_times++;
@@ -332,7 +332,7 @@ void core1_main(void)
                         Check(&classification_Result,classification_Result_2nd);
                         Check(&classification_Result,9);
                     }
-                    Check_Classification(classification_Result,1);
+//                    Check_Classification(classification_Result,1);
 
                     //以下是新窗口的识别
                     Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
@@ -628,13 +628,13 @@ void core1_main(void)
 
             if (is_Slope==1||is_Slope==2)
             {
-                speed_Target_ratio = 0.4f;
+                speed_Target_ratio = 0.5f;
                 SightForward_ratio = 0.5f;
                 steeringPID_ratio_kp = 2.0f;
             }
             if (is_Slope==3)
             {
-                speed_Target_ratio = 0.4f;
+                speed_Target_ratio = 0.7f;
                 SightForward_ratio = 1.0f;
                 steeringPID_ratio_kp = 1.3f;
             }

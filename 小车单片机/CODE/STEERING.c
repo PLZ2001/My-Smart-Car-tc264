@@ -297,7 +297,10 @@ void Cal_Steering_Target(void)
 
         if (Left_Straight_Score<=1.50f&&Unknown_Straight_Score<=1.50f&&Right_Straight_Score<=1.50f)
         {
-            emergency_Stop=1;
+            if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
+            {
+                emergency_Stop=1;
+            }
         }
     }
 
