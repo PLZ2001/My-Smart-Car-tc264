@@ -118,6 +118,7 @@ uint16 VL53L0X_GetValue(void)
 		VL53L0X_PerformSingleMeasurement(TestDev);//简单测量
 		VL53L0X_GetRangingMeasurementData(TestDev,TestData);
         return TestData->RangeMilliMeter;
+//		return TestData->RangeStatus;
 }
 
 

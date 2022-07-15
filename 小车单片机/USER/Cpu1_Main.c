@@ -90,12 +90,14 @@ void core1_main(void)
             Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
 
             //计算左中右的笔直程度
-            Select_Left_Unknown_or_Right(6);
+            Select_Left_Unknown_or_Right(9);
 
             //检查斑马线数据
-            if (steering_Target<=46 && steering_Target>=-46)
+//            if (steering_Target<=46 && steering_Target>=-46)
+//            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
+            if ((Left_Straight_Score>=2.5f||Unknown_Straight_Score>=2.5f||Right_Straight_Score>=2.5f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
-                Check_Zebra(0.6f);
+                Check_Zebra(0.55f);
                 if (White2Black_cnt>=10 && zebra_status == finding)
                 {
                     Zebra_times++;
@@ -131,8 +133,8 @@ void core1_main(void)
                         {
                             flag_For_Left_Circle = 1;
                             //classification_Result = 7;//7靠左
-//                            time_up[0] = rightCircle_RightTime;
-//                            Start_Timer(0);
+                            time_up[0] = rightCircle_RightTime;
+                            Start_Timer(0);
                         }
                         break;
                     case 3://右环岛
@@ -140,8 +142,8 @@ void core1_main(void)
                         {
                             flag_For_Right_Circle = 1;
                             //classification_Result = 8;//8靠右
-//                            time_up[0] = rightCircle_RightTime;
-//                            Start_Timer(0);
+                            time_up[0] = rightCircle_RightTime;
+                            Start_Timer(0);
                         }
                         break;
                     case 4:
@@ -275,7 +277,7 @@ void core1_main(void)
                 else if (flag_For_T == 1)
                 {
                     classification_Result = 14;
-                    if (Check_TRoad(1,0.25f) == 1)
+                    if (Check_TRoad(1,0.15f) == 1)
                     {
                         flag_For_T = 2;
 //                        time_up[7] = T_Time;
@@ -285,7 +287,7 @@ void core1_main(void)
                 else if (flag_For_T == 2)
                 {
 //                    if (Read_Timer_Status(7) == PAUSED)
-                    if (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f)
+                    if (Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)
                     {
                         flag_For_T=0;
                     }
@@ -440,7 +442,7 @@ void core1_main(void)
 
 
             //LED指示
-            if(Read_Timer_Status(0) == RUNNING || zebra_status == banning || is_Slope==2)
+            if(Read_Timer_Status(0) == RUNNING || zebra_status == banning || zebra_status == finishing || is_Slope==2 || is_Slope==3)
             {
                 LED_ON(1);
             }
@@ -450,7 +452,7 @@ void core1_main(void)
             }
 
             //LED指示
-            if(is_Slope==1)
+            if(is_Slope==1 || zebra_status == banning || zebra_status == finishing || is_Slope==3)
             {
                 LED_ON(2);
             }
@@ -598,7 +600,13 @@ void core1_main(void)
             float OuterSide_Ratio_ratio = 1.0f;
             float InnerSide_Ratio_ratio = 1.0f;
             float speed_Target_ratio = 1.0f;
-            if (classification_Result==2||classification_Result==3)
+
+            if(flag_For_T == 2)//T字
+            {
+                speed_Target_ratio = 0.9f;
+            }
+
+            if (flag_For_Right_Circle==2 || flag_For_Left_Circle == 2)
             {
                 speed_Target_ratio = 1.0f;
                 steeringPID_ratio_kp = 1.7f;//0.85f;
@@ -611,11 +619,11 @@ void core1_main(void)
             if (flag_For_Right_Circle==1 || flag_For_Left_Circle == 1)
             {
                 speed_Target_ratio = 0.9f;
-                steeringPID_ratio_kp = 1.7f;//0.85f;
-                steeringPID_ratio_kd = 1.2f;
+                steeringPID_ratio_kp = 2.5f;//0.85f;
+                steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.1f;
+                InnerSide_Ratio_ratio = 1.3f;
             }
 
             if (is_Slope==1||is_Slope==2)
@@ -629,6 +637,11 @@ void core1_main(void)
                 speed_Target_ratio = 0.4f;
                 SightForward_ratio = 1.0f;
                 steeringPID_ratio_kp = 1.3f;
+            }
+            if (zebra_status == finishing)
+            {
+                OuterSide_Ratio_ratio = 2.0f;
+                InnerSide_Ratio_ratio = 2.0f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)

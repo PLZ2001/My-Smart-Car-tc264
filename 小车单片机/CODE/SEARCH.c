@@ -25,7 +25,7 @@ int search_Lines_Straight;//指直线检测的有效扫描行数
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
 
 float threeRoads_RightTime = 0.15f;
-float rightCircle_RightTime = 0.2f;
+float rightCircle_RightTime = 0.1f;
 float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
 float T_Time = 1.0f;
@@ -2362,12 +2362,27 @@ void Find_Third_Dot_New(int mode)
                 else
                 {
                     third_Dot[0] = water_i-1;
-                    third_Dot[1] = water_j;
+                    if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-3]==1)
+                    {
+                        third_Dot[1] = water_j-3;
+                    }
+                    else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-2]==1)
+                    {
+                        third_Dot[1] = water_j-2;
+                    }
+                    else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j-1]==1)
+                    {
+                        third_Dot[1] = water_j-1;
+                    }
+                    else
+                    {
+                        third_Dot[1] = water_j;
+                    }
                     break;
                 }
             }
-            third_Dot[0] = water_i-1;
-            third_Dot[1] = water_j;
+//            third_Dot[0] = water_i-1;
+//            third_Dot[1] = water_j;
         }
         else if (mode == 0)
         {
@@ -2399,12 +2414,27 @@ void Find_Third_Dot_New(int mode)
                 else
                 {
                     third_Dot[0] = water_i-1;
-                    third_Dot[1] = water_j;
+                    if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+3]==1)
+                    {
+                        third_Dot[1] = water_j+3;
+                    }
+                    else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+2]==1)
+                    {
+                        third_Dot[1] = water_j+2;
+                    }
+                    else if (mt9v03x_image_cutted_thresholding_inversePerspective[water_i][water_j+1]==1)
+                    {
+                        third_Dot[1] = water_j+1;
+                    }
+                    else
+                    {
+                        third_Dot[1] = water_j;
+                    }
                     break;
                 }
             }
-            third_Dot[0] = water_i-1;
-            third_Dot[1] = water_j;
+//            third_Dot[0] = water_i-1;
+//            third_Dot[1] = water_j;
         }
         else if (mode == 2)
         {
@@ -2548,11 +2578,11 @@ uint8 Check_LeftCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 85 && arccosValue > 0)
+        if (arccosValue < 88 && arccosValue > 0)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (second_Dot[1]-third_Dot[1]>=8)
+                if (second_Dot[1]-third_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -2595,11 +2625,11 @@ uint8 Check_RightCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 85 && arccosValue > 0)
+        if (arccosValue < 88 && arccosValue > 0)
         {
             if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (third_Dot[1]-second_Dot[1]>=8)
+                if (third_Dot[1]-second_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -3588,6 +3618,7 @@ float Get_Straight_Score(int dot_num)
             score+=1-fabsf(K[i]-K_Ave);
         }
     }
+    score = score*6.0f/dot_num;
     return score;
 
 }
@@ -3654,6 +3685,8 @@ void Check_Zebra(float pos)
         cnt_filter=0;
         last_white2black_cnt = white2black_cnt;
     }
+
+    valid_flag = 1;//不滤波
 
     if (valid_flag==1)
     {
