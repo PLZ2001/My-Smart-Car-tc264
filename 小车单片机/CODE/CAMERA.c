@@ -1660,28 +1660,36 @@ void Check(uint8 *classification_Result,uint8 else_result)
 
 
 
-        if (Left_Straight_Score>=3.0f &&Left_Straight_Score>Unknown_Straight_Score+0.3f && Left_Straight_Score>Right_Straight_Score+0.3f)
+        if (Left_Straight_Score>=3.0f &&Left_Straight_Score>Unknown_Straight_Score+0.7f && Left_Straight_Score>Right_Straight_Score+0.7f)
         {
             *classification_Result = 7;//7¿¿×ó
         }
-        else if(Right_Straight_Score>=3.0f &&Right_Straight_Score>Unknown_Straight_Score+0.3f && Right_Straight_Score>Left_Straight_Score+0.3f)
+        else if(Right_Straight_Score>=3.0f &&Right_Straight_Score>Unknown_Straight_Score+0.7f && Right_Straight_Score>Left_Straight_Score+0.7f)
         {
             *classification_Result = 8;//8¿¿ÓÒ
         }
-        else if(Unknown_Straight_Score>=3.0f &&Unknown_Straight_Score>Right_Straight_Score+0.3f && Unknown_Straight_Score>Left_Straight_Score+0.3f)
+        else if(Unknown_Straight_Score>=3.0f &&Unknown_Straight_Score>Right_Straight_Score+0.7f && Unknown_Straight_Score>Left_Straight_Score+0.7f)
         {
             *classification_Result = 9;//9Î´Öª
         }
         else
         {
-            if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
+            if (Left_Straight_Score>=3.0f && Left_Straight_Score>Right_Straight_Score+0.6f)
             {
                 *classification_Result = 7;//7¿¿×ó
             }
-            if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
+            if (Right_Straight_Score>=3.0f && Right_Straight_Score>Left_Straight_Score+0.6f)
             {
                 *classification_Result = 8;//8¿¿ÓÒ
             }
+//            if(Check_Left_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)>Check_Left_Empty(0.5)))
+//            {
+//                *classification_Result = 7;//7¿¿×ó
+//            }
+//            if(Check_Right_Straight_ForRoad(2,-2,0.5) && (Check_Right_Empty(0.5)<Check_Left_Empty(0.5)))
+//            {
+//                *classification_Result = 8;//8¿¿ÓÒ
+//            }
         }
 
 //        if (Check_Left_All_Road(0.9f,6))
