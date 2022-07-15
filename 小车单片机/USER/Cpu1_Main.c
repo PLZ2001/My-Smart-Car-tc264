@@ -95,10 +95,10 @@ void core1_main(void)
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
-            if ((Left_Straight_Score>=2.7f||Unknown_Straight_Score>=2.7f||Right_Straight_Score>=2.7f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
+            if ((Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
                 Check_Zebra(0.6f);
-                if (White2Black_cnt>=10 && zebra_status == finding)
+                if (White2Black_cnt>=12 && zebra_status == finding)
                 {
                     Zebra_times++;
                     if (Zebra_times<Zebra_times_Max)
@@ -224,13 +224,13 @@ void core1_main(void)
                     Reset_Timer(5);
                 }
             }
-//            if (Read_Timer_Status(7) == RUNNING)
-//            {
-//                if (Read_Timer(7)>time_up[7])
-//                {
-//                    Reset_Timer(7);
-//                }
-//            }
+            if (Read_Timer_Status(7) == RUNNING)
+            {
+                if (Read_Timer(7)>time_up[7])
+                {
+                    Reset_Timer(7);
+                }
+            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -280,14 +280,14 @@ void core1_main(void)
                     if (Check_TRoad(1,0.18f) == 1)
                     {
                         flag_For_T = 2;
-//                        time_up[7] = T_Time;
-//                        Start_Timer(7);
+                        time_up[7] = 0.2f;
+                        Start_Timer(7);
                     }
                 }
                 else if (flag_For_T == 2)
                 {
 //                    if (Read_Timer_Status(7) == PAUSED)
-                    if (Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)
+                    if ((Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)  && Read_Timer(7)==PAUSED)
                     {
                         flag_For_T=0;
                     }
