@@ -22,6 +22,9 @@ extern float PID_KP1;
 extern float PID_KI1;
 extern float PID_KD1;
 
+extern float BANGBANG_UP1;
+extern float BANGBANG_DOWN1;
+
 
 void UART_Speed1(void);
 void Set_Speed_Target1(uint8 val);

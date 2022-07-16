@@ -609,8 +609,8 @@ void core1_main(void)
 
             if (flag_For_Right_Circle==2 || flag_For_Left_Circle == 2)
             {
-                speed_Target_ratio = 1.0f;
-                steeringPID_ratio_kp = 1.7f;//0.85f;
+                speed_Target_ratio = 0.95f;
+                steeringPID_ratio_kp = 2.3f;//0.85f;
                 steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
@@ -619,12 +619,12 @@ void core1_main(void)
 
             if (flag_For_Right_Circle==1 || flag_For_Left_Circle == 1)
             {
-                speed_Target_ratio = 0.9f;
-                steeringPID_ratio_kp = 2.5f;//0.85f;
+                speed_Target_ratio = 0.95f;
+                steeringPID_ratio_kp = 2.3f;//0.85f;
                 steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 1.1f;
             }
 
             if (is_Slope==1||is_Slope==2)
@@ -772,7 +772,7 @@ void core1_main(void)
                 }
                 else
                 {
-                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    if (speed_Measured1 > BANGBANG_UP1 + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN1 + speed_Target1)
                     {
                         PID_mode1 = BANGBANG_CLOSED_LOOP1;
                     }
@@ -788,7 +788,7 @@ void core1_main(void)
                 }
                 else
                 {
-                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    if (speed_Measured2 > BANGBANG_UP2 + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN2 + speed_Target2)
                     {
                         PID_mode2 = BANGBANG_CLOSED_LOOP2;
                     }
@@ -807,7 +807,7 @@ void core1_main(void)
                 }
                 else
                 {
-                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    if (speed_Measured1 > BANGBANG_UP1 + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN1 + speed_Target1)
                     {
                         PID_mode1 = BANGBANG_CLOSED_LOOP1;
                     }
@@ -823,7 +823,7 @@ void core1_main(void)
                 }
                 else
                 {
-                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    if (speed_Measured2 > BANGBANG_UP2 + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN2 + speed_Target2)
                     {
                         PID_mode2 = BANGBANG_CLOSED_LOOP2;
                     }
@@ -846,7 +846,7 @@ void core1_main(void)
 //                }
                 else
                 {
-                    if (speed_Measured1 > BANGBANG_UP + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN + speed_Target1)
+                    if (speed_Measured1 > BANGBANG_UP1 + speed_Target1 || speed_Measured1 < -BANGBANG_DOWN1 + speed_Target1)
                     {
                         PID_mode1 = BANGBANG_CLOSED_LOOP1;
                     }
@@ -866,7 +866,7 @@ void core1_main(void)
 //                }
                 else
                 {
-                    if (speed_Measured2 > BANGBANG_UP + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN + speed_Target2)
+                    if (speed_Measured2 > BANGBANG_UP2 + speed_Target2 || speed_Measured2 < -BANGBANG_DOWN2 + speed_Target2)
                     {
                         PID_mode2 = BANGBANG_CLOSED_LOOP2;
                     }

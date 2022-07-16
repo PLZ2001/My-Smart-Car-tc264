@@ -25,6 +25,9 @@ float PID_KD1=0.0f;//0.0f;
 
 enum PID_Mode1 PID_mode1 = PID_CLOSED_LOOP1;//PID模式选择
 
+float BANGBANG_UP1=0.2;
+float BANGBANG_DOWN1=0.3;
+
 void My_Init_Motor1(void)
 {
     gtm_pwm_init(ATOM0_CH6_P23_1, 12500, 0);//设置P23.1输出PWM波，频率12.5kHz，占空比5000/10000；用于直流电机正端
@@ -183,11 +186,11 @@ void Cal_Speed_Output1(void)
         speed_Error[1] = speed_Error[0];
         speed_Error[0] = speed_Target1 - speed_Measured1;
 
-        if (speed_Measured1 > speed_Target1+BANGBANG_UP)
+        if (speed_Measured1 > speed_Target1+BANGBANG_UP1)
         {
             speed_Output1 = 0.2f*SPEED_MIN1;//0.2f*SPEED_MIN1;
         }
-        if  (speed_Measured1 < speed_Target1-BANGBANG_DOWN)
+        if  (speed_Measured1 < speed_Target1-BANGBANG_DOWN1)
         {
             speed_Output1 = 0.8f*SPEED_MAX1;
         }

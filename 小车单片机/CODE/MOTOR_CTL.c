@@ -52,8 +52,7 @@ enum SpeedStatus speed_Status = High;
 enum SpeedMode speed_Mode = 10;//不等于0、1、2、3就行
 
 
-float BANGBANG_UP=0.2;
-float BANGBANG_DOWN=0.3;
+
 
 float Highest_Distance = 0.6f;
 
@@ -176,8 +175,10 @@ void Update_Speed_Mode(void)
 
             Highest_Distance = 0.5f;
 
-            BANGBANG_UP = 0.3;//0.2;
-            BANGBANG_DOWN = 0.5;//0.3;
+            BANGBANG_UP1 = 0.3;//0.2;
+            BANGBANG_DOWN1 = 0.5;//0.3;
+            BANGBANG_UP2 = 0.3;//0.2;
+            BANGBANG_DOWN2 = 0.5;//0.3;
 
             speed_Target_Highest = 1.5*2.5f;
             SightForward_Highest = 0.28f;
@@ -301,42 +302,44 @@ void Update_Speed_Mode(void)
 
             Highest_Distance = 0.05f;
 
-            BANGBANG_UP = 1.0;
-            BANGBANG_DOWN = 1.0;
+            BANGBANG_UP1 = 1.0;
+            BANGBANG_DOWN1 = 1.0;
+            BANGBANG_UP2 = 1.0;
+            BANGBANG_DOWN2 = 1.0;
 
             speed_Target_Highest = 3.9f;//即3.4
-            SightForward_Highest = 0.44f;
+            SightForward_Highest = 0.40f;
             OuterSide_Ratio_Highest = 1.0f;
             InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.10f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.6f;
+            Steering_PID_Highest[0]=0.13f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
 
 
             speed_Target_High = 3.6f;//即3.2
-            SightForward_High = 0.44f;
+            SightForward_High = 0.40f;
             OuterSide_Ratio_High = 1.0f;
             InnerSide_Ratio_High = 1.20f;//1.15f;
-            Steering_PID_High[0]=0.11f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
+            Steering_PID_High[0]=0.13f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.8f;
 
 
             speed_Target_Low = 3.3f;//即2.9
-            SightForward_Low = 0.44f;
+            SightForward_Low = 0.40f;
             OuterSide_Ratio_Low = 1.0f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.11f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.6f;
+            Steering_PID_Low[0]=0.13f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
 
 
             speed_Target_Lowest = 3.15f;//即2.75
-            SightForward_Lowest = 0.44f;
+            SightForward_Lowest = 0.40f;
             OuterSide_Ratio_Lowest = 1.0f;
             InnerSide_Ratio_Lowest = 1.10f;
-            Steering_PID_Lowest[0]=0.10f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.6f;
+            Steering_PID_Lowest[0]=0.13f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
 
             speed_Target_Lowest_ForT = 2.4f;//即2.1
-            SightForward_Lowest_ForT = 0.44f;
+            SightForward_Lowest_ForT = 0.40f;
             OuterSide_Ratio_Lowest_ForT = 1.0f;
             InnerSide_Ratio_Lowest_ForT = 3.00f;
             //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
-            Steering_PID_Lowest_ForT[0]=0.10f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.6f;
+            Steering_PID_Lowest_ForT[0]=0.13f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.8f;
 
             break;
         }
@@ -348,8 +351,10 @@ void Update_Speed_Mode(void)
 
             Highest_Distance = 0.05f;
 
-            BANGBANG_UP = 1.0;
-            BANGBANG_DOWN = 1.0;
+            BANGBANG_UP1 = 1.0;
+            BANGBANG_DOWN1 = 1.0;
+            BANGBANG_UP2 = 1.0;
+            BANGBANG_DOWN2 = 1.0;
 
             speed_Target_Highest = 1.5*3.9f;
             SightForward_Highest = 0.44f;
