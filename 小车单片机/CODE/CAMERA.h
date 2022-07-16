@@ -61,6 +61,8 @@ extern float ModelTable_36[CLASS_NUM_NEW][6][6];
 
 extern int invalid_lines;
 
+extern uint8 valid_table[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+
 
 
 void My_Init_Camera(void);
@@ -82,6 +84,7 @@ uint8 Classification_Classic(void);
 uint8 Classification_Classic25(void);
 void Check_Classification(uint8 classification_Result_tmp, uint8 check_counter);
 void GetBinThreshold_OSTU(void);
+void GetBinThreshold_OSTU_Inverse(void);
 
 
 

@@ -3734,3 +3734,110 @@ uint8 Check_Fake_Slope(int max){
     }
     return 1;
 }
+
+uint8 Check_Fake_Zebra(int max){
+    int i;
+    int cnt=0;
+    for (i = (1- 0.6)*height_Inverse_Perspective  ;i < height_Inverse_Perspective;i++ ){
+        if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
+            cnt++;
+            if(cnt > max){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+
+
+int set_later_white(int i,int j,uint8 valid)
+{
+    int k=1;
+    for (k=1;k<width_Inverse_Perspective-j;k++)
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[i][j+k] == 1)
+        {
+            valid_table[i][j+k] = valid;
+            continue;
+        }
+        else
+        {
+            return (j+k-1);
+        }
+    }
+    return (j+k-1);
+}
+
+void set_before_white(int i,int j,uint8 valid)
+{
+    int k=1;
+    for (k=1;k<=j;k++)
+    {
+        if (valid_table[i][j-k] == 2)
+        {
+            valid_table[i][j+k] = valid;
+            continue;
+        }
+        else
+        {
+            return;
+        }
+    }
+    return;
+}
+
+void Find_Valid_White(void)
+{
+    //valid_table 0:无效 1:有效 2:备选项
+    for (int i=height_Inverse_Perspective-1;i>=0;i--)
+    {
+        for (int j=0;j<width_Inverse_Perspective;j++)
+        {
+            valid_table[i][j]=0;//初始化为无效
+            //遇到黑色或255，前面所有备选项均无效
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==255||mt9v03x_image_cutted_thresholding_inversePerspective[i][j]==0)
+            {
+                valid_table[i][j] = 0;
+                set_before_white(i,j,0);
+                continue;
+            }
+            //遇到白色执行下方内容
+            //最后一行所有白色均有效
+            if (i==height_Inverse_Perspective-1)
+            {
+                valid_table[i][j] = 1;
+                continue;
+            }
+            else
+            {
+                //非最后一行遇到白色，检查下方一个像素：
+                    //如果下方是黑色或255，则该像素作为备选项，并检查下一个像素；
+                    //如果下方是无效白色，则当前像素无效，前面所有备选项均无效、后面所有的白色均无效；
+                    //如果下方是有效白色，则当前像素有效，前面所有备选项均有效、后面所有的白色均有效
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[i+1][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[i+1][j] == 255)
+                {
+                    valid_table[i][j] = 2;
+                    continue;
+                }
+                else if (mt9v03x_image_cutted_thresholding_inversePerspective[i+1][j] == 1 && valid_table[i+1][j]==0)
+                {
+                    valid_table[i][j] = 0;
+                    set_before_white(i,j,0);
+                    j = set_later_white(i,j,0);
+                    continue;
+                }
+                else if (mt9v03x_image_cutted_thresholding_inversePerspective[i+1][j] == 1 && valid_table[i+1][j]==1)
+                {
+                    valid_table[i][j] = 1;
+                    set_before_white(i,j,1);
+                    j = set_later_white(i,j,1);
+                    continue;
+                }
+            }
+        }
+    }
+}
+
+

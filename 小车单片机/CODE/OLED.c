@@ -21,6 +21,8 @@ uint8 OLED_Camera_flag = 0;//用来指示摄像头界面是否可以启动
 uint8 pointer_temp = 0;//用来作为指针使用
 int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
 
+uint8 OLED_Camera_flag_Update = 0;//用来指示摄像头界面是否可以刷新
+
 void My_Init_OLED(void)
 {
     oled_init();
@@ -140,6 +142,7 @@ void Update_OLED_per10ms(void)
                 if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
                     my_oled_dis_bmp();
+//                    OLED_Camera_flag=0;
                 }
                 else
                 {

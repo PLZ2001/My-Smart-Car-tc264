@@ -73,6 +73,7 @@ void core1_main(void)
                 Get_Inverse_Perspective_Table();//求逆透视表
                 //Get_Thresholding_Value();//求二值化阈值
                 GetBinThreshold_OSTU();//大津法二值化
+//                GetBinThreshold_OSTU_Inverse();
                 time_up[3]=0.5f;
                 Start_Timer(3);//启动计时
                 Thresholding_Value_Init_Flag = 1;
@@ -82,7 +83,10 @@ void core1_main(void)
 
             InsertTimer1Point(2);
             Get_Inverse_Perspective_Image();
+//            Find_Valid_White();
+//            Update_Inverse_Perspective_Image();
             OLED_Camera_flag=1;
+
 
             InsertTimer1Point(3);
 
@@ -95,7 +99,7 @@ void core1_main(void)
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
-            if ((Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
+            if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
                 Check_Zebra(0.6f);
                 if (White2Black_cnt>=10 && White2Black_cnt<=18 && zebra_status == finding)

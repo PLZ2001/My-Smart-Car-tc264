@@ -30,6 +30,7 @@ float ratioOfPixelToHG = 0.076f;//仅影响分辨率
 IFX_ALIGN(4) uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];//原始图像
 //IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding[Y_WIDTH_CAMERA][X_WIDTH_CAMERA];
 IFX_ALIGN(4) uint8 mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
+IFX_ALIGN(4) uint8 valid_table[height_Inverse_Perspective_Max][width_Inverse_Perspective_Max];
 int width_Inverse_Perspective;
 int height_Inverse_Perspective;
 
@@ -709,6 +710,7 @@ void Get_Thresholding_Image(void)
         Reset_Timer(3);
 //        Get_Thresholding_Value();
         GetBinThreshold_OSTU();//大津法二值化
+//        GetBinThreshold_OSTU_Inverse();
         thresholding_Value = Filter(1,thresholding_Value,1);
         Start_Timer(3);
     }
@@ -781,6 +783,24 @@ void Get_Inverse_Perspective_Image(void)
         }
     }
 }
+
+void Update_Inverse_Perspective_Image(void)
+{
+    for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)
+    {
+        for (int i_Processed = 0;i_Processed<width_Inverse_Perspective;i_Processed++)
+        {
+            if (Inverse_Perspective_Table_Row[j_Processed]!=255 && Inverse_Perspective_Table_Col[j_Processed][i_Processed]!=255)
+            {
+                if (valid_table[j_Processed][i_Processed]!=1)
+                {
+                    mt9v03x_image_cutted_thresholding_inversePerspective[j_Processed][i_Processed] = 0;
+                }
+            }
+        }
+    }
+}
+
 //
 //void Get_Inverse_Perspective_Image(void)
 //{
@@ -1744,9 +1764,9 @@ void GetBinThreshold_OSTU(void)
     }
 
     /* 统计灰度级中每个像素在整幅图像中的个数并记录最大和最小灰度 */
-    for (i = OSTU_START_V; i < OSTU_END_V; i+=3)
+    for (i = OSTU_START_V; i < OSTU_END_V; i+=2)
     {
-        for (j = OSTU_START_U; j < OSTU_END_U; j+=3)
+        for (j = OSTU_START_U; j < OSTU_END_U; j+=2)
         {
             ++histogram[mt9v03x_image[i][j]];
             pixelGraySum += mt9v03x_image[i][j];
@@ -1805,3 +1825,91 @@ void GetBinThreshold_OSTU(void)
     flag=1;
     thresholding_Value = threshold;
 }
+
+
+
+void GetBinThreshold_OSTU_Inverse(void)
+{
+    uint16 i, j;
+    uint16 histogram[256];
+    uint16 backPixel = 0, forePixel;
+    uint8 minGray = 0xFF, maxGray = 0, threshold = 0;
+    uint32 pixelGraySum = 0, backPixelGraySum = 0, forePixelGraySum = 0;
+    float32 diff, interclassVariance, maxInterclassVariance = -1;
+
+    static uint8 flag=0;
+    static int OSTU_PIXEL_NUMBER=0;
+
+    /* 初始化灰度直方图 */
+    for (i = 0; i < 256; ++i)
+    {
+        histogram[i] = 0;
+    }
+
+    /* 统计灰度级中每个像素在整幅图像中的个数并记录最大和最小灰度 */
+    for (i = 0; i < height_Inverse_Perspective; i+=1)
+    {
+        for (j = 0; j < width_Inverse_Perspective; j+=1)
+        {
+            if (Inverse_Perspective_Table_Row[i]!=255 && Inverse_Perspective_Table_Col[i][j]!=255)
+            {
+                ++histogram[(mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]])];
+                pixelGraySum += (mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]]);
+                if ((mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]]) < minGray)
+                {
+                    minGray = (mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]]);
+                }
+                if ((mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]]) > maxGray)
+                {
+                    maxGray = (mt9v03x_image[Inverse_Perspective_Table_Row[i]][Inverse_Perspective_Table_Col[i][j]]);
+                }
+
+
+                if (flag==0)
+                {
+                    OSTU_PIXEL_NUMBER++;
+                }
+            }
+        }
+    }
+
+    /* 只有一种或两种灰度 */
+    if (minGray == maxGray || minGray+1 == maxGray)
+    {
+        thresholding_Value =  minGray;
+    }
+
+
+    uint8 min,max;
+    /* 求最大类间方差 */
+//    if (flag==0)
+//    {
+        min = minGray;
+        max = maxGray;
+//    }
+//    else
+//    {
+//        min = minGray>(thresholding_Value-80)?minGray:(thresholding_Value-80);
+//        max = maxGray<(thresholding_Value+80)?maxGray:(thresholding_Value+80);
+//    }
+    for (i = min; i <= max; ++i)
+    {
+        backPixel += histogram[i];
+        forePixel = OSTU_PIXEL_NUMBER - backPixel;
+        backPixelGraySum += i * histogram[i];
+        forePixelGraySum = pixelGraySum - backPixelGraySum;
+        diff = (float)backPixelGraySum/backPixel - (float)forePixelGraySum/forePixel;
+        interclassVariance =
+               diff * diff  * (float)backPixel * forePixel;// / OSTU_PIXEL_NUMBER / OSTU_PIXEL_NUMBER;
+        if (interclassVariance > maxInterclassVariance)
+        {
+            maxInterclassVariance = interclassVariance;
+            threshold = (uint8)i;
+        }
+    }
+
+    flag=1;
+    thresholding_Value = threshold;
+}
+
+
