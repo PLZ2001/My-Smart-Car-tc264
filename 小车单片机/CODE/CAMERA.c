@@ -206,6 +206,9 @@ uint8 Search_Range[2][2]={{0,height_Inverse_Perspective_Max},{0,width_Inverse_Pe
 
 uint8 Long_Straight_Flag = 0;
 
+int invalid_lines = 0;//指示下面无效的行数
+
+
 void My_Init_Camera(void)
 {
     mt9v03x_init();
@@ -723,7 +726,6 @@ void Get_Thresholding_Image(void)
 void Get_Inverse_Perspective_Table(void)
 {
     int ratio=1;
-    int invalid_lines = 0;//指示下面无效的行数
     width_Inverse_Perspective = (int)round(2 * (X_WIDTH_CAMERA*1.0) / (ratio*Y_WIDTH_CAMERA*1.0) * tan(cameraAlphaUpOrDown) / cos(cameraThetaDown) * ratioOfMaxDisToHG / ratioOfPixelToHG);
     height_Inverse_Perspective = (int)round(ratioOfMaxDisToHG / ratioOfPixelToHG);
     for (int j_Processed = 0;j_Processed<height_Inverse_Perspective;j_Processed++)

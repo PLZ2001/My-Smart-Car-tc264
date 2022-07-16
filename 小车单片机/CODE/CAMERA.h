@@ -59,6 +59,7 @@ extern uint8 classification_Result_2_2nd;
 
 extern float ModelTable_36[CLASS_NUM_NEW][6][6];
 
+extern int invalid_lines;
 
 
 

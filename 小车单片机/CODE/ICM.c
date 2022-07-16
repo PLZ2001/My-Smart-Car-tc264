@@ -127,11 +127,21 @@ void Check_Slope_with_Gyro(void)
 
 void Check_Slope_with_Lazer(void)
 {
-    if(is_Slope == 0 && Read_Timer(12) == PAUSED)
+    static int cnt_0 = 0;
+    if(is_Slope == 0 && Read_Timer(12) == PAUSED && Check_Fake_Slope(1))
     {
         if (Lazer_Data<75.0f)
         {
-            is_Slope = 1;//进入上坡
+            cnt_0++;
+            if (cnt_0>=1)
+            {
+                is_Slope = 1;//进入上坡
+                cnt_0=0;
+            }
+        }
+        else
+        {
+            cnt_0 = 0;
         }
     }
 
@@ -161,7 +171,7 @@ void Check_Slope_with_Lazer(void)
         }
     }
 
-    static int cnt_1 = 0;
+//    static int cnt_1 = 0;
     if (is_Slope == 3)
     {
         if (steering_Target<15 && steering_Target>-15)
@@ -176,7 +186,7 @@ void Check_Slope_with_Lazer(void)
     if (Lazer_Data>800.0f)
     {
         cnt_2++;
-        if (cnt_2>=50)
+        if (cnt_2>=30)
         {
             cnt_2 = 0;
             is_Slope = 0;//已经进入到正常道路
