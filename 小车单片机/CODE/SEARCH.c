@@ -3707,3 +3707,17 @@ void Check_Zebra(float pos)
         }
     }
 }
+
+uint8 Check_Fake_Slope(int max){
+    int i;
+    int cnt=0;
+    for (i = int( Lazer_Data / (ratioOfPixelToHG * 30¡£0f * height_Inverse_Perspective));i > 0;i-- ){
+        if(mt9v03x_image_cutted_thresholding_inversePerspective[width_Inverse_Perspective/2][i] == 0){
+            cnt++;
+            if(cnt > max){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
