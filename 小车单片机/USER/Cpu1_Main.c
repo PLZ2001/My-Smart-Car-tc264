@@ -326,6 +326,11 @@ void core1_main(void)
                     {
                         classification_Result = 6;//6直道
                     }
+                    else if (is_Slope != 0)
+                    {
+                        classification_Result = 9;
+                        Check(&classification_Result,9);
+                    }
                     else
                     {
                         Classification_Classic36(0,&classification_Result,&classification_Result_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
@@ -340,6 +345,11 @@ void core1_main(void)
                      {
                          classification_Result_1 = 6;//6直道
                      }
+                    else if (is_Slope != 0)
+                    {
+                        classification_Result = 9;
+                        Check(&classification_Result,9);
+                    }
                      else
                      {
                          Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
@@ -354,6 +364,11 @@ void core1_main(void)
                       {
                           classification_Result_2 = 6;//6直道
                       }
+                     else if (is_Slope != 0)
+                     {
+                         classification_Result = 9;
+                         Check(&classification_Result,9);
+                     }
                       else
                       {
                           Classification_Classic36(2,&classification_Result_2,&classification_Result_2_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
