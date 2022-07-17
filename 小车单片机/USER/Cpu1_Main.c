@@ -87,7 +87,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
             //窗口默认处于中下位置
-            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
 
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(9);
@@ -359,7 +359,7 @@ void core1_main(void)
                      }
 
                      //以下是新窗口的识别
-                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                      if (Check_Straight(0.5f))
                       {
                           classification_Result_2 = 6;//6直道
@@ -377,14 +377,14 @@ void core1_main(void)
                       }
 
 
-                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                      if (Check_Straight(0.6f))
                      {
                          classification_Result=6;
                          classification_Result_1=6;
                      }
                      //改回默认窗口
-                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
 
                      //检查长直道是否满足
                      if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
