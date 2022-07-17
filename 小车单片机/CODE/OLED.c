@@ -68,6 +68,10 @@ void Update_OLED_per10ms(void)
 
 
                 break;
+            case Zebra_Page2:
+                OLED_PRINTF(0,0,"TurnTime:%d ",TurnTime);
+
+                break;
             case Speed_Page2:
                 if (speed_Status == Highest)
                 {

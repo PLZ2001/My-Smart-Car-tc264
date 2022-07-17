@@ -110,10 +110,18 @@ void core1_main(void)
                     }
                     else
                     {
+//                        zebra_status = ready_finishing;
                         zebra_status = finishing;
                     }
                 }
             }
+//            if (zebra_status==ready_finishing)
+//            {
+//                if (White2Black_cnt<=TurnTime)
+//                {
+//                    zebra_status=finishing;
+//                }
+//            }
             if (Read_Timer_Status(11) == RUNNING)
             {
                 if (Read_Timer(11)>time_up[11])
@@ -757,7 +765,7 @@ void core1_main(void)
                 case Lowest_ForZebra:
                 {
                     SightForward = SightForward_Lowest_ForT*SightForward_ratio;
-                    speed_Target = 0;
+                    speed_Target = 0.5f;
                     OuterSide_Ratio = OuterSide_Ratio_Lowest_ForT*OuterSide_Ratio_ratio;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
                     Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);

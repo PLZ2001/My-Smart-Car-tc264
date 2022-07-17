@@ -310,7 +310,7 @@ void Update_Speed_Mode(void)
             speed_Target_Highest = 3.9f;//¼´3.4
             SightForward_Highest = 0.40f;
             OuterSide_Ratio_Highest = 1.0f;
-            InnerSide_Ratio_Highest = 1.15f;
+            InnerSide_Ratio_Highest = 1.20f;
             Steering_PID_Highest[0]=0.13f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
 
 
@@ -324,14 +324,14 @@ void Update_Speed_Mode(void)
             speed_Target_Low = 3.3f;//¼´2.9
             SightForward_Low = 0.40f;
             OuterSide_Ratio_Low = 1.0f;
-            InnerSide_Ratio_Low = 1.15f;//1.25;
+            InnerSide_Ratio_Low = 1.20f;//1.25;
             Steering_PID_Low[0]=0.13f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
 
 
             speed_Target_Lowest = 3.15f;//¼´2.75
             SightForward_Lowest = 0.40f;
             OuterSide_Ratio_Lowest = 1.0f;
-            InnerSide_Ratio_Lowest = 1.10f;
+            InnerSide_Ratio_Lowest = 1.20f;
             Steering_PID_Lowest[0]=0.13f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
@@ -464,14 +464,14 @@ float Cal_Differential_Ratio(void)
 {
     if (Real_Volt>8.30f)
     {
-        Volt_DR= 1.81f;
+        Volt_DR= 1.86f;
     }
     else if (Real_Volt<8.15f)
     {
-        Volt_DR= 1.80f;
+        Volt_DR= 1.85f;
     }
     else
     {
-        Volt_DR= (1.80f+(1.81f-1.80f)/(8.30f-8.15f)*(Real_Volt-8.15f));
+        Volt_DR= (1.85f+(1.86f-1.85f)/(8.30f-8.15f)*(Real_Volt-8.15f));
     }
 }

@@ -20,6 +20,8 @@ float SightForward_Lowest_ForT = 0.25f;
 
 float kp,kd;
 
+uint8 TurnTime = 10;
+
 struct steerpid
 {
     float last_error;//ио╢н
@@ -245,7 +247,7 @@ void Cal_Steering_Target(void)
         if (steering_Target_Remember_flag==0)
         {
             steering_Target=0;
-            if (Check_TRoad(1,0.15f) == 1)
+            if (Check_TRoad(1,0.12f) == 1)
             {
                 if(zebra_start_direction==1)
                 {
@@ -271,7 +273,6 @@ void Cal_Steering_Target(void)
             zebra_status=finding;
         }
     }
-
     if (zebra_status==finishing)
     {
         static float steering_Target_Remember = 0;

@@ -194,6 +194,9 @@ void Key1_Action(void)
         case Zebra_Page:
             Zebra_times_Max-=1;
             break;
+        case Zebra_Page2:
+            TurnTime-=1;
+            break;
         default:
             break;
     }
@@ -365,6 +368,9 @@ void Key3_Action(void)
             break;}
         case Zebra_Page:
             Zebra_times_Max+=1;
+            break;
+        case Zebra_Page2:
+            TurnTime+=1;
             break;
         default:
             break;

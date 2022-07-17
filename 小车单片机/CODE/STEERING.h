@@ -17,6 +17,7 @@ extern float SightForward_Low;
 extern float SightForward_Lowest;
 extern float SightForward_Lowest_ForT;
 extern float kp,kd;
+extern uint8 TurnTime;
 
 void My_Init_Steering(void);
 void UART_Steering(void);

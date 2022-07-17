@@ -6,6 +6,7 @@ enum ZEBRA_STATUS
     starting,
     finding,
     banning,
+//    ready_finishing,
     finishing
 };
 
