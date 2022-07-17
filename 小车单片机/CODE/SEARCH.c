@@ -3734,3 +3734,17 @@ uint8 Check_Fake_Slope(int max){
     }
     return 1;
 }
+
+uint8 Check_Fake_Zebra(int max){
+    int i;
+    int cnt=0;
+    for (i = (1- 0.6)*height_Inverse_Perspective  ;i < height_Inverse_Perspective;i++ ){
+        if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
+            cnt++;
+            if(cnt > max){
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
