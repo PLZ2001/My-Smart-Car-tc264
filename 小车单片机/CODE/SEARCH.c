@@ -3727,7 +3727,7 @@ void Check_Zebra(float pos)
 uint8 Check_Fake_Slope(int max){
     int i;
     int cnt=0;
-    for (i = height_Inverse_Perspective  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
+    for (i = height_Inverse_Perspective +10  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
         if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
             cnt++;
             if(cnt > max){

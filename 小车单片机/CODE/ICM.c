@@ -151,7 +151,7 @@ void Check_Slope_with_Lazer(void)
         if (Lazer_Data>800.0f)
         {
             cnt++;
-            if (cnt>=1)
+            if (cnt>=3)
             {
                 cnt = 0;
                 is_Slope = 2;//½øÈëÆ½ÆÂ

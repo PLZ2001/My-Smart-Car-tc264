@@ -629,9 +629,9 @@ void core1_main(void)
 
             if (is_Slope==1||is_Slope==2)
             {
-                speed_Target_ratio = 0.5f;
+                speed_Target_ratio = 0.4f;
                 SightForward_ratio = 0.5f;
-                steeringPID_ratio_kp = 2.0f;
+                steeringPID_ratio_kp = 2.2f;
             }
             if (is_Slope==3)
             {
