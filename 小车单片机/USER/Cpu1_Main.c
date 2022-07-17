@@ -340,7 +340,7 @@ void core1_main(void)
 //                    Check_Classification(classification_Result,1);
 
                     //以下是新窗口的识别
-                    Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective/2);
+                    Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                     if (Check_Straight(0.5f))
                      {
                          classification_Result_1 = 6;//6直道
