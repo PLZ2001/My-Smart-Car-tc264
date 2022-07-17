@@ -622,7 +622,7 @@ void core1_main(void)
                 speed_Target_ratio = 0.9f;
             }
 
-            if (flag_For_Right_Circle==2 || flag_For_Left_Circle == 2)
+            if (flag_For_Left_Circle == 2)
             {
                 speed_Target_ratio = 0.95f;
                 steeringPID_ratio_kp = 2.3f;//0.85f;
@@ -632,7 +632,7 @@ void core1_main(void)
                 InnerSide_Ratio_ratio = 1.1f;
             }
 
-            if (flag_For_Right_Circle==1 || flag_For_Left_Circle == 1)
+            if (flag_For_Left_Circle == 1)
             {
                 speed_Target_ratio = 0.95f;
                 steeringPID_ratio_kp = 2.3f;//0.85f;
@@ -640,6 +640,30 @@ void core1_main(void)
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.1f;
+            }
+
+
+            //ÓÒÔ²»·Ææ¹ÖµÄÆ«Ð¡
+
+            if (flag_For_Right_Circle == 2)
+            {
+                speed_Target_ratio = 0.95f;
+                steeringPID_ratio_kp = 1.8f;//0.85f;
+                steeringPID_ratio_kd = 0.6f;
+                SightForward_ratio = 0.6f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 0.9f;
+            }
+
+
+            if (flag_For_Right_Circle==1)
+            {
+                speed_Target_ratio = 0.95f;
+                steeringPID_ratio_kp = 1.8f;//0.85f;
+                steeringPID_ratio_kd = 0.6f;
+                SightForward_ratio = 0.6f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 0.9f;
             }
 
             if (is_Slope==1||is_Slope==2)
