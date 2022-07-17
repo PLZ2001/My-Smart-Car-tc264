@@ -95,9 +95,9 @@ void core1_main(void)
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
+            Check_Zebra(0.6f);
             if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
-                Check_Zebra(0.6f);
                 if (White2Black_cnt>=10 && White2Black_cnt<=18 && zebra_status == finding)
                 {
                     Zebra_times++;

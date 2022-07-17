@@ -61,7 +61,7 @@ extern uint8 Zebra_times_Max;
 extern int zebra_direction;
 extern int zebra_start_direction;
 
-
+extern uint8 center_dot;
 
 
 

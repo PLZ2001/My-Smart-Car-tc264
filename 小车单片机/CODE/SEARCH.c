@@ -68,6 +68,8 @@ uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
 
+uint8 center_dot = X_WIDTH*0.5f;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -1030,42 +1032,42 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         }
         start_Col[0] = start_Col[1]-road_width;//左线的初始扫描点是右线往左road_width
 
-        Col_Left[i] = start_Col[0];
+//        Col_Left[i] = start_Col[0];
 
-//        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
-//        {
-//            Col_Left[i] = start_Col[0];//第一次之后，剩余时候发现1区域就保持右线往左road_width
-//        }
-//        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0)//如果左线发现0区域（背景）
-//        {
-//            int cnt_temp = 0;
-//            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
-//            {
-//                start_Col[0] = start_Col[0] + 1;
-//                cnt_temp = cnt_temp + 1;
-//            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-//            if (cnt_temp>2*road_width)
-//            {
-//                break;
-//            }
-//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
-//            {
-//                Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
-//            }
-//        }
-//        else
-//        {
-//            int cnt_temp = 0;
-//            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
-//            {
-//                start_Col[0] = start_Col[0] + 1;
-//                cnt_temp = cnt_temp + 1;
-//            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
-//            if (cnt_temp>2*road_width)
-//            {
-//                break;
-//            }
-//        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1) //如果左线发现1区域（道路）
+        {
+            Col_Left[i] = start_Col[0];//第一次之后，剩余时候发现1区域就保持右线往左road_width
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 0)//如果左线发现0区域（背景）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
+            {
+                start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
+            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
+            {
+                Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+            }
+        }
+        else
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] != 1 && start_Col[0]<=width_Inverse_Perspective-2)
+            {
+                start_Col[0] = start_Col[0] + 1;
+                cnt_temp = cnt_temp + 1;
+            }//则左线持续向右扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }
+        }
 
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
 
@@ -1240,42 +1242,42 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         start_Col[1] = start_Col[0]+road_width;//右线的初始扫描点是左线往右road_width
 
 
-        Col_Right[i] = start_Col[1];
+//        Col_Right[i] = start_Col[1];
 
-//        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
-//        {
-//            int cnt_temp = 0;
-//            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
-//            {
-//                start_Col[1] = start_Col[1] - 1;
-//                cnt_temp = cnt_temp + 1;
-//            }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
-//            if (cnt_temp>2*road_width)
-//            {
-//                break;
-//            }
-//            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
-//            {
-//                Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
-//            }
-//        }
-//        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)//如果右线发现1区域（道路）
-//        {
-//            Col_Right[i] = start_Col[1];//第一次之后，剩余时候发现1区域就保持左线往右road_width
-//        }
-//        else
-//        {
-//            int cnt_temp = 0;
-//            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
-//            {
-//                start_Col[1] = start_Col[1] - 1;
-//                cnt_temp = cnt_temp + 1;
-//            }//则右线持续向左扫描直到不再是255区域（背景）
-//            if (cnt_temp>2*road_width || start_Col[1] - start_Col[0] > 2*road_width)
-//            {
-//                break;
-//            }
-//        }
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 0)//如果右线发现0区域（背景）
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
+            {
+                start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
+            }//则右线持续向左扫描直到不再是0区域（背景），有可能是1或255区域
+            if (cnt_temp>2*road_width)
+            {
+                break;
+            }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
+            {
+                Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
+            }
+        }
+        else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)//如果右线发现1区域（道路）
+        {
+            Col_Right[i] = start_Col[1];//第一次之后，剩余时候发现1区域就保持左线往右road_width
+        }
+        else
+        {
+            int cnt_temp = 0;
+            while (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] != 1 && start_Col[1]>=1)
+            {
+                start_Col[1] = start_Col[1] - 1;
+                cnt_temp = cnt_temp + 1;
+            }//则右线持续向左扫描直到不再是255区域（背景）
+            if (cnt_temp>2*road_width || start_Col[1] - start_Col[0] > 2*road_width)
+            {
+                break;
+            }
+        }
 
         start_Row = start_Row - 1; //左右线扫描完毕，标记行进入上一行，给下一次左右线扫描做准备
 
@@ -3704,6 +3706,7 @@ void Check_Zebra(float pos)
         White2Black_cnt = white2black_cnt;
 
         float direction = 0.5f*(Right_dot+Left_dot);
+        center_dot = (uint8)direction;
         if (direction>0 && direction<(X_WIDTH_CAMERA-1)*0.5f)
         {
             zebra_direction = -1;
@@ -3735,13 +3738,20 @@ uint8 Check_Fake_Slope(int max){
     return 1;
 }
 
-uint8 Check_Fake_Zebra(int max){
+uint8 Check_Fake_Zebra(int max)
+{
     int i;
     int cnt=0;
-    for (i = (1- 0.6)*height_Inverse_Perspective  ;i < height_Inverse_Perspective;i++ ){
-        if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
+
+    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(0.6f*Y_WIDTH_CAMERA);
+
+    for (i = (1- 0.6f)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
+    {
+        if(mt9v03x_image[i][(int)(k*(i-(1- 0.6f)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
+        {
             cnt++;
-            if(cnt > max){
+            if(cnt > max)
+            {
                 return 0;
             }
         }
