@@ -130,7 +130,7 @@ void Check_Slope_with_Lazer(void)
     static int cnt_0 = 0;
     if(is_Slope == 0 && Read_Timer(12) == PAUSED && Check_Fake_Slope(1))
     {
-        if (Lazer_Data<75.0f)
+        if (Lazer_Data<70.0f)
         {
             cnt_0++;
             if (cnt_0>=1)
@@ -171,14 +171,23 @@ void Check_Slope_with_Lazer(void)
         }
     }
 
-//    static int cnt_1 = 0;
+    static int cnt_1 = 0;
     if (is_Slope == 3)
     {
-        if (steering_Target<15 && steering_Target>-15)
+//        if (steering_Target<20 && steering_Target>-20)
+        if (Lazer_Data>800.0f)
         {
-            is_Slope = 0;//离开坡道
-            time_up[12] = 0.5f;
-            Start_Timer(12);
+            cnt_1++;
+            if (cnt_1>=3)
+            {
+                is_Slope = 0;//离开坡道
+                time_up[12] = 0.5f;
+                Start_Timer(12);
+            }
+        }
+        else
+        {
+            cnt_1 = 0;
         }
     }
 

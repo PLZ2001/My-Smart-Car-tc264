@@ -1622,14 +1622,14 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result ==3)//3ÓÒ»·µº
     {
-        if(zebra_status != finding||flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
+        if((zebra_status != finding && zebra_status != banning)||flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New3()))
         {
             *classification_Result = else_result;
         }
     }
     if (*classification_Result ==2)//2×ó»·µº
     {
-        if(zebra_status != finding||flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
+        if((zebra_status != finding && zebra_status != banning)||flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New3()))
         {
             *classification_Result = else_result;
         }

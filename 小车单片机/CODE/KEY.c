@@ -198,6 +198,7 @@ void Key1_Action(void)
 //            break;
         case Speed_Page:
             start_Flag = start_Flag?0:1;
+            OLED_EN = FALSE;
             break;
         case Zebra_Page:
             pointer_temp += 1;

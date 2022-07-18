@@ -67,7 +67,7 @@ uint8 Zebra_times=0;
 uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
-uint8 Zebra_Value = 12;
+uint8 Zebra_Value = 10;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
@@ -3728,7 +3728,7 @@ void Check_Zebra(float pos)
 uint8 Check_Fake_Slope(int max){
     int i;
     int cnt=0;
-    for (i = height_Inverse_Perspective  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
+    for (i = height_Inverse_Perspective+10  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
         if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
             cnt++;
             if(cnt > max){
@@ -3744,11 +3744,11 @@ uint8 Check_Fake_Zebra(int max)
     int i;
     int cnt=0;
 
-    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(0.6f*Y_WIDTH_CAMERA);
+    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(0.57f*Y_WIDTH_CAMERA);
 
-    for (i = (1- 0.6f)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
+    for (i = (1- 0.57f)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
     {
-        if(mt9v03x_image[i][(int)(k*(i-(1- 0.6f)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
+        if(mt9v03x_image[i][(int)(k*(i-(1- 0.57f)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
         {
             cnt++;
             if(cnt > max)
