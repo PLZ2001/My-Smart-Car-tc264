@@ -67,13 +67,21 @@ void Update_OLED_per10ms(void)
                 {
                     OLED_PRINTF(0,3,"->TimesMax:%d ",Zebra_times_Max);
                     OLED_PRINTF(0,4,"ZebraValue:%d ",Zebra_Value);
+                    OLED_PRINTF(0,5,"ZebraDetect:%.2f ",Zebra_Detect);
                 }
                 else if (pointer_temp == 1)
                 {
                     OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
                     OLED_PRINTF(0,4,"->ZebraValue:%d ",Zebra_Value);
+                    OLED_PRINTF(0,5,"ZebraDetect:%.2f ",Zebra_Detect);
                 }
-                OLED_PRINTF(0,5,"StartDir:%d ",zebra_start_direction);
+                else if (pointer_temp == 2)
+                {
+                    OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
+                    OLED_PRINTF(0,4,"ZebraValue:%d ",Zebra_Value);
+                    OLED_PRINTF(0,5,"->ZebraDetect:%.2f ",Zebra_Detect);
+                }
+                OLED_PRINTF(0,6,"StartDir:%d ",zebra_start_direction);
 
                 if (up_Down == 1)
                 {

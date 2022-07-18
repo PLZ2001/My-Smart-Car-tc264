@@ -95,7 +95,7 @@ void core1_main(void)
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
-            Check_Zebra(0.57f);
+            Check_Zebra(Zebra_Detect);
             if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
                 if (White2Black_cnt>=Zebra_Value && White2Black_cnt<=18 && zebra_status == finding)
@@ -239,6 +239,13 @@ void core1_main(void)
                     Reset_Timer(7);
                 }
             }
+            if (Read_Timer_Status(13) == RUNNING)
+            {
+                if (Read_Timer(13)>time_up[13])
+                {
+                    Reset_Timer(13);
+                }
+            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -247,6 +254,8 @@ void core1_main(void)
                     if (Left_Straight_Score<=2.7f)
                     {
                         flag_For_Right_Circle = 2;
+                        time_up[13] = 0.5f;
+                        Start_Timer(13);
                     }
                 }
                 else if (flag_For_Left_Circle == 1)
@@ -254,12 +263,14 @@ void core1_main(void)
                     if (Right_Straight_Score<=2.7f)
                     {
                         flag_For_Left_Circle = 2;
+                        time_up[13] = 0.5f;
+                        Start_Timer(13);
                     }
                 }
                 //小车处于右圆环状态
                 else if (flag_For_Right_Circle == 2)
                 {
-                    if (Check_Left_Straight(2,0,1) == 0)
+                    if (Check_Left_Straight(2,0,1) == 0 || Read_Timer_Status(13) == RUNNING)
 //                    if(Left_Straight_Score<=5.5f)
                     {
                         classification_Result = 3;//8;
@@ -272,7 +283,7 @@ void core1_main(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 2)
                 {
-                    if (Check_Right_Straight(0,-2,1) == 0)
+                    if (Check_Right_Straight(0,-2,1) == 0 || Read_Timer_Status(13) == RUNNING)
 //                    if(Right_Straight_Score<=5.5f)
                     {
                         classification_Result = 2;//7;
@@ -313,6 +324,15 @@ void core1_main(void)
                          }
                     }
                 }
+                else if (flag_For_ThreeRoad == 1)
+                {
+                    if (Check_TRoad(1,0.25f,4))
+                    {
+                        flag_For_ThreeRoad = 2;
+                        time_up[0] = threeRoads_RightTime;
+                        Start_Timer(0);
+                    }
+                }
                 else
                 {//正常识别
                     if (flag_For_Right_Circle == 3 && Read_Timer_Status(4) == PAUSED)
@@ -323,18 +343,15 @@ void core1_main(void)
                     {
                         flag_For_Left_Circle = 0;
                     }
-                    if (flag_For_ThreeRoad == 1)
+                    if (flag_For_ThreeRoad == 2)
                     {
-                        if(Left_Straight_Score<=2.7f)
-                        {
-                            flag_For_ThreeRoad = 0;
-                        }
+                        flag_For_ThreeRoad = 0;
                     }
                     if (Check_Straight(1.0f))
                     {
                         classification_Result = 6;//6直道
                     }
-                    else if (is_Slope != 0)
+                    else if (is_Slope == 1 || is_Slope == 2)
                     {
                         classification_Result = 9;
                         Check(&classification_Result,9);
@@ -405,7 +422,7 @@ void core1_main(void)
                      }
 
                      // 辅助窗口的作用
-                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5)
+                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4)
                      {
                          if (classification_Result == 7 || classification_Result == 8 || classification_Result == 9)
                          {
@@ -684,7 +701,7 @@ void core1_main(void)
             {
                 speed_Target_ratio = 0.7f;
                 SightForward_ratio = 1.0f;
-                steeringPID_ratio_kp = 1.3f;
+                steeringPID_ratio_kp = 1.1f;
             }
             if (zebra_status == finishing)
             {
@@ -775,7 +792,7 @@ void core1_main(void)
             Cal_Steering_Error(SightForward);
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
-            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting)
+            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
             {
                 emergency_Stop=1;
             }

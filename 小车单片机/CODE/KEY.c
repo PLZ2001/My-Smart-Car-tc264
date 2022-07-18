@@ -202,7 +202,7 @@ void Key1_Action(void)
             break;
         case Zebra_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 2)
+            if (pointer_temp >= 3)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -245,12 +245,13 @@ void Key2_Action(void)
                 case 1:
                     Zebra_Value += up_Down;
                     break;
+                case 2:
+                    Zebra_Detect += 0.01f*up_Down;
+                    break;
                 default:
                     break;
             }
             break;
-//            zebra_start_direction = (zebra_start_direction==1?-1:1);
-//            break;
         case Lazer_Page:
             Lazer_On = (Lazer_On==1?0:1);
             break;

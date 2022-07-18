@@ -24,7 +24,7 @@ int road_width; //道路实际宽度0.4m
 int search_Lines_Straight;//指直线检测的有效扫描行数
 int search_Lines;//指Col_Center的有效扫描行数，用于遍历Col_Center
 
-float threeRoads_RightTime = 0.15f;
+float threeRoads_RightTime = 0.25f;
 float rightCircle_RightTime = 0.1f;
 float rightCircle_LeftTime = 0.2f;
 float rightCircle_BannedTime = 3.0f;
@@ -68,6 +68,7 @@ uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
 uint8 Zebra_Value = 10;
+float Zebra_Detect = 0.57f;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
@@ -146,7 +147,11 @@ void DrawCenterLine(void)
         DrawCenterLinewithConfig_CrossRoad();
     }
     // 对于4三岔路口可以采用，特征是靠右行驶
-    else if (classification_Result == 4)
+    else if (classification_Result == 4 && flag_For_ThreeRoad == 1)
+    {
+        DrawCenterLinewithConfig(0);
+    }
+    else if (classification_Result == 4 && flag_For_ThreeRoad == 2)
     {
         DrawCenterLinewithConfig_RightBased(0);
     }
@@ -3744,11 +3749,11 @@ uint8 Check_Fake_Zebra(int max)
     int i;
     int cnt=0;
 
-    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(0.57f*Y_WIDTH_CAMERA);
+    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(Zebra_Detect*Y_WIDTH_CAMERA);
 
-    for (i = (1- 0.57f)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
+    for (i = (1- Zebra_Detect)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
     {
-        if(mt9v03x_image[i][(int)(k*(i-(1- 0.57f)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
+        if(mt9v03x_image[i][(int)(k*(i-(1- Zebra_Detect)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
         {
             cnt++;
             if(cnt > max)

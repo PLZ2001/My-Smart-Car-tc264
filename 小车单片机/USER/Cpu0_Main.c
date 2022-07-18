@@ -94,29 +94,36 @@ int core0_main(void)
         Get_ADC_DATA();//更新电压读取
 
 
-        float Lazer_Data_temp = VL53L0X_GetValue()/10.0f;
-        if (Lazer_Data_temp>2.1f)
+        if (classification_Result==2||classification_Result==3)
         {
-            if (is_Slope!=1 && is_Slope!=3)
+            Lazer_Data = 819.1f;
+        }
+        else
+        {
+            float Lazer_Data_temp = VL53L0X_GetValue()/10.0f;
+            if (Lazer_Data_temp>2.1f)
             {
-                static uint8 cnt=0;
-                if (Lazer_Data_temp>800.0f)
+                if (is_Slope!=1 && is_Slope!=3)
                 {
-                    cnt++;
-                    if (cnt>=5)
+                    static uint8 cnt=0;
+                    if (Lazer_Data_temp>800.0f)
                     {
+                        cnt++;
+                        if (cnt>=5)
+                        {
+                            Lazer_Data = Lazer_Data_temp;
+                        }
+                    }
+                    else
+                    {
+                        cnt=0;
                         Lazer_Data = Lazer_Data_temp;
                     }
                 }
                 else
                 {
-                    cnt=0;
                     Lazer_Data = Lazer_Data_temp;
                 }
-            }
-            else
-            {
-                Lazer_Data = Lazer_Data_temp;
             }
         }
         if (Lazer_On == 1)
