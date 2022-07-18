@@ -67,6 +67,7 @@ uint8 Zebra_times=0;
 uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
+uint8 Zebra_Value = 12;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
@@ -3087,7 +3088,7 @@ void Compensate_ColCenter(void)
 
 }
 
-uint8 Check_TRoad(uint8 mode,float pos)
+uint8 Check_TRoad(uint8 mode,float pos,uint8 limit)
 {
     uint8 water_i = Search_Range[ROW][BEGIN]+(1-pos)*Search_Range[ROW][LINES];
     if (mode==1)
@@ -3098,7 +3099,7 @@ uint8 Check_TRoad(uint8 mode,float pos)
             if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==0)
             {
                 cnt++;
-                if (cnt>=3)
+                if (cnt>=limit)
                 {
                     return 0;
                 }
@@ -3114,7 +3115,7 @@ uint8 Check_TRoad(uint8 mode,float pos)
             if(mt9v03x_image_cutted_thresholding_inversePerspective[water_i][j]==1)
             {
                 cnt++;
-                if (cnt>=3)
+                if (cnt>=limit)
                 {
                     return 0;
                 }
@@ -3727,7 +3728,7 @@ void Check_Zebra(float pos)
 uint8 Check_Fake_Slope(int max){
     int i;
     int cnt=0;
-    for (i = height_Inverse_Perspective +10  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
+    for (i = height_Inverse_Perspective  - (int)( Lazer_Data / (ratioOfPixelToHG * 30.0f));i < height_Inverse_Perspective;i++ ){
         if(mt9v03x_image_cutted_thresholding_inversePerspective[i][width_Inverse_Perspective/2] == 0){
             cnt++;
             if(cnt > max){

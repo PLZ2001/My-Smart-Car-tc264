@@ -130,7 +130,7 @@ void Check_Slope_with_Lazer(void)
     static int cnt_0 = 0;
     if(is_Slope == 0 && Read_Timer(12) == PAUSED && Check_Fake_Slope(1))
     {
-        if (Lazer_Data<80.0f)
+        if (Lazer_Data<75.0f)
         {
             cnt_0++;
             if (cnt_0>=1)

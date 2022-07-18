@@ -63,14 +63,51 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(0,0,"W2B:%d ",White2Black_cnt);
                 OLED_PRINTF(0,1,"Status:%d ",zebra_status);
                 OLED_PRINTF(0,2,"Times:%d ",Zebra_times);
-                OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
-                OLED_PRINTF(0,4,"StartDir:%d ",zebra_start_direction);
+                if (pointer_temp == 0)
+                {
+                    OLED_PRINTF(0,3,"->TimesMax:%d ",Zebra_times_Max);
+                    OLED_PRINTF(0,4,"ZebraValue:%d ",Zebra_Value);
+                }
+                else if (pointer_temp == 1)
+                {
+                    OLED_PRINTF(0,3,"TimesMax:%d ",Zebra_times_Max);
+                    OLED_PRINTF(0,4,"->ZebraValue:%d ",Zebra_Value);
+                }
+                OLED_PRINTF(0,5,"StartDir:%d ",zebra_start_direction);
 
+                if (up_Down == 1)
+                {
+                    OLED_PRINTF(0,7,"ADD");
+                }
+                else if (up_Down == -1)
+                {
+                    OLED_PRINTF(0,7,"SUB");
+                }
 
                 break;
-            case Zebra_Page2:
-                OLED_PRINTF(0,0,"TurnTime:%d ",TurnTime);
+//            case Zebra_Page2:
+//                OLED_PRINTF(0,0,"TurnTime:%d ",TurnTime);
 
+                break;
+            case DR_Page:
+                if (pointer_temp == 0)
+                {
+                    OLED_PRINTF(0,0,"->DR_Max:%01.02f ",Max_DR);
+                    OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
+                }
+                else if (pointer_temp == 1)
+                {
+                    OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
+                    OLED_PRINTF(0,1,"->DR_Min:%01.02f ",Min_DR);
+                }
+                if (up_Down == 1)
+                {
+                    OLED_PRINTF(0,3,"ADD");
+                }
+                else if (up_Down == -1)
+                {
+                    OLED_PRINTF(0,3,"SUB");
+                }
                 break;
             case Speed_Page2:
                 if (speed_Status == Highest)
@@ -89,8 +126,8 @@ void Update_OLED_per10ms(void)
                 {
                     OLED_PRINTF(0,0,"status:Lowest  ");
                 }
-                OLED_PRINTF(0,6,"%1.2f  ",left_empty);
-                OLED_PRINTF(0,7,"%1.2f  ",right_empty);
+//                OLED_PRINTF(0,6,"%1.2f  ",left_empty);
+//                OLED_PRINTF(0,7,"%1.2f  ",right_empty);
                 break;
             case Volt_Page:
                 if (pointer_temp == 0)
@@ -112,34 +149,34 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,2,"SUB");
                 }
                 break;
-            case Differential_Page:
-                if (pointer_temp == 0)
-                {
-                    OLED_PRINTF(0,0,"->DR:%01.02f ",Differential_Ratio);
-                    OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
-                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
-                }
-                else if (pointer_temp == 1)
-                {
-                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
-                    OLED_PRINTF(0,1,"->InnerSide:%02.02f ",InnerSide_Ratio);
-                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
-                }
-                else if (pointer_temp == 2)
-                {
-                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
-                    OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
-                    OLED_PRINTF(0,2,"->SightForward:%01.02f ",SightForward);
-                }
-                if (up_Down == 1)
-                {
-                    OLED_PRINTF(0,3,"ADD");
-                }
-                else if (up_Down == -1)
-                {
-                    OLED_PRINTF(0,3,"SUB");
-                }
-                break;
+//            case Differential_Page:
+//                if (pointer_temp == 0)
+//                {
+//                    OLED_PRINTF(0,0,"->DR:%01.02f ",Differential_Ratio);
+//                    OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
+//                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
+//                }
+//                else if (pointer_temp == 1)
+//                {
+//                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
+//                    OLED_PRINTF(0,1,"->InnerSide:%02.02f ",InnerSide_Ratio);
+//                    OLED_PRINTF(0,2,"SightForward:%01.02f ",SightForward);
+//                }
+//                else if (pointer_temp == 2)
+//                {
+//                    OLED_PRINTF(0,0,"DR:%01.02f ",Differential_Ratio);
+//                    OLED_PRINTF(0,1,"InnerSide:%02.02f ",InnerSide_Ratio);
+//                    OLED_PRINTF(0,2,"->SightForward:%01.02f ",SightForward);
+//                }
+//                if (up_Down == 1)
+//                {
+//                    OLED_PRINTF(0,3,"ADD");
+//                }
+//                else if (up_Down == -1)
+//                {
+//                    OLED_PRINTF(0,3,"SUB");
+//                }
+//                break;
             case Camera_Page2:
                 if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
@@ -160,7 +197,8 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(100,3,"%1.2f ",Left_Straight_Score);
                 OLED_PRINTF(100,4,"%1.2f ",Unknown_Straight_Score);
                 OLED_PRINTF(100,5,"%1.2f ",Right_Straight_Score);
-                OLED_PRINTF(100,6,"%d ",center_dot);
+//                OLED_PRINTF(100,6,"%d ",center_dot);
+                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
                 OLED_PRINTF(100,7,"%d ",classification_Result);
 //                OLED_PRINTF(100,7,"%d  ",thresholding_Value);
 //                OLED_PRINTF(100,7,"%d  ",classification_Result);
@@ -168,40 +206,40 @@ void Update_OLED_per10ms(void)
 
 
                 break;
-            case MotorPID_Page:
-                if (pointer_temp == 0)
-                {
-                    OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
-                    OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
-                    OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
-                }
-                else if (pointer_temp == 1)
-                {
-                    OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
-                    OLED_PRINTF(0,1,"->Ki:%01.02f s   ",PID_KI1);
-                    OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
-                }
-                else if (pointer_temp == 2)
-                {
-                    OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
-                    OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
-                    OLED_PRINTF(0,2,"->Kd:%01.02f s   ",PID_KD1);
-                }
-                if (up_Down == 1)
-                {
-                    OLED_PRINTF(0,3,"ADD");
-                }
-                else if (up_Down == -1)
-                {
-                    OLED_PRINTF(0,3,"SUB");
-                }
-                break;
+//            case MotorPID_Page:
+//                if (pointer_temp == 0)
+//                {
+//                    OLED_PRINTF(0,0,"->Kp:%01.02f s   ",PID_KP1);
+//                    OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+//                    OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+//                }
+//                else if (pointer_temp == 1)
+//                {
+//                    OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
+//                    OLED_PRINTF(0,1,"->Ki:%01.02f s   ",PID_KI1);
+//                    OLED_PRINTF(0,2,"Kd:%01.02f s   ",PID_KD1);
+//                }
+//                else if (pointer_temp == 2)
+//                {
+//                    OLED_PRINTF(0,0,"Kp:%01.02f s   ",PID_KP1);
+//                    OLED_PRINTF(0,1,"Ki:%01.02f s   ",PID_KI1);
+//                    OLED_PRINTF(0,2,"->Kd:%01.02f s   ",PID_KD1);
+//                }
+//                if (up_Down == 1)
+//                {
+//                    OLED_PRINTF(0,3,"ADD");
+//                }
+//                else if (up_Down == -1)
+//                {
+//                    OLED_PRINTF(0,3,"SUB");
+//                }
+//                break;
 
-            case Circle_Page:
-                OLED_PRINTF(0,0,"%d:%d   ",ThreeRoads_lines[1],last_angle_upup);
-                OLED_PRINTF(0,1,"%d:%d   ",ThreeRoads_lines[0],last_angle_up);
-                OLED_PRINTF(0,2,"1:%d    ",last_angle_down);
-                break;
+//            case Circle_Page:
+//                OLED_PRINTF(0,0,"%d:%d   ",ThreeRoads_lines[1],last_angle_upup);
+//                OLED_PRINTF(0,1,"%d:%d   ",ThreeRoads_lines[0],last_angle_up);
+//                OLED_PRINTF(0,2,"1:%d    ",last_angle_down);
+//                break;
             case Steering_Center_Page:
                 if (pointer_temp == 0)
                 {
@@ -232,12 +270,12 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(0,3,"%02.01f %02.01f %02.01f %02.01f ",Score(0),Score(1),Score(2),Score(3));
                 OLED_PRINTF(0,4,"%02.01f %02.01f %02.01f  ",Score(4),Score(5),Score(6));
                 break;
-            case UART_Debug_Page:
-                //显示内容由Cpu0_Main.c的串口通信部分完成
-                break;
-            case SteeringPID_Page:
-                OLED_temp();
-                break;
+//            case UART_Debug_Page:
+//                //显示内容由Cpu0_Main.c的串口通信部分完成
+//                break;
+//            case SteeringPID_Page:
+//                OLED_temp();
+//                break;
             case TimeSet_Page:
                 if (pointer_temp == 0)
                 {
@@ -292,8 +330,47 @@ void Update_OLED_per10ms(void)
 //                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
 //                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
 //                OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
-                OLED_PRINTF(0,3,"SpeedTargetHigh:%01.01fm/s ",speed_Target_High*60.0f/68.0f);
-                OLED_PRINTF(0,4,"SpeedTargetLow :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                if (pointer_temp == 0)
+                {
+                    OLED_PRINTF(0,0,"->Highest:%01.01fm/s ",speed_Target_Highest*60.0f/68.0f);
+                    OLED_PRINTF(0,1,"High   :%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+                    OLED_PRINTF(0,2,"Low    :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                    OLED_PRINTF(0,3,"Lowest :%01.01fm/s ",speed_Target_Lowest*60.0f/68.0f);
+                    OLED_PRINTF(0,4,"LowestT:%01.01fm/s ",speed_Target_Lowest_ForT*60.0f/68.0f);
+                }
+                else if (pointer_temp == 1)
+                {
+                    OLED_PRINTF(0,0,"Highest:%01.01fm/s ",speed_Target_Highest*60.0f/68.0f);
+                    OLED_PRINTF(0,1,"->High   :%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+                    OLED_PRINTF(0,2,"Low    :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                    OLED_PRINTF(0,3,"Lowest :%01.01fm/s ",speed_Target_Lowest*60.0f/68.0f);
+                    OLED_PRINTF(0,4,"LowestT:%01.01fm/s ",speed_Target_Lowest_ForT*60.0f/68.0f);
+                }
+                else if (pointer_temp == 2)
+                {
+                    OLED_PRINTF(0,0,"Highest:%01.01fm/s ",speed_Target_Highest*60.0f/68.0f);
+                    OLED_PRINTF(0,1,"High   :%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+                    OLED_PRINTF(0,2,"->Low    :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                    OLED_PRINTF(0,3,"Lowest :%01.01fm/s ",speed_Target_Lowest*60.0f/68.0f);
+                    OLED_PRINTF(0,4,"LowestT:%01.01fm/s ",speed_Target_Lowest_ForT*60.0f/68.0f);
+                }
+                else if (pointer_temp == 3)
+                {
+                    OLED_PRINTF(0,0,"Highest:%01.01fm/s ",speed_Target_Highest*60.0f/68.0f);
+                    OLED_PRINTF(0,1,"High   :%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+                    OLED_PRINTF(0,2,"Low    :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                    OLED_PRINTF(0,3,"->Lowest :%01.01fm/s ",speed_Target_Lowest*60.0f/68.0f);
+                    OLED_PRINTF(0,4,"LowestT:%01.01fm/s ",speed_Target_Lowest_ForT*60.0f/68.0f);
+                }
+                else if (pointer_temp == 4)
+                {
+                    OLED_PRINTF(0,0,"Highest:%01.01fm/s ",speed_Target_Highest*60.0f/68.0f);
+                    OLED_PRINTF(0,1,"High   :%01.01fm/s ",speed_Target_High*60.0f/68.0f);
+                    OLED_PRINTF(0,2,"Low    :%01.01fm/s ",speed_Target_Low*60.0f/68.0f);
+                    OLED_PRINTF(0,3,"Lowest :%01.01fm/s ",speed_Target_Lowest*60.0f/68.0f);
+                    OLED_PRINTF(0,4,"->LowestT:%01.01fm/s ",speed_Target_Lowest_ForT*60.0f/68.0f);
+                }
+
                 OLED_PRINTF(0,5,"Class:%d     ",classification_Result);
                 OLED_PRINTF(0,6,"2-value:%d     ",thresholding_Value);
                 if (start_Flag == 1)
@@ -316,27 +393,27 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,0,"UART: OFF");
                 }
                 break;
-            case OLED_Setting_Page:
-                if (OLED_EN == TRUE)
-                {
-                    OLED_PRINTF(0,0,"OLED: ON ");
-                }
-                else
-                {
-                    OLED_PRINTF(0,0,"OLED: OFF");
-                }
-                break;
-            case Timer_Page:
-                if (Read_Timer_Status(0) == PAUSED)
-                {
-                    OLED_PRINTF(0,0,"Timer0 Status: PAUSED ");
-                }
-                else
-                {
-                    OLED_PRINTF(0,0,"Timer0 Status: RUNNING");
-                }
-                OLED_PRINTF(0,1,"Timer4 Now: %.3f s   ",Read_Timer(4));
-                break;
+//            case OLED_Setting_Page:
+//                if (OLED_EN == TRUE)
+//                {
+//                    OLED_PRINTF(0,0,"OLED: ON ");
+//                }
+//                else
+//                {
+//                    OLED_PRINTF(0,0,"OLED: OFF");
+//                }
+//                break;
+//            case Timer_Page:
+//                if (Read_Timer_Status(0) == PAUSED)
+//                {
+//                    OLED_PRINTF(0,0,"Timer0 Status: PAUSED ");
+//                }
+//                else
+//                {
+//                    OLED_PRINTF(0,0,"Timer0 Status: RUNNING");
+//                }
+//                OLED_PRINTF(0,1,"Timer4 Now: %.3f s   ",Read_Timer(4));
+//                break;
             case Gyroscope_Page:
                 OLED_PRINTF(0,0,"gyro_x: %03.02f deg/s ",my_gyro_x);
                 OLED_PRINTF(0,1,"gyro_y: %03.02f deg/s ",my_gyro_y);

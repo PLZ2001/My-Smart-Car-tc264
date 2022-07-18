@@ -137,12 +137,20 @@ void Key1_Action(void)
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;
-        case OLED_Setting_Page:
-            OLED_EN = OLED_EN?FALSE:TRUE;
-            break;
-        case Differential_Page:
+//        case OLED_Setting_Page:
+//            OLED_EN = OLED_EN?FALSE:TRUE;
+//            break;
+//        case Differential_Page:
+//            pointer_temp += 1;
+//            if (pointer_temp >= 3)
+//            {
+//                pointer_temp = 0;
+//                up_Down = -up_Down;
+//            }
+//            break;
+        case DR_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 3)
+            if (pointer_temp >= 2)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -164,14 +172,14 @@ void Key1_Action(void)
                 up_Down = -up_Down;
             }
             break;
-        case SteeringPID_Page:
-            pointer_temp += 1;
-            if (pointer_temp >= 3)
-            {
-                pointer_temp = 0;
-                up_Down = -up_Down;
-            }
-            break;
+//        case SteeringPID_Page:
+//            pointer_temp += 1;
+//            if (pointer_temp >= 3)
+//            {
+//                pointer_temp = 0;
+//                up_Down = -up_Down;
+//            }
+//            break;
         case TimeSet_Page:
             pointer_temp += 1;
             if (pointer_temp >= 5)
@@ -180,23 +188,28 @@ void Key1_Action(void)
                 up_Down = -up_Down;
             }
             break;
-        case MotorPID_Page:
+//        case MotorPID_Page:
+//            pointer_temp += 1;
+//            if (pointer_temp >= 3)
+//            {
+//                pointer_temp = 0;
+//                up_Down = -up_Down;
+//            }
+//            break;
+        case Speed_Page:
+            start_Flag = start_Flag?0:1;
+            break;
+        case Zebra_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 3)
+            if (pointer_temp >= 2)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
             }
             break;
-        case Speed_Page:
-            start_Flag = start_Flag?0:1;
-            break;
-        case Zebra_Page:
-            Zebra_times_Max-=1;
-            break;
-        case Zebra_Page2:
-            TurnTime-=1;
-            break;
+//        case Zebra_Page2:
+//            TurnTime-=1;
+//            break;
         default:
             break;
     }
@@ -219,35 +232,61 @@ void Key2_Action(void)
                 direction = 1;
             }
             break;}
-        case Camera_Page2:{
-            DrawLineFilter = (DrawLineFilter==1?0:1);
-            break;}
+//        case Camera_Page2:{
+//            DrawLineFilter = (DrawLineFilter==1?0:1);
+//            break;}
         case Zebra_Page:
-            zebra_start_direction = (zebra_start_direction==1?-1:1);
+            switch (pointer_temp)
+            {
+                case 0:
+                    Zebra_times_Max += up_Down;
+                    break;
+                case 1:
+                    Zebra_Value += up_Down;
+                    break;
+                default:
+                    break;
+            }
             break;
+//            zebra_start_direction = (zebra_start_direction==1?-1:1);
+//            break;
         case Lazer_Page:
             Lazer_On = (Lazer_On==1?0:1);
             break;
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
             break;
-        case OLED_Setting_Page:
-            OLED_EN = OLED_EN?FALSE:TRUE;
-            break;
-        case SteeringPID_Page:
-            Key_temp();
-            break;
-        case Differential_Page:
+//        case OLED_Setting_Page:
+//            OLED_EN = OLED_EN?FALSE:TRUE;
+//            break;
+//        case SteeringPID_Page:
+//            Key_temp();
+//            break;
+//        case Differential_Page:
+//            switch (pointer_temp)
+//            {
+//                case 0:
+//                    Differential_Ratio += 0.05f*up_Down;
+//                    break;
+//                case 1:
+//                    InnerSide_Ratio += 0.05f*up_Down;
+//                    break;
+//                case 2:
+//                    SightForward +=0.01f*up_Down;
+//                default:
+//                    break;
+//            }
+//            break;
+
+        case DR_Page:
             switch (pointer_temp)
             {
                 case 0:
-                    Differential_Ratio += 0.05f*up_Down;
+                    Max_DR += 0.05f*up_Down;
                     break;
                 case 1:
-                    InnerSide_Ratio += 0.05f*up_Down;
+                    Min_DR += 0.05f*up_Down;
                     break;
-                case 2:
-                    SightForward +=0.01f*up_Down;
                 default:
                     break;
             }
@@ -297,43 +336,45 @@ void Key2_Action(void)
                     break;
             }
             break;
-        case MotorPID_Page:
+//        case MotorPID_Page:
+//            switch (pointer_temp)
+//            {
+//                case 0:
+//                    PID_KP1 += 0.05f*up_Down;
+//                    PID_KP2 += 0.05f*up_Down;
+//                    break;
+//                case 1:
+//                    PID_KI1 += 0.05f*up_Down;
+//                    PID_KI2 += 0.05f*up_Down;
+//                    break;
+//                case 2:
+//                    PID_KD1 += 0.05f*up_Down;
+//                    PID_KD2 += 0.05f*up_Down;
+//                    break;
+//                default:
+//                    break;
+//            }
+//            break;
+        case Speed_Page:{
             switch (pointer_temp)
             {
                 case 0:
-                    PID_KP1 += 0.05f*up_Down;
-                    PID_KP2 += 0.05f*up_Down;
+                    speed_Target_Highest +=0.1f*up_Down;
                     break;
                 case 1:
-                    PID_KI1 += 0.05f*up_Down;
-                    PID_KI2 += 0.05f*up_Down;
+                    speed_Target_High +=0.1f*up_Down;
                     break;
                 case 2:
-                    PID_KD1 += 0.05f*up_Down;
-                    PID_KD2 += 0.05f*up_Down;
+                    speed_Target_Low +=0.1f*up_Down;
+                    break;
+                case 3:
+                    speed_Target_Lowest +=0.1f*up_Down;
+                    break;
+                case 4:
+                    speed_Target_Lowest_ForT +=0.1f*up_Down;
                     break;
                 default:
                     break;
-            }
-            break;
-        case Speed_Page:{
-            static int8 direction = 1;
-            if (speed_Target_High>=2.6)
-            {
-                speed_Target_High+=0.1*direction;
-            }
-            else
-            {
-                speed_Target_High+=0.2*direction;
-            }
-
-            if (speed_Target_High>=4)
-            {
-                direction = -1;
-            }
-            if (speed_Target_High<=-4)
-            {
-                direction = 1;
             }
             break;}
         default:
@@ -347,31 +388,19 @@ void Key3_Action(void)
     switch (OLED_Page)
     {
         case Speed_Page:{
-            static int8 direction = 1;
-            if (speed_Target_Low>=2.6)
+            pointer_temp += 1;
+            if (pointer_temp >= 5)
             {
-                speed_Target_Low+=0.1*direction;
-            }
-            else
-            {
-                speed_Target_Low+=0.2*direction;
-            }
-
-            if (speed_Target_Low>=4)
-            {
-                direction = -1;
-            }
-            if (speed_Target_Low<=-4)
-            {
-                direction = 1;
+                pointer_temp = 0;
+                up_Down = -up_Down;
             }
             break;}
         case Zebra_Page:
-            Zebra_times_Max+=1;
+            zebra_start_direction = (zebra_start_direction==1?-1:1);
             break;
-        case Zebra_Page2:
-            TurnTime+=1;
-            break;
+//        case Zebra_Page2:
+//            TurnTime+=1;
+//            break;
         default:
             break;
     }

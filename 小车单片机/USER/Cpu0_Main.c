@@ -97,7 +97,27 @@ int core0_main(void)
         float Lazer_Data_temp = VL53L0X_GetValue()/10.0f;
         if (Lazer_Data_temp>2.1f)
         {
-            Lazer_Data = Lazer_Data_temp;
+            if (is_Slope!=1)
+            {
+                static uint8 cnt=0;
+                if (Lazer_Data_temp>800.0f)
+                {
+                    cnt++;
+                    if (cnt>=5)
+                    {
+                        Lazer_Data = Lazer_Data_temp;
+                    }
+                }
+                else
+                {
+                    cnt=0;
+                    Lazer_Data = Lazer_Data_temp;
+                }
+            }
+            else
+            {
+                Lazer_Data = Lazer_Data_temp;
+            }
         }
         if (Lazer_On == 1)
         {

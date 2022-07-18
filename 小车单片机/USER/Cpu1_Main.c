@@ -98,7 +98,7 @@ void core1_main(void)
             Check_Zebra(0.6f);
             if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4)
             {
-                if (White2Black_cnt>=10 && White2Black_cnt<=18 && zebra_status == finding)
+                if (White2Black_cnt>=Zebra_Value && White2Black_cnt<=18 && zebra_status == finding)
                 {
                     Zebra_times++;
                     if (Zebra_times<Zebra_times_Max)
@@ -285,7 +285,7 @@ void core1_main(void)
                 else if (flag_For_T == 1)
                 {
                     classification_Result = 14;
-                    if (Check_TRoad(1,0.18f) == 1)
+                    if (Check_TRoad(1,0.18f,3) == 1)
                     {
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
@@ -775,7 +775,7 @@ void core1_main(void)
             Cal_Steering_Error(SightForward);
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
-            if(Check_TRoad(0,0.1))
+            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting)
             {
                 emergency_Stop=1;
             }

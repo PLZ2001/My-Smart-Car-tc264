@@ -112,27 +112,27 @@ void UART(enum UARTstate state)
             {
                 data_Buffer_Shadow[i] = data_Buffer[i];
             }//把缓冲区内容复制过来
-            if (OLED_Page == UART_Debug_Page)
-            {
-                oled_uint16(0, 0, data_Buffer_Shadow[0]);
-                oled_uint16(36, 0, data_Buffer_Shadow[1]);
-                oled_uint16(36*2, 0, data_Buffer_Shadow[2]);
-                oled_uint16(0, 1, data_Buffer_Shadow[3]);
-                oled_uint16(36, 1, data_Buffer_Shadow[4]);
-                oled_uint16(36*2, 1, data_Buffer_Shadow[5]);
-                oled_uint16(0, 2, data_Buffer_Shadow[6]);
-                oled_uint16(36, 2, data_Buffer_Shadow[7]);
-                oled_uint16(36*2, 2, data_Buffer_Shadow[8]);
-                oled_uint16(0, 3, data_Buffer_Shadow[9]);
-                oled_uint16(36, 3, data_Buffer_Shadow[10]);
-                oled_uint16(36*2, 3, data_Buffer_Shadow[11]);
-                oled_uint16(0, 4, data_Buffer_Shadow[12]);
-                oled_uint16(36, 4, data_Buffer_Shadow[13]);
-                oled_uint16(36*2, 4, data_Buffer_Shadow[14]);
-                oled_uint16(0, 5, data_Buffer_Shadow[15]);
-                oled_uint16(36, 5, data_Buffer_Shadow[16]);
-                oled_uint16(36*2, 5, data_Buffer_Shadow[17]);
-            }
+//            if (OLED_Page == UART_Debug_Page)
+//            {
+//                oled_uint16(0, 0, data_Buffer_Shadow[0]);
+//                oled_uint16(36, 0, data_Buffer_Shadow[1]);
+//                oled_uint16(36*2, 0, data_Buffer_Shadow[2]);
+//                oled_uint16(0, 1, data_Buffer_Shadow[3]);
+//                oled_uint16(36, 1, data_Buffer_Shadow[4]);
+//                oled_uint16(36*2, 1, data_Buffer_Shadow[5]);
+//                oled_uint16(0, 2, data_Buffer_Shadow[6]);
+//                oled_uint16(36, 2, data_Buffer_Shadow[7]);
+//                oled_uint16(36*2, 2, data_Buffer_Shadow[8]);
+//                oled_uint16(0, 3, data_Buffer_Shadow[9]);
+//                oled_uint16(36, 3, data_Buffer_Shadow[10]);
+//                oled_uint16(36*2, 3, data_Buffer_Shadow[11]);
+//                oled_uint16(0, 4, data_Buffer_Shadow[12]);
+//                oled_uint16(36, 4, data_Buffer_Shadow[13]);
+//                oled_uint16(36*2, 4, data_Buffer_Shadow[14]);
+//                oled_uint16(0, 5, data_Buffer_Shadow[15]);
+//                oled_uint16(36, 5, data_Buffer_Shadow[16]);
+//                oled_uint16(36*2, 5, data_Buffer_Shadow[17]);
+//            }
             for (i=0;i<RECEIVE_LENGTH-4;i++)
             {
                 //接收是否传输图片信号，数据头00-FF-01-01，数据长度1字节，数据尾00-FF-01-02
@@ -238,27 +238,27 @@ void UART(enum UARTstate state)
             {
                 data_Buffer_Shadow[i] = data_Buffer[i];
             }//把缓冲区内容复制过来
-            if (OLED_Page == UART_Debug_Page)
-            {
-                oled_uint16(0, 0, data_Buffer_Shadow[0]);
-                oled_uint16(36, 0, data_Buffer_Shadow[1]);
-                oled_uint16(36*2, 0, data_Buffer_Shadow[2]);
-                oled_uint16(0, 1, data_Buffer_Shadow[3]);
-                oled_uint16(36, 1, data_Buffer_Shadow[4]);
-                oled_uint16(36*2, 1, data_Buffer_Shadow[5]);
-                oled_uint16(0, 2, data_Buffer_Shadow[6]);
-                oled_uint16(36, 2, data_Buffer_Shadow[7]);
-                oled_uint16(36*2, 2, data_Buffer_Shadow[8]);
-                oled_uint16(0, 3, data_Buffer_Shadow[9]);
-                oled_uint16(36, 3, data_Buffer_Shadow[10]);
-                oled_uint16(36*2, 3, data_Buffer_Shadow[11]);
-                oled_uint16(0, 4, data_Buffer_Shadow[12]);
-                oled_uint16(36, 4, data_Buffer_Shadow[13]);
-                oled_uint16(36*2, 4, data_Buffer_Shadow[14]);
-                oled_uint16(0, 5, data_Buffer_Shadow[15]);
-                oled_uint16(36, 5, data_Buffer_Shadow[16]);
-                oled_uint16(36*2, 5, data_Buffer_Shadow[17]);
-            }
+//            if (OLED_Page == UART_Debug_Page)
+//            {
+//                oled_uint16(0, 0, data_Buffer_Shadow[0]);
+//                oled_uint16(36, 0, data_Buffer_Shadow[1]);
+//                oled_uint16(36*2, 0, data_Buffer_Shadow[2]);
+//                oled_uint16(0, 1, data_Buffer_Shadow[3]);
+//                oled_uint16(36, 1, data_Buffer_Shadow[4]);
+//                oled_uint16(36*2, 1, data_Buffer_Shadow[5]);
+//                oled_uint16(0, 2, data_Buffer_Shadow[6]);
+//                oled_uint16(36, 2, data_Buffer_Shadow[7]);
+//                oled_uint16(36*2, 2, data_Buffer_Shadow[8]);
+//                oled_uint16(0, 3, data_Buffer_Shadow[9]);
+//                oled_uint16(36, 3, data_Buffer_Shadow[10]);
+//                oled_uint16(36*2, 3, data_Buffer_Shadow[11]);
+//                oled_uint16(0, 4, data_Buffer_Shadow[12]);
+//                oled_uint16(36, 4, data_Buffer_Shadow[13]);
+//                oled_uint16(36*2, 4, data_Buffer_Shadow[14]);
+//                oled_uint16(0, 5, data_Buffer_Shadow[15]);
+//                oled_uint16(36, 5, data_Buffer_Shadow[16]);
+//                oled_uint16(36*2, 5, data_Buffer_Shadow[17]);
+//            }
             for (i=0;i<EMERGENCY_RECEIVE_LENGTH-4;i++)
             {
                 //接收是否紧急停车命令，数据头00-FF-10-01，数据长度1字节，数据尾00-FF-10-02

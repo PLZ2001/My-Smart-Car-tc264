@@ -59,6 +59,9 @@ float Highest_Distance = 0.6f;
 float Volt_kd=0;
 float Volt_DR=0;
 
+float Min_DR = 1.85f;
+float Max_DR = 1.85f;
+
 void Differential_Motor(void)
 {
     float last_steering_Target=0;
@@ -464,14 +467,14 @@ float Cal_Differential_Ratio(void)
 {
     if (Real_Volt>8.30f)
     {
-        Volt_DR= 1.86f;
+        Volt_DR= Max_DR;//1.86f;
     }
     else if (Real_Volt<8.15f)
     {
-        Volt_DR= 1.85f;
+        Volt_DR= Min_DR;//1.85f;
     }
     else
     {
-        Volt_DR= (1.85f+(1.86f-1.85f)/(8.30f-8.15f)*(Real_Volt-8.15f));
+        Volt_DR= (Min_DR+(Max_DR-Min_DR)/(8.30f-8.15f)*(Real_Volt-8.15f));
     }
 }

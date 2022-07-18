@@ -60,7 +60,8 @@ extern float Highest_Distance;
 extern float Volt_kd;
 extern float Volt_DR;
 
-
+extern float Min_DR;
+extern float Max_DR;
 
 void Differential_Motor(void);
 float Cal_Differential_Ratio(void);
