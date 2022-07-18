@@ -66,6 +66,7 @@ extern uint8 center_dot;
 extern uint8 Zebra_Value;
 extern float Zebra_Detect;
 
+extern uint8 Helper_Window_Flag;
 
 
 

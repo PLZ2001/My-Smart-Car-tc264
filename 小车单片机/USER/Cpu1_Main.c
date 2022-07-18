@@ -88,6 +88,7 @@ void core1_main(void)
 
             //窗口默认处于中下位置
             Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+            Helper_Window_Flag = 0;
 
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(9);
@@ -166,8 +167,8 @@ void core1_main(void)
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
-                        time_up[0] = 0.1f;
-                        Start_Timer(0);
+//                        time_up[0] = 0.1f;
+//                        Start_Timer(0);
                         break;
                     case 10://左直线
                         if (flag_For_Right_Circle == 2) //说明准备出右环岛
@@ -383,7 +384,7 @@ void core1_main(void)
 
                      }
 
-                     //以下是新窗口的识别
+                     //以下是辅助窗口的识别
                      Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                      if (Check_Straight(0.5f))
                       {
@@ -422,11 +423,16 @@ void core1_main(void)
                      }
 
                      // 辅助窗口的作用
-                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4)
+                     if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4||classification_Result_2==12||classification_Result_2==13)
                      {
                          if (classification_Result == 7 || classification_Result == 8 || classification_Result == 9)
                          {
                              classification_Result = classification_Result_2;
+                             Helper_Window_Flag = 1;
+                         }
+                         else
+                         {
+                             Helper_Window_Flag = 0;
                          }
                      }
                 }

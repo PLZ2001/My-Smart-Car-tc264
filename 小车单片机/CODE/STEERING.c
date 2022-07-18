@@ -154,7 +154,7 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K_kp=0.2f,K_kd=0.6f;
+    float K_kp=0.4f,K_kd=0.6f;
     kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
 //    kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
     kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;

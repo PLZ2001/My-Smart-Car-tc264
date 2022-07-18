@@ -72,6 +72,8 @@ float Zebra_Detect = 0.57f;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
+uint8 Helper_Window_Flag = 0;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -125,6 +127,14 @@ void UART_ColRight(void)
 
 void DrawCenterLine(void)
 {
+    if (Helper_Window_Flag==1)
+    {
+        Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+    }
+    else
+    {
+        Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+    }
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
@@ -2556,7 +2566,11 @@ uint8 Check_LeftP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 85 && arccosValue < 100)
+        if (second_Dot[1]-third_Dot[1]<=3)
+        {
+            return 1;
+        }
+        else if (arccosValue > 85 && arccosValue < 105)
         {
             if (second_Dot[1]-third_Dot[1]>=2)
             {
@@ -2595,7 +2609,11 @@ uint8 Check_RightP(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue > 85 && arccosValue < 100)
+        if (third_Dot[1]-second_Dot[1]<=3)
+        {
+            return 1;
+        }
+        else if (arccosValue > 85 && arccosValue < 105)
         {
             if (third_Dot[1]-second_Dot[1]>=2)
             {
