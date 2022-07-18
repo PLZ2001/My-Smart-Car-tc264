@@ -155,14 +155,14 @@ void core1_main(void)
                         }
                         break;
                     case 4:
-                        if (flag_For_ThreeRoad==0)
-                        {
-                            classification_Result = 4;//4三岔路口
-                            flag_For_ThreeRoad = 1;
-                        }
+//                        if (flag_For_ThreeRoad==0)
+//                        {
+//                            classification_Result = 4;//4三岔路口
+//                            flag_For_ThreeRoad = 1;
+//                        }
 
-//                        time_up[0] = threeRoads_RightTime;
-//                        Start_Timer(0);
+                        time_up[0] = threeRoads_RightTime;
+                        Start_Timer(0);
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
@@ -324,15 +324,15 @@ void core1_main(void)
                          }
                     }
                 }
-                else if (flag_For_ThreeRoad == 1)
-                {
-                    if (Check_TRoad(1,0.25f,4))
-                    {
-                        flag_For_ThreeRoad = 2;
-                        time_up[0] = threeRoads_RightTime;
-                        Start_Timer(0);
-                    }
-                }
+//                else if (flag_For_ThreeRoad == 1)
+//                {
+//                    if (Check_TRoad(1,0.25f,4))
+//                    {
+//                        flag_For_ThreeRoad = 2;
+//                        time_up[0] = threeRoads_RightTime;
+//                        Start_Timer(0);
+//                    }
+//                }
                 else
                 {//正常识别
                     if (flag_For_Right_Circle == 3 && Read_Timer_Status(4) == PAUSED)
@@ -343,10 +343,10 @@ void core1_main(void)
                     {
                         flag_For_Left_Circle = 0;
                     }
-                    if (flag_For_ThreeRoad == 2)
-                    {
-                        flag_For_ThreeRoad = 0;
-                    }
+//                    if (flag_For_ThreeRoad == 2)
+//                    {
+//                        flag_For_ThreeRoad = 0;
+//                    }
                     if (Check_Straight(1.0f))
                     {
                         classification_Result = 6;//6直道

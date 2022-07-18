@@ -80,6 +80,7 @@ uint8 Check_LeftCircle(void);
 uint8 Check_RightCircle(void);
 void DrawCenterLine(void);
 void DrawCenterLinewithConfig(float filter);
+void DrawCenterLinewithConfig_ThreeRoad(void);
 void DrawCenterLinewithConfig_RightBased(float filter);
 void DrawCenterLinewithConfig_LeftBased(float filter);
 void DrawCenterLinewithConfig_CrossRoad(void);

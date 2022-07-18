@@ -147,11 +147,15 @@ void DrawCenterLine(void)
         DrawCenterLinewithConfig_CrossRoad();
     }
     // 对于4三岔路口可以采用，特征是靠右行驶
-    else if (classification_Result == 4 && flag_For_ThreeRoad == 1)
-    {
-        DrawCenterLinewithConfig(0);
-    }
-    else if (classification_Result == 4 && flag_For_ThreeRoad == 2)
+//    else if (classification_Result == 4 && flag_For_ThreeRoad == 1)
+//    {
+//        DrawCenterLinewithConfig_ThreeRoad();
+//    }
+//    else if (classification_Result == 4 && flag_For_ThreeRoad == 2)
+//    {
+//        DrawCenterLinewithConfig_RightBased(0);
+//    }
+    else if (classification_Result == 4)
     {
         DrawCenterLinewithConfig_RightBased(0);
     }
@@ -917,6 +921,8 @@ void DrawCenterLinewithConfig(float filter)
     }
 }
 
+
+
 void DrawCenterLinewithConfig_RightBased(float filter)
 {
     int start_Row = height_Inverse_Perspective-1;//标记当前在处理哪一行，从最后一行开始
@@ -1331,6 +1337,38 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
 
         }
         //中心线计算完毕
+    }
+}
+
+void DrawCenterLinewithConfig_ThreeRoad(void)
+{
+
+    Find_Second_Dot(2);
+    if (second_Dot[0]==-2) {
+        DrawCenterLinewithConfig(0);
+        return;
+    }
+
+    //存储底部中点坐标
+    int i;
+    for (i=0;i<search_Lines;i++) //寻找视野底部
+    {
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+        {
+            Col_Center[i] = (float)(width_Inverse_Perspective/2);
+            break;
+        }
+    }
+
+
+    int firsti = i;
+
+    //补全拐点间中线和底部中线之间的连线
+    float k = 1.0f*(second_Dot[1]  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - second_Dot[0] );
+
+    for (int i=1;i<search_Lines - firsti;i++)
+    {
+        Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
     }
 }
 
