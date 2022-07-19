@@ -3824,7 +3824,7 @@ uint8 Check_Fake_Zebra(int max)
 uint8 Check_RightCircle_New4(float ratio)
 {
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
     {
         Col_Center_Backup[i]=Col_Center[i];
@@ -3843,12 +3843,13 @@ uint8 Check_RightCircle_New4(float ratio)
             }
             else
             {
-                if (Col_Center[i] - last_Col_Center>=3)
+                if (Col_Center[i] - last_Col_Center>=4)
                 {
                     for (int i=0;i<height_Inverse_Perspective_Max;i++)
                     {
                         Col_Center[i] = Col_Center_Backup[i];
                     }
+                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3863,14 +3864,14 @@ uint8 Check_RightCircle_New4(float ratio)
     {
         Col_Center[i] = Col_Center_Backup[i];
     }
-
+    search_Lines = height_Inverse_Perspective;
     return 1;
 }
 
 uint8 Check_LeftCircle_New4(float ratio)
 {
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
     {
         Col_Center_Backup[i]=Col_Center[i];
@@ -3889,12 +3890,13 @@ uint8 Check_LeftCircle_New4(float ratio)
             }
             else
             {
-                if (Col_Center[i] - last_Col_Center<=-3)
+                if (Col_Center[i] - last_Col_Center<=-4)
                 {
                     for (int i=0;i<height_Inverse_Perspective_Max;i++)
                     {
                         Col_Center[i] = Col_Center_Backup[i];
                     }
+                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3909,6 +3911,6 @@ uint8 Check_LeftCircle_New4(float ratio)
     {
         Col_Center[i] = Col_Center_Backup[i];
     }
-
+    search_Lines = height_Inverse_Perspective;
     return 1;
 }
