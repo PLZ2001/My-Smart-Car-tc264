@@ -121,6 +121,8 @@ void Key0_Action(void)
 {
     if (OLED_EN)
     {
+        pointer_temp = 0;
+        up_Down = 1;
         OLED_Page++;
         if (OLED_Page >= PAGE_NUM)
         {
@@ -188,6 +190,14 @@ void Key1_Action(void)
                 up_Down = -up_Down;
             }
             break;
+        case Slope_Page:
+            pointer_temp += 1;
+            if (pointer_temp >= 3)
+            {
+                pointer_temp = 0;
+                up_Down = -up_Down;
+            }
+            break;
 //        case MotorPID_Page:
 //            pointer_temp += 1;
 //            if (pointer_temp >= 3)
@@ -247,6 +257,22 @@ void Key2_Action(void)
                     break;
                 case 2:
                     Zebra_Detect += 0.01f*up_Down;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case Slope_Page:
+            switch (pointer_temp)
+            {
+                case 0:
+                    SlopeSpeed1 += 0.05f*up_Down;
+                    break;
+                case 1:
+                    SlopeSpeed2 += 0.05f*up_Down;
+                    break;
+                case 2:
+                    SlopeSpeed3 += 0.05f*up_Down;
                     break;
                 default:
                     break;

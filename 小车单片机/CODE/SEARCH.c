@@ -68,7 +68,7 @@ uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
 uint8 Zebra_Value = 10;
-float Zebra_Detect = 0.50f;
+float Zebra_Detect = 0.57f;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
@@ -3804,12 +3804,12 @@ uint8 Check_Fake_Zebra(int max)
 {
     int i;
     int cnt=0;
+    float Zebra_Detect_temp = Zebra_Detect;
+    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(Zebra_Detect_temp*Y_WIDTH_CAMERA);
 
-    float k = (0.5f*X_WIDTH_CAMERA - center_dot )/(Zebra_Detect*Y_WIDTH_CAMERA);
-
-    for (i = (1- Zebra_Detect)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
+    for (i = (1- Zebra_Detect_temp)*Y_WIDTH_CAMERA;i < Y_WIDTH_CAMERA;i++ )
     {
-        if(mt9v03x_image[i][(int)(k*(i-(1- Zebra_Detect)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
+        if(mt9v03x_image[i][(int)(k*(i-(1- Zebra_Detect_temp)*Y_WIDTH_CAMERA)+center_dot)] < thresholding_Value)
         {
             cnt++;
             if(cnt > max)

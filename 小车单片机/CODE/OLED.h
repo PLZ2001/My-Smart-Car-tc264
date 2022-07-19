@@ -12,6 +12,7 @@ enum OLEDPage
     Steering_Center_Page,
     Lazer_Page,
     Zebra_Page,
+    Slope_Page,
     DR_Page,
     Speed_Page,
 

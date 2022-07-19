@@ -19,7 +19,9 @@ extern float Lazer_Data;
 
 extern uint8 Lazer_On;
 
-
+extern float SlopeSpeed1;
+extern float SlopeSpeed2;
+extern float SlopeSpeed3;
 
 void My_Init_ICM(void);
 void Get_ICM_DATA(void);

@@ -93,9 +93,33 @@ void Update_OLED_per10ms(void)
                 }
 
                 break;
-//            case Zebra_Page2:
-//                OLED_PRINTF(0,0,"TurnTime:%d ",TurnTime);
-
+            case Slope_Page:
+                if (pointer_temp == 0)
+                {
+                    OLED_PRINTF(0,0,"->SlopeSpeed1:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                }
+                else if (pointer_temp == 1)
+                {
+                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"->SlopeSpeed2:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                }
+                else if (pointer_temp == 2)
+                {
+                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"->SlopeSpeed3:%.2f ",SlopeSpeed3);
+                }
+                if (up_Down == 1)
+                {
+                    OLED_PRINTF(0,4,"ADD");
+                }
+                else if (up_Down == -1)
+                {
+                    OLED_PRINTF(0,4,"SUB");
+                }
                 break;
             case DR_Page:
                 if (pointer_temp == 0)

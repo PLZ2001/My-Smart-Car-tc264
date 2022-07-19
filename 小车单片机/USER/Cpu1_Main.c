@@ -697,15 +697,21 @@ void core1_main(void)
                 InnerSide_Ratio_ratio = 0.9f;
             }
 
-            if (is_Slope==1||is_Slope==2)
+            if (is_Slope==1)
             {
-                speed_Target_ratio = 0.4f;
+                speed_Target_ratio = SlopeSpeed1;
+                SightForward_ratio = 0.5f;
+                steeringPID_ratio_kp = 2.2f;
+            }
+            if (is_Slope==2)
+            {
+                speed_Target_ratio = SlopeSpeed2;
                 SightForward_ratio = 0.5f;
                 steeringPID_ratio_kp = 2.2f;
             }
             if (is_Slope==3)
             {
-                speed_Target_ratio = 0.7f;
+                speed_Target_ratio = SlopeSpeed3;
                 SightForward_ratio = 1.0f;
                 steeringPID_ratio_kp = 1.1f;
             }
