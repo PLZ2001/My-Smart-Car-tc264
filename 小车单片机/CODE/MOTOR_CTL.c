@@ -59,8 +59,8 @@ float Highest_Distance = 0.6f;
 float Volt_kd=0;
 float Volt_DR=0;
 
-float Min_DR = 1.80f;
-float Max_DR = 1.80f;
+float Min_DR = 1.75f;
+float Max_DR = 1.75f;
 
 void Differential_Motor(void)
 {
@@ -381,7 +381,7 @@ void Update_Speed_Mode(void)
             SightForward_Lowest = 0.35f;
             OuterSide_Ratio_Lowest = 0.95f;
             InnerSide_Ratio_Lowest = 1.15f;
-            Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
+            Steering_PID_Lowest[0]=0.15f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
