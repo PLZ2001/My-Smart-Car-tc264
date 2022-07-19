@@ -101,7 +101,7 @@ int core0_main(void)
         else
         {
             float Lazer_Data_temp = VL53L0X_GetValue()/10.0f;
-            if (Lazer_Data_temp>2.1f)
+            if (Lazer_Data_temp>15.0f)//2.1f)
             {
                 if (is_Slope!=1 && is_Slope!=3)
                 {

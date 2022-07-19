@@ -597,7 +597,7 @@ void core1_main(void)
                 set_flag=1;
             }
 
-            if(classification_Result == 12||classification_Result == 13)
+            if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5)
             {
                 speed_Status = Lowest;
                 Reset_Timer(6);
