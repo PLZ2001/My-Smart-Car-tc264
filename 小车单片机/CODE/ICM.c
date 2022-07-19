@@ -31,6 +31,7 @@ float SlopeSpeed1 = 0.4f;
 float SlopeSpeed2 = 0.4f;
 float SlopeSpeed3 = 0.7f;
 
+float Slope_Distance = 70.0f;
 
 void My_Init_ICM(void)
 {
@@ -135,7 +136,7 @@ void Check_Slope_with_Lazer(void)
     static int cnt_0 = 0;
     if(is_Slope == 0 && Read_Timer(12) == PAUSED && Check_Fake_Slope(1))
     {
-        if (Lazer_Data<70.0f)
+        if (Lazer_Data<Slope_Distance)
         {
             cnt_0++;
             if (cnt_0>=1)

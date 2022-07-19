@@ -23,6 +23,8 @@ extern float SlopeSpeed1;
 extern float SlopeSpeed2;
 extern float SlopeSpeed3;
 
+extern float Slope_Distance;
+
 void My_Init_ICM(void);
 void Get_ICM_DATA(void);
 void Check_Slope_with_Gyro(void);

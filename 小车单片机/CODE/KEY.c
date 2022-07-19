@@ -192,7 +192,7 @@ void Key1_Action(void)
             break;
         case Slope_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 3)
+            if (pointer_temp >= 4)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -273,6 +273,9 @@ void Key2_Action(void)
                     break;
                 case 2:
                     SlopeSpeed3 += 0.05f*up_Down;
+                    break;
+                case 3:
+                    Slope_Distance += up_Down;
                     break;
                 default:
                     break;

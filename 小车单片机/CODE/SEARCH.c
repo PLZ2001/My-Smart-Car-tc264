@@ -3820,3 +3820,95 @@ uint8 Check_Fake_Zebra(int max)
     }
     return 1;
 }
+
+uint8 Check_RightCircle_New4(float ratio)
+{
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center_Backup[i]=Col_Center[i];
+        Col_Center[i] = -2;
+    }
+    DrawCenterLinewithConfig_RightBased(0);
+
+    float last_Col_Center = -2;
+    for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
+    {
+        if (Col_Center[i]!=-2)
+        {
+            if (last_Col_Center < 0)
+            {
+                last_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (Col_Center[i] - last_Col_Center>=3)
+                {
+                    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+                    {
+                        Col_Center[i] = Col_Center_Backup[i];
+                    }
+                    return 0;
+                }
+                else
+                {
+                    last_Col_Center = Col_Center[i];
+                }
+            }
+        }
+    }
+
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = Col_Center_Backup[i];
+    }
+
+    return 1;
+}
+
+uint8 Check_LeftCircle_New4(float ratio)
+{
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center_Backup[i]=Col_Center[i];
+        Col_Center[i] = -2;
+    }
+    DrawCenterLinewithConfig_LeftBased(0);
+
+    float last_Col_Center = -2;
+    for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
+    {
+        if (Col_Center[i]!=-2)
+        {
+            if (last_Col_Center < 0)
+            {
+                last_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (Col_Center[i] - last_Col_Center<=-3)
+                {
+                    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+                    {
+                        Col_Center[i] = Col_Center_Backup[i];
+                    }
+                    return 0;
+                }
+                else
+                {
+                    last_Col_Center = Col_Center[i];
+                }
+            }
+        }
+    }
+
+    for (int i=0;i<height_Inverse_Perspective_Max;i++)
+    {
+        Col_Center[i] = Col_Center_Backup[i];
+    }
+
+    return 1;
+}

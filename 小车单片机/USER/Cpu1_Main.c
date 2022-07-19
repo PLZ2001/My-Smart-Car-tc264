@@ -80,6 +80,8 @@ void core1_main(void)
             Get_Thresholding_Image();
 
 
+
+
             InsertTimer1Point(2);
             Get_Inverse_Perspective_Image();
             OLED_Camera_flag=1;
@@ -247,6 +249,13 @@ void core1_main(void)
                     Reset_Timer(13);
                 }
             }
+            if (Read_Timer_Status(14) == RUNNING)
+            {
+                if (Read_Timer(14)>time_up[14])
+                {
+                    Reset_Timer(14);
+                }
+            }
             //如果不在计时，继续分类
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -302,12 +311,14 @@ void core1_main(void)
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
                         Start_Timer(7);
+                        time_up[14] = 0.3f;
+                        Start_Timer(14);
                     }
                 }
                 else if (flag_For_T == 2)
                 {
 //                    if (Read_Timer_Status(7) == PAUSED)
-                    if ((Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)  && Read_Timer(7)==PAUSED)
+                    if (((Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)  && Read_Timer(7)==PAUSED) || Read_Timer(14)==PAUSED)
                     {
                         flag_For_T=0;
                     }
