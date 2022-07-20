@@ -405,41 +405,87 @@ void Update_Speed_Mode(void)
             BANGBANG_UP2 = 1.0;
             BANGBANG_DOWN2 = 1.0;
 
-            speed_Target_Highest = 1.5*3.9f;
-            SightForward_Highest = 0.44f;
-            OuterSide_Ratio_Highest = 1.0f;
+            speed_Target_Highest = 4.0f;//¼´3.5
+            SightForward_Highest = 0.38f;
+            OuterSide_Ratio_Highest = 0.95f;
             InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.10f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.6f;
+            Steering_PID_Highest[0]=0.13f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
 
 
-            speed_Target_High = 3.9f;//¼´3.4
-            SightForward_High = 0.44f;
-            OuterSide_Ratio_High = 1.0f;
-            InnerSide_Ratio_High = 1.20f;//1.15f;
-            Steering_PID_High[0]=0.11f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
+            speed_Target_High = 3.6f;//¼´3.2
+            SightForward_High = 0.38f;
+            OuterSide_Ratio_High = 0.95f;
+            InnerSide_Ratio_High = 1.15f;//1.15f;
+            Steering_PID_High[0]=0.13f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.8f;
 
 
             speed_Target_Low = 3.4f;//¼´3.0
-            SightForward_Low = 0.44f;
-            OuterSide_Ratio_Low = 1.0f;
+            SightForward_Low = 0.38f;
+            OuterSide_Ratio_Low = 0.95f;
             InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.11f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.6f;
+            Steering_PID_Low[0]=0.14f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
 
 
-            speed_Target_Lowest = 3.1f;//¼´2.7
-            SightForward_Lowest = 0.44f;
-            OuterSide_Ratio_Lowest = 1.0f;
-            InnerSide_Ratio_Lowest = 1.10f;
-            Steering_PID_Lowest[0]=0.10f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.6f;
+            speed_Target_Lowest = 3.35f;//¼´2.95
+            SightForward_Lowest = 0.38f;
+            OuterSide_Ratio_Lowest = 0.95f;
+            InnerSide_Ratio_Lowest = 1.15f;
+            Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
-            SightForward_Lowest_ForT = 0.44f;
+            SightForward_Lowest_ForT = 0.40f;
             OuterSide_Ratio_Lowest_ForT = 1.0f;
             InnerSide_Ratio_Lowest_ForT = 3.00f;
             //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
-            Steering_PID_Lowest_ForT[0]=0.10f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.6f;
+            Steering_PID_Lowest_ForT[0]=0.13f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.8f;
 
             break;
+//            Differential_Ratio = Volt_DR;
+//
+//            T_Time = 0.12f;
+//
+//            Highest_Distance = 0.05f;
+//
+//            BANGBANG_UP1 = 1.0;
+//            BANGBANG_DOWN1 = 1.0;
+//            BANGBANG_UP2 = 1.0;
+//            BANGBANG_DOWN2 = 1.0;
+//
+//            speed_Target_Highest = 1.5*3.9f;
+//            SightForward_Highest = 0.44f;
+//            OuterSide_Ratio_Highest = 1.0f;
+//            InnerSide_Ratio_Highest = 1.15f;
+//            Steering_PID_Highest[0]=0.10f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.6f;
+//
+//
+//            speed_Target_High = 3.9f;//¼´3.4
+//            SightForward_High = 0.44f;
+//            OuterSide_Ratio_High = 1.0f;
+//            InnerSide_Ratio_High = 1.20f;//1.15f;
+//            Steering_PID_High[0]=0.11f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.6f;
+//
+//
+//            speed_Target_Low = 3.4f;//¼´3.0
+//            SightForward_Low = 0.44f;
+//            OuterSide_Ratio_Low = 1.0f;
+//            InnerSide_Ratio_Low = 1.15f;//1.25;
+//            Steering_PID_Low[0]=0.11f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.6f;
+//
+//
+//            speed_Target_Lowest = 3.1f;//¼´2.7
+//            SightForward_Lowest = 0.44f;
+//            OuterSide_Ratio_Lowest = 1.0f;
+//            InnerSide_Ratio_Lowest = 1.10f;
+//            Steering_PID_Lowest[0]=0.10f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.6f;
+//
+//            speed_Target_Lowest_ForT = 2.4f;//¼´2.1
+//            SightForward_Lowest_ForT = 0.44f;
+//            OuterSide_Ratio_Lowest_ForT = 1.0f;
+//            InnerSide_Ratio_Lowest_ForT = 3.00f;
+//            //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+//            Steering_PID_Lowest_ForT[0]=0.10f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.6f;
+//
+//            break;
         }
     }
 }

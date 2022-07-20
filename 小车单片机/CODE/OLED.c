@@ -136,11 +136,19 @@ void Update_OLED_per10ms(void)
                 {
                     OLED_PRINTF(0,0,"->DR_Max:%01.02f ",Max_DR);
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
+                    OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
                 }
                 else if (pointer_temp == 1)
                 {
                     OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
                     OLED_PRINTF(0,1,"->DR_Min:%01.02f ",Min_DR);
+                    OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
+                }
+                else if (pointer_temp == 2)
+                {
+                    OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
+                    OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
+                    OLED_PRINTF(0,2,"->Circle4:%d ",Check_Circle_New4_EN);
                 }
                 if (up_Down == 1)
                 {

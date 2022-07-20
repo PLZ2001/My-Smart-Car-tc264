@@ -74,6 +74,8 @@ uint8 center_dot = X_WIDTH*0.5f;
 
 uint8 Helper_Window_Flag = 0;
 
+uint8 Check_Circle_New4_EN = 1;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -136,22 +138,22 @@ void DrawCenterLine(void)
         Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
 
-    static uint8 first_time = 0;
-    static uint8 flag = 0;
-    if (classification_Result != 2 && classification_Result != 3 )
-    {
-        first_time = 0;
-        flag=0;
-    }
-    if ((classification_Result == 2 || classification_Result == 3 ) && flag == 0)
-    {
-        first_time = 1;
-        flag = 1;
-    }
-    else
-    {
-        first_time = 0;
-    }
+//    static uint8 first_time = 0;
+//    static uint8 flag = 0;
+//    if (classification_Result != 2 && classification_Result != 3 )
+//    {
+//        first_time = 0;
+//        flag=0;
+//    }
+//    if ((classification_Result == 2 || classification_Result == 3 ) && flag == 0)
+//    {
+//        first_time = 1;
+//        flag = 1;
+//    }
+//    else
+//    {
+//        first_time = 0;
+//    }
 
 
 
@@ -3871,9 +3873,13 @@ uint8 Check_Fake_Zebra(int max)
 
 uint8 Check_RightCircle_New4(float ratio)
 {
-//    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-//    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
-//    DrawCenterLinewithConfig_RightBased(0);
+    if (Check_Circle_New4_EN == 0)
+    {
+        return 1;
+    }
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
+    DrawCenterLinewithConfig_RightBased(0);
 
     float last_Col_Center = -2;
     for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
@@ -3888,7 +3894,7 @@ uint8 Check_RightCircle_New4(float ratio)
             {
                 if (Col_Center[i] - last_Col_Center>=4)
                 {
-//                    search_Lines = height_Inverse_Perspective;
+                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3898,15 +3904,19 @@ uint8 Check_RightCircle_New4(float ratio)
             }
         }
     }
-//    search_Lines = height_Inverse_Perspective;
+    search_Lines = height_Inverse_Perspective;
     return 1;
 }
 
 uint8 Check_LeftCircle_New4(float ratio)
 {
-//    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-//    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
-//    DrawCenterLinewithConfig_LeftBased(0);
+    if (Check_Circle_New4_EN == 0)
+    {
+        return 1;
+    }
+    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
+    DrawCenterLinewithConfig_LeftBased(0);
 
     float last_Col_Center = -2;
     for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
@@ -3921,7 +3931,7 @@ uint8 Check_LeftCircle_New4(float ratio)
             {
                 if (Col_Center[i] - last_Col_Center<=-4)
                 {
-//                    search_Lines = height_Inverse_Perspective;
+                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3931,6 +3941,6 @@ uint8 Check_LeftCircle_New4(float ratio)
             }
         }
     }
-//    search_Lines = height_Inverse_Perspective;
+    search_Lines = height_Inverse_Perspective;
     return 1;
 }

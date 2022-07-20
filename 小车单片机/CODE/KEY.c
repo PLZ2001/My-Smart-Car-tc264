@@ -152,7 +152,7 @@ void Key1_Action(void)
 //            break;
         case DR_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 2)
+            if (pointer_temp >= 3)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -318,6 +318,8 @@ void Key2_Action(void)
                 case 1:
                     Min_DR += 0.05f*up_Down;
                     break;
+                case 2:
+                    Check_Circle_New4_EN = (Check_Circle_New4_EN==1?0:1);
                 default:
                     break;
             }
