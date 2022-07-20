@@ -68,7 +68,7 @@ uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
 uint8 Zebra_Value = 10;
-float Zebra_Detect = 0.57f;
+float Zebra_Detect = 0.61f;//0.57f;
 
 uint8 center_dot = X_WIDTH*0.5f;
 
