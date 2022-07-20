@@ -45,9 +45,6 @@ void core1_main(void)
     //用户在此处调用各种初始化函数等
 
 
-
-
-
 	//等待所有核心初始化完毕
 	IfxCpu_emitEvent(&g_cpuSyncEvent);
 	IfxCpu_waitEvent(&g_cpuSyncEvent, 0xFFFF);
@@ -95,6 +92,14 @@ void core1_main(void)
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(9);
 
+            if (Read_Timer_Status(4) == RUNNING)
+            {
+                if (Read_Timer(4)>time_up[4])
+                {
+                    Reset_Timer(4);
+                }
+            }
+
             //检查斑马线数据
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
@@ -131,6 +136,36 @@ void core1_main(void)
                 {
                     Reset_Timer(11);
                     zebra_status = finding;
+                }
+            }
+
+
+            //激光测距开关时间区
+            static uint8 first_flag = 0;
+            if (start_Flag == 1 && first_flag==0)
+            {
+                first_flag = 1;
+                time_up[15] = Lazer_Start_Time;
+                Start_Timer(15);
+                time_up[16] = Lazer_End_Time;
+                Start_Timer(16);
+            }
+            if (Read_Timer_Status(15) == RUNNING)
+            {
+                if (Read_Timer(15)>time_up[15])
+                {
+                    Reset_Timer(15);
+                    Lazer_Data=819.1f;
+                    Lazer_On = 1;
+                }
+            }
+            if (Read_Timer_Status(16) == RUNNING)
+            {
+                if (Read_Timer(16)>time_up[16])
+                {
+                    Reset_Timer(16);
+                    Lazer_Data=819.1f;
+                    Lazer_On = 0;
                 }
             }
 

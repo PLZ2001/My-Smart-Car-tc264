@@ -25,6 +25,10 @@ extern float SlopeSpeed3;
 
 extern float Slope_Distance;
 
+extern uint8 Max_Limit;
+extern float Lazer_Start_Time;
+extern float Lazer_End_Time;
+
 void My_Init_ICM(void);
 void Get_ICM_DATA(void);
 void Check_Slope_with_Gyro(void);

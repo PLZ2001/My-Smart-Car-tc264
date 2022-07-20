@@ -24,7 +24,7 @@ float angle=0;
 
 uint8 is_Slope = 0;//1表示检测到坡道，0表示没有
 
-float Lazer_Data=0;
+float Lazer_Data=819.1f;
 uint8 Lazer_On = 1;
 
 float SlopeSpeed1 = 0.4f;
@@ -32,6 +32,10 @@ float SlopeSpeed2 = 0.4f;
 float SlopeSpeed3 = 0.7f;
 
 float Slope_Distance = 70.0f;
+
+uint8 Max_Limit = 20;//30;
+float Lazer_Start_Time = 0;
+float Lazer_End_Time = 36.0f;
 
 void My_Init_ICM(void)
 {
@@ -201,7 +205,7 @@ void Check_Slope_with_Lazer(void)
     if (Lazer_Data>800.0f)
     {
         cnt_2++;
-        if (cnt_2>=30)
+        if (cnt_2>=Max_Limit)
         {
             cnt_2 = 0;
             is_Slope = 0;//已经进入到正常道路

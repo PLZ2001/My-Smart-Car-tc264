@@ -192,7 +192,7 @@ void Key1_Action(void)
             break;
         case Slope_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 4)
+            if (pointer_temp >= 7)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -276,6 +276,15 @@ void Key2_Action(void)
                     break;
                 case 3:
                     Slope_Distance += up_Down;
+                    break;
+                case 4:
+                    Max_Limit += up_Down;
+                    break;
+                case 5:
+                    Lazer_Start_Time += up_Down;
+                    break;
+                case 6:
+                    Lazer_End_Time += up_Down;
                     break;
                 default:
                     break;
