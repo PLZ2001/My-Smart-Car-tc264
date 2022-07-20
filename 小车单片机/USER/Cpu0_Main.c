@@ -64,7 +64,7 @@ int core0_main(void)
     My_Init_Camera();//我的初始化摄像头
     My_Init_Switch();//我的初始化拨盘
     My_Init_Key();//我的初始化按键
-    My_Init_UART();//我的初始化串口通信
+//    My_Init_UART();//我的初始化串口通信
     My_Init_FuzzyPID_Speed();//我的初始化速度模糊PID控制
     My_Init_Timer();//我的初始化TIMER
 
@@ -134,14 +134,14 @@ int core0_main(void)
 //        Get_ICM_DATA();//更新陀螺仪数据
 //        Check_Slope_with_Gyro();
 
-	    if (UART_EN == TRUE)
-	    {
-	        UART(Send);
-	    }
-	    else
-	    {
-	        UART(Emergency_Send);
-	    }
+//	    if (UART_EN == TRUE)
+//	    {
+//	        UART(Send);
+//	    }
+//	    else
+//	    {
+//	        UART(Emergency_Send);
+//	    }
 	    //Send_with_Wifi();//用wifi发送
 
 	}

@@ -450,7 +450,7 @@ void core1_main(void)
 
 
                      Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-                     if (Check_Straight(0.6f))
+                     if (Check_Straight(0.7f))
                      {
                          classification_Result=6;
                          classification_Result_1=6;
@@ -459,7 +459,7 @@ void core1_main(void)
                      Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
 
                      //检查长直道是否满足
-                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6||classification_Result==5))
+                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6))
                      {
                          Long_Straight_Flag = 1;//长直道
                      }
