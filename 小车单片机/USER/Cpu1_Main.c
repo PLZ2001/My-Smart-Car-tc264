@@ -264,7 +264,7 @@ void core1_main(void)
                     if (Left_Straight_Score<=2.7f)
                     {
                         flag_For_Right_Circle = 2;
-                        time_up[13] = 0.5f;
+                        time_up[13] = 0.75f;
                         Start_Timer(13);
                     }
                 }
@@ -273,7 +273,7 @@ void core1_main(void)
                     if (Right_Straight_Score<=2.7f)
                     {
                         flag_For_Left_Circle = 2;
-                        time_up[13] = 0.5f;
+                        time_up[13] = 0.75f;
                         Start_Timer(13);
                     }
                 }
