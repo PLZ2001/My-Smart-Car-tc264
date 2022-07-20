@@ -728,8 +728,10 @@ void core1_main(void)
             }
             if (zebra_status == finishing)
             {
-                OuterSide_Ratio_ratio = 2.0f;
-                InnerSide_Ratio_ratio = 2.0f;
+                OuterSide_Ratio_ratio = 3.0f;
+                InnerSide_Ratio_ratio = 3.0f;
+                SightForward_ratio =0.7f;
+                steeringPID_ratio_kp = 1.3f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
@@ -805,7 +807,7 @@ void core1_main(void)
                 case Lowest_ForZebra:
                 {
                     SightForward = SightForward_Lowest_ForT*SightForward_ratio;
-                    speed_Target = 0.5f;
+                    speed_Target = 0.85f*Stop;
                     OuterSide_Ratio = OuterSide_Ratio_Lowest_ForT*OuterSide_Ratio_ratio;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
                     Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);

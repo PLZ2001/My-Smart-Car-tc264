@@ -76,6 +76,8 @@ uint8 Helper_Window_Flag = 0;
 
 uint8 Check_Circle_New4_EN = 1;
 
+uint8 Stop = 1;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -169,6 +171,38 @@ void DrawCenterLine(void)
         DrawCenterLinewithConfig(0.7);
     }
     // 对于6直道，可以采用，特征是滤波是较大正数，用于避免中心线有过大的波动
+    else if (zebra_status==finishing)
+    {
+        static uint8 steering_Target_Remember = 0;
+        static uint8 steering_Target_Remember_flag=0;
+        if (steering_Target_Remember_flag==0)
+        {
+            if (zebra_direction==-1)
+            {
+                DrawCenterLinewithConfig_LeftBased(0);
+                steering_Target_Remember = 7;
+                steering_Target_Remember_flag=1;
+            }
+            else if(zebra_direction==1)
+            {
+                DrawCenterLinewithConfig_RightBased(0);
+                steering_Target_Remember = 8;
+                steering_Target_Remember_flag=1;
+            }
+        }
+        else
+        {
+            if (steering_Target_Remember == 7)
+            {
+                DrawCenterLinewithConfig_LeftBased(0);
+            }
+            else if (steering_Target_Remember == 8)
+            {
+                DrawCenterLinewithConfig_RightBased(0);
+            }
+        }
+
+    }
     else if (classification_Result == 6)
     {
         DrawCenterLinewithConfig(0.7);
@@ -1044,6 +1078,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 {
                     break;
                 }
+                if (cnt_temp>(zebra_status==finishing?0.3*road_width:2*road_width))
+                {
+                    break;
+                }
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
                     Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
@@ -1300,6 +1338,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             else
             {
                 if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+                {
+                    break;
+                }
+                if (cnt_temp>(zebra_status==finishing?0.3*road_width:2*road_width))
                 {
                     break;
                 }

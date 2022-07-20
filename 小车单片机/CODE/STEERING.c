@@ -275,33 +275,33 @@ void Cal_Steering_Target(void)
     }
     if (zebra_status==finishing)
     {
-        static float steering_Target_Remember = 0;
-        static uint8 steering_Target_Remember_flag=0;
-        if (steering_Target_Remember_flag==0)
-        {
-            if (zebra_direction==-1)
-            {
-                steering_Target = STEERING_MIN-10;
-                steering_Target_Remember = steering_Target;
-                steering_Target_Remember_flag=1;
-            }
-            else if(zebra_direction==1)
-            {
-                steering_Target = STEERING_MAX+10;
-                steering_Target_Remember = steering_Target;
-                steering_Target_Remember_flag=1;
-            }
-        }
-        else
-        {
-            steering_Target = steering_Target_Remember;
-        }
-
+//        static float steering_Target_Remember = 0;
+//        static uint8 steering_Target_Remember_flag=0;
+//        if (steering_Target_Remember_flag==0)
+//        {
+//            if (zebra_direction==-1)
+//            {
+//                steering_Target = STEERING_MIN-10;
+//                steering_Target_Remember = steering_Target;
+//                steering_Target_Remember_flag=1;
+//            }
+//            else if(zebra_direction==1)
+//            {
+//                steering_Target = STEERING_MAX+10;
+//                steering_Target_Remember = steering_Target;
+//                steering_Target_Remember_flag=1;
+//            }
+//        }
+//        else
+//        {
+//            steering_Target = steering_Target_Remember;
+//        }
+//
         if (Left_Straight_Score<=1.50f&&Unknown_Straight_Score<=1.50f&&Right_Straight_Score<=1.50f)
         {
             if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
             {
-                emergency_Stop=1;
+                Stop=0;
             }
         }
     }

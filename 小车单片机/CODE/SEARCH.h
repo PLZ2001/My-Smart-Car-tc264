@@ -69,6 +69,7 @@ extern float Zebra_Detect;
 extern uint8 Helper_Window_Flag;
 extern uint8 Check_Circle_New4_EN;
 
+extern uint8 Stop;
 
 
 void UART_ColCenter(void);
