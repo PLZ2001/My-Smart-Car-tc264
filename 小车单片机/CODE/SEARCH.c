@@ -135,6 +135,26 @@ void DrawCenterLine(void)
     {
         Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
+
+    static uint8 first_time = 0;
+    static uint8 flag = 0;
+    if (classification_Result != 2 && classification_Result != 3 )
+    {
+        first_time = 0;
+        flag=0;
+    }
+    if ((classification_Result == 2 || classification_Result == 3 ) && flag == 0)
+    {
+        first_time = 1;
+        flag = 1;
+    }
+    else
+    {
+        first_time = 0;
+    }
+
+
+
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
     search_Lines = height_Inverse_Perspective;//一共要扫描多少行，最大是图片宽
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
@@ -178,6 +198,20 @@ void DrawCenterLine(void)
     else if (classification_Result == 3)
     {
         DrawCenterLinewithConfig_RightBased(0);
+//        if (first_time == 1)
+//        {
+//            if (Check_RightCircle_New4(0.2f))
+//            {
+//                ;
+//            }
+//            else
+//            {
+//                classification_Result = 13;
+//                Reset_Timer(0);
+//                flag_For_Right_Circle = 0;
+//                DrawCenterLinewithConfig_LeftBased(0);
+//            }
+//        }
     }
     // 对于11右直线可以采用，特征是靠右行驶
     else if (classification_Result == 11)
@@ -188,6 +222,20 @@ void DrawCenterLine(void)
     else if (classification_Result == 2)
     {
         DrawCenterLinewithConfig_LeftBased(0);
+//        if (first_time == 1)
+//        {
+//            if (Check_LeftCircle_New4(0.2f))
+//            {
+//                ;
+//            }
+//            else
+//            {
+//                classification_Result = 12;
+//                Reset_Timer(0);
+//                flag_For_Left_Circle = 0;
+//                DrawCenterLinewithConfig_RightBased(0);
+//            }
+//        }
     }
     // 对于10左直线可以采用，特征是靠左行驶
     else if (classification_Result == 10)
@@ -3823,14 +3871,9 @@ uint8 Check_Fake_Zebra(int max)
 
 uint8 Check_RightCircle_New4(float ratio)
 {
-    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
-    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-    {
-        Col_Center_Backup[i]=Col_Center[i];
-        Col_Center[i] = -2;
-    }
-    DrawCenterLinewithConfig_RightBased(0);
+//    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+//    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
+//    DrawCenterLinewithConfig_RightBased(0);
 
     float last_Col_Center = -2;
     for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
@@ -3845,11 +3888,7 @@ uint8 Check_RightCircle_New4(float ratio)
             {
                 if (Col_Center[i] - last_Col_Center>=4)
                 {
-                    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-                    {
-                        Col_Center[i] = Col_Center_Backup[i];
-                    }
-                    search_Lines = height_Inverse_Perspective;
+//                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3859,25 +3898,15 @@ uint8 Check_RightCircle_New4(float ratio)
             }
         }
     }
-
-    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-    {
-        Col_Center[i] = Col_Center_Backup[i];
-    }
-    search_Lines = height_Inverse_Perspective;
+//    search_Lines = height_Inverse_Perspective;
     return 1;
 }
 
 uint8 Check_LeftCircle_New4(float ratio)
 {
-    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
-    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
-    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-    {
-        Col_Center_Backup[i]=Col_Center[i];
-        Col_Center[i] = -2;
-    }
-    DrawCenterLinewithConfig_LeftBased(0);
+//    road_width = (0.4/Camera_Height/ratioOfPixelToHG);
+//    search_Lines = height_Inverse_Perspective*ratio;//一共要扫描多少行，最大是图片宽
+//    DrawCenterLinewithConfig_LeftBased(0);
 
     float last_Col_Center = -2;
     for (int i = 0;i<ratio*height_Inverse_Perspective;i++)
@@ -3892,11 +3921,7 @@ uint8 Check_LeftCircle_New4(float ratio)
             {
                 if (Col_Center[i] - last_Col_Center<=-4)
                 {
-                    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-                    {
-                        Col_Center[i] = Col_Center_Backup[i];
-                    }
-                    search_Lines = height_Inverse_Perspective;
+//                    search_Lines = height_Inverse_Perspective;
                     return 0;
                 }
                 else
@@ -3906,11 +3931,6 @@ uint8 Check_LeftCircle_New4(float ratio)
             }
         }
     }
-
-    for (int i=0;i<height_Inverse_Perspective_Max;i++)
-    {
-        Col_Center[i] = Col_Center_Backup[i];
-    }
-    search_Lines = height_Inverse_Perspective;
+//    search_Lines = height_Inverse_Perspective;
     return 1;
 }

@@ -14,6 +14,7 @@ enum OLEDPage
     Zebra_Page,
     Slope_Page,
     DR_Page,
+    Volt_Page,
     Speed_Page,
 
 //    Zebra_Page2,
@@ -22,7 +23,7 @@ enum OLEDPage
 //    MotorPID_Page,
 //    SteeringPID_Page,
 
-    Volt_Page,
+
     Speed_Page2,
     ThreeDot_Page,
 //    Circle_Page,

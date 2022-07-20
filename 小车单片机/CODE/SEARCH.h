@@ -100,6 +100,8 @@ uint8 Check_Right_All_Road(float ratio,int zero_limit);
 float Get_Straight_Score(int dot_num);
 uint8 Select_Left_Unknown_or_Right(int dot_num);
 
+uint8 Check_LeftCircle_New4(float ratio);
+uint8 Check_RightCircle_New4(float ratio);
 
 
 
