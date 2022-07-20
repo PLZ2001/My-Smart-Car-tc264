@@ -268,7 +268,7 @@ void Cal_Steering_Target(void)
             steering_Target = steering_Target_Remember;
         }
 
-        if (steering_Target == steering_Target_Remember  && (Left_Straight_Score>=2.55f||Unknown_Straight_Score>=2.55f||Right_Straight_Score>=2.55f))
+        if ((steering_Target == STEERING_MAX+10 || steering_Target == STEERING_MIN-10)  && (Left_Straight_Score>=2.55f||Unknown_Straight_Score>=2.55f||Right_Straight_Score>=2.55f))
         {
             zebra_status=finding;
         }
