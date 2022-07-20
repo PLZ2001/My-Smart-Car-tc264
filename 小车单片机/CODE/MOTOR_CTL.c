@@ -406,31 +406,31 @@ void Update_Speed_Mode(void)
             BANGBANG_DOWN2 = 1.0;
 
             speed_Target_Highest = 4.0f;//¼´3.5
-            SightForward_Highest = 0.38f;
-            OuterSide_Ratio_Highest = 0.95f;
-            InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.13f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
+            SightForward_Highest = 0.41f;
+            OuterSide_Ratio_Highest = 1.05f;
+            InnerSide_Ratio_Highest = 1.25f;
+            Steering_PID_Highest[0]=0.125f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
 
 
             speed_Target_High = 3.6f;//¼´3.2
-            SightForward_High = 0.38f;
-            OuterSide_Ratio_High = 0.95f;
-            InnerSide_Ratio_High = 1.15f;//1.15f;
-            Steering_PID_High[0]=0.13f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.8f;
+            SightForward_High = 0.41f;
+            OuterSide_Ratio_High = 1.05f;
+            InnerSide_Ratio_High = 1.25f;//1.15f;
+            Steering_PID_High[0]=0.125f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.8f;
 
 
             speed_Target_Low = 3.4f;//¼´3.0
-            SightForward_Low = 0.38f;
-            OuterSide_Ratio_Low = 0.95f;
-            InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.14f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
+            SightForward_Low = 0.41f;
+            OuterSide_Ratio_Low = 1.05f;
+            InnerSide_Ratio_Low = 1.25f;//1.25;
+            Steering_PID_Low[0]=0.135f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
 
 
             speed_Target_Lowest = 3.35f;//¼´2.95
-            SightForward_Lowest = 0.38f;
-            OuterSide_Ratio_Lowest = 0.95f;
-            InnerSide_Ratio_Lowest = 1.15f;
-            Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
+            SightForward_Lowest = 0.41f;
+            OuterSide_Ratio_Lowest = 1.05f;
+            InnerSide_Ratio_Lowest = 1.25f;
+            Steering_PID_Lowest[0]=0.135f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
