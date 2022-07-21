@@ -96,9 +96,9 @@ void Update_OLED_per10ms(void)
             case Slope_Page:
                 if (pointer_temp == 0)
                 {
-                    OLED_PRINTF(0,0,"->SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"->Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);
@@ -106,9 +106,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 1)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"->SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"->Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);
@@ -116,9 +116,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 2)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"->SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"->Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);
@@ -126,9 +126,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 3)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"->Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);
@@ -136,9 +136,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 4)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"->Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);
@@ -146,9 +146,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 5)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"->Start_Time:%.0f ",Lazer_Start_Time);
@@ -156,9 +156,9 @@ void Update_OLED_per10ms(void)
                 }
                 else if (pointer_temp == 6)
                 {
-                    OLED_PRINTF(0,0,"SlopeSpeed1:%.2f ",SlopeSpeed1);
-                    OLED_PRINTF(0,1,"SlopeSpeed2:%.2f ",SlopeSpeed2);
-                    OLED_PRINTF(0,2,"SlopeSpeed3:%.2f ",SlopeSpeed3);
+                    OLED_PRINTF(0,0,"Speed1.5.4:%.2f ",SlopeSpeed1);
+                    OLED_PRINTF(0,1,"Speed2.5.4:%.2f ",SlopeSpeed2);
+                    OLED_PRINTF(0,2,"Speed3.7.7:%.2f ",SlopeSpeed3);
                     OLED_PRINTF(0,3,"Slope_Distance:%.1f ",Slope_Distance);
                     OLED_PRINTF(0,4,"Max_Limit:%d ",Max_Limit);
                     OLED_PRINTF(0,5,"Start_Time:%.0f ",Lazer_Start_Time);

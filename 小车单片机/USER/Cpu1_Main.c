@@ -251,6 +251,14 @@ void core1_main(void)
             //如果在计时，判断计时是否达到要求时间
             if (Read_Timer_Status(0) == RUNNING)
             {
+                if (Read_Timer(0)<ThreeeRoad_Delay)
+                {
+                    ThreeeRoad_Delay_Flag = 0;
+                }
+                else
+                {
+                    ThreeeRoad_Delay_Flag = 1;
+                }
                 if (Read_Timer(0)>time_up[0])
                 {
                     Reset_Timer(0);
@@ -341,7 +349,8 @@ void core1_main(void)
                 else if (flag_For_T == 1)
                 {
                     classification_Result = 14;
-                    if (Check_TRoad(1,0.18f,3) == 1)
+//                    if (Check_TRoad(1,0.18f,3) == 1)
+                    if (Check_TRoad(1,T_Line,3) == 1)
                     {
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
@@ -741,6 +750,12 @@ void core1_main(void)
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.3f;
                 InnerSide_Ratio_ratio = 0.9f;
+            }
+
+            if (classification_Result==4 && ThreeeRoad_Delay_Flag == 0)
+            {
+                steeringPID_ratio_kp = 0.05f;
+                steeringPID_ratio_kd = 0.05f;
             }
 
             if (is_Slope==1)

@@ -78,6 +78,11 @@ uint8 Check_Circle_New4_EN = 1;
 
 uint8 Stop = 1;
 
+float T_Line = 0.18f;
+
+uint8 ThreeeRoad_Delay_Flag = 0;
+float ThreeeRoad_Delay = 0;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);

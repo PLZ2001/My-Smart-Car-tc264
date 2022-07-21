@@ -70,6 +70,10 @@ extern uint8 Helper_Window_Flag;
 extern uint8 Check_Circle_New4_EN;
 
 extern uint8 Stop;
+extern float T_Line;
+
+extern uint8 ThreeeRoad_Delay_Flag;
+extern float ThreeeRoad_Delay;
 
 
 void UART_ColCenter(void);
