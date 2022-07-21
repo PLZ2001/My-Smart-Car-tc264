@@ -152,7 +152,7 @@ void Key1_Action(void)
 //            break;
         case DR_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 3)
+            if (pointer_temp >= 4)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -329,6 +329,10 @@ void Key2_Action(void)
                     break;
                 case 2:
                     Check_Circle_New4_EN = (Check_Circle_New4_EN==1?0:1);
+                    break;
+                case 3:
+                    ThreeeRoad_Delay  += 0.01f*up_Down;
+                    break;
                 default:
                     break;
             }

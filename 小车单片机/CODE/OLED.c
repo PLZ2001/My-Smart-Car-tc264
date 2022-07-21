@@ -179,26 +179,37 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,0,"->DR_Max:%01.02f ",Max_DR);
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
+                    OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
+
                 }
                 else if (pointer_temp == 1)
                 {
                     OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
                     OLED_PRINTF(0,1,"->DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
+                    OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
                 }
                 else if (pointer_temp == 2)
                 {
                     OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"->Circle4:%d ",Check_Circle_New4_EN);
+                    OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
+                }
+                else if (pointer_temp == 3)
+                {
+                    OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
+                    OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
+                    OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
+                    OLED_PRINTF(0,3,"->3Road_Delay:%.2f ",ThreeeRoad_Delay);
                 }
                 if (up_Down == 1)
                 {
-                    OLED_PRINTF(0,3,"ADD");
+                    OLED_PRINTF(0,5,"ADD");
                 }
                 else if (up_Down == -1)
                 {
-                    OLED_PRINTF(0,3,"SUB");
+                    OLED_PRINTF(0,5,"SUB");
                 }
                 break;
             case Speed_Page2:
