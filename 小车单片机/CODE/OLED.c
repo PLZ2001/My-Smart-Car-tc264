@@ -289,7 +289,7 @@ void Update_OLED_per10ms(void)
 //                }
 //                break;
             case Camera_Page2:
-                if (OLED_Camera_flag==1/*&&flag_for_ICM_Init==1*/)
+                if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
                     my_oled_dis_bmp();
                 }
@@ -438,8 +438,8 @@ void Update_OLED_per10ms(void)
                 }
                 break;
             case Speed_Page:
-                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
-                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
+                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1*60.0f/68.0f);
+                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2*60.0f/68.0f);
                 OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
 //                if (pointer_temp == 0)
 //                {

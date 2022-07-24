@@ -62,17 +62,13 @@
 
 void motion_thread_entry(void *parameter)
 {
-    rt_kprintf("motion thread is running.\n");
 //    My_Init_SpeedSensor1();//我的初始化编码器
 //    My_Init_SpeedSensor2();//我的初始化编码器
 //    My_Init_Steering();//我的初始化舵机
 //    My_Init_Motor1();//我的初始化直流电机
 //    My_Init_Motor2();//我的初始化直流电机
-    rt_kprintf("motion init success.\n");
     while(1)
     {
-
-
         if (emergency_Stop == 0)
         {
             //由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
@@ -106,14 +102,8 @@ void motion_thread_entry(void *parameter)
             Set_Steering();
         }
         rt_thread_mdelay(10);
-
-
-
     }
 }
-
-
-
 
 void camera_thread_entry(void *parameter)
 {
@@ -124,6 +114,7 @@ void camera_thread_entry(void *parameter)
 
     while(1)
     {
+
         if (mt9v03x_finish_flag == 1)
         {
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
@@ -818,7 +809,7 @@ void camera_thread_entry(void *parameter)
                 steeringPID_ratio_kp = 1.3f;
             }
 
-            if (OLED_Camera_flag==1/*&&flag_for_ICM_Init==1*/)
+            if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
             {
                 static uint8 flag_Get_Volt_kd = 0;
                 if (flag_Get_Volt_kd == 0)
@@ -1052,9 +1043,6 @@ void camera_thread_entry(void *parameter)
     }
 }
 
-
-
-
 void OLED_thread_entry(void *parameter)
 {
     //oled_init();
@@ -1094,8 +1082,6 @@ void KEY_thread_entry(void *parameter)
         rt_thread_mdelay(20);
     }
 }
-
-
 
 void ZEBRA_thread_entry(void *parameter)
 {
@@ -1203,7 +1189,6 @@ void VL53L0X_thread_entry(void *parameter)
     }
 }
 
-
 void ADC_thread_entry(void *parameter)
 {
     rt_kprintf("ADC thread is running.\n");
@@ -1229,6 +1214,53 @@ void LED_thread_entry(void *parameter)
     }
 }
 
+void KS_timer_entry(void *parameter)
+{
+        //Update_OLED_per10ms();
+        Check_Key_per10ms();
+        Check_Switch_per10ms();
+}
+
+void motion_timer_entry(void *parameter)
+{
+    if (emergency_Stop == 0)
+    {
+        //由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
+        if (start_Flag==1)
+        {
+            Differential_Motor();
+        }
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
+        Cal_Speed_Output1();
+        Cal_Speed_Output2();
+        Set_Speed1();
+        Set_Speed2();
+        Set_Steering();
+    }
+    else
+    {
+        start_Flag = 0;
+        speed_Target = 0;
+        speed_Target1 = 0;
+        speed_Target2 = 0;
+        //      speed_Output1 = 0;
+        //      speed_Output2 = 0;
+        steering_Target = 0;
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
+        Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
+        Cal_Speed_Output1();//新增
+        Cal_Speed_Output2();//新增
+        Set_Speed1();
+        Set_Speed2();
+        Set_Steering();
+    }
+}
+
+
+
+
+
 
 int TIMETIME_timer_create (void)
 {
@@ -1247,6 +1279,44 @@ int TIMETIME_timer_create (void)
         rt_timer_start(timer1);
     }
 
+    return 0;
+}
+
+int KS_timer_create (void)
+{
+    rt_timer_t timer1;
+    // 创建一个定时器 周期100个tick
+    timer1 = rt_timer_create(
+        "timer_KS",                                           // timer1表示定时器的名称，8个字符内。
+        KS_timer_entry,                                          // timerout1表示时间到了之后需要执行的函数
+        RT_NULL,                                            // RT_NULL表示不需要传递参数。
+        10,                                                // 100表示定时器的超时时间为100个系统tick，系统周期为1毫秒，则100表示100毫秒
+        RT_TIMER_FLAG_PERIODIC);                            // RT_TIMER_FLAG_PERIODIC表示定时器以周期运行  如果设置为RT_TIMER_FLAG_ONE_SHOT则只会运行一次
+
+    // 首先检查定时器控制块不是空，则启动定时器
+    if(timer1 != RT_NULL)
+    {
+        rt_timer_start(timer1);
+    }
+
+    return 0;
+}
+
+int motion_timer_create(void)
+{
+    rt_timer_t timer1;
+    // 创建一个定时器 周期100个tick
+    timer1 = rt_timer_create(
+        "timer_mot",                                           // timer1表示定时器的名称，8个字符内。
+        motion_timer_entry,                                          // timerout1表示时间到了之后需要执行的函数
+        RT_NULL,                                            // RT_NULL表示不需要传递参数。
+        10,                                                // 100表示定时器的超时时间为100个系统tick，系统周期为1毫秒，则100表示100毫秒
+        RT_TIMER_FLAG_PERIODIC);                            // RT_TIMER_FLAG_PERIODIC表示定时器以周期运行  如果设置为RT_TIMER_FLAG_ONE_SHOT则只会运行一次
+    // 首先检查定时器控制块不是空，则启动定时器
+    if(timer1 != RT_NULL)
+    {
+        rt_timer_start(timer1);
+    }
     return 0;
 }
 
@@ -1277,10 +1347,6 @@ int LED_thread_create(void)
 
     return 0;
 }
-
-
-
-
 
 int ADC_thread_create(void)
 {
@@ -1338,7 +1404,6 @@ int VL53L0X_thread_create(void)
     return 0;
 }
 
-
 int ZEBRA_thread_create(void)
 {
     // 线程控制块指针
@@ -1348,7 +1413,7 @@ int ZEBRA_thread_create(void)
             ZEBRA_thread_entry,                                      // 线程入口函数
             RT_NULL,                                            // 线程参数
             512,                                                // 512 个字节的栈空间
-            30,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
+            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
@@ -1366,9 +1431,6 @@ int ZEBRA_thread_create(void)
 
     return 0;
 }
-
-
-
 
 int KEY_thread_create(void)
 {
@@ -1398,7 +1460,6 @@ int KEY_thread_create(void)
     return 0;
 }
 
-
 int SWITCH_thread_create(void)
 {
     // 线程控制块指针
@@ -1426,7 +1487,6 @@ int SWITCH_thread_create(void)
 
     return 0;
 }
-
 
 int OLED_thread_create(void)
 {
@@ -1456,7 +1516,6 @@ int OLED_thread_create(void)
     return 0;
 }
 
-
 int camera_thread_create(void)
 {
     mt9v03x_finish_sem = rt_sem_create("mt9v03x_finish_sem", 0 ,RT_IPC_FLAG_FIFO);
@@ -1467,7 +1526,7 @@ int camera_thread_create(void)
             camera_thread_entry,                                      // 线程入口函数
             RT_NULL,                                            // 线程参数
             512,                                                // 512 个字节的栈空间
-            30,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
+            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
@@ -1485,7 +1544,6 @@ int camera_thread_create(void)
 
     return 0;
 }
-
 
 int motion_thread_create(void)
 {
@@ -1517,7 +1575,6 @@ int motion_thread_create(void)
 
 
 
-
 void init_thread_entry(void *parameter)
 {
     My_Init_LED();
@@ -1540,17 +1597,16 @@ void init_thread_entry(void *parameter)
     }
 
     OLED_thread_create();
-    KEY_thread_create();
-    SWITCH_thread_create();
+    //KEY_thread_create();
+    //SWITCH_thread_create();
+    KS_timer_create();
     camera_thread_create();
-    motion_thread_create();
+    //motion_thread_create();
+    motion_timer_create();
     ZEBRA_thread_create();
     ADC_thread_create();
     VL53L0X_thread_create();
 }
-
-
-
 
 int init_thread_create(void)
 {
@@ -1588,16 +1644,7 @@ int init_thread_create(void)
 
 INIT_APP_EXPORT(TIMETIME_timer_create);
 INIT_APP_EXPORT(init_thread_create);
-//INIT_APP_EXPORT(OLED_thread_create);
-//INIT_APP_EXPORT(KEY_thread_create);
-//INIT_APP_EXPORT(SWITCH_thread_create);
-//INIT_APP_EXPORT(LED_thread_create);
-//INIT_APP_EXPORT(camera_thread_create);
-//INIT_APP_EXPORT(motion_thread_create);
-//INIT_APP_EXPORT(ZEBRA_thread_create);
-//INIT_APP_EXPORT(ADC_thread_create);
 
-//INIT_APP_EXPORT(VL53L0X_thread_create);
 
 
 
