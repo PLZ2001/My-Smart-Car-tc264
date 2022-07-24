@@ -11,10 +11,10 @@
  * @company	   		成都逐飞科技有限公司
  * @author     		逐飞科技(QQ3184284598)
  * @version    		查看doc内version文件 版本说明
- * @Software 		ADS v1.2.2
+ * @Software 		ADS v1.5.2
  * @Target core		TC264D
  * @Taobao   		https://seekfree.taobao.com/
- * @date       		2020-3-23
+ * @date       		2022-3-14
  ********************************************************************************************************************/
  
  
@@ -292,26 +292,36 @@ void spi_mosi(SPIN_enum spi_n, SPI_PIN_enum cs_pin, uint8 *modata, uint8 *midata
 	bacon.B.TRAIL = 1;
 	bacon.B.TPRE = 1;
 	bacon.B.CS = cs_pin%102/6-3;
+
 	if(continuous)	IfxQspi_writeBasicConfigurationBeginStream(moudle, bacon.U);//发送数据后CS继续保持为低
 	else			IfxQspi_writeBasicConfigurationEndStream(moudle, bacon.U);	//每发送一个字节CS信号拉高一次
+
+	if(midata)
+	{
+		//将之前fifo中的数据全读读取出来
+		i = moudle->STATUS.B.RXFIFOLEVEL;
+		while(i--)
+		{
+			(uint8)IfxQspi_readReceiveFifo(moudle);
+		}
+	}
 
 	if(len>1)
 	{
 		i = 0;
-		while(i < (len-1))
+		len -= 1;
+		while(i < len)
 		{
-			while(moudle->STATUS.B.TXFIFOLEVEL != 0);
-			IfxQspi_write8(moudle, IfxQspi_ChannelId_0, modata, 1);
-			while(moudle->STATUS.B.RXFIFOLEVEL == 0);
-			if(NULL != midata)	
+
+			IfxQspi_writeTransmitFifo(moudle, *modata++);
+			if(midata)
 			{
-				IfxQspi_read8(moudle,midata,1);
+				while(moudle->STATUS.B.RXFIFOLEVEL == 0);
+				*midata = (uint8)IfxQspi_readReceiveFifo(moudle);
 				midata++;
 			}
-			else				(void)moudle->RXEXIT.U;
-			modata++;
-			
 			i++;
+			while(moudle->STATUS.B.TXFIFOLEVEL != 0);
 		}
 	}
 
@@ -320,9 +330,11 @@ void spi_mosi(SPIN_enum spi_n, SPI_PIN_enum cs_pin, uint8 *modata, uint8 *midata
 	IfxQspi_writeTransmitFifo(moudle, *modata);
 	while(moudle->STATUS.B.TXFIFOLEVEL != 0);
 
-	while(moudle->STATUS.B.RXFIFOLEVEL == 0);
-	if(NULL != midata)	IfxQspi_read8(moudle,midata,1);
-	else				(void)moudle->RXEXIT.U;
+	if(midata)
+	{
+		while(moudle->STATUS.B.RXFIFOLEVEL == 0);
+		*midata = (uint8)IfxQspi_readReceiveFifo(moudle);
+	}
 }
 
 

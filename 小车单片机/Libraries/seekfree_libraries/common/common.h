@@ -11,10 +11,10 @@
  * @company	   		成都逐飞科技有限公司
  * @author     		逐飞科技(QQ3184284598)
  * @version    		查看doc内version文件 版本说明
- * @Software 		ADS v1.2.2
+ * @Software 		ADS v1.5.2
  * @Target core		TC264D
  * @Taobao   		https://seekfree.taobao.com/
- * @date       		2020-3-23
+ * @date       		2022-3-14
  ********************************************************************************************************************/
  
  
@@ -117,7 +117,13 @@ typedef enum //无线模块
 {
     WIRELESS_SI24R1 = 1,    //无线转串口
     WIRELESS_CH9141,        //蓝牙转串口
+    WIRELESS_CH573,         //CH573
 }WIRELESS_TYPE_enum;
+
+typedef enum //无线模块
+{
+    GPS_TAU1201 = 1,        //华大北斗GPS模块
+}GPS_TYPE_enum;
 
 #include <math.h>
 #include <string.h>
@@ -125,9 +131,8 @@ typedef enum //无线模块
 
 extern CAMERA_TYPE_enum camera_type;	//摄像头型号
 extern uint8 *camera_buffer_addr;      //摄像头数组地址
-
-extern WIRELESS_TYPE_enum wireless_type;
-
+extern WIRELESS_TYPE_enum wireless_type;//无线转串口类型
+extern GPS_TYPE_enum gps_type;          //GPS
 extern IfxCpu_syncEvent g_cpuSyncEvent;
 
 void get_clk(void);

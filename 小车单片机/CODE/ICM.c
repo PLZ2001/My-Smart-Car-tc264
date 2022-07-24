@@ -1,7 +1,7 @@
 #include "headfile.h"
 #include "ICM.h"
 #include "CAMERA.h"
-#include "TIME.h"
+#include "TIMETIME.h"
 #include "STEERING.h"
 
 uint8 flag_for_ICM_Init=0;

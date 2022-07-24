@@ -25,6 +25,10 @@
 #define KMEANS_K 2
 #define GOD_LIGHT 205
 
+static rt_sem_t mt9v03x_finish_sem = RT_NULL;
+
+
+
 extern int width_Inverse_Perspective;
 extern int height_Inverse_Perspective;
 extern uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];

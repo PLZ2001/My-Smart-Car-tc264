@@ -37,7 +37,7 @@ void My_Init_Motor1(void)
 void My_Init_SpeedSensor1(void)
 {
     gpt12_init(GPT12_T2, GPT12_T2INB_P33_7, GPT12_T2EUDB_P33_6);
-    pit_interrupt_ms(CCU6_1, PIT_CH0, SPEED_MEASURING_PERIOD_ms1);
+    //pit_interrupt_ms(CCU6_1, PIT_CH0, SPEED_MEASURING_PERIOD_ms1);
 }
 
 void UART_Speed1(void)

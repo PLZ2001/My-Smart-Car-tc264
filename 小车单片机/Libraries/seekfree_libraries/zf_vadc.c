@@ -28,8 +28,8 @@
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      ADC初始化
-//  @param      adcn            选择ADC模块(ADC_0、ADC_1、ADC_2)
-//  @param      ch              选择ADC通道
+//  @param      vadc_n          选择ADC模块(ADC_0、ADC_1、ADC_2)
+//  @param      vadc_chn        选择ADC通道
 //  @return     void
 //  Sample usage:               adc_init(ADC_0, ADC0_CH0_A0);
 //-------------------------------------------------------------------------------------------------------------------
@@ -88,8 +88,9 @@ void adc_init(VADCN_enum vadc_n, VADC_CHN_enum vadc_chn)
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      ADC转换一次
-//  @param      adcn            选择ADC模块(ADC_0、ADC_1、ADC_2)
-//  @param      ch              选择ADC通道
+//  @param      vadc_n          选择ADC模块(ADC_0、ADC_1、ADC_2)
+//  @param      vadc_chn        选择ADC通道
+//  @param      vadc_res        转换分辨率
 //  @return     void
 //  Sample usage:               adc_convert(ADC_0, ADC0_CH0_A0, ADC_12BIT);
 //-------------------------------------------------------------------------------------------------------------------
@@ -108,8 +109,9 @@ uint16 adc_convert(VADCN_enum vadc_n, VADC_CHN_enum vadc_chn, VADC_RES_enum vadc
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      ADC均值滤波
-//  @param      adcn            选择ADC模块(ADC_0、ADC_1、ADC_2)
-//  @param      ch              选择ADC通道
+//  @param      vadc_n          选择ADC模块(ADC_0、ADC_1、ADC_2)
+//  @param      vadc_chn        选择ADC通道
+//  @param      vadc_res        转换分辨率
 //  @param      count           均值滤波次数
 //  @return     void
 //  Sample usage:               adc_mean_filter(ADC_0, ADC0_CH0_A0, ADC_12BIT, 5);//采集5次 然后返回平均值

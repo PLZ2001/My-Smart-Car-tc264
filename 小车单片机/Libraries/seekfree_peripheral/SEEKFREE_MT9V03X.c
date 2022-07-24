@@ -40,7 +40,7 @@
 #include "zf_eru_dma.h"
 #include "SEEKFREE_MT9V03X.h"
 #include "CAMERA.h"
-
+#include "STEERING.h"
 
 //必须4字节对齐
 //IFX_ALIGN(4) uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
@@ -96,7 +96,7 @@ void mt9v03x_init(void)
 
 
     MT9V034_Init(200);//设置帧率(曾经200)
-
+    rt_kprintf("1");
 	//摄像头采集初始化
 	//初始化 数据引脚
 	for(i=0; i<8; i++)
@@ -123,8 +123,10 @@ uint8	mt9v03x_dma_int_num;	//当前DMA中断次数
 //-------------------------------------------------------------------------------------------------------------------
 void mt9v03x_vsync(void)
 {
-	CLEAR_GPIO_FLAG(MT9V03X_VSYNC_PIN);
+
+    CLEAR_GPIO_FLAG(MT9V03X_VSYNC_PIN);
 	mt9v03x_dma_int_num = 0;
+
 	if(!mt9v03x_finish_flag)//查看图像数组是否使用完毕，如果未使用完毕则不开始采集，避免出现访问冲突
 	{
 		if(1 == link_list_num)
@@ -195,6 +197,7 @@ void MT9V034_Init(unsigned char fps)
         if(data != MT9V034_CHIP_ID)                                        //芯片ID不正确，说明没有正确读取导数据，检查接线
         {
             oled_p6x8str(0, 0, "camera id error");
+
 #pragma warning 557         // 屏蔽警告
             while (1);
 #pragma warning default     // 打开警告
@@ -204,7 +207,7 @@ void MT9V034_Init(unsigned char fps)
     {
         oled_p6x8str(0, 0, "camera sccb error");
 #pragma warning 557         // 屏蔽警告
-        while (1);          //摄像头识别失败，停止运行
+        while (1);//摄像头识别失败，停止运行
 #pragma warning default     // 打开警告
     }
 

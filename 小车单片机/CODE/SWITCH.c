@@ -15,4 +15,5 @@ void Check_Switch_per10ms(void)
     uint8 switch2 = gpio_get(SWITCH2_GPIO);
     switch_Status[Switch1]=switch1;
     switch_Status[Switch2]=switch2;
+
 }
