@@ -19,7 +19,14 @@ uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 uint8 OLED_Camera_flag = 0;//用来指示摄像头界面是否可以启动
 
 uint8 pointer_temp = 0;//用来作为指针使用
+
 int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
+
+
+
+int flag_count=0;
+
+
 
 void My_Init_OLED(void)
 {
@@ -49,6 +56,7 @@ void Update_OLED_per10ms(void)
                 break;
             case Lazer_Page:
                 OLED_PRINTF(0,1,"Lazer:%.1f cm    ",Lazer_Data);
+                OLED_PRINTF(0,3,"%d    ",flag_count);
                 if (Lazer_On ==1)
                 {
                     OLED_PRINTF(0,2,"Lazer On ");

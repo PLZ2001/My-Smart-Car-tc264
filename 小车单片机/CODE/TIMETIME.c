@@ -1,8 +1,9 @@
 #include "headfile.h"
 #include "TIMETIME.h"
-
+#include "OLED.h"
 uint8 timetime_flag=0;
 uint32 time_10ms[TIMER_NUM] = {0};
+
 float time_up[TIMER_NUM];
 enum TIMERSTATUS timer_Status[TIMER_NUM] = {PAUSED};
 
@@ -56,7 +57,7 @@ void Timer_Action_per10ms(void)
             default:
                 break;
         }
-    }
 
+    }
 }
 
