@@ -60,50 +60,6 @@
 
 
 
-void motion_thread_entry(void *parameter)
-{
-//    My_Init_SpeedSensor1();//我的初始化编码器
-//    My_Init_SpeedSensor2();//我的初始化编码器
-//    My_Init_Steering();//我的初始化舵机
-//    My_Init_Motor1();//我的初始化直流电机
-//    My_Init_Motor2();//我的初始化直流电机
-    while(1)
-    {
-        if (emergency_Stop == 0)
-        {
-            //由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
-            if (start_Flag==1)
-            {
-                Differential_Motor();
-            }
-            Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
-            Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
-            Cal_Speed_Output1();
-            Cal_Speed_Output2();
-            Set_Speed1();
-            Set_Speed2();
-            Set_Steering();
-        }
-        else
-        {
-            start_Flag = 0;
-            speed_Target = 0;
-            speed_Target1 = 0;
-            speed_Target2 = 0;
-            //      speed_Output1 = 0;
-            //      speed_Output2 = 0;
-            steering_Target = 0;
-            Get_Speed_perSPEED_MEASURING_PERIOD_ms1();
-            Get_Speed_perSPEED_MEASURING_PERIOD_ms2();
-            Cal_Speed_Output1();//新增
-            Cal_Speed_Output2();//新增
-            Set_Speed1();
-            Set_Speed2();
-            Set_Steering();
-        }
-        rt_thread_mdelay(10);
-    }
-}
 
 void camera_thread_entry(void *parameter)
 {
@@ -1055,34 +1011,6 @@ void OLED_thread_entry(void *parameter)
     }
 }
 
-void SWITCH_thread_entry(void *parameter)
-{
-    rt_kprintf("SWITCH thread is running.\n");
-
-    //My_Init_Switch();
-
-    while(1)
-    {
-        Check_Switch_per10ms();
-
-        rt_thread_mdelay(100);
-    }
-}
-
-void KEY_thread_entry(void *parameter)
-{
-    rt_kprintf("KEY thread is running.\n");
-
-    //My_Init_Key();
-
-    while(1)
-    {
-        Check_Key_per10ms();
-
-        rt_thread_mdelay(20);
-    }
-}
-
 void ZEBRA_thread_entry(void *parameter)
 {
     rt_kprintf("ZEBRA thread is running.\n");
@@ -1268,9 +1196,9 @@ int TIMETIME_timer_create (void)
     // 创建一个定时器 周期100个tick
     timer1 = rt_timer_create(
         "timer_ms",                                           // timer1表示定时器的名称，8个字符内。
-        Timer_Action_per10ms,                                          // timerout1表示时间到了之后需要执行的函数
+        Timer_Action_per1ms,                                          // timerout1表示时间到了之后需要执行的函数
         RT_NULL,                                            // RT_NULL表示不需要传递参数。
-        10,                                                // 100表示定时器的超时时间为100个系统tick，系统周期为1毫秒，则100表示100毫秒
+        1,                                                // 100表示定时器的超时时间为100个系统tick，系统周期为1毫秒，则100表示100毫秒
         RT_TIMER_FLAG_PERIODIC);                            // RT_TIMER_FLAG_PERIODIC表示定时器以周期运行  如果设置为RT_TIMER_FLAG_ONE_SHOT则只会运行一次
 
     // 首先检查定时器控制块不是空，则启动定时器
@@ -1432,62 +1360,6 @@ int ZEBRA_thread_create(void)
     return 0;
 }
 
-int KEY_thread_create(void)
-{
-    // 线程控制块指针
-    rt_thread_t tid;
-    // 创建动态线程
-    tid = rt_thread_create("KEY",                      // 线程名称
-            KEY_thread_entry,                                      // 线程入口函数
-            RT_NULL,                                            // 线程参数
-            512,                                                // 512 个字节的栈空间
-            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
-            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
-            5);                                                 // 时间片为5
-
-    rt_kprintf("create KEY thread.\n");
-    if(tid != RT_NULL)                                     // 线程创建成功
-    {
-        rt_kprintf("KEY thread create OK.\n");
-        rt_thread_startup(tid);                            // 运行该线程
-    }
-    else                                                    // 线程创建失败
-    {
-        rt_kprintf("KEY thread create ERROR.\n");
-        return 1;
-    }
-
-    return 0;
-}
-
-int SWITCH_thread_create(void)
-{
-    // 线程控制块指针
-    rt_thread_t tid;
-    // 创建动态线程
-    tid = rt_thread_create("SWITCH",                      // 线程名称
-            SWITCH_thread_entry,                                      // 线程入口函数
-            RT_NULL,                                            // 线程参数
-            512,                                                // 512 个字节的栈空间
-            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
-            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
-            5);                                                 // 时间片为5
-
-    rt_kprintf("create SWITCH thread.\n");
-    if(tid != RT_NULL)                                     // 线程创建成功
-    {
-        rt_kprintf("SWITCH thread create OK.\n");
-        rt_thread_startup(tid);                            // 运行该线程
-    }
-    else                                                    // 线程创建失败
-    {
-        rt_kprintf("SWITCH thread create ERROR.\n");
-        return 1;
-    }
-
-    return 0;
-}
-
 int OLED_thread_create(void)
 {
     // 线程控制块指针
@@ -1539,34 +1411,6 @@ int camera_thread_create(void)
     else                                                    // 线程创建失败
     {
         rt_kprintf("camera thread create ERROR.\n");
-        return 1;
-    }
-
-    return 0;
-}
-
-int motion_thread_create(void)
-{
-    // 线程控制块指针
-    rt_thread_t tid;
-    // 创建动态线程
-    tid = rt_thread_create("motion",                      // 线程名称
-            motion_thread_entry,                                      // 线程入口函数
-            RT_NULL,                                            // 线程参数
-            512,                                                // 512 个字节的栈空间
-            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
-            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
-            5);                                                 // 时间片为5
-
-    rt_kprintf("create motion thread.\n");
-    if(tid != RT_NULL)                                     // 线程创建成功
-    {
-        rt_kprintf("motion thread create OK.\n");
-        rt_thread_startup(tid);                            // 运行该线程
-    }
-    else                                                    // 线程创建失败
-    {
-        rt_kprintf("motion thread create ERROR.\n");
         return 1;
     }
 
