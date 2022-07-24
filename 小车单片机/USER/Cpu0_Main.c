@@ -106,6 +106,9 @@ void motion_thread_entry(void *parameter)
             Set_Steering();
         }
         rt_thread_mdelay(10);
+
+
+
     }
 }
 
