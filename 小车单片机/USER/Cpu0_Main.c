@@ -63,11 +63,11 @@
 void motion_thread_entry(void *parameter)
 {
     rt_kprintf("motion thread is running.\n");
-    My_Init_SpeedSensor1();//我的初始化编码器
-    My_Init_SpeedSensor2();//我的初始化编码器
-    My_Init_Steering();//我的初始化舵机
-    My_Init_Motor1();//我的初始化直流电机
-    My_Init_Motor2();//我的初始化直流电机
+//    My_Init_SpeedSensor1();//我的初始化编码器
+//    My_Init_SpeedSensor2();//我的初始化编码器
+//    My_Init_Steering();//我的初始化舵机
+//    My_Init_Motor1();//我的初始化直流电机
+//    My_Init_Motor2();//我的初始化直流电机
     rt_kprintf("motion init success.\n");
     while(1)
     {
@@ -120,7 +120,7 @@ void camera_thread_entry(void *parameter)
     static rt_err_t result;
     static rt_uint8_t sum = 0;
     rt_kprintf("camera thread is running.\n");
-    My_Init_Camera();
+    //My_Init_Camera();
 
     while(1)
     {
@@ -1057,7 +1057,7 @@ void camera_thread_entry(void *parameter)
 
 void OLED_thread_entry(void *parameter)
 {
-    oled_init();
+    //oled_init();
     rt_kprintf("OLED thread is running.\n");
 
     while(1)
@@ -1071,7 +1071,7 @@ void SWITCH_thread_entry(void *parameter)
 {
     rt_kprintf("SWITCH thread is running.\n");
 
-    My_Init_Switch();
+    //My_Init_Switch();
 
     while(1)
     {
@@ -1085,7 +1085,7 @@ void KEY_thread_entry(void *parameter)
 {
     rt_kprintf("KEY thread is running.\n");
 
-    My_Init_Key();
+    //My_Init_Key();
 
     while(1)
     {
@@ -1152,14 +1152,14 @@ void ZEBRA_thread_entry(void *parameter)
 void VL53L0X_thread_entry(void *parameter)
 {
     rt_kprintf("VL53L0X thread is running.\n");
-    if (flag_for_ICM_Init == 0)
-    {
-        VL53L0X_Init();
-        //            My_Init_ICM();//我的初始化ICM
-        //            Get_Zero_Bias();//求陀螺仪零漂值
-        flag_for_ICM_Init = 1;
-
-    }
+//    if (flag_for_ICM_Init == 0)
+//    {
+//        VL53L0X_Init();
+//        //            My_Init_ICM();//我的初始化ICM
+//        //            Get_Zero_Bias();//求陀螺仪零漂值
+//        flag_for_ICM_Init = 1;
+//
+//    }
     while(1)
     {
         if (classification_Result==2||classification_Result==3)
@@ -1207,7 +1207,7 @@ void VL53L0X_thread_entry(void *parameter)
 void ADC_thread_entry(void *parameter)
 {
     rt_kprintf("ADC thread is running.\n");
-    My_Init_ADC();
+    //My_Init_ADC();
     while(1)
     {
         Get_ADC_DATA();
@@ -1219,7 +1219,7 @@ void ADC_thread_entry(void *parameter)
 void LED_thread_entry(void *parameter)
 {
     rt_kprintf("LED thread is running.\n");
-    My_Init_LED();
+    //My_Init_LED();
     while(1)
     {
         gpio_toggle(P10_5);
@@ -1518,22 +1518,86 @@ int motion_thread_create(void)
 
 
 
+void init_thread_entry(void *parameter)
+{
+    My_Init_LED();
+    LED_thread_create();
+
+    My_Init_Key();
+    oled_init();
+    My_Init_Switch();
+    My_Init_Camera();
+    My_Init_SpeedSensor1();//我的初始化编码器
+    My_Init_SpeedSensor2();//我的初始化编码器
+    My_Init_Steering();//我的初始化舵机
+    My_Init_Motor1();//我的初始化直流电机
+    My_Init_Motor2();//我的初始化直流电机
+    My_Init_ADC();
+    if (flag_for_ICM_Init == 0)
+    {
+        VL53L0X_Init();
+        flag_for_ICM_Init = 1;
+    }
+
+    OLED_thread_create();
+    KEY_thread_create();
+    SWITCH_thread_create();
+    camera_thread_create();
+    motion_thread_create();
+    ZEBRA_thread_create();
+    ADC_thread_create();
+    VL53L0X_thread_create();
+}
+
+
+
+
+int init_thread_create(void)
+{
+    // 线程控制块指针
+    rt_thread_t tid;
+    // 创建动态线程
+    tid = rt_thread_create("init",                      // 线程名称
+            init_thread_entry,                                      // 线程入口函数
+        RT_NULL,                                            // 线程参数
+        512,                                                // 512 个字节的栈空间
+        5,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
+                                                            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
+        5);                                                 // 时间片为5
+
+    rt_kprintf("create init thread.\n");
+    if(tid != RT_NULL)                                     // 线程创建成功
+    {
+        rt_kprintf("init thread create OK.\n");
+        rt_thread_startup(tid);                            // 运行该线程
+    }
+    else                                                    // 线程创建失败
+    {
+        rt_kprintf("init thread create ERROR.\n");
+        return 1;
+    }
+
+    return 0;
+}
+
+
+
 
 
 
 
 INIT_APP_EXPORT(TIMETIME_timer_create);
+INIT_APP_EXPORT(init_thread_create);
+//INIT_APP_EXPORT(OLED_thread_create);
+//INIT_APP_EXPORT(KEY_thread_create);
+//INIT_APP_EXPORT(SWITCH_thread_create);
+//INIT_APP_EXPORT(LED_thread_create);
+//INIT_APP_EXPORT(camera_thread_create);
+//INIT_APP_EXPORT(motion_thread_create);
+//INIT_APP_EXPORT(ZEBRA_thread_create);
+//INIT_APP_EXPORT(ADC_thread_create);
 
-INIT_APP_EXPORT(OLED_thread_create);
-INIT_APP_EXPORT(KEY_thread_create);
-INIT_APP_EXPORT(SWITCH_thread_create);INIT_APP_EXPORT(motion_thread_create);
-INIT_APP_EXPORT(LED_thread_create);
-INIT_APP_EXPORT(camera_thread_create);
-
-INIT_APP_EXPORT(ZEBRA_thread_create);
-INIT_APP_EXPORT(ADC_thread_create);
-
-INIT_APP_EXPORT(VL53L0X_thread_create);
+//INIT_APP_EXPORT(VL53L0X_thread_create);
 
 
 
