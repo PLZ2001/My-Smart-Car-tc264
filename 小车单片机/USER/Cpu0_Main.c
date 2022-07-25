@@ -121,34 +121,34 @@ void camera_thread_entry(void *parameter)
 
 
 
-            //激光测距开关时间区
-            static uint8 first_flag = 0;
-            if (start_Flag == 1 && first_flag==0)
-            {
-                first_flag = 1;
-                time_up[15] = Lazer_Start_Time;
-                Start_Timer(15);
-                time_up[16] = Lazer_End_Time;
-                Start_Timer(16);
-            }
-            if (Read_Timer_Status(15) == RUNNING)
-            {
-                if (Read_Timer(15)>time_up[15])
-                {
-                    Reset_Timer(15);
-                    Lazer_Data=819.1f;
-                    Lazer_On = 1;
-                }
-            }
-            if (Read_Timer_Status(16) == RUNNING)
-            {
-                if (Read_Timer(16)>time_up[16])
-                {
-                    Reset_Timer(16);
-                    Lazer_Data=819.1f;
-                    Lazer_On = 0;
-                }
-            }
+//            //激光测距开关时间区
+//            static uint8 first_flag = 0;
+//            if (start_Flag == 1 && first_flag==0)
+//            {
+//                first_flag = 1;
+//                time_up[15] = Lazer_Start_Time;
+//                Start_Timer(15);
+//                time_up[16] = Lazer_End_Time;
+//                Start_Timer(16);
+//            }
+//            if (Read_Timer_Status(15) == RUNNING)
+//            {
+//                if (Read_Timer(15)>time_up[15])
+//                {
+//                    Reset_Timer(15);
+//                    Lazer_Data=819.1f;
+//                    Lazer_On = 1;
+//                }
+//            }
+//            if (Read_Timer_Status(16) == RUNNING)
+//            {
+//                if (Read_Timer(16)>time_up[16])
+//                {
+//                    Reset_Timer(16);
+//                    Lazer_Data=819.1f;
+//                    Lazer_On = 0;
+//                }
+//            }
 
             //如果是3右环岛、4三岔路口，且定时器没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
@@ -1434,11 +1434,9 @@ void init_thread_entry(void *parameter)
     My_Init_Motor1();//我的初始化直流电机
     My_Init_Motor2();//我的初始化直流电机
     My_Init_ADC();
-    if (flag_for_ICM_Init == 0)
-    {
-        VL53L0X_Init();
-        flag_for_ICM_Init = 1;
-    }
+    VL53L0X_Init();
+
+
 
     OLED_thread_create();
     //KEY_thread_create();
@@ -1494,7 +1492,7 @@ INIT_APP_EXPORT(init_thread_create);
 
 int main(void)
 {
-    disableInterrupts();
+   // disableInterrupts();
     //    get_clk();//获取时钟频率  务必保留
     //用户在此处调用各种初始化函数等
     //    EEPROM_Write_Data(ID_STEERING_DUTY_CENTER, &STEERING_DUTY_CENTER);//先写进去
