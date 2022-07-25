@@ -398,6 +398,30 @@ void CenterLine_entry(void)
 
 }
 
+void Is_Emergency_Stop(void)
+{
+//    rt_uint32_t e;
+//    while(1)
+//    {
+//        if(rt_event_recv
+//                (event,                                                 // 事件控制块
+//                        (EVENT_FLAG1),                            // 事件标志3和事件标志5
+//                        (RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR),              // 事件与触发，接收完成后清除事件标志位
+//                        RT_WAITING_NO,                                     // 一直等待
+//                        &e) == RT_EOK)
+//        {
+            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
+            {
+                emergency_Stop=1;
+            }
+
+//        }
+
+//        rt_thread_mdelay(10);
+//    }
+}
+
+
 void Confirm_Speed(void)
 {
     uint8 set_flag=0;//表示这次是否设置了速度
@@ -717,28 +741,7 @@ void Confirm_Motion(void)
 //    }
 }
 
-void Is_Emergency_Stop(void)
-{
-//    rt_uint32_t e;
-//    while(1)
-//    {
-//        if(rt_event_recv
-//                (event,                                                 // 事件控制块
-//                        (EVENT_FLAG1),                            // 事件标志3和事件标志5
-//                        (RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR),              // 事件与触发，接收完成后清除事件标志位
-//                        RT_WAITING_NO,                                     // 一直等待
-//                        &e) == RT_EOK)
-//        {
-            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
-            {
-                emergency_Stop=1;
-            }
 
-//        }
-
-//        rt_thread_mdelay(10);
-//    }
-}
 
 void Confirm_ControlMethod(void)
 {
@@ -904,8 +907,9 @@ void camera_thread_entry(void *parameter)
         if (RT_EOK == rt_sem_take(dma_sem, RT_WAITING_NO))
         {
 
+
+
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
-            InsertTimer2Point(6);
 
             /*1*/Image_Process();//二值化+逆透视
             rt_event_send(event, EVENT_FLAG2);
@@ -946,9 +950,7 @@ void ZEBRA_thread_entry(void *parameter)
     while(1)
     {
 
-
         rt_thread_mdelay(10);
-
 
         //检查斑马线数据
         //            if (steering_Target<=46 && steering_Target>=-46)
@@ -988,6 +990,8 @@ void ZEBRA_thread_entry(void *parameter)
                 zebra_status = finding;
             }
         }
+
+
     }
 }
 
@@ -1040,7 +1044,6 @@ void VL53L0X_thread_entry(void *parameter)
         {
             Check_Slope_with_Lazer();
         }
-
         rt_thread_mdelay(10);
     }
 }
@@ -1053,7 +1056,6 @@ void ADC_thread_entry(void *parameter)
     while(1)
     {
         Get_ADC_DATA();
-
         rt_thread_mdelay(10);
     }
 }
@@ -1348,61 +1350,8 @@ int camera_thread_create(void)
     return 0;
 }
 
-int Confirm_Speed_thread_create(void)
-{
-    // 线程控制块指针
-    rt_thread_t tid;
-    // 创建动态线程
-    tid = rt_thread_create("Confirm_Speed",                      // 线程名称
-            Confirm_Speed,                                      // 线程入口函数
-            RT_NULL,                                            // 线程参数
-            512,                                                // 512 个字节的栈空间
-            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
-            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
-            5);                                                 // 时间片为5
 
-    rt_kprintf("create Confirm_Speed thread.\n");
-    if(tid != RT_NULL)                                     // 线程创建成功
-    {
-        rt_kprintf("Confirm_Speed thread create OK.\n");
-        rt_thread_startup(tid);                            // 运行该线程
-    }
-    else                                                    // 线程创建失败
-    {
-        rt_kprintf("Confirm_Speed thread create ERROR.\n");
-        return 1;
-    }
 
-    return 0;
-}
-
-int Confirm_Motion_thread_create(void)
-{
-    // 线程控制块指针
-    rt_thread_t tid;
-    // 创建动态线程
-    tid = rt_thread_create("Confirm_Motion",                      // 线程名称
-            Confirm_Motion,                                      // 线程入口函数
-            RT_NULL,                                            // 线程参数
-            512,                                                // 512 个字节的栈空间
-            20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
-            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
-            5);                                                 // 时间片为5
-
-    rt_kprintf("create Confirm_Motion thread.\n");
-    if(tid != RT_NULL)                                     // 线程创建成功
-    {
-        rt_kprintf("Confirm_Motion thread create OK.\n");
-        rt_thread_startup(tid);                            // 运行该线程
-    }
-    else                                                    // 线程创建失败
-    {
-        rt_kprintf("Confirm_Motion thread create ERROR.\n");
-        return 1;
-    }
-
-    return 0;
-}
 
 int CenterLine_thread_create(void)
 {

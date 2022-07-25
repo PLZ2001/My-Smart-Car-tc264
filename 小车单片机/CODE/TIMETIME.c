@@ -65,7 +65,7 @@ void Update_Timer(void)
 {
     for (int ID=0;ID<TIMER_NUM;ID++)
     {
-        if (ID!=1&&ID!=2&&Read_Timer_Status(ID) == RUNNING)
+        if (ID!=1&&ID!=2&&ID!=11&&Read_Timer_Status(ID) == RUNNING)
         {
             if (Read_Timer(ID)>time_up[ID])
             {
