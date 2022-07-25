@@ -37,6 +37,7 @@
 #include "LED.h"
 #include "MOTOR_CTL.h"
 #include "TIMETIME.h"
+#include "RT_HELPER.h"
 
 #pragma section all "cpu0_dsram"
 //将本语句与#pragma section all restore语句之间的全局变量都放在CPU0的RAM中
@@ -63,15 +64,13 @@
 
 void camera_thread_entry(void *parameter)
 {
-    static rt_err_t result;
-    static rt_uint8_t sum = 0;
     rt_kprintf("camera thread is running.\n");
     //My_Init_Camera();
 
     while(1)
     {
 
-        if (mt9v03x_finish_flag == 1)
+        if (RT_EOK == rt_sem_take(dma_sem, RT_WAITING_NO))
         {
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
             InsertTimer1Point(0);
@@ -1119,7 +1118,8 @@ void VL53L0X_thread_entry(void *parameter)
 
 void ADC_thread_entry(void *parameter)
 {
-    rt_kprintf("ADC thread is running.\n");
+
+//    rt_kprintf("ADC thread is running.\n");
     //My_Init_ADC();
     while(1)
     {
@@ -1136,8 +1136,12 @@ void LED_thread_entry(void *parameter)
     while(1)
     {
         gpio_toggle(P10_5);
-        gpio_toggle(P10_6);
+        //gpio_toggle(P10_6);
 
+        if(RT_EOK == rt_sem_take(key_sem, RT_WAITING_NO))
+        {
+            gpio_toggle(P10_6);
+        }
         rt_thread_mdelay(500);
     }
 }
@@ -1424,6 +1428,9 @@ void init_thread_entry(void *parameter)
     My_Init_LED();
     LED_thread_create();
 
+    key_sem = rt_sem_create("key_semaphore", 0 ,RT_IPC_FLAG_FIFO);
+    dma_sem = rt_sem_create("dma_semaphore", 0 ,RT_IPC_FLAG_FIFO);
+
     My_Init_Key();
     oled_init();
     My_Init_Switch();
@@ -1481,12 +1488,8 @@ int init_thread_create(void)
 
 
 
-
-
-
 INIT_APP_EXPORT(TIMETIME_timer_create);
 INIT_APP_EXPORT(init_thread_create);
-
 
 
 
