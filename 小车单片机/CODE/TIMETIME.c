@@ -61,3 +61,17 @@ void Timer_Action_per1ms(void)
     }
 }
 
+void Update_Timer(void)
+{
+    for (int ID=0;ID<TIMER_NUM;ID++)
+    {
+        if (Read_Timer_Status(ID) == RUNNING)
+        {
+            if (Read_Timer(ID)>time_up[ID])
+            {
+                Reset_Timer(ID);
+            }
+        }
+    }
+}
+

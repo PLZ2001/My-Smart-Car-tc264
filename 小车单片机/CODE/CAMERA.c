@@ -700,26 +700,11 @@ float Filter(uint8 ID,float value,float ratio)
 
 void Get_Thresholding_Image(void)
 {
-//    //Kmeans法更新二值化阈值
-    //if (Read_Timer(3) > time_up[3] && steering_Target>=-5 && steering_Target>=5) {
-//    if (steering_Target>=-5 && steering_Target<=5) {
-//    if ((classification_Result==9||classification_Result==6)&&(steering_Target>=-5 && steering_Target<=5)&&(speed_Status!=Highest)) {
-//    if ((steering_Target>=-3 && steering_Target<=3)&&(speed_Status==Low)) {
-    if (classification_Result!=2&&classification_Result!=3&&speed_Status!=Highest){
-        Reset_Timer(3);
-//        Get_Thresholding_Value();
+    if (classification_Result!=2&&classification_Result!=3&&speed_Status!=Highest)
+    {
         GetBinThreshold_OSTU();//大津法二值化
         thresholding_Value = Filter(1,thresholding_Value,1);
-        Start_Timer(3);
     }
-
-//    for(int j = 0; j < Y_WIDTH_CAMERA; j++)
-//    {
-//        for(int i = 0; i < X_WIDTH_CAMERA; i++)
-//        {
-//            mt9v03x_image_cutted_thresholding[j][i] = mt9v03x_image_cutted[j][i]>thresholding_Value;
-//        }
-//    }
 }
 
 

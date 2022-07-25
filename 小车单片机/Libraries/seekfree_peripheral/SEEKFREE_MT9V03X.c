@@ -158,9 +158,8 @@ void mt9v03x_dma(void)
 		//采集完成
 		mt9v03x_dma_int_num = 0;
 		mt9v03x_finish_flag = 1;//一副图像从采集开始到采集结束耗时3.8MS左右(50FPS、188*120分辨率)
-		rt_sem_release(dma_sem);
-
 		dma_stop(MT9V03X_DMA_CH);
+		rt_sem_release(dma_sem);
 	}
 }
 
