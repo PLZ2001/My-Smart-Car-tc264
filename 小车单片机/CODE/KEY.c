@@ -141,7 +141,7 @@ void Key1_Action(void)
             UART_EN = UART_EN?FALSE:TRUE;
             break;
         case Camera_Page2:
-            rt_sem_release(key_sem);
+            rt_event_send(event, EVENT_FLAG14);
             break;
 //        case OLED_Setting_Page:
 //            OLED_EN = OLED_EN?FALSE:TRUE;
@@ -247,6 +247,9 @@ void Key2_Action(void)
                 direction = 1;
             }
             break;}
+        case Camera_Page2:
+                    rt_event_send(event, EVENT_FLAG15);
+                    break;
 //        case Camera_Page2:{
 //            DrawLineFilter = (DrawLineFilter==1?0:1);
 //            break;}
