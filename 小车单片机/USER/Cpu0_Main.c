@@ -437,6 +437,32 @@ void Basic_Classification(void)
                 }
                 classification_Result = classification_Result_TEMP;
             }
+
+            static uint8 now_signal = 0;
+            static uint8 last_signal = 0;
+            if (classification_Result == 5)
+            {
+
+                now_signal = 2;
+                if (now_signal != last_signal)
+                {
+                    rt_mq_send(message_queue,                           // 消息队列控制块
+                        (void *)&now_signal,                             // 发送数据的地址
+                        1);                                          // 发送字节数//发信号
+                }
+                last_signal = now_signal;
+            }
+            else
+            {
+                now_signal = 0;
+                if (now_signal != last_signal)
+                {
+                    rt_mq_send(message_queue,                           // 消息队列控制块
+                        (void *)&now_signal,                             // 发送数据的地址
+                        1);                                      // 发送字节数//发信号
+                }
+                last_signal = now_signal;
+            }
 //            if(print_flag==0)
 //            {
 //                print_flag=1;
@@ -514,6 +540,34 @@ void Is_Emergency_Stop(void)
             if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
             {
                 emergency_Stop=1;
+            }
+
+
+            static uint8 now_signal = 0;
+            static uint8 last_signal = 0;
+            if (emergency_Stop==1)
+            {
+
+                now_signal = 4;
+                if (now_signal != last_signal)
+                {
+                    rt_mq_send(message_queue,                           // 消息队列控制块
+                        (void *)&now_signal,                             // 发送数据的地址
+                        1);                                        // 发送字节数//发信号
+                }
+                last_signal = now_signal;
+            }
+            else
+            {
+
+                now_signal = 0;
+                if (now_signal != last_signal)
+                {
+                    rt_mq_send(message_queue,                           // 消息队列控制块
+                        (void *)&now_signal,                             // 发送数据的地址
+                        1);                                   // 发送字节数//发信号
+                }
+                last_signal = now_signal;
             }
 //            if(print_flag==0)
 //            {
@@ -1131,8 +1185,8 @@ void OLED_thread_entry(void *parameter)
 void ZEBRA_thread_entry(void *parameter)
 {
     rt_kprintf("ZEBRA thread is running.\n");
-    int count;
-    int flagcount_pre=-1;
+    static int count;
+    static int flagcount_pre=-1;
     while(1)
     {
 //        if(print_flag==0)
@@ -1204,6 +1258,34 @@ void ZEBRA_thread_entry(void *parameter)
 //            rt_kprintf("%d_end_zebra:%d\n", flag_count,rt_tick_get());
 //            rt_exit_critical();
 
+        static uint8 now_signal = 0;
+        static uint8 last_signal = 0;
+        if (zebra_status == banning||zebra_status == finishing)
+        {
+
+            now_signal = 1;
+            if (now_signal != last_signal)
+            {
+                rt_mq_send(message_queue,                           // 消息队列控制块
+                    (void *)&now_signal,                             // 发送数据的地址
+                    1);                                        // 发送字节数//发信号
+            }
+            last_signal = now_signal;
+        }
+        else
+        {
+
+            now_signal = 0;
+            if (now_signal != last_signal)
+            {
+                rt_mq_send(message_queue,                           // 消息队列控制块
+                    (void *)&now_signal,                             // 发送数据的地址
+                    1);                                   // 发送字节数//发信号
+            }
+            last_signal = now_signal;
+        }
+
+
         switch(count)
         {
             case 0:end_thread[9]=rt_tick_get();break;
@@ -1212,6 +1294,7 @@ void ZEBRA_thread_entry(void *parameter)
         }
 //            print_flag=0;
 //        }
+
         rt_thread_mdelay(10);
 
     }
@@ -1276,6 +1359,35 @@ void VL53L0X_thread_entry(void *parameter)
         {
             Check_Slope_with_Lazer();
         }
+
+        static uint8 now_signal = 0;
+        static uint8 last_signal = 0;
+        if (is_Slope==1||is_Slope==2||is_Slope==3)
+        {
+
+            now_signal = 3;
+            if (now_signal != last_signal)
+            {
+                rt_mq_send(message_queue,                           // 消息队列控制块
+                    (void *)&now_signal,                             // 发送数据的地址
+                    1);                                        // 发送字节数//发信号
+            }
+            last_signal = now_signal;
+        }
+        else
+        {
+
+            now_signal = 0;
+            if (now_signal != last_signal)
+            {
+                rt_mq_send(message_queue,                           // 消息队列控制块
+                    (void *)&now_signal,                             // 发送数据的地址
+                    1);                                   // 发送字节数//发信号
+            }
+            last_signal = now_signal;
+        }
+
+
 //        if(print_flag==0)
 //                {
 //                    print_flag=1;
@@ -1346,16 +1458,50 @@ void ADC_thread_entry(void *parameter)
 
 void LED_thread_entry(void *parameter)
 {
-    rt_kprintf("LED thread is running.\n");
-    rt_uint32_t e;
+    //rt_kprintf("LED thread is running.\n");
     //My_Init_LED();
     while(1)
     {
-        gpio_toggle(P10_5);
+        //gpio_toggle(P10_5);
         //gpio_toggle(P10_6);
-
-
         rt_thread_mdelay(500);
+    }
+}
+
+void Warning_LED_thread_entry(void *parameter)
+{
+    //rt_kprintf("Warrning_LED thread is running.\n");
+    //My_Init_LED();
+    static uint8 recv_test;
+    while(1)
+    {
+        rt_mq_recv(message_queue,                           // 消息队列控制块
+                    (void *)&recv_test,                             // 接收数据的地址
+                    1,                                              // 接收数量
+                    RT_WAITING_FOREVER);                            // 一直等待有数据采退出接收函数
+        switch(recv_test)
+        {
+            case 0://不亮
+                gpio_set(P10_6,1);gpio_set(P10_5,1);
+                break;
+            case 1://yellow
+                gpio_set(P10_6,0);gpio_set(P10_5,1);
+                break;
+            case 2://red
+                gpio_set(P10_6,1);gpio_set(P10_5,0);
+                break;
+            case 3://yellow&red
+                gpio_set(P10_6,0);gpio_set(P10_5,0);
+                break;
+            case 4://0.5s亮，0.5s灭
+                while(1)
+                {
+                    gpio_toggle(P10_6);gpio_toggle(P10_5);rt_thread_mdelay(500);
+                }
+                break;
+
+        }
+        rt_thread_mdelay(50);
     }
 }
 
@@ -1514,12 +1660,40 @@ int LED_thread_create(void)
     }
     else                                                    // 线程创建失败
     {
-        rt_kprintf("name thread create ERROR.\n");
+        rt_kprintf("LED thread create ERROR.\n");
         return 1;
     }
 
     return 0;
 }
+
+int Warning_LED_thread_create(void)
+{
+    // 线程控制块指针
+    rt_thread_t tid;
+    // 创建动态线程
+    tid = rt_thread_create("Warning_LED",                      // 线程名称
+            Warning_LED_thread_entry,                                      // 线程入口函数
+        RT_NULL,                                            // 线程参数
+        512,                                                // 512 个字节的栈空间
+        20,                                                  // 线程优先级为5，数值越小，优先级越高，0为最高优先级。
+                                                            // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
+        5);                                                 // 时间片为5
+
+//    rt_kprintf("create Warning_LED thread.\n");
+    if(tid != RT_NULL)                                     // 线程创建成功
+    {
+//        rt_kprintf("Warning_LED thread create OK.\n");
+        rt_thread_startup(tid);                            // 运行该线程
+    }
+    else                                                    // 线程创建失败
+    {
+        rt_kprintf("Warning_LED thread create ERROR.\n");
+        return 1;
+    }
+    return 0;
+}
+
 
 int ADC_thread_create(void)
 {
@@ -1843,6 +2017,7 @@ void init_thread_entry(void *parameter)
     key_sem = rt_sem_create("key_semaphore", 0 ,RT_IPC_FLAG_FIFO);
     dma_sem = rt_sem_create("dma_semaphore", 0 ,RT_IPC_FLAG_FIFO);
     event = rt_event_create("event", RT_IPC_FLAG_FIFO);
+    message_queue = rt_mq_create("mq1",1,10,RT_IPC_FLAG_FIFO);
 
     My_Init_Key();
     oled_init();
@@ -1868,6 +2043,7 @@ void init_thread_entry(void *parameter)
     Basic_Classification_thread_create();
     CenterLine_thread_create();
     MotionConfirm_thread_create();
+    Warning_LED_thread_create();
     //Emergency_thread_create();
     //motion_thread_create();
     motion_timer_create();
