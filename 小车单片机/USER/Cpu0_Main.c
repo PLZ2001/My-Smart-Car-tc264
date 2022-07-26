@@ -1103,12 +1103,13 @@ void camera_thread_entry(void *parameter)
 
         if (RT_EOK == rt_sem_take(dma_sem, RT_WAITING_NO))
         {
-            rt_kprintf("%d:\n", flag_count);
-            for (counter=0;counter<20;counter++)
-            {
-                rt_kprintf("%d,%d,%d\n", start_thread[counter], end_thread[counter],counter);
-            }
-            flag_count++;
+            InsertTimer2Point(6);
+//            rt_kprintf("%d:\n", flag_count);
+//            for (counter=0;counter<20;counter++)
+//            {
+//                rt_kprintf("%d,%d,%d\n", start_thread[counter], end_thread[counter],counter);
+//            }
+//            flag_count++;
 //            if(print_flag==0)
 //            {
 //                print_flag=1;
