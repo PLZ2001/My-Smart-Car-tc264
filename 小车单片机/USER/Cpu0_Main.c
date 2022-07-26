@@ -257,6 +257,7 @@ void Basic_Classification(void)
             start_thread[4]=rt_tick_get();
 //                print_flag=0;
 //            }
+            rt_mutex_take(search_range_mutex, RT_WAITING_FOREVER);
             //窗口默认处于中下位置
             Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
             Helper_Window_Flag = 0;
@@ -410,6 +411,7 @@ void Basic_Classification(void)
                     }
                     //改回默认窗口
                     Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+                    rt_mutex_release(search_range_mutex);
 
                     //检查长直道是否满足
                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result_TEMP==6))
@@ -1549,6 +1551,7 @@ void motion_timer_entry(void *parameter)
         Cal_Speed_Output2();
         Set_Speed1();
         Set_Speed2();
+
         Set_Steering();
     }
     else
@@ -2019,6 +2022,7 @@ void init_thread_entry(void *parameter)
     dma_sem = rt_sem_create("dma_semaphore", 0 ,RT_IPC_FLAG_FIFO);
     event = rt_event_create("event", RT_IPC_FLAG_FIFO);
     message_queue = rt_mq_create("mq1",1,10,RT_IPC_FLAG_FIFO);
+    search_range_mutex = rt_mutex_create("search_range_mutex", RT_IPC_FLAG_FIFO);
 
     My_Init_Key();
     oled_init();

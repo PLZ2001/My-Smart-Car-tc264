@@ -5,6 +5,7 @@
 #include "OLED.h"
 #include "MOTOR_CTL.h"
 #include "TIMETIME.h"
+#include "RT_HELPER.h"
 //#include "EEPROM.h"
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
@@ -239,7 +240,8 @@ void Cal_Steering_Target(void)
             break;
         }
     }
-
+//
+    rt_mutex_take(search_range_mutex, RT_WAITING_FOREVER);
     if (zebra_status==starting)
     {
         static float steering_Target_Remember = 0;
@@ -273,6 +275,8 @@ void Cal_Steering_Target(void)
             zebra_status=finding;
         }
     }
+    rt_mutex_release(search_range_mutex);
+    //
     if (zebra_status==finishing)
     {
 //        static float steering_Target_Remember = 0;
