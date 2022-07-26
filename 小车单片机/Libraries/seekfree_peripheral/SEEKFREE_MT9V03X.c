@@ -97,7 +97,6 @@ void mt9v03x_init(void)
 
 
     MT9V034_Init(200);//设置帧率(曾经200)
-    rt_kprintf("1");
 	//摄像头采集初始化
 	//初始化 数据引脚
 	for(i=0; i<8; i++)

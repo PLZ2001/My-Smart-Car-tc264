@@ -61,9 +61,27 @@
 
 void Image_Process(void)
 {
+//    if(print_flag==0)
+//    {
+//        print_flag=1;
+//    rt_enter_critical();
+//        rt_kprintf("%d_start_ImageProcess:%d\n", flag_count,rt_tick_get());
+//        rt_exit_critical();
+//        print_flag=0;
+//    }
+    start_thread[1]=rt_tick_get();
     Get_Thresholding_Image();
     Get_Inverse_Perspective_Image();
     OLED_Camera_flag=1;
+//    if(print_flag==0)
+//    {
+//        print_flag=1;
+//    rt_enter_critical();
+//        rt_kprintf("%d_end_ImageProcess:%d\n", flag_count,rt_tick_get());
+//        rt_exit_critical();
+//        print_flag=0;
+    end_thread[1]=rt_tick_get();
+//    }
 }
 
 void Update_Left_Unknown_or_Right(void)
@@ -78,9 +96,28 @@ void Update_Left_Unknown_or_Right(void)
                         RT_WAITING_FOREVER,                                     // 一直等待
                         &e) == RT_EOK)
         {
+//            if(print_flag==0)
+//                {
+//                    print_flag=1;
+//            rt_enter_critical();
+//                    rt_kprintf("%d_start_Update:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+//                    print_flag=0;
+//                }
+            start_thread[2]=rt_tick_get();
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(9);
+//            if(print_flag==0)
+//                {
+//                    print_flag=1;
+//            rt_enter_critical();
+//                    rt_kprintf("%d_end_Update:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+//                    print_flag=0;
+//                }
+            end_thread[2]=rt_tick_get();
             rt_event_send(event, EVENT_FLAG4);
+
         }
     }
 }
@@ -97,6 +134,15 @@ void Check_Special_Classification(void)
                         RT_WAITING_FOREVER,                                     // 一直等待
                         &e) == RT_EOK)
         {
+//            if(print_flag==0)
+//                {
+//                    print_flag=1;
+            start_thread[3]=rt_tick_get();
+//            rt_enter_critical();
+//                    rt_kprintf("%d_start_Special:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+//                    print_flag=0;
+//                }
             //如果是3右环岛、4三岔路口，且定时器0没有在计时，就开定时
             if (Read_Timer_Status(0) == PAUSED)
             {
@@ -173,6 +219,15 @@ void Check_Special_Classification(void)
                 }
             }
             Update_Timer();
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_end_Special:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+//                print_flag=0;
+            end_thread[3]=rt_tick_get();
+//            }
             rt_event_send(event, EVENT_FLAG5);
         }
 
@@ -193,6 +248,15 @@ void Basic_Classification(void)
                         &e) == RT_EOK)
         {
 
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_start_Basic:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+            start_thread[4]=rt_tick_get();
+//                print_flag=0;
+//            }
             //窗口默认处于中下位置
             Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
             Helper_Window_Flag = 0;
@@ -373,6 +437,15 @@ void Basic_Classification(void)
                 }
                 classification_Result = classification_Result_TEMP;
             }
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_end_Basic:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+            end_thread[4]=rt_tick_get();
+//                print_flag=0;
+//            }
 
             rt_event_send(event, EVENT_FLAG8);
         }
@@ -391,8 +464,27 @@ void CenterLine_entry(void)
                         RT_WAITING_FOREVER,                                     // 一直等待
                         &e) == RT_EOK)
         {
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_start_CenterLine:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+            start_thread[5]=rt_tick_get();
+//                print_flag=0;
+//            }
             DrawCenterLine();
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_end_CenterLine:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+//                print_flag=0;
+            end_thread[5]=rt_tick_get();
+//            }
             rt_event_send(event, EVENT_FLAG9);
+
         }
     }
 
@@ -410,11 +502,28 @@ void Is_Emergency_Stop(void)
 //                        RT_WAITING_NO,                                     // 一直等待
 //                        &e) == RT_EOK)
 //        {
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//    rt_enter_critical();
+//                rt_kprintf("%d_start_Emergency:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+    start_thread[6]=rt_tick_get();
+//                print_flag=0;
+//            }
             if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
             {
                 emergency_Stop=1;
             }
-
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+//            rt_enter_critical();
+//                rt_kprintf("%d_end_Emergency:%d\n", flag_count,rt_tick_get());
+//                rt_exit_critical();
+            end_thread[6]=rt_tick_get();
+//                print_flag=0;
+//            }
 //        }
 
 //        rt_thread_mdelay(10);
@@ -423,18 +532,10 @@ void Is_Emergency_Stop(void)
 
 
 void Confirm_Speed(void)
+
 {
     uint8 set_flag=0;//表示这次是否设置了速度
-    rt_uint32_t e;
-//    while(1)
-//    {
-//        if(rt_event_recv
-//                (event,                                                 // 事件控制块
-//                        (EVENT_FLAG10),                            // 事件标志3和事件标志5
-//                        (RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR),              // 事件与触发，接收完成后清除事件标志位
-//                        RT_WAITING_FOREVER,                                     // 一直等待
-//                        &e) == RT_EOK)
-//        {
+
             if(Long_Straight_Flag == 1)
             {
                 speed_Status = Highest;
@@ -544,14 +645,10 @@ void Confirm_Speed(void)
                 Reset_Timer(6);
             }
 
-//            rt_event_send(event, EVENT_FLAG12);
-//        }
-//    }
-
-
 
 
 }
+
 
 void Confirm_Motion(void)
 {
@@ -737,6 +834,7 @@ void Confirm_Motion(void)
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
 //            rt_event_send(event, EVENT_FLAG13);
+
 //        }
 //    }
 }
@@ -886,10 +984,53 @@ void Confirm_ControlMethod(void)
 
 void Motion_Confirm_entry(void)
 {
+    int count;
+    int flagcount_pre=-1;
     while(1)
     {
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_start_MotionConfirm:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
+        //start_thread[7]=rt_tick_get();
+//            print_flag=0;
+//        }
+        if(flagcount_pre==flag_count)
+        {
+            count++;
+        }
+        else
+        {
+            count=0;
+            flagcount_pre=flag_count;
+        }
+        switch(count)
+        {
+            case 0:start_thread[7]=rt_tick_get();break;
+            case 1:start_thread[18]=rt_tick_get();break;
+            case 2:start_thread[19]=rt_tick_get();break;
+        }
+
+
         Confirm_Speed();//确定速度状态
         Confirm_Motion();//根据速度状态进行相关计算
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_end_MotionConfirm:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
+        end_thread[7]=rt_tick_get();
+//            print_flag=0;
+//        }
+        switch(count)
+                {
+                    case 0:end_thread[7]=rt_tick_get();break;
+                    case 1:end_thread[18]=rt_tick_get();break;
+                    case 2:end_thread[19]=rt_tick_get();break;
+                }
         rt_thread_mdelay(10);
     }
 }
@@ -899,16 +1040,29 @@ void Motion_Confirm_entry(void)
 void camera_thread_entry(void *parameter)
 {
     rt_uint32_t e;
+    uint8 counter=0;
     rt_kprintf("camera thread is running.\n");
     //My_Init_Camera();
 
     while(1)
     {
+
         if (RT_EOK == rt_sem_take(dma_sem, RT_WAITING_NO))
         {
-
-
-
+            rt_kprintf("%d:\n", flag_count);
+            for (counter=0;counter<20;counter++)
+            {
+                rt_kprintf("%d,%d,%d\n", start_thread[counter], end_thread[counter],counter);
+            }
+            flag_count++;
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+            //rt_enter_critical();
+            start_thread[0]=rt_tick_get();
+             //   rt_exit_critical();
+//                print_flag=0;
+//            }
             mt9v03x_finish_flag = 0;//表示可以更新mt9v03x_image了
 
             /*1*/Image_Process();//二值化+逆透视
@@ -926,10 +1080,22 @@ void camera_thread_entry(void *parameter)
             /*5*///Confirm_Motion();//根据速度状态进行相关计算
 //            rt_event_send(event, EVENT_FLAG1);
             /*2*/Is_Emergency_Stop();
+
+//            if(print_flag==0)
+//            {
+//                print_flag=1;
+           // rt_enter_critical();
+            end_thread[0]=rt_tick_get();
+               // rt_kprintf("%d_end_camera:%d\n", flag_count,rt_tick_get());
+            //    rt_exit_critical();
+//                print_flag=0;
+//            }
         }
         Confirm_ControlMethod();
+
     }
 }
+
 
 void OLED_thread_entry(void *parameter)
 {
@@ -938,20 +1104,61 @@ void OLED_thread_entry(void *parameter)
 
     while(1)
     {
-        rt_thread_mdelay(20);
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_start_oled:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
+        start_thread[8]=rt_tick_get();
+//            print_flag=0;
+//        }
         Update_OLED_per10ms();
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_end_oled:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
+        end_thread[8]=rt_tick_get();
+//            print_flag=0;
+//        }
+        rt_thread_mdelay(20);
     }
 }
+
 
 void ZEBRA_thread_entry(void *parameter)
 {
     rt_kprintf("ZEBRA thread is running.\n");
-
+    int count;
+    int flagcount_pre=-1;
     while(1)
     {
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_start_zebra:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
 
-        rt_thread_mdelay(10);
-
+//            print_flag=0;
+//        }
+        if(flagcount_pre==flag_count)
+        {
+            count++;
+        }
+        else
+        {
+            count=0;
+            flagcount_pre=flag_count;
+        }
+        switch(count)
+        {
+            case 0:start_thread[9]=rt_tick_get();break;
+            case 1:start_thread[14]=rt_tick_get();break;
+            case 2:start_thread[15]=rt_tick_get();break;
+        }
         //检查斑马线数据
         //            if (steering_Target<=46 && steering_Target>=-46)
         //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
@@ -990,10 +1197,26 @@ void ZEBRA_thread_entry(void *parameter)
                 zebra_status = finding;
             }
         }
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_end_zebra:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
 
+        switch(count)
+        {
+            case 0:end_thread[9]=rt_tick_get();break;
+            case 1:end_thread[14]=rt_tick_get();break;
+            case 2:end_thread[15]=rt_tick_get();break;
+        }
+//            print_flag=0;
+//        }
+        rt_thread_mdelay(10);
 
     }
 }
+
 
 void VL53L0X_thread_entry(void *parameter)
 {
@@ -1008,6 +1231,15 @@ void VL53L0X_thread_entry(void *parameter)
 //    }
     while(1)
     {
+//        if(print_flag==0)
+//                {
+//                    print_flag=1;
+//        rt_enter_critical();
+//                    rt_kprintf("%d_start_laser:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+        start_thread[10]=rt_tick_get();
+//                    print_flag=0;
+//                }
         if (classification_Result==2||classification_Result==3)
         {
             Lazer_Data = 819.1f;
@@ -1044,18 +1276,70 @@ void VL53L0X_thread_entry(void *parameter)
         {
             Check_Slope_with_Lazer();
         }
+//        if(print_flag==0)
+//                {
+//                    print_flag=1;
+//        rt_enter_critical();
+//                    rt_kprintf("%d_end_laser:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+        end_thread[10]=rt_tick_get();
+//                    print_flag=0;
+//                }
         rt_thread_mdelay(10);
     }
 }
+
 
 void ADC_thread_entry(void *parameter)
 {
 
 //    rt_kprintf("ADC thread is running.\n");
     //My_Init_ADC();
+    int count;
+    int flagcount_pre=-1;
     while(1)
     {
+//        if(print_flag==0)
+//        {
+//            print_flag=1;
+//        rt_enter_critical();
+//            rt_kprintf("%d_start_adc:%d\n", flag_count,rt_tick_get());
+//            rt_exit_critical();
+//        start_thread[11]=rt_tick_get();
+//            print_flag=0;
+//        }
+        if(flagcount_pre==flag_count)
+        {
+            count++;
+        }
+        else
+        {
+            count=0;
+            flagcount_pre=flag_count;
+        }
+        switch(count)
+        {
+            case 0:start_thread[11]=rt_tick_get();break;
+            case 1:start_thread[16]=rt_tick_get();break;
+            case 2:start_thread[17]=rt_tick_get();break;
+        }
+
         Get_ADC_DATA();
+//        if(print_flag==0)
+//                {
+//                    print_flag=1;
+//        rt_enter_critical();
+//                    rt_kprintf("%d_end_adc:%d\n", flag_count,rt_tick_get());
+//                    rt_exit_critical();
+        end_thread[11]=rt_tick_get();
+//                    print_flag=0;
+//                }
+        switch(count)
+                {
+                    case 0:end_thread[11]=rt_tick_get();break;
+                    case 1:end_thread[16]=rt_tick_get();break;
+                    case 2:end_thread[17]=rt_tick_get();break;
+                }
         rt_thread_mdelay(10);
     }
 }
@@ -1078,12 +1362,33 @@ void LED_thread_entry(void *parameter)
 void KS_timer_entry(void *parameter)
 {
         //Update_OLED_per10ms();
+//    if(print_flag==0)
+//           {
+//               print_flag=1;
+//               rt_kprintf("%d_start_ks:%d\n", flag_count,rt_tick_get());
+//               print_flag=0;
+//           }
+    start_thread[12]=rt_tick_get();
         Check_Key_per10ms();
         Check_Switch_per10ms();
+//        if(print_flag==0)
+//               {
+//                   print_flag=1;
+//                   rt_kprintf("%d_end_ks:%d\n", flag_count,rt_tick_get());
+//                   print_flag=0;
+//               }
+        end_thread[12]=rt_tick_get();
 }
 
 void motion_timer_entry(void *parameter)
 {
+//    if(print_flag==0)
+//           {
+//               print_flag=1;
+//               rt_kprintf("%d_start_motion:%d\n", flag_count,rt_tick_get());
+//               print_flag=0;
+//           }
+    start_thread[13]=rt_tick_get();
     if (emergency_Stop == 0)
     {
         //由速度、转向角度的目标值，通过PID等算法，改变直流电机和舵机的状态
@@ -1116,6 +1421,13 @@ void motion_timer_entry(void *parameter)
         Set_Speed2();
         Set_Steering();
     }
+//    if(print_flag==0)
+//           {
+//               print_flag=1;
+//               rt_kprintf("%d_end_motion:%d\n", flag_count,rt_tick_get());
+//               print_flag=0;
+//           }
+    end_thread[13]=rt_tick_get();
 }
 
 
@@ -1194,10 +1506,10 @@ int LED_thread_create(void)
                                                             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
         5);                                                 // 时间片为5
 
-    rt_kprintf("create LED thread.\n");
+//    rt_kprintf("create LED thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("LED thread create OK.\n");
+//        rt_kprintf("LED thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1222,10 +1534,10 @@ int ADC_thread_create(void)
                                                             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
         5);                                                 // 时间片为5
 
-    rt_kprintf("create ADC thread.\n");
+//    rt_kprintf("create ADC thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("ADC thread create OK.\n");
+//        rt_kprintf("ADC thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1250,10 +1562,10 @@ int VL53L0X_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create VL53L0X thread.\n");
+//    rt_kprintf("create VL53L0X thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("VL53L0X thread create OK.\n");
+//        rt_kprintf("VL53L0X thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1278,10 +1590,10 @@ int ZEBRA_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create ZEBRA thread.\n");
+//    rt_kprintf("create ZEBRA thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("ZEBRA thread create OK.\n");
+//        rt_kprintf("ZEBRA thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1306,10 +1618,10 @@ int OLED_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create OLED thread.\n");
+//    rt_kprintf("create OLED thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("OLED thread create OK.\n");
+//        rt_kprintf("OLED thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1335,10 +1647,10 @@ int camera_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create camera thread.\n");
+//    rt_kprintf("create camera thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("camera thread create OK.\n");
+//        rt_kprintf("camera thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1366,10 +1678,10 @@ int CenterLine_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create CenterLine thread.\n");
+//    rt_kprintf("create CenterLine thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("CenterLine thread create OK.\n");
+//        rt_kprintf("CenterLine thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1394,10 +1706,10 @@ int Basic_Classification_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create Basic_Classification thread.\n");
+//    rt_kprintf("create Basic_Classification thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("Basic_Classification thread create OK.\n");
+//        rt_kprintf("Basic_Classification thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1422,10 +1734,10 @@ int Check_Special_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create Check_Special thread.\n");
+//    rt_kprintf("create Check_Special thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("Check_Special thread create OK.\n");
+//        rt_kprintf("Check_Special thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1450,10 +1762,10 @@ int Left_or_Right_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create Left_or_Right thread.\n");
+//    rt_kprintf("create Left_or_Right thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("Left_or_Right thread create OK.\n");
+//        rt_kprintf("Left_or_Right thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1478,10 +1790,10 @@ int Emergency_thread_create(void)
             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
             5);                                                 // 时间片为5
 
-    rt_kprintf("create Emergency thread.\n");
+//    rt_kprintf("create Emergency thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("Emergency thread create OK.\n");
+//        rt_kprintf("Emergency thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败
@@ -1506,10 +1818,10 @@ int MotionConfirm_thread_create(void)
                                                             // 可以通过修改rt_config.h中的RT_THREAD_PRIORITY_MAX宏定义(默认值为8)来修改最大支持的优先级
         5);                                                 // 时间片为5
 
-    rt_kprintf("create MotionConfirm thread.\n");
+//    rt_kprintf("create MotionConfirm thread.\n");
     if(tid != RT_NULL)                                     // 线程创建成功
     {
-        rt_kprintf("MotionConfirm thread create OK.\n");
+//        rt_kprintf("MotionConfirm thread create OK.\n");
         rt_thread_startup(tid);                            // 运行该线程
     }
     else                                                    // 线程创建失败

@@ -44,6 +44,7 @@ extern uint8 pointer_temp;
 extern int8 up_Down;
 extern uint8 OLED_Camera_flag;
 extern int flag_count;
+
 void My_Init_OLED(void);
 void Update_OLED_per10ms(void);
 void my_oled_dis_bmp(void);

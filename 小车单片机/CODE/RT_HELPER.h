@@ -19,6 +19,8 @@
 extern rt_event_t event;
 extern rt_sem_t key_sem;
 extern rt_sem_t dma_sem;
-
+extern int print_flag;
+extern int start_thread[20];
+extern int end_thread[20];
 
 #endif

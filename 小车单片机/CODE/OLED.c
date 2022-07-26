@@ -27,7 +27,6 @@ int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
 int flag_count=0;
 
 
-
 void My_Init_OLED(void)
 {
     oled_init();
