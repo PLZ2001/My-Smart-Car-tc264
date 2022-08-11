@@ -267,6 +267,7 @@ void Basic_Classification(void)
             {
                 if (flag_For_Right_Circle == 1)
                 {
+                    rt_mutex_release(search_range_mutex);
                     if (Left_Straight_Score<=2.7f)
                     {
                         flag_For_Right_Circle = 2;
@@ -276,6 +277,7 @@ void Basic_Classification(void)
                 }
                 else if (flag_For_Left_Circle == 1)
                 {
+                    rt_mutex_release(search_range_mutex);
                     if (Right_Straight_Score<=2.7f)
                     {
                         flag_For_Left_Circle = 2;
@@ -286,6 +288,7 @@ void Basic_Classification(void)
                 //小车处于右圆环状态
                 else if (flag_For_Right_Circle == 2)
                 {
+                    rt_mutex_release(search_range_mutex);
                     if (Check_Left_Straight(2,0,1) == 0 || Read_Timer_Status(13) == RUNNING)
                     {
                         classification_Result_TEMP = 3;//8;
@@ -298,6 +301,7 @@ void Basic_Classification(void)
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 2)
                 {
+                    rt_mutex_release(search_range_mutex);
                     if (Check_Right_Straight(0,-2,1) == 0 || Read_Timer_Status(13) == RUNNING)
                     {
                         classification_Result_TEMP = 2;//7;
@@ -309,6 +313,7 @@ void Basic_Classification(void)
                 }
                 else if (flag_For_T == 1)
                 {
+                    rt_mutex_release(search_range_mutex);
                     classification_Result_TEMP = 14;
                     if (Check_TRoad(1,T_Line,3) == 1)
                     {
@@ -321,6 +326,7 @@ void Basic_Classification(void)
                 }
                 else if (flag_For_T == 2)
                 {
+                    rt_mutex_release(search_range_mutex);
                     if (((Left_Straight_Score>=2.6f||Unknown_Straight_Score>=2.6f||Right_Straight_Score>=2.6f)  && Read_Timer(7)==PAUSED) || Read_Timer(14)==PAUSED)
                     {
                         flag_For_T=0;
@@ -438,6 +444,10 @@ void Basic_Classification(void)
                     }
                 }
                 classification_Result = classification_Result_TEMP;
+            }
+            else
+            {
+                rt_mutex_release(search_range_mutex);
             }
 
             static uint8 now_signal = 0;
