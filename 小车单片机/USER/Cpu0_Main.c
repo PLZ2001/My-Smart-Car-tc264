@@ -1149,7 +1149,6 @@ void camera_thread_entry(void *parameter)
 //            }
         }
         Confirm_ControlMethod();
-
     }
 }
 
@@ -1446,7 +1445,7 @@ void ADC_thread_entry(void *parameter)
 //        rt_enter_critical();
 //                    rt_kprintf("%d_end_adc:%d\n", flag_count,rt_tick_get());
 //                    rt_exit_critical();
-        end_thread[11]=rt_tick_get();
+//        end_thread[11]=rt_tick_get();
 //                    print_flag=0;
 //                }
         switch(count)
