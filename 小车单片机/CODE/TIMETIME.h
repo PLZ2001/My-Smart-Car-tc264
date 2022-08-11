@@ -21,7 +21,7 @@ void Reset_Timer(uint8 ID);
 void Set_Timer(uint8 ID, float time);
 float Read_Timer(uint8 ID);
 int Read_Timer_Status(uint8 ID);
-void Timer_Action_per10ms(void);
+void Timer_Action_per1ms(void);
 void My_Init_Timer(void);
 
 

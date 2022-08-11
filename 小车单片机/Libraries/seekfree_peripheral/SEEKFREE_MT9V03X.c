@@ -41,6 +41,7 @@
 #include "SEEKFREE_MT9V03X.h"
 #include "CAMERA.h"
 #include "STEERING.h"
+#include "RT_HELPER.h"
 
 //必须4字节对齐
 //IFX_ALIGN(4) uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W];
@@ -96,7 +97,6 @@ void mt9v03x_init(void)
 
 
     MT9V034_Init(200);//设置帧率(曾经200)
-    rt_kprintf("1");
 	//摄像头采集初始化
 	//初始化 数据引脚
 	for(i=0; i<8; i++)
@@ -158,6 +158,7 @@ void mt9v03x_dma(void)
 		mt9v03x_dma_int_num = 0;
 		mt9v03x_finish_flag = 1;//一副图像从采集开始到采集结束耗时3.8MS左右(50FPS、188*120分辨率)
 		dma_stop(MT9V03X_DMA_CH);
+		rt_sem_release(dma_sem);
 	}
 }
 

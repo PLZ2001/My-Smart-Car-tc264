@@ -9,6 +9,7 @@
 #include "MOTOR1.h"
 #include "MOTOR2.h"
 #include "ICM.h"
+#include "RT_HELPER.h"
 //#include "EEPROM.h"
 
 
@@ -133,11 +134,13 @@ void Key0_Action(void)
 }
 
 void Key1_Action(void)
-{
+{static uint8 now_signal = 1;
     switch (OLED_Page)
     {
         case UART_Setting_Page:
             UART_EN = UART_EN?FALSE:TRUE;
+            break;
+        case Camera_Page2:
             break;
 //        case OLED_Setting_Page:
 //            OLED_EN = OLED_EN?FALSE:TRUE;

@@ -19,7 +19,13 @@ uint8 OLED_Page_Active_Flag = TRUE;//用于表示OLED屏幕是否切换页面
 uint8 OLED_Camera_flag = 0;//用来指示摄像头界面是否可以启动
 
 uint8 pointer_temp = 0;//用来作为指针使用
+
 int8 up_Down = 1;//给TImeSet_Page使用，1表示增加，-1表示减少
+
+
+
+int flag_count=0;
+
 
 void My_Init_OLED(void)
 {
@@ -49,6 +55,7 @@ void Update_OLED_per10ms(void)
                 break;
             case Lazer_Page:
                 OLED_PRINTF(0,1,"Lazer:%.1f cm    ",Lazer_Data);
+                OLED_PRINTF(0,3,"%d    ",flag_count);
                 if (Lazer_On ==1)
                 {
                     OLED_PRINTF(0,2,"Lazer On ");
@@ -281,7 +288,7 @@ void Update_OLED_per10ms(void)
 //                }
 //                break;
             case Camera_Page2:
-                if (OLED_Camera_flag==1/*&&flag_for_ICM_Init==1*/)
+                if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
                     my_oled_dis_bmp();
                 }
@@ -430,8 +437,8 @@ void Update_OLED_per10ms(void)
                 }
                 break;
             case Speed_Page:
-                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1);
-                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2);
+                OLED_PRINTF(0,0,"Speed1:%01.05fm/s   ",speed_Measured1*60.0f/68.0f);
+                OLED_PRINTF(0,1,"Speed2:%01.05fm/s   ",speed_Measured2*60.0f/68.0f);
                 OLED_PRINTF(0,2,"Steering:%02.04f   ",steering_Target);
 //                if (pointer_temp == 0)
 //                {
