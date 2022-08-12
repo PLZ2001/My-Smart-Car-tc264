@@ -817,6 +817,10 @@ void Confirm_Motion(void)
                 SightForward_ratio = 1.0f;
                 steeringPID_ratio_kp = 1.1f;
             }
+            if (zebra_status == starting)
+            {
+                OuterSide_Ratio_ratio = 4.0f/2.5f;
+            }
             if (zebra_status == finishing)
             {
                 OuterSide_Ratio_ratio = 3.0f;
