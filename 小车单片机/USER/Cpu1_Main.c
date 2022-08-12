@@ -355,7 +355,7 @@ void core1_main(void)
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
                         Start_Timer(7);
-                        time_up[14] = 0.3f;
+                        time_up[14] = 0.5f;
                         Start_Timer(14);
                     }
                 }
@@ -755,8 +755,8 @@ void core1_main(void)
             if (flag_For_Left_Circle == 2)
             {
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 2.2f+0.2f;
-                steeringPID_ratio_kd = 0.6f+0.2f;
+                steeringPID_ratio_kp = 2.2f;
+                steeringPID_ratio_kd = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.5f;
             }
@@ -764,8 +764,8 @@ void core1_main(void)
             if (flag_For_Left_Circle == 1)
             {
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 3.0f+0.2f;
-                steeringPID_ratio_kd = 0.7f+0.2f;
+                steeringPID_ratio_kp = 3.0f;
+                steeringPID_ratio_kd = 0.7f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.5f;
             }
@@ -918,7 +918,16 @@ void core1_main(void)
             Cal_Steering_Error(SightForward);
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
-            if(Check_TRoad(0,0.1f-1.0f/6.0f,3) && zebra_status!=starting && is_Slope == 0)
+            static int cnt = 0;
+            if (Real_Volt<7.0f)
+            {
+                cnt++;
+            }
+            else
+            {
+                cnt=0;
+            }
+            if((Check_TRoad(0,0.1f-1.0f/6.0f,3) && zebra_status!=starting && is_Slope == 0)||cnt>70)
             {
                 emergency_Stop=1;
             }

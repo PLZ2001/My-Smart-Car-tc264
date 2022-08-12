@@ -67,15 +67,15 @@ void Differential_Motor(void)
     float last_steering_Target=0;
     if (steering_Error>=0)
     {
-        speed_Target2 = speed_Target + 0.9f*speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f+0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
+        speed_Target2 = speed_Target + /*0.9f**/speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f+0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
         speed_Target1 = speed_Target - speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f - 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//左轮目标速度（m/s）
 //        speed_Target1 = speed_Target - 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);
     }
     else
     {
-        speed_Target1 = speed_Target - 1.1f*speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f- 0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
-        speed_Target2 = speed_Target + 1.2f*speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
+        speed_Target1 = speed_Target - /*1.1f**/speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f- 0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
+        speed_Target2 = speed_Target + /*1.2f**/speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target1 = speed_Target - steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//右轮目标速度（m/s）
 //        speed_Target2 = speed_Target + 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);;
     }
@@ -292,7 +292,7 @@ void Update_Speed_Mode(void)
 
             T_Time = 0.12f;
 
-            T_Line = 0.09f;
+            T_Line = 0.09f+0.09f;
 
             threeRoads_RightTime = 0.6f;//0.25f;
             ThreeeRoad_Delay = 0.0f;
@@ -304,37 +304,37 @@ void Update_Speed_Mode(void)
             BANGBANG_UP2 = 1.0;
             BANGBANG_DOWN2 = 1.0;
 
-            speed_Target_Highest = 4.0f;//即3.5
-            SightForward_Highest = 0.35f;
+            speed_Target_Highest = 5.0f;//即4.4
+            SightForward_Highest = 0.43f;
             OuterSide_Ratio_Highest = 0.9f;
             InnerSide_Ratio_Highest = 1.1f;
-            Steering_PID_Highest[0]=0.16f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
+            Steering_PID_Highest[0]=0.08f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
 
 
-            speed_Target_High = 3.8f;//即3.4
-            SightForward_High = 0.35f;
+            speed_Target_High = 3.7f;//即3.3
+            SightForward_High = 0.43f;
             OuterSide_Ratio_High = 0.9f;
             InnerSide_Ratio_High = 1.1f;//1.15f;
-            Steering_PID_High[0]=0.16f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.1f;
+            Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.1f;
 
 
-            speed_Target_Low = 3.7f;//即3.3
-            SightForward_Low = 0.35f;
+            speed_Target_Low = 3.6f;//即3.2
+            SightForward_Low = 0.43f;
             OuterSide_Ratio_Low = 0.9f;
             InnerSide_Ratio_Low = 1.1f;//1.25;
-            Steering_PID_Low[0]=0.17f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.1f;
+            Steering_PID_Low[0]=0.137f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.1f;
 
 
-            speed_Target_Lowest = 3.6f;//即3.2
-            SightForward_Lowest = 0.35f;
+            speed_Target_Lowest = 3.5f;//即3.1
+            SightForward_Lowest = 0.43f;
             OuterSide_Ratio_Lowest = 0.9f;
             InnerSide_Ratio_Lowest = 1.1f;
-            Steering_PID_Lowest[0]=0.17f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.1f;
+            Steering_PID_Lowest[0]=0.135f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.1f;
 
             speed_Target_Lowest_ForT = 2.4f;//即2.1
             SightForward_Lowest_ForT = 0.40f;
-            OuterSide_Ratio_Lowest_ForT = 1.0f;
-            InnerSide_Ratio_Lowest_ForT = 3.00f;
+            OuterSide_Ratio_Lowest_ForT = 2.5f;
+            InnerSide_Ratio_Lowest_ForT = 5.00f;
             //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
             Steering_PID_Lowest_ForT[0]=0.13f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.8f;
 

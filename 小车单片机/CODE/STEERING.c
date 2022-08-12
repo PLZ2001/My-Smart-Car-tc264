@@ -9,7 +9,7 @@
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 float d_steering_Error = 0;
-uint32 STEERING_DUTY_CENTER=772;//758;//774;//762;//772;//764;//752;//766;//754;//770;//756;//772;//766;//756;//772;//760;//772;//778;//768;//774;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
+uint32 STEERING_DUTY_CENTER=776;//764;//776;//768;//760;//774;//762;//772;//756;//772;//762;//774;//768;//748;//760;//750;//768;//758;//772;//764;//754;//772;//758;//774;//762;//772;//764;//752;//766;//754;//770;//756;//772;//766;//756;//772;//760;//772;//778;//768;//774;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
 float SightForward_Highest = 0.25f;
@@ -154,10 +154,18 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K_kp=0.4f,K_kd=0.4f;
+    float K_kp=2.57f,K_kd=1.0f;
     kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
+    if (kp>0.16)
+    {
+        kp=0.16;
+    }
 //    kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
     kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;
+    if(kd<0)
+    {
+        kd=0;
+    }
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
     switch(classification_Result){
@@ -308,6 +316,10 @@ void Cal_Steering_Target(void)
     }
 
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
+    if(steering_Target>0)
+    {
+        steering_Target = 0.88*steering_Target;
+    }
     if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
     if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
 }
