@@ -249,7 +249,7 @@ void Cal_Steering_Target(void)
         if (steering_Target_Remember_flag==0)
         {
             steering_Target=0;
-            if (Check_TRoad(1,0.12f,7) == 1)
+            if (Check_TRoad(1,0.12f+0.02f,7) == 1)
             {
                 if(zebra_start_direction==1)
                 {

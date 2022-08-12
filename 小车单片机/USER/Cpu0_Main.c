@@ -320,7 +320,7 @@ void Basic_Classification(void)
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
                         Start_Timer(7);
-                        time_up[14] = 0.3f;
+                        time_up[14] = 0.5f;//0.3f;
                         Start_Timer(14);
                     }
                 }
@@ -549,7 +549,17 @@ void Is_Emergency_Stop(void)
     start_thread[6]=rt_tick_get();
 //                print_flag=0;
 //            }
-            if(Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)
+
+            static int cnt = 0;
+            if (Real_Volt<7.0f)
+            {
+                cnt++;
+            }
+            else
+            {
+                cnt=0;
+            }
+            if((Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)||cnt>5)
             {
                 emergency_Stop=1;
             }
@@ -756,7 +766,7 @@ void Confirm_Motion(void)
                 steeringPID_ratio_kd = 0.7;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.1f;
+                InnerSide_Ratio_ratio = 1.5f;
             }
 
 
@@ -768,8 +778,8 @@ void Confirm_Motion(void)
                 steeringPID_ratio_kp = 1.8f;//0.85f;
                 steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
-                OuterSide_Ratio_ratio = 1.3f;
-                InnerSide_Ratio_ratio = 0.9f;
+                OuterSide_Ratio_ratio = 1.5f;
+                InnerSide_Ratio_ratio = 1.1f;
             }
 
 
@@ -779,8 +789,8 @@ void Confirm_Motion(void)
                 steeringPID_ratio_kp = 1.8f;//0.85f;
                 steeringPID_ratio_kd = 0.7f;
                 SightForward_ratio = 0.6f;
-                OuterSide_Ratio_ratio = 1.3f;
-                InnerSide_Ratio_ratio = 0.9f;
+                OuterSide_Ratio_ratio = 1.5f;
+                InnerSide_Ratio_ratio = 1.5f;
             }
 
             if (classification_Result==4 && ThreeeRoad_Delay_Flag == 0)
