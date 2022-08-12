@@ -10,7 +10,7 @@
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 float d_steering_Error = 0;
-uint32 STEERING_DUTY_CENTER=774;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
+uint32 STEERING_DUTY_CENTER=772;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
 float SightForward_Highest = 0.25f;
@@ -155,7 +155,7 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-    float K_kp=0.4f,K_kd=0.4f;
+    float K_kp=0.05f,K_kd=0.05f;
     kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
 //    kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
     kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;

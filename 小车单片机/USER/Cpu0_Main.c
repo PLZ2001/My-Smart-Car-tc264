@@ -742,7 +742,7 @@ void Confirm_Motion(void)
             if (flag_For_Left_Circle == 2)
             {
                 speed_Target_ratio = 0.95f;
-                steeringPID_ratio_kp = 2.3f;//0.85f;
+                steeringPID_ratio_kp = 1.8f;//0.85f;
                 steeringPID_ratio_kd = 0.6f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
@@ -752,8 +752,8 @@ void Confirm_Motion(void)
             if (flag_For_Left_Circle == 1)
             {
                 speed_Target_ratio = 0.95f;
-                steeringPID_ratio_kp = 2.3f;//0.85f;
-                steeringPID_ratio_kd = 0.6f;
+                steeringPID_ratio_kp = 1.8f;//0.85f;
+                steeringPID_ratio_kd = 0.7;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.5f;
                 InnerSide_Ratio_ratio = 1.1f;
@@ -777,7 +777,7 @@ void Confirm_Motion(void)
             {
                 speed_Target_ratio = 0.95f;
                 steeringPID_ratio_kp = 1.8f;//0.85f;
-                steeringPID_ratio_kd = 0.6f;
+                steeringPID_ratio_kd = 0.7f;
                 SightForward_ratio = 0.6f;
                 OuterSide_Ratio_ratio = 1.3f;
                 InnerSide_Ratio_ratio = 0.9f;
