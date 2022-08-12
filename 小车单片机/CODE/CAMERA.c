@@ -1676,7 +1676,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
         }
         else
         {
-            if (Unknown_Straight_Score>=3.0f &&(Unknown_Straight_Score>Right_Straight_Score-0.1f&&Unknown_Straight_Score>Left_Straight_Score-0.1f) &&(Unknown_Straight_Score>Right_Straight_Score+0.6f||Unknown_Straight_Score>Left_Straight_Score+0.6f))
+            if (Unknown_Straight_Score>=3.0f &&(Unknown_Straight_Score>Right_Straight_Score+0.1f&&Unknown_Straight_Score>Left_Straight_Score+0.1f) &&(Unknown_Straight_Score>Right_Straight_Score+0.6f||Unknown_Straight_Score>Left_Straight_Score+0.6f))
             {
                 *classification_Result = 9;//7¿¿×ó
             }

@@ -646,7 +646,7 @@ void core1_main(void)
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[8] = 0.3f;
+                time_up[8] = 1.5f;
                 Start_Timer(8);
             }
             else if (Read_Timer_Status(8) == RUNNING)
@@ -754,6 +754,7 @@ void core1_main(void)
 
             if (flag_For_Left_Circle == 2)
             {
+                speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 2.2f;
                 steeringPID_ratio_kd = 0.6f;
@@ -763,6 +764,7 @@ void core1_main(void)
 
             if (flag_For_Left_Circle == 1)
             {
+                speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 3.0f;
                 steeringPID_ratio_kd = 0.7f;
@@ -775,6 +777,7 @@ void core1_main(void)
 
             if (flag_For_Right_Circle == 2)
             {
+                speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 2.2f;
                 steeringPID_ratio_kd = 0.6f;
@@ -785,6 +788,7 @@ void core1_main(void)
 
             if (flag_For_Right_Circle==1)
             {
+                speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 3.0f;
                 steeringPID_ratio_kd = 0.7f;
