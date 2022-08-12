@@ -59,8 +59,8 @@ float Highest_Distance = 0.6f;
 float Volt_kd=0;
 float Volt_DR=0;
 
-float Min_DR = 1.75f;
-float Max_DR = 1.75f;
+float Min_DR = 1.85f;//1.75f;
+float Max_DR = 1.85;//1.75f;
 
 void Differential_Motor(void)
 {
@@ -177,51 +177,9 @@ void Update_Speed_Mode(void)
         }
         case Low_Mode:
         {
-//            Differential_Ratio = 1.0f;
-//
-//            T_Time = 1.0f;
-//
-//            Highest_Distance = 0.5f;
-//
-//            BANGBANG_UP1 = 0.3;//0.2;
-//            BANGBANG_DOWN1 = 0.5;//0.3;
-//            BANGBANG_UP2 = 0.3;//0.2;
-//            BANGBANG_DOWN2 = 0.5;//0.3;
-//
-//            speed_Target_Highest = 1.5*2.5f;
-//            SightForward_Highest = 0.28f;
-//            OuterSide_Ratio_Highest = 1.0f;
-//            InnerSide_Ratio_Highest = 1.05f;
-//            Steering_PID_Highest[0]=0.18f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.20f;
-//
-//
-//            speed_Target_High = 2.5f;//¼´2.2
-//            SightForward_High = 0.28f;
-//            OuterSide_Ratio_High = 1.0f;
-//            InnerSide_Ratio_High = 1.10f;
-//            Steering_PID_High[0]=0.19f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.20f;
-//
-//
-//            speed_Target_Low = 2.1f;//¼´1.9
-//            SightForward_Low = 0.28f;
-//            OuterSide_Ratio_Low = 1.0f;
-//            InnerSide_Ratio_Low = 1.05f;
-//            Steering_PID_Low[0]=0.23f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.20f;
-//
-//
-//            speed_Target_Lowest = 0.7*2.1f;
-//            SightForward_Lowest = 0.28f;
-//            OuterSide_Ratio_Lowest = 1.0f;
-//            InnerSide_Ratio_Lowest = 1.20f;
-//            Steering_PID_Lowest[0]=0.50f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.20f;
-//
-//            speed_Target_Lowest_ForT = 0.7*2.1f;
-//            SightForward_Lowest_ForT = 0.28f;
-//            OuterSide_Ratio_Lowest_ForT = 1.0f;
-//            InnerSide_Ratio_Lowest_ForT = 1.20f;
-//            Steering_PID_Lowest_ForT[0]=0.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.20f;
-//
-//            break;
+
+            Min_DR = 1.85f;//1.75f;
+            Max_DR = 1.85;//1.75f;
             Differential_Ratio = Volt_DR;
 
             T_Time = 0.12f;
@@ -276,93 +234,68 @@ void Update_Speed_Mode(void)
         }
         case High_Mode:
         {
-//            Differential_Ratio = 0.85f;
+
+//            Differential_Ratio = Volt_DR;
 //
-//            T_Time = 0.4f;
+//            T_Time = 0.12f;
 //
-//            Highest_Distance = 0.35f;
+//            T_Line = 0.18f;
 //
-//            BANGBANG_UP = 0.2;//0.2;
-//            BANGBANG_DOWN = 0.4;//0.3;
+//            threeRoads_RightTime = 0.15f;
+//            ThreeeRoad_Delay = 0.04f;
 //
-//            speed_Target_Highest = 1.5*2.8f;
-//            SightForward_Highest = 0.30f;
-//            InnerSide_Ratio_Highest = 1.00f;
-//            Steering_PID_Highest[0]=0.17f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.30f;
+//            Highest_Distance = 0.05f;
 //
+//            BANGBANG_UP1 = 1.0;
+//            BANGBANG_DOWN1 = 1.0;
+//            BANGBANG_UP2 = 1.0;
+//            BANGBANG_DOWN2 = 1.0;
 //
-//            speed_Target_High = 2.8f;//¼´2.5
-//            SightForward_High = 0.30f;
-//            InnerSide_Ratio_High = 1.00f;
-//            Steering_PID_High[0]=0.17f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.30f;
-//
-//
-//            speed_Target_Low = 2.5f;//¼´2.2
-//            SightForward_Low = 0.30f;
-//            InnerSide_Ratio_Low = 1.10f;
-//            Steering_PID_Low[0]=0.21f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.30f;
-//
-//
-//            speed_Target_Lowest = 0.7*2.5f;
-//            SightForward_Lowest = 0.30f;
-//            InnerSide_Ratio_Lowest = 1.60f;
-//            Steering_PID_Lowest[0]=0.80f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.10f;
-//
-//            speed_Target_Lowest_ForT = 0.7*2.5f;
-//            SightForward_Lowest_ForT = 0.30f;
-//            InnerSide_Ratio_Lowest_ForT = 1.60f;
-//            Steering_PID_Lowest_ForT[0]=0.80f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
-//            Differential_Ratio = 0.95f;
-//
-//            T_Time = 0.4f;
-//
-//            Highest_Distance = 0.2f;
-//
-//            BANGBANG_UP = 0.2;
-//            BANGBANG_DOWN = 0.2;
-//
-//            speed_Target_Highest = 1.5*3.6f;
-//            SightForward_Highest = 0.30f;
-//            OuterSide_Ratio_Highest = 1.0f;
+//            speed_Target_Highest = 3.9f;//¼´3.4
+//            SightForward_Highest = 0.38f;
+//            OuterSide_Ratio_Highest = 1.1f;
 //            InnerSide_Ratio_Highest = 1.15f;
-//            Steering_PID_Highest[0]=0.12f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=Volt_kd;
+//            Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.0f;
 //
 //
-//            speed_Target_High = 3.6f;//¼´3.2
-//            SightForward_High = 0.30f;
-//            OuterSide_Ratio_High = 1.0f;
+//            speed_Target_High = 3.5f;//¼´3.1
+//            SightForward_High = 0.38f;
+//            OuterSide_Ratio_High = 1.1f;
 //            InnerSide_Ratio_High = 1.15f;//1.15f;
-//            Steering_PID_High[0]=0.12f;Steering_PID_High[1]=0;Steering_PID_High[2]=Volt_kd;
+//            Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.0f;
 //
 //
-//            speed_Target_Low = 3.1f;//¼´2.7
-//            SightForward_Low = 0.30f;
-//            OuterSide_Ratio_Low = 1.0f;
-//            InnerSide_Ratio_Low = 1.15f;//1.25;
-//            Steering_PID_Low[0]=0.12f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=Volt_kd;
+//            speed_Target_Low = 3.3f;//¼´2.9
+//            SightForward_Low = 0.38f;
+//            OuterSide_Ratio_Low = 1.2f;
+//            InnerSide_Ratio_Low = 1.25f;//1.25;
+//            Steering_PID_Low[0]=0.155f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.0f;
 //
 //
-//            speed_Target_Lowest = 2.65f;//¼´2.34
-//            SightForward_Lowest = 0.30f;
-//            OuterSide_Ratio_Lowest = 1.0f;
-//            InnerSide_Ratio_Lowest = 1.15f;
-//            Steering_PID_Lowest[0]=0.12f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=Volt_kd;
+//            speed_Target_Lowest = 3.25f;//¼´2.85
+//            SightForward_Lowest = 0.38f;
+//            OuterSide_Ratio_Lowest = 1.2f;
+//            InnerSide_Ratio_Lowest = 1.25f;
+//            Steering_PID_Lowest[0]=0.155f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.0f;
 //
 //            speed_Target_Lowest_ForT = 2.4f;//¼´2.1
 //            SightForward_Lowest_ForT = 0.40f;
 //            OuterSide_Ratio_Lowest_ForT = 1.0f;
-//            InnerSide_Ratio_Lowest_ForT = 1.70f;
-//            Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+//            InnerSide_Ratio_Lowest_ForT = 3.00f;
+//            //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
+//            Steering_PID_Lowest_ForT[0]=0.13f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.8f;
 //
 //            break;
+            Min_DR = 1.85f;//1.75f;
+            Max_DR = 1.85f;//1.75f;
             Differential_Ratio = Volt_DR;
 
             T_Time = 0.12f;
 
-            T_Line = 0.18f;
+            T_Line = 0.09f;
 
-            threeRoads_RightTime = 0.25f;
-            ThreeeRoad_Delay = 0.04f;
+            threeRoads_RightTime = 0.6f;//0.25f;
+            ThreeeRoad_Delay = 0.0f;
 
             Highest_Distance = 0.05f;
 
@@ -371,32 +304,32 @@ void Update_Speed_Mode(void)
             BANGBANG_UP2 = 1.0;
             BANGBANG_DOWN2 = 1.0;
 
-            speed_Target_Highest = 3.9f;//¼´3.4
-            SightForward_Highest = 0.38f;
-            OuterSide_Ratio_Highest = 0.95f;
-            InnerSide_Ratio_Highest = 1.15f;
-            Steering_PID_Highest[0]=0.13f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.8f;
+            speed_Target_Highest = 4.0f;//¼´3.5
+            SightForward_Highest = 0.35f;
+            OuterSide_Ratio_Highest = 0.9f;
+            InnerSide_Ratio_Highest = 1.1f;
+            Steering_PID_Highest[0]=0.16f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
 
 
-            speed_Target_High = 3.5f;//¼´3.1
-            SightForward_High = 0.38f;
-            OuterSide_Ratio_High = 0.95f;
-            InnerSide_Ratio_High = 1.15f;//1.15f;
-            Steering_PID_High[0]=0.13f;Steering_PID_High[1]=0;Steering_PID_High[2]=0.8f;
+            speed_Target_High = 3.8f;//¼´3.4
+            SightForward_High = 0.35f;
+            OuterSide_Ratio_High = 0.9f;
+            InnerSide_Ratio_High = 1.1f;//1.15f;
+            Steering_PID_High[0]=0.16f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.1f;
 
 
-            speed_Target_Low = 3.3f;//¼´2.9
-            SightForward_Low = 0.38f;
-            OuterSide_Ratio_Low = 0.95f;
-            InnerSide_Ratio_Low = 1.15f;//1.25;
-            Steering_PID_Low[0]=0.14f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=0.8f;
+            speed_Target_Low = 3.7f;//¼´3.3
+            SightForward_Low = 0.35f;
+            OuterSide_Ratio_Low = 0.9f;
+            InnerSide_Ratio_Low = 1.1f;//1.25;
+            Steering_PID_Low[0]=0.17f;Steering_PID_Low[1]=0;Steering_PID_Low[2]=1.1f;
 
 
-            speed_Target_Lowest = 3.25f;//¼´2.85
-            SightForward_Lowest = 0.38f;
-            OuterSide_Ratio_Lowest = 0.95f;
-            InnerSide_Ratio_Lowest = 1.15f;
-            Steering_PID_Lowest[0]=0.14f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=0.8f;
+            speed_Target_Lowest = 3.6f;//¼´3.2
+            SightForward_Lowest = 0.35f;
+            OuterSide_Ratio_Lowest = 0.9f;
+            InnerSide_Ratio_Lowest = 1.1f;
+            Steering_PID_Lowest[0]=0.17f;Steering_PID_Lowest[1]=0;Steering_PID_Lowest[2]=1.1f;
 
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
@@ -415,8 +348,8 @@ void Update_Speed_Mode(void)
 
             T_Line = 0.18f;
 
-            threeRoads_RightTime = 0.25f;
-            ThreeeRoad_Delay = 0.04f;
+            threeRoads_RightTime = 0.15f;
+            ThreeeRoad_Delay = 0.00f;
 
             Highest_Distance = 0.05f;
 

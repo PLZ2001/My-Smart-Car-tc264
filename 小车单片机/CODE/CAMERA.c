@@ -1648,7 +1648,7 @@ void Check(uint8 *classification_Result,uint8 else_result)
             *classification_Result = else_result;
         }
 //        else if(!(Check_TRoad(0,0.65,3)&&Check_TRoad(1,0.32,3)))
-        else if(!(Check_TRoad_New()&&Check_TRoad(0,0.75,3)&&Check_TRoad(1,0.32,3)))
+        else if(!(Check_TRoad_New()&&Check_TRoad(0,0.75-1.0f/6.0f,3)&&Check_TRoad(1,0.32-1.0f/6.0f,3)))
         {
             *classification_Result = else_result;
         }

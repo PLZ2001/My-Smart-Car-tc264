@@ -138,11 +138,11 @@ void DrawCenterLine(void)
 {
     if (Helper_Window_Flag==1)
     {
-        Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+        Set_Search_Range(height_Inverse_Perspective*2/10,height_Inverse_Perspective*8/10-height_Inverse_Perspective*2/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
     else
     {
-        Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+        Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
 
 //    static uint8 first_time = 0;
@@ -301,6 +301,9 @@ void DrawCenterLine(void)
     {
         DrawCenterLinewithConfig(0);
     }
+
+    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+
 }
 
 uint8 Check_Straight(float ratio)
@@ -1079,7 +1082,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.1*road_width:2*road_width))
                 {
                     break;
                 }
@@ -1132,10 +1135,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
-                {
-                    break;
-                }
+//                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
                 start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
                 {
@@ -1291,10 +1294,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
-                {
-                    break;
-                }
+//                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
                 start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
                 {
@@ -1342,7 +1345,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.1*road_width:2*road_width))
                 {
                     break;
                 }
