@@ -576,23 +576,7 @@ void core1_main(void)
             uint8 set_flag=0;//表示这次是否设置了速度
 
 
-            if(Long_Straight_Flag == 1)
-            {
-                speed_Status = Highest;
-                set_flag=1;
-                time_up[6] = Highest_Distance/(speed_Target_Highest);
-                Reset_Timer(6);
-                Start_Timer(6);
-            }
-            else if (Read_Timer_Status(6) == RUNNING)
-            {
-                speed_Status = Highest;
-                set_flag=1;
-                if (Read_Timer(6)>time_up[6])
-                {
-                    Reset_Timer(6);
-                }
-            }
+
 
             if(classification_Result == 4)
             {
@@ -687,6 +671,24 @@ void core1_main(void)
                 set_flag=1;
             }
 
+
+            if(Long_Straight_Flag == 1)
+            {
+                speed_Status = Highest;
+                set_flag=1;
+                time_up[6] = Highest_Distance/(speed_Target_Highest);
+                Reset_Timer(6);
+                Start_Timer(6);
+            }
+            else if (Read_Timer_Status(6) == RUNNING)
+            {
+                speed_Status = Highest;
+                set_flag=1;
+                if (Read_Timer(6)>time_up[6])
+                {
+                    Reset_Timer(6);
+                }
+            }
 
             if(set_flag==0)
             {
