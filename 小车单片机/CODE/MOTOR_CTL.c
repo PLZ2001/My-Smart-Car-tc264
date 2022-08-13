@@ -304,11 +304,11 @@ void Update_Speed_Mode(void)
             BANGBANG_UP2 = 1.0;
             BANGBANG_DOWN2 = 1.0;
 
-            speed_Target_Highest = 5.0f;//¼´4.4
+            speed_Target_Highest = 7.0f;//¼´6.2
             SightForward_Highest = 0.43f;
-            OuterSide_Ratio_Highest = 0.9f;
-            InnerSide_Ratio_Highest = 1.1f;
-            Steering_PID_Highest[0]=0.08f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.1f;
+            OuterSide_Ratio_Highest = 0.3f;
+            InnerSide_Ratio_Highest = 0.3f;
+            Steering_PID_Highest[0]=0.06f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=0.4f;
 
 
             speed_Target_High = 3.7f;//¼´3.3
