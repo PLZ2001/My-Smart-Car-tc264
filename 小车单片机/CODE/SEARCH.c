@@ -233,7 +233,14 @@ void DrawCenterLine(void)
     // 对于8靠右（临时使用）可以采用，特征是靠右行驶
     else if (classification_Result == 8)
     {
-        DrawCenterLinewithConfig_RightBased(0);
+        if (Check_Far_Road_And_Draw(8,0.8f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig_RightBased(0);
+        }
     }
     // 对于3右环岛可以采用，特征是靠右行驶
     else if (classification_Result == 3)
@@ -286,7 +293,14 @@ void DrawCenterLine(void)
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
     {
-        DrawCenterLinewithConfig_LeftBased(0);
+        if (Check_Far_Road_And_Draw(7,0.8f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig_LeftBased(0);
+        }
     }
     else if (classification_Result == 13)
     {
@@ -3993,4 +4007,103 @@ uint8 Check_LeftCircle_New4(float ratio)
     }
     search_Lines = height_Inverse_Perspective;
     return 1;
+}
+
+uint8 Check_Far_Road_And_Draw(int mode,float ratio)
+{
+    if (mode==7)
+    {
+        int j;
+        int line = height_Inverse_Perspective*(1.0f-ratio);
+        int left=-2,right=-2;
+        for (j = 0;j < width_Inverse_Perspective-1;j++ )
+        {
+            if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+            {
+                left = j;
+            }
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+            {
+                right = j;
+                if (right!=-2&&left!=-2&&(right-left<road_width+road_width/2)&&(right-left>road_width/2)&& (left+right)/2<width_Inverse_Perspective/2)
+                {
+                    //存储底部中点坐标
+                    int i;
+                    for (i=0;i<search_Lines;i++) //寻找视野底部
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+                        {
+                            Col_Center[i] = (float)(width_Inverse_Perspective/2);
+                            break;
+                        }
+                    }
+
+
+                    int firsti = i;
+
+                    //补全拐点间中线和底部中线之间的连线
+                    float k = ((left + right)/2.0f  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - line);
+
+                    for (int i=1;i<search_Lines - firsti;i++)
+                    {
+                        Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1)
+                        {
+                            return 0;
+                        }
+                    }
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+    else if (mode == 8)
+    {
+        int j;
+        int line = height_Inverse_Perspective*(1.0f-ratio);
+        int left=-2,right=-2;
+        for (j = width_Inverse_Perspective-2; j >= 0 ;j-- )
+        {
+            if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+            {
+                left = j;
+                if (right!=-2&&left!=-2&&(right-left<road_width+road_width/2)&&(right-left>road_width/2) && (left+right)/2>width_Inverse_Perspective/2)
+                {
+                    //存储底部中点坐标
+                    int i;
+                    for (i=0;i<search_Lines;i++) //寻找视野底部
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+                        {
+                            Col_Center[i] = (float)(width_Inverse_Perspective/2);
+                            break;
+                        }
+                    }
+
+
+                    int firsti = i;
+
+                    //补全拐点间中线和底部中线之间的连线
+                    float k = ((left + right)/2.0f  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - line);
+
+                    for (int i=1;i<search_Lines - firsti;i++)
+                    {
+                        Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1)
+                        {
+                            return 0;
+                        }
+                    }
+                    return 1;
+                }
+            }
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+            {
+                right = j;
+            }
+        }
+        return 0;
+    }
+
 }

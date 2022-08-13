@@ -641,12 +641,13 @@ void core1_main(void)
                 set_flag=1;
             }
 
-            if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5)
+            if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5||classification_Result == 7||classification_Result == 8)
             {
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
                 time_up[8] = 1.5f;
+                Reset_Timer(8);
                 Start_Timer(8);
             }
             else if (Read_Timer_Status(8) == RUNNING)
@@ -689,7 +690,7 @@ void core1_main(void)
 
             if(set_flag==0)
             {
-                speed_Status = High;
+                speed_Status = Low;
                 Reset_Timer(6);
             }
 
@@ -767,9 +768,9 @@ void core1_main(void)
                 speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 3.0f;
-                steeringPID_ratio_kd = 0.7f;
+                steeringPID_ratio_kd = 1.0f;
                 OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.5f;
+                InnerSide_Ratio_ratio = 1.7f;
             }
 
 
@@ -791,9 +792,9 @@ void core1_main(void)
                 speed_Target_ratio = 0.6f;
                 SightForward_ratio = 0.4f;
                 steeringPID_ratio_kp = 3.0f;
-                steeringPID_ratio_kd = 0.7f;
+                steeringPID_ratio_kd = 1.0f;
                 OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.5f;
+                InnerSide_Ratio_ratio = 1.7f;
             }
 
 //            if (classification_Result==2||classification_Result==3)

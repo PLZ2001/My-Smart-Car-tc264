@@ -109,6 +109,7 @@ uint8 Select_Left_Unknown_or_Right(int dot_num);
 uint8 Check_LeftCircle_New4(float ratio);
 uint8 Check_RightCircle_New4(float ratio);
 
+uint8 Check_Far_Road_And_Draw(int mode,float ratio);
 
 
 
