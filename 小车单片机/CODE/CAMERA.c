@@ -1682,11 +1682,11 @@ void Check(uint8 *classification_Result,uint8 else_result)
             }
             else
             {
-                if (Left_Straight_Score>=3.0f && Left_Straight_Score>Right_Straight_Score+0.6f)
+                if (Left_Straight_Score>=3.0f && Left_Straight_Score>Right_Straight_Score+0.5f)
                 {
                     *classification_Result = 7;//7¿¿×ó
                 }
-                if (Right_Straight_Score>=3.0f && Right_Straight_Score>Left_Straight_Score+0.6f)
+                if (Right_Straight_Score>=3.0f && Right_Straight_Score>Left_Straight_Score+0.5f)
                 {
                     *classification_Result = 8;//8¿¿ÓÒ
                 }

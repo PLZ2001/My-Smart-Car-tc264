@@ -204,8 +204,8 @@ void core1_main(void)
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
-//                        time_up[0] = 0.1f;
-//                        Start_Timer(0);
+                        time_up[0] = 0.2f;
+                        Start_Timer(0);
                         break;
                     case 10://左直线
                         if (flag_For_Right_Circle == 2) //说明准备出右环岛
