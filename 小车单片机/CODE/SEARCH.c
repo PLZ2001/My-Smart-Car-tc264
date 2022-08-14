@@ -83,6 +83,14 @@ float T_Line = 0.18f;
 uint8 ThreeeRoad_Delay_Flag = 0;
 float ThreeeRoad_Delay = 0;
 
+
+int left_width[pos_num];
+int right_width[pos_num];
+float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f};
+
+uint8 rightCircle_Alarm = 0;
+uint8 leftCircle_Alarm = 0;
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -1103,7 +1111,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else
             {
-                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.1*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.3*road_width:2*road_width))
                 {
                     break;
                 }
@@ -1366,7 +1374,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else
             {
-                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.1*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.3*road_width:2*road_width))
                 {
                     break;
                 }
@@ -2774,11 +2782,11 @@ uint8 Check_LeftCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 88 && arccosValue > 0)
+        if (arccosValue < (leftCircle_Alarm == 1?100:88) && arccosValue > 0)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            if (leftCircle_Alarm == 1||mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (second_Dot[1]-third_Dot[1]>=5)
+                if (leftCircle_Alarm == 1||second_Dot[1]-third_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -2821,11 +2829,11 @@ uint8 Check_RightCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 88 && arccosValue > 0)
+        if (arccosValue < (rightCircle_Alarm == 1?100:88) && arccosValue > 0)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            if (rightCircle_Alarm == 1 ||mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (third_Dot[1]-second_Dot[1]>=5)
+                if (rightCircle_Alarm == 1||third_Dot[1]-second_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -3944,7 +3952,7 @@ uint8 Check_Fake_Zebra(int max)
 
 uint8 Check_RightCircle_New4(float ratio)
 {
-    if (Check_Circle_New4_EN == 0)
+    if (Check_Circle_New4_EN == 0 || rightCircle_Alarm == 1)
     {
         return 1;
     }
@@ -3981,7 +3989,7 @@ uint8 Check_RightCircle_New4(float ratio)
 
 uint8 Check_LeftCircle_New4(float ratio)
 {
-    if (Check_Circle_New4_EN == 0)
+    if (Check_Circle_New4_EN == 0 || leftCircle_Alarm == 1)
     {
         return 1;
     }
@@ -4054,7 +4062,9 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                     for (int i=1;i<search_Lines - firsti;i++)
                     {
                         Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1)
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
                         {
                             return 0;
                         }
@@ -4097,7 +4107,9 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                     for (int i=1;i<search_Lines - firsti;i++)
                     {
                         Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
-                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1)
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
                         {
                             return 0;
                         }
@@ -4159,7 +4171,9 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
             for (int i=1;i<search_Lines - firsti;i++)
             {
                 Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
-                if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1)
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
                 {
                     return 0;
                 }
@@ -4170,3 +4184,94 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
     }
 
 }
+
+
+
+void Get_Width(int index)
+{
+    int line = (int)(height_Inverse_Perspective*(1.0f-pos[index]));
+    if (mt9v03x_image_cutted_thresholding_inversePerspective[line][width_Inverse_Perspective/2] == 0)
+    {
+        return ;
+    }
+
+    for (int j = width_Inverse_Perspective/2; j >= 0 ;j-- )
+    {
+        if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+        {
+            left_width[index] = width_Inverse_Perspective/2-(j+1);
+            break;
+        }
+    }
+
+
+    for (int j = width_Inverse_Perspective/2; j<width_Inverse_Perspective-1;j++ )
+    {
+        if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+        {
+            right_width[index] = j-width_Inverse_Perspective/2;
+            break;
+        }
+    }
+
+    return;
+}
+
+uint8 Check_RoadWidth(void)
+{
+    for (int i = 0;i<pos_num;i++)
+    {
+        left_width[i]=-2;
+        right_width[i]=-2;
+        Get_Width(i);
+    }
+
+
+    uint8 right_circle_flag=1;
+    for (int i =0;i<pos_num;i++)
+    {
+        right_circle_flag &= left_width[i]!=-2;
+        right_circle_flag &= right_width[i]!=-2;
+    }
+    right_circle_flag &= abs(left_width[0]-left_width[1])<=2;
+    right_circle_flag &= abs(left_width[1]-left_width[2])<=2;
+    right_circle_flag &= abs(left_width[2]-left_width[3])<=2;
+    right_circle_flag &= abs(left_width[3]-left_width[4])<=2;
+    right_circle_flag &= right_width[0]>right_width[1];
+    right_circle_flag &= right_width[1]>=right_width[2];
+    right_circle_flag &= right_width[3]>=right_width[2];
+    right_circle_flag &= !(right_width[1]==right_width[2]&&right_width[1]==right_width[3]);
+    right_circle_flag &= right_width[4]>right_width[3];
+    right_circle_flag &= right_width[4]+right_width[0]>30.0f;
+    right_circle_flag &= Left_Straight_Score>5.30f;
+    right_circle_flag &= Unknown_Straight_Score>5.00f;
+    rightCircle_Alarm |= right_circle_flag;
+
+
+    uint8 left_circle_flag=1;
+    for (int i =0;i<pos_num;i++)
+    {
+        left_circle_flag &= left_width[i]!=-2;
+        left_circle_flag &= right_width[i]!=-2;
+    }
+    left_circle_flag &= abs(right_width[0]-right_width[1])<=2;
+    left_circle_flag &= abs(right_width[1]-right_width[2])<=2;
+    left_circle_flag &= abs(right_width[2]-right_width[3])<=2;
+    left_circle_flag &= abs(right_width[3]-right_width[4])<=2;
+    left_circle_flag &= left_width[0]>left_width[1];
+    left_circle_flag &= left_width[1]>=left_width[2];
+    left_circle_flag &= left_width[3]>=left_width[2];
+    left_circle_flag &= !(left_width[1]==left_width[2]&&left_width[1]==left_width[3]);
+    left_circle_flag &= left_width[4]>left_width[3];
+    left_circle_flag &= left_width[4]+left_width[0]>30.0f;
+    left_circle_flag &= Right_Straight_Score>5.30f;
+    left_circle_flag &= Unknown_Straight_Score>5.00f;
+    leftCircle_Alarm |= left_circle_flag;
+
+
+
+
+
+
+}
+

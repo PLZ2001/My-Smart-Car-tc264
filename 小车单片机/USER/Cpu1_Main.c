@@ -91,6 +91,7 @@ void core1_main(void)
 
             //计算左中右的笔直程度
             Select_Left_Unknown_or_Right(9);
+            Check_RoadWidth();
 
             if (Read_Timer_Status(4) == RUNNING)
             {
@@ -204,7 +205,7 @@ void core1_main(void)
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
-                        time_up[0] = 0.2f;
+                        time_up[0] = 0.1f;
                         Start_Timer(0);
                         break;
                     case 10://左直线
@@ -755,24 +756,58 @@ void core1_main(void)
 //                InnerSide_Ratio_ratio = 0.9f;
 //            }
 
+
+
+
+            if (Read_Timer_Status(17) == RUNNING)
+            {
+                if (Read_Timer(17)>time_up[17] || classification_Result == 2 || classification_Result == 3)
+                {
+                    leftCircle_Alarm = 0;
+                    rightCircle_Alarm = 0;
+                    Reset_Timer(17);
+                }
+            }
+            else
+            {
+                if (leftCircle_Alarm == 1)
+                {
+                    time_up[17] = 5.0f;
+                    Reset_Timer(17);
+                    Start_Timer(17);
+                }
+                if (rightCircle_Alarm == 1)
+                {
+                    time_up[17] = 5.0f;
+                    Reset_Timer(17);
+                    Start_Timer(17);
+                }
+            }
+
+            if (rightCircle_Alarm==1||leftCircle_Alarm==1)
+            {
+                speed_Target_ratio = 0.3f;
+            }
+
+
             if (flag_For_Left_Circle == 2)
             {
-                speed_Target_ratio = 0.6f;
+                speed_Target_ratio = 0.9f;
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 2.2f;
+                steeringPID_ratio_kp = 2.0f;
                 steeringPID_ratio_kd = 0.6f;
-                OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.5f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 0.9f;
             }
 
             if (flag_For_Left_Circle == 1)
             {
-                speed_Target_ratio = 0.6f;
+                speed_Target_ratio = 0.9f;
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 3.0f;
-                steeringPID_ratio_kd = 1.0f;
-                OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.7f;
+                steeringPID_ratio_kp = 2.0f;
+                steeringPID_ratio_kd = 0.6f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 1.1f;
             }
 
 
@@ -780,23 +815,23 @@ void core1_main(void)
 
             if (flag_For_Right_Circle == 2)
             {
-                speed_Target_ratio = 0.6f;
+                speed_Target_ratio = 0.9f;
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 2.2f;
+                steeringPID_ratio_kp = 2.0f;
                 steeringPID_ratio_kd = 0.6f;
-                OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.5f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 0.9f;
             }
 
 
             if (flag_For_Right_Circle==1)
             {
-                speed_Target_ratio = 0.6f;
+                speed_Target_ratio = 0.9f;
                 SightForward_ratio = 0.4f;
-                steeringPID_ratio_kp = 3.0f;
-                steeringPID_ratio_kd = 1.0f;
-                OuterSide_Ratio_ratio = 1.5f;
-                InnerSide_Ratio_ratio = 1.7f;
+                steeringPID_ratio_kp = 2.0f;
+                steeringPID_ratio_kd = 0.6f;
+                OuterSide_Ratio_ratio = 1.3f;
+                InnerSide_Ratio_ratio = 1.1f;
             }
 
 //            if (classification_Result==2||classification_Result==3)

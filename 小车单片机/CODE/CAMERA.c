@@ -1608,6 +1608,15 @@ void Check(uint8 *classification_Result,uint8 else_result)
             flag_For_Left_T = 0;
         }
     }
+//    if (*classification_Result == 5)
+//    {
+//        if (!((left_width[0]>left_width[1]&&left_width[0]>left_width[2]&&right_width[0]>right_width[1]&&right_width[0]>right_width[2]&&left_width[1]!=-2&&left_width[2]!=-2)
+//          ||(left_width[1]>left_width[0]&&left_width[1]>left_width[2]&&right_width[1]>right_width[0]&&right_width[1]>right_width[2]&&left_width[0]!=-2&&left_width[2]!=-2)
+//          ||(left_width[2]>left_width[1]&&left_width[2]>left_width[3]&&right_width[2]>right_width[1]&&right_width[2]>right_width[3]&&left_width[1]!=-2&&left_width[3]!=-2)))
+//        {
+//            *classification_Result = else_result;
+//        }
+//    }
     if (*classification_Result == 12)//×ó¶¡×Ö
     {
         if(!(Check_LeftP()&&Check_Right_Straight(2,-2,0.4)))
@@ -1622,14 +1631,18 @@ void Check(uint8 *classification_Result,uint8 else_result)
     }
     if (*classification_Result ==3)//3ÓÒ»·µº
     {
-        if((zebra_status != finding && zebra_status != banning)||flag_For_Right_Circle!=0 || !(Check_RightCircle_New2()&&Check_RightCircle_New4(0.2f)))
+        if((zebra_status != finding && zebra_status != banning)||flag_For_Right_Circle!=0 || !(
+                /*(abs(left_width[0]-left_width[1])<=3&&abs(left_width[0]-left_width[2])<=3&&abs(left_width[0]-left_width[3])<=3&&right_width[0]>right_width[1]&&right_width[1]<right_width[2]&&right_width[2]>right_width[3]&&left_width[0]!=-2&&left_width[1]!=-2&&left_width[2]!=-2&&left_width[3]!=-2)*/
+              /*||(abs(left_width[0]-left_width[1])<=2&&abs(left_width[0]-left_width[2])<=2&&abs(left_width[0]-left_width[3])<=2&&right_width[0]<right_width[1]&&right_width[1]>right_width[2]&&right_width[2]<right_width[3]&&left_width[0]!=-2&&left_width[1]!=-2&&left_width[2]!=-2&&left_width[3]!=-2)*/Check_RightCircle_New2()&&Check_RightCircle_New4(0.2f)))
         {
             *classification_Result = else_result;
         }
     }
     if (*classification_Result ==2)//2×ó»·µº
     {
-        if((zebra_status != finding && zebra_status != banning)||flag_For_Left_Circle!=0 || !(Check_LeftCircle_New2()&&Check_LeftCircle_New4(0.2f)))
+        if((zebra_status != finding && zebra_status != banning)||flag_For_Left_Circle!=0 || !(
+                /*(abs(right_width[0]-right_width[1])<=3&&abs(right_width[0]-right_width[2])<=3&&abs(right_width[0]-right_width[3])<=3&&left_width[0]>left_width[1]&&left_width[1]<left_width[2]&&left_width[2]>left_width[3]&&left_width[0]!=-2&&left_width[1]!=-2&&left_width[2]!=-2&&left_width[3]!=-2)*/
+              /*||(abs(right_width[0]-right_width[1])<=2&&abs(right_width[0]-right_width[2])<=2&&abs(right_width[0]-right_width[3])<=2&&left_width[0]<left_width[1]&&left_width[1]>left_width[2]&&left_width[2]<left_width[3]&&left_width[0]!=-2&&left_width[1]!=-2&&left_width[2]!=-2&&left_width[3]!=-2)*/Check_LeftCircle_New2()&&Check_LeftCircle_New4(0.2f)))
         {
             *classification_Result = else_result;
         }
