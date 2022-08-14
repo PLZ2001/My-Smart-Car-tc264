@@ -4277,6 +4277,10 @@ uint8 Check_RoadWidth(void)
     }
 
     static uint8 first_time=1;
+    if (rightCircle_Alarm==1 && first_time == 1)
+    {
+        rightCircle_Size = 0;
+    }
     if (rightCircle_Alarm==1 && first_time == 1 && right_width[0]<17.0f)
     {
         first_time = 0;
@@ -4292,11 +4296,15 @@ uint8 Check_RoadWidth(void)
     else if (rightCircle_Alarm==0)
     {
         first_time = 1;
-        rightCircle_Size = 0;
+//        rightCircle_Size = 0;
     }
 
 
     static uint8 first_time1=1;
+    if (leftCircle_Alarm==1 && first_time1 == 1)
+    {
+        leftCircle_Size = 0;
+    }
     if (leftCircle_Alarm==1 && first_time1 == 1 && left_width[0]<17.0f)
     {
         first_time1 = 0;
@@ -4312,7 +4320,7 @@ uint8 Check_RoadWidth(void)
     else if (leftCircle_Alarm==0)
     {
         first_time1 = 1;
-        leftCircle_Size = 0;
+//        leftCircle_Size = 0;
     }
 
 
