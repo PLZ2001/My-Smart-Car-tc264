@@ -25,7 +25,7 @@ enum ZEBRA_STATUS
 
 #define MAX_Row_Index 9
 
-#define pos_num 5
+#define pos_num 6
 
 
 extern float Col_Center[height_Inverse_Perspective_Max];//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
@@ -84,6 +84,8 @@ extern float pos[pos_num];
 
 extern uint8 rightCircle_Alarm;
 extern uint8 leftCircle_Alarm;
+extern uint8 rightCircle_Size;//2小圆，1大圆，0未知
+extern uint8 leftCircle_Size;//2小圆，1大圆，0未知
 
 
 void UART_ColCenter(void);

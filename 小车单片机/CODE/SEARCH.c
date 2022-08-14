@@ -86,10 +86,12 @@ float ThreeeRoad_Delay = 0;
 
 int left_width[pos_num];
 int right_width[pos_num];
-float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f};
+float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f,0.72f};
 
 uint8 rightCircle_Alarm = 0;
 uint8 leftCircle_Alarm = 0;
+uint8 rightCircle_Size = 0;//2小圆，1大圆，0未知
+uint8 leftCircle_Size = 0;//2小圆，1大圆，0未知
 
 void UART_ColCenter(void)
 {
@@ -4227,50 +4229,91 @@ uint8 Check_RoadWidth(void)
     }
 
 
-    uint8 right_circle_flag=1;
-    for (int i =0;i<pos_num;i++)
+    if (classification_Result!=2 && classification_Result!=3)
     {
-        right_circle_flag &= left_width[i]!=-2;
-        right_circle_flag &= right_width[i]!=-2;
+        uint8 right_circle_flag=1;
+        for (int i =0;i<pos_num;i++)
+        {
+            right_circle_flag &= left_width[i]!=-2;
+            right_circle_flag &= right_width[i]!=-2;
+        }
+        right_circle_flag &= abs(left_width[0]-left_width[1])<=2;
+        right_circle_flag &= abs(left_width[1]-left_width[2])<=2;
+        right_circle_flag &= abs(left_width[2]-left_width[3])<=2;
+        right_circle_flag &= abs(left_width[3]-left_width[4])<=2;
+        right_circle_flag &= right_width[0]>right_width[1];
+        right_circle_flag &= right_width[1]>=right_width[2];
+        right_circle_flag &= right_width[3]>=right_width[2];
+        right_circle_flag &= !(right_width[1]==right_width[2]&&right_width[1]==right_width[3]);
+        right_circle_flag &= right_width[4]>right_width[3];
+        right_circle_flag &= right_width[4]+right_width[0]>33.0f;
+        right_circle_flag &= Left_Straight_Score>5.30f;
+        right_circle_flag &= Unknown_Straight_Score>5.00f;
+        rightCircle_Alarm |= right_circle_flag;
+
+
+
+
+        uint8 left_circle_flag=1;
+        for (int i =0;i<pos_num;i++)
+        {
+            left_circle_flag &= left_width[i]!=-2;
+            left_circle_flag &= right_width[i]!=-2;
+        }
+        left_circle_flag &= abs(right_width[0]-right_width[1])<=2;
+        left_circle_flag &= abs(right_width[1]-right_width[2])<=2;
+        left_circle_flag &= abs(right_width[2]-right_width[3])<=2;
+        left_circle_flag &= abs(right_width[3]-right_width[4])<=2;
+        left_circle_flag &= left_width[0]>left_width[1];
+        left_circle_flag &= left_width[1]>=left_width[2];
+        left_circle_flag &= left_width[3]>=left_width[2];
+        left_circle_flag &= !(left_width[1]==left_width[2]&&left_width[1]==left_width[3]);
+        left_circle_flag &= left_width[4]>left_width[3];
+        left_circle_flag &= left_width[4]+left_width[0]>33.0f;
+        left_circle_flag &= Right_Straight_Score>5.30f;
+        left_circle_flag &= Unknown_Straight_Score>5.00f;
+        leftCircle_Alarm |= left_circle_flag;
+
     }
-    right_circle_flag &= abs(left_width[0]-left_width[1])<=2;
-    right_circle_flag &= abs(left_width[1]-left_width[2])<=2;
-    right_circle_flag &= abs(left_width[2]-left_width[3])<=2;
-    right_circle_flag &= abs(left_width[3]-left_width[4])<=2;
-    right_circle_flag &= right_width[0]>right_width[1];
-    right_circle_flag &= right_width[1]>=right_width[2];
-    right_circle_flag &= right_width[3]>=right_width[2];
-    right_circle_flag &= !(right_width[1]==right_width[2]&&right_width[1]==right_width[3]);
-    right_circle_flag &= right_width[4]>right_width[3];
-    right_circle_flag &= right_width[4]+right_width[0]>30.0f;
-    right_circle_flag &= Left_Straight_Score>5.30f;
-    right_circle_flag &= Unknown_Straight_Score>5.00f;
-    rightCircle_Alarm |= right_circle_flag;
 
-
-    uint8 left_circle_flag=1;
-    for (int i =0;i<pos_num;i++)
+    static uint8 first_time=1;
+    if (rightCircle_Alarm==1 && first_time == 1 && right_width[0]<17.0f)
     {
-        left_circle_flag &= left_width[i]!=-2;
-        left_circle_flag &= right_width[i]!=-2;
+        first_time = 0;
+        if (right_width[5]<30.0f)
+        {
+            rightCircle_Size = 1;
+        }
+        else
+        {
+            rightCircle_Size = 2;
+        }
     }
-    left_circle_flag &= abs(right_width[0]-right_width[1])<=2;
-    left_circle_flag &= abs(right_width[1]-right_width[2])<=2;
-    left_circle_flag &= abs(right_width[2]-right_width[3])<=2;
-    left_circle_flag &= abs(right_width[3]-right_width[4])<=2;
-    left_circle_flag &= left_width[0]>left_width[1];
-    left_circle_flag &= left_width[1]>=left_width[2];
-    left_circle_flag &= left_width[3]>=left_width[2];
-    left_circle_flag &= !(left_width[1]==left_width[2]&&left_width[1]==left_width[3]);
-    left_circle_flag &= left_width[4]>left_width[3];
-    left_circle_flag &= left_width[4]+left_width[0]>30.0f;
-    left_circle_flag &= Right_Straight_Score>5.30f;
-    left_circle_flag &= Unknown_Straight_Score>5.00f;
-    leftCircle_Alarm |= left_circle_flag;
+    else if (rightCircle_Alarm==0)
+    {
+        first_time = 1;
+        rightCircle_Size = 0;
+    }
 
 
-
-
+    static uint8 first_time1=1;
+    if (leftCircle_Alarm==1 && first_time1 == 1 && left_width[0]<17.0f)
+    {
+        first_time1 = 0;
+        if (left_width[5]<30.0f)
+        {
+            leftCircle_Size = 1;
+        }
+        else
+        {
+            leftCircle_Size = 2;
+        }
+    }
+    else if (leftCircle_Alarm==0)
+    {
+        first_time1 = 1;
+        leftCircle_Size = 0;
+    }
 
 
 }
