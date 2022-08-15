@@ -4289,36 +4289,36 @@ uint8 Check_RoadWidth(void)
         crossRoad_flag[3] &= right_width[i]!=-2;
     }
 
-    crossRoad_flag[4]&=left_width[0]<=15;
-    crossRoad_flag[4]&=right_width[0]<=15;
-    crossRoad_flag[4]&=left_width[2]>left_width[0];
+//    crossRoad_flag[4]&=left_width[0]<=15;
+//    crossRoad_flag[4]&=right_width[0]<=15;
+//    crossRoad_flag[4]&=left_width[2]>left_width[0];
     crossRoad_flag[4]&=left_width[2]>left_width[1];
     crossRoad_flag[4]&=left_width[2]>left_width[3];
-    crossRoad_flag[4]&=right_width[2]>right_width[0];
+//    crossRoad_flag[4]&=right_width[2]>right_width[0];
     crossRoad_flag[4]&=right_width[2]>right_width[1];
     crossRoad_flag[4]&=right_width[2]>right_width[3];
-    for (int i =0;i<4;i++)
+    for (int i =1;i<4;i++)
     {
         crossRoad_flag[4] &= left_width[i]!=-2;
         crossRoad_flag[4] &= right_width[i]!=-2;
     }
 
 
-    crossRoad_flag[5]&=left_width[0]<=15;
-    crossRoad_flag[5]&=right_width[0]<=15;
-    crossRoad_flag[5]&=left_width[2]>left_width[0];
+//    crossRoad_flag[5]&=left_width[0]<=15;
+//    crossRoad_flag[5]&=right_width[0]<=15;
+//    crossRoad_flag[5]&=left_width[2]>left_width[0];
     crossRoad_flag[5]&=left_width[2]>left_width[1];
     crossRoad_flag[5]&=left_width[2]>left_width[5];
-    crossRoad_flag[5]&=right_width[2]>right_width[0];
+//    crossRoad_flag[5]&=right_width[2]>right_width[0];
     crossRoad_flag[5]&=right_width[2]>right_width[1];
     crossRoad_flag[5]&=right_width[2]>right_width[5];
-    crossRoad_flag[5]&=left_width[3]>left_width[0];
+//    crossRoad_flag[5]&=left_width[3]>left_width[0];
     crossRoad_flag[5]&=left_width[3]>left_width[1];
     crossRoad_flag[5]&=left_width[3]>left_width[5];
-    crossRoad_flag[5]&=right_width[3]>right_width[0];
+//    crossRoad_flag[5]&=right_width[3]>right_width[0];
     crossRoad_flag[5]&=right_width[3]>right_width[1];
     crossRoad_flag[5]&=right_width[3]>right_width[5];
-    for (int i =0;i<4;i++)
+    for (int i =1;i<4;i++)
     {
         crossRoad_flag[5] &= left_width[i]!=-2;
         crossRoad_flag[5] &= right_width[i]!=-2;
@@ -4326,25 +4326,25 @@ uint8 Check_RoadWidth(void)
     crossRoad_flag[5] &= left_width[5]!=-2;
     crossRoad_flag[5] &= right_width[5]!=-2;
 
-    crossRoad_flag[6]&=left_width[0]<=15;
-    crossRoad_flag[6]&=right_width[0]<=15;
-    crossRoad_flag[6]&=left_width[3]>left_width[0];
-    crossRoad_flag[6]&=left_width[3]>left_width[1];
+//    crossRoad_flag[6]&=left_width[0]<=15;
+//    crossRoad_flag[6]&=right_width[0]<=15;
+//    crossRoad_flag[6]&=left_width[3]>left_width[0];
+//    crossRoad_flag[6]&=left_width[3]>left_width[1];
     crossRoad_flag[6]&=left_width[3]>left_width[2];
     crossRoad_flag[6]&=left_width[3]>left_width[4];
-    crossRoad_flag[6]&=right_width[3]>right_width[0];
-    crossRoad_flag[6]&=right_width[3]>right_width[1];
+//    crossRoad_flag[6]&=right_width[3]>right_width[0];
+//    crossRoad_flag[6]&=right_width[3]>right_width[1];
     crossRoad_flag[6]&=right_width[3]>right_width[2];
     crossRoad_flag[6]&=right_width[3]>right_width[4];
-    crossRoad_flag[6]&=left_width[5]>left_width[0];
-    crossRoad_flag[6]&=left_width[5]>left_width[1];
+//    crossRoad_flag[6]&=left_width[5]>left_width[0];
+//    crossRoad_flag[6]&=left_width[5]>left_width[1];
     crossRoad_flag[6]&=left_width[5]>left_width[2];
     crossRoad_flag[6]&=left_width[5]>left_width[4];
-    crossRoad_flag[6]&=right_width[5]>right_width[0];
-    crossRoad_flag[6]&=right_width[5]>right_width[1];
+//    crossRoad_flag[6]&=right_width[5]>right_width[0];
+//    crossRoad_flag[6]&=right_width[5]>right_width[1];
     crossRoad_flag[6]&=right_width[5]>right_width[2];
     crossRoad_flag[6]&=right_width[5]>right_width[4];
-    for (int i =0;i<6;i++)
+    for (int i =2;i<6;i++)
     {
         crossRoad_flag[6] &= left_width[i]!=-2;
         crossRoad_flag[6] &= right_width[i]!=-2;
@@ -4442,11 +4442,11 @@ uint8 Check_RoadWidth(void)
         first_time1 = 0;
         if (left_width[5]<30.0f)
         {
-            leftCircle_Size = 1;
+            leftCircle_Size = 1;//´óÔ²
         }
         else
         {
-            leftCircle_Size = 2;
+            leftCircle_Size = 2;//Ð¡Ô²
         }
     }
     else if (leftCircle_Alarm==0)

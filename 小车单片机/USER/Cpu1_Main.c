@@ -805,24 +805,24 @@ void core1_main(void)
 
             if (rightCircle_Alarm==1||leftCircle_Alarm==1)
             {
-                if (rightCircle_Size==1||leftCircle_Size==1||leftCircle_Size==0||rightCircle_Size==0)//大圆
+                if (rightCircle_Size==1||leftCircle_Size==1)//大圆
                 {
                     speed_Target_ratio = 0.9f;
                 }
-                if (rightCircle_Size==2||leftCircle_Size==2)//小圆
+                if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//小圆
                 {
                     speed_Target_ratio = 0.7f;
                 }
             }
 
 
-            if (leftCircle_Size==1||leftCircle_Size==0)//大圆
+            if (leftCircle_Size==1)//大圆
             {
                 if (flag_For_Left_Circle == 2)
                 {
                     speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.45f;
+                    steeringPID_ratio_kp = 1.3f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 0.9f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -838,7 +838,7 @@ void core1_main(void)
                     InnerSide_Ratio_ratio = 0.7f;
                 }
             }
-            else if (leftCircle_Size==2)//小圆
+            else if (leftCircle_Size==2||leftCircle_Size==0)//小圆
             {
                 if (flag_For_Left_Circle == 2)
                 {
@@ -862,7 +862,7 @@ void core1_main(void)
             }
 
 
-            if (rightCircle_Size==1||rightCircle_Size==0)//大圆
+            if (rightCircle_Size==1)//大圆
             {
                 //右圆环奇怪的偏小
 
@@ -870,7 +870,7 @@ void core1_main(void)
                 {
                     speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.45f;
+                    steeringPID_ratio_kp = 1.3f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 0.9f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -887,7 +887,7 @@ void core1_main(void)
                     InnerSide_Ratio_ratio = 0.7f;
                 }
             }
-            else if(rightCircle_Size==2)//小圆
+            else if(rightCircle_Size==2||rightCircle_Size==0)//小圆
             {
                 if (flag_For_Right_Circle == 2)
                 {
