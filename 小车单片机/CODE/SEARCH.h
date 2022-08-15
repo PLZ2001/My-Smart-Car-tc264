@@ -84,8 +84,10 @@ extern float pos[pos_num];
 
 extern uint8 rightCircle_Alarm;
 extern uint8 leftCircle_Alarm;
+extern uint8 crossRoad_Alarm;
 extern uint8 rightCircle_Size;//2小圆，1大圆，0未知
 extern uint8 leftCircle_Size;//2小圆，1大圆，0未知
+extern uint8 crossRoad_Distance;
 
 
 void UART_ColCenter(void);

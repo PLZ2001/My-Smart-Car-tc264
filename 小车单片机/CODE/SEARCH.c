@@ -93,6 +93,10 @@ uint8 leftCircle_Alarm = 0;
 uint8 rightCircle_Size = 0;//2小圆，1大圆，0未知
 uint8 leftCircle_Size = 0;//2小圆，1大圆，0未知
 
+uint8 crossRoad_Alarm = 0;
+uint8 crossRoad_Distance = 0;//0最近，6最远
+uint8 crossRoad_Distance_Group[7] = {0.37f,0.5f,0.5f,0.63f,0.63f,0.72f,0.8f};
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -225,7 +229,7 @@ void DrawCenterLine(void)
     // 对于5十字路口，可以采用，特征是使用卷积核判断两个拐点
     else if (classification_Result == 5)
     {
-        if (Check_Far_Road_And_Draw(5,0.7f))
+        if (Check_Far_Road_And_Draw(5,crossRoad_Distance_Group[crossRoad_Distance]))
         {
             ;
         }
@@ -4227,6 +4231,134 @@ uint8 Check_RoadWidth(void)
         right_width[i]=-2;
         Get_Width(i);
     }
+
+
+//十字路口
+    uint8 crossRoad_flag[7] = {1,1,1,1,1,1,1};
+    crossRoad_flag[0]&=left_width[0]>=16;
+    crossRoad_flag[0]&=right_width[0]>=16;
+    crossRoad_flag[0]&=left_width[1]<left_width[0];
+    crossRoad_flag[0]&=left_width[2]<left_width[0];
+    crossRoad_flag[0]&=right_width[1]<right_width[0];
+    crossRoad_flag[0]&=right_width[2]<right_width[0];
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[0] &= left_width[i]!=-2;
+        crossRoad_flag[0] &= right_width[i]!=-2;
+    }
+
+
+    crossRoad_flag[1]&=left_width[0]>=16;
+    crossRoad_flag[1]&=right_width[0]>=16;
+    crossRoad_flag[1]&=left_width[1]>left_width[2];
+    crossRoad_flag[1]&=left_width[0]>left_width[2];
+    crossRoad_flag[1]&=right_width[1]>right_width[2];
+    crossRoad_flag[1]&=right_width[0]>right_width[2];
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[1] &= left_width[i]!=-2;
+        crossRoad_flag[1] &= right_width[i]!=-2;
+    }
+
+
+    crossRoad_flag[2]&=left_width[0]<=15;
+    crossRoad_flag[2]&=right_width[0]<=15;
+    crossRoad_flag[2]&=left_width[1]>left_width[0];
+    crossRoad_flag[2]&=left_width[1]>left_width[2];
+    crossRoad_flag[2]&=right_width[1]>right_width[0];
+    crossRoad_flag[2]&=right_width[1]>right_width[2];
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[2] &= left_width[i]!=-2;
+        crossRoad_flag[2] &= right_width[i]!=-2;
+    }
+
+    crossRoad_flag[3]&=left_width[0]<=15;
+    crossRoad_flag[3]&=right_width[0]<=15;
+    crossRoad_flag[3]&=left_width[1]>left_width[0];
+    crossRoad_flag[3]&=left_width[1]>left_width[3];
+    crossRoad_flag[3]&=right_width[1]>right_width[0];
+    crossRoad_flag[3]&=right_width[1]>right_width[3];
+    crossRoad_flag[3]&=left_width[2]>left_width[0];
+    crossRoad_flag[3]&=left_width[2]>left_width[3];
+    crossRoad_flag[3]&=right_width[2]>right_width[0];
+    crossRoad_flag[3]&=right_width[2]>right_width[3];
+    for (int i =0;i<4;i++)
+    {
+        crossRoad_flag[3] &= left_width[i]!=-2;
+        crossRoad_flag[3] &= right_width[i]!=-2;
+    }
+
+    crossRoad_flag[4]&=left_width[0]<=15;
+    crossRoad_flag[4]&=right_width[0]<=15;
+    crossRoad_flag[4]&=left_width[2]>left_width[0];
+    crossRoad_flag[4]&=left_width[2]>left_width[1];
+    crossRoad_flag[4]&=left_width[2]>left_width[3];
+    crossRoad_flag[4]&=right_width[2]>right_width[0];
+    crossRoad_flag[4]&=right_width[2]>right_width[1];
+    crossRoad_flag[4]&=right_width[2]>right_width[3];
+    for (int i =0;i<4;i++)
+    {
+        crossRoad_flag[4] &= left_width[i]!=-2;
+        crossRoad_flag[4] &= right_width[i]!=-2;
+    }
+
+
+    crossRoad_flag[5]&=left_width[0]<=15;
+    crossRoad_flag[5]&=right_width[0]<=15;
+    crossRoad_flag[5]&=left_width[2]>left_width[0];
+    crossRoad_flag[5]&=left_width[2]>left_width[1];
+    crossRoad_flag[5]&=left_width[2]>left_width[5];
+    crossRoad_flag[5]&=right_width[2]>right_width[0];
+    crossRoad_flag[5]&=right_width[2]>right_width[1];
+    crossRoad_flag[5]&=right_width[2]>right_width[5];
+    crossRoad_flag[5]&=left_width[3]>left_width[0];
+    crossRoad_flag[5]&=left_width[3]>left_width[1];
+    crossRoad_flag[5]&=left_width[3]>left_width[5];
+    crossRoad_flag[5]&=right_width[3]>right_width[0];
+    crossRoad_flag[5]&=right_width[3]>right_width[1];
+    crossRoad_flag[5]&=right_width[3]>right_width[5];
+    for (int i =0;i<4;i++)
+    {
+        crossRoad_flag[5] &= left_width[i]!=-2;
+        crossRoad_flag[5] &= right_width[i]!=-2;
+    }
+    crossRoad_flag[5] &= left_width[5]!=-2;
+    crossRoad_flag[5] &= right_width[5]!=-2;
+
+    crossRoad_flag[6]&=left_width[0]<=15;
+    crossRoad_flag[6]&=right_width[0]<=15;
+    crossRoad_flag[6]&=left_width[3]>left_width[0];
+    crossRoad_flag[6]&=left_width[3]>left_width[1];
+    crossRoad_flag[6]&=left_width[3]>left_width[2];
+    crossRoad_flag[6]&=left_width[3]>left_width[4];
+    crossRoad_flag[6]&=right_width[3]>right_width[0];
+    crossRoad_flag[6]&=right_width[3]>right_width[1];
+    crossRoad_flag[6]&=right_width[3]>right_width[2];
+    crossRoad_flag[6]&=right_width[3]>right_width[4];
+    crossRoad_flag[6]&=left_width[5]>left_width[0];
+    crossRoad_flag[6]&=left_width[5]>left_width[1];
+    crossRoad_flag[6]&=left_width[5]>left_width[2];
+    crossRoad_flag[6]&=left_width[5]>left_width[4];
+    crossRoad_flag[6]&=right_width[5]>right_width[0];
+    crossRoad_flag[6]&=right_width[5]>right_width[1];
+    crossRoad_flag[6]&=right_width[5]>right_width[2];
+    crossRoad_flag[6]&=right_width[5]>right_width[4];
+    for (int i =0;i<6;i++)
+    {
+        crossRoad_flag[6] &= left_width[i]!=-2;
+        crossRoad_flag[6] &= right_width[i]!=-2;
+    }
+
+    for (int i=6;i>=0;i--)
+    {
+        if (crossRoad_flag[i]==1)
+        {
+            crossRoad_Distance=i;
+        }
+    }
+
+    crossRoad_Alarm = crossRoad_flag[0]||crossRoad_flag[1]||crossRoad_flag[2]||crossRoad_flag[3]||crossRoad_flag[4]||crossRoad_flag[5]||crossRoad_flag[6];
 
 
     if (classification_Result!=2 && classification_Result!=3)
