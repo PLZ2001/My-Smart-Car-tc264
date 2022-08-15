@@ -199,9 +199,9 @@ void core1_main(void)
 //                            classification_Result = 4;//4三岔路口
 //                            flag_For_ThreeRoad = 1;
 //                        }
-
-                        time_up[0] = threeRoads_RightTime;
-                        Start_Timer(0);
+                        time_up[18] = threeRoads_RightTime;
+                        Reset_Timer(18);
+                        Start_Timer(18);
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
@@ -252,14 +252,6 @@ void core1_main(void)
             //如果在计时，判断计时是否达到要求时间
             if (Read_Timer_Status(0) == RUNNING)
             {
-                if (Read_Timer(0)<ThreeeRoad_Delay)
-                {
-                    ThreeeRoad_Delay_Flag = 0;
-                }
-                else
-                {
-                    ThreeeRoad_Delay_Flag = 1;
-                }
                 if (Read_Timer(0)>time_up[0])
                 {
                     Reset_Timer(0);
@@ -298,6 +290,13 @@ void core1_main(void)
                 if (Read_Timer(14)>time_up[14])
                 {
                     Reset_Timer(14);
+                }
+            }
+            if (Read_Timer_Status(18) == RUNNING)
+            {
+                if (Read_Timer(18)>time_up[18])
+                {
+                    Reset_Timer(18);
                 }
             }
             //如果不在计时，继续分类
@@ -646,7 +645,7 @@ void core1_main(void)
                 speed_Status = Lowest;
                 Reset_Timer(6);
                 set_flag=1;
-                time_up[8] = 5.0f;
+                time_up[8] = 2.0f;
                 Reset_Timer(8);
                 Start_Timer(8);
             }
@@ -791,13 +790,13 @@ void core1_main(void)
             {
                 if (leftCircle_Alarm == 1)
                 {
-                    time_up[17] = 2.5f;
+                    time_up[17] = 1.0f;
                     Reset_Timer(17);
                     Start_Timer(17);
                 }
                 if (rightCircle_Alarm == 1)
                 {
-                    time_up[17] = 2.5f;
+                    time_up[17] = 1.0f;
                     Reset_Timer(17);
                     Start_Timer(17);
                 }
@@ -918,11 +917,50 @@ void core1_main(void)
 //                steeringPID_ratio_kd = 2.4f;
 //            }
 
+            if (Read_Timer(18)<ThreeeRoad_Delay)
+            {
+                ThreeeRoad_Delay_Flag = 0;
+            }
+            else
+            {
+                ThreeeRoad_Delay_Flag = 1;
+            }
             if (classification_Result==4 && ThreeeRoad_Delay_Flag == 0)
             {
                 steeringPID_ratio_kp = 0.05f;
                 steeringPID_ratio_kd = 0.05f;
             }
+
+
+            static uint8 last_classification = 0;
+            static uint8 OuterDecline_flag = 0;
+            static int cnt_temp=0;
+            if ((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13 && classification_Result!=4))
+            {
+                cnt_temp=0;
+                OuterDecline_flag = 1;
+//                speed_Target_ratio = 0.1f;
+                OuterSide_Ratio_ratio = 0.65f;
+                InnerSide_Ratio_ratio = 1.1f;
+            }
+            if(OuterDecline_flag==1)
+            {
+//                speed_Target_ratio = 0.1f;
+                OuterSide_Ratio_ratio = 0.65f;
+                InnerSide_Ratio_ratio = 1.1f;
+            }
+            if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13)
+            {
+                cnt_temp++;
+                if (cnt_temp>10)
+                {
+                    OuterDecline_flag=0;
+                    cnt_temp=0;
+                }
+            }
+            last_classification = classification_Result;
+
+
 
             if (is_Slope==1)
             {
