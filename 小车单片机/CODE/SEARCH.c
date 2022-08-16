@@ -4387,14 +4387,14 @@ uint8 Check_RoadWidth(void)
     //6 0 1 2
     uint8 short_straight_flag = 1;
     short_straight_flag&=abs(left_width[6]-left_width[0])<=2;
-    short_straight_flag&=abs(left_width[0]-left_width[1])<=2;
-//    short_straight_flag&=abs(left_width[1]-left_width[2])<=2;
+    short_straight_flag&=abs(left_width[0]-left_width[1])<=1;
+    short_straight_flag&=abs(left_width[1]-left_width[2])<=1;
 //    short_straight_flag&=abs(left_width[2]-left_width[7])<=2;
     short_straight_flag&=abs(right_width[6]-right_width[0])<=2;
-    short_straight_flag&=abs(right_width[0]-right_width[1])<=2;
-//    short_straight_flag&=abs(right_width[1]-right_width[2])<=2;
+    short_straight_flag&=abs(right_width[0]-right_width[1])<=1;
+    short_straight_flag&=abs(right_width[1]-right_width[2])<=1;
 //    short_straight_flag&=abs(right_width[2]-right_width[7])<=2;
-    for (int i =0;i<2;i++)
+    for (int i =0;i<3;i++)
     {
         short_straight_flag &= left_width[i]!=-2;
         short_straight_flag &= right_width[i]!=-2;
