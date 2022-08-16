@@ -199,9 +199,13 @@ void core1_main(void)
 //                            classification_Result = 4;//4三岔路口
 //                            flag_For_ThreeRoad = 1;
 //                        }
-                        time_up[18] = threeRoads_RightTime;
-                        Reset_Timer(18);
-                        Start_Timer(18);
+                        if (flag_For_ThreeRoad==0||flag_For_ThreeRoad==1)
+                        {
+                            flag_For_ThreeRoad = 1;
+                            time_up[18] = threeRoads_RightTime;
+                            Reset_Timer(18);
+                            Start_Timer(18);
+                        }
                         break;
                     case 5:
                         classification_Result = 5;//5十字路口
@@ -249,6 +253,20 @@ void core1_main(void)
                 }
 
             }
+
+            if (Read_Timer(18)<ThreeeRoad_Delay && Read_Timer_Status(18) == RUNNING)
+            {
+                flag_For_ThreeRoad = 1;
+            }
+            else if (Read_Timer(18)>=ThreeeRoad_Delay && Read_Timer_Status(18) == RUNNING)
+            {
+                flag_For_ThreeRoad = 2;
+            }
+            else
+            {
+                flag_For_ThreeRoad = 0;
+            }
+
             //如果在计时，判断计时是否达到要求时间
             if (Read_Timer_Status(0) == RUNNING)
             {
@@ -380,15 +398,10 @@ void core1_main(void)
                          }
                     }
                 }
-//                else if (flag_For_ThreeRoad == 1)
-//                {
-//                    if (Check_TRoad(1,0.25f,4))
-//                    {
-//                        flag_For_ThreeRoad = 2;
-//                        time_up[0] = threeRoads_RightTime;
-//                        Start_Timer(0);
-//                    }
-//                }
+                else if (flag_For_ThreeRoad == 2)
+                {
+                    classification_Result = 4;
+                }
                 else
                 {//正常识别
                     if (flag_For_Right_Circle == 3 && Read_Timer_Status(4) == PAUSED)
@@ -917,15 +930,7 @@ void core1_main(void)
 //                steeringPID_ratio_kd = 2.4f;
 //            }
 
-            if (Read_Timer(18)<ThreeeRoad_Delay)
-            {
-                ThreeeRoad_Delay_Flag = 0;
-            }
-            else
-            {
-                ThreeeRoad_Delay_Flag = 1;
-            }
-            if (classification_Result==4 && ThreeeRoad_Delay_Flag == 0)
+            if (flag_For_ThreeRoad == 1)
             {
                 steeringPID_ratio_kp = 0.05f;
                 steeringPID_ratio_kd = 0.05f;
@@ -952,7 +957,7 @@ void core1_main(void)
             if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13)
             {
                 cnt_temp++;
-                if (cnt_temp>10)
+                if (cnt_temp>20)
                 {
                     OuterDecline_flag=0;
                     cnt_temp=0;
@@ -1076,14 +1081,14 @@ void core1_main(void)
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
             static int cnt = 0;
-            if (Real_Volt<7.0f)
-            {
-                cnt++;
-            }
-            else
-            {
-                cnt=0;
-            }
+//            if (Real_Volt<7.0f)
+//            {
+//                cnt++;
+//            }
+//            else
+//            {
+//                cnt=0;
+//            }
             if((Check_TRoad(0,0.1f-1.0f/6.0f,3) && zebra_status!=starting && is_Slope == 0)||cnt>70)
             {
                 emergency_Stop=1;
