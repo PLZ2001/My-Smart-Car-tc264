@@ -342,7 +342,7 @@ void DrawCenterLine(void)
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
     {
-        if (Check_Far_Road_And_Draw(5,0.7f))
+        if (Check_Far_Road_And_Draw(5,0.5f))
         {
             ;
         }
@@ -3888,7 +3888,7 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    if (Check_Far_Road_And_Draw(5,0.7f))
+    if (Check_Far_Road_And_Draw(5,0.5f))
     {
         ;
     }
@@ -4359,13 +4359,22 @@ uint8 Check_RoadWidth(void)
     }
 
 //直道
+
+    //6 0 1 2
     uint8 straight_flag = 1;
-    straight_flag&=abs(left_width[0]-left_width[1])<=3;
-    straight_flag&=abs(left_width[1]-left_width[6])<=3;
-    straight_flag&=abs(left_width[6]-left_width[2])<=3;
-    straight_flag&=abs(right_width[0]-right_width[1])<=3;
-    straight_flag&=abs(right_width[1]-right_width[6])<=3;
-    straight_flag&=abs(right_width[6]-right_width[2])<=3;
+    straight_flag&=abs(left_width[6]-left_width[0])<=3;
+    straight_flag&=abs(left_width[0]-left_width[1])<=2;
+    straight_flag&=abs(left_width[1]-left_width[2])<=2;
+    straight_flag&=abs(right_width[6]-right_width[0])<=3;
+    straight_flag&=abs(right_width[0]-right_width[1])<=2;
+    straight_flag&=abs(right_width[1]-right_width[2])<=2;
+    for (int i =0;i<3;i++)
+    {
+        straight_flag &= left_width[i]!=-2;
+        straight_flag &= right_width[i]!=-2;
+    }
+    straight_flag &= left_width[6]!=-2;
+    straight_flag &= right_width[6]!=-2;
     straight_Alarm = straight_flag;
 
 

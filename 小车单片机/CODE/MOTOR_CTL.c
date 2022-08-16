@@ -74,8 +74,8 @@ void Differential_Motor(void)
     }
     else
     {
-        speed_Target1 = speed_Target - 2.5f*speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f- 0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
-        speed_Target2 = speed_Target + 2.0f*speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
+        speed_Target1 = speed_Target - speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f- 0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//右轮目标速度（m/s）
+        speed_Target2 = speed_Target + 4.0f*speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f + 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target1 = speed_Target - steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//右轮目标速度（m/s）
 //        speed_Target2 = speed_Target + 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);;
     }
