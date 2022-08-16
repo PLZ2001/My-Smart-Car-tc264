@@ -86,7 +86,7 @@ float ThreeeRoad_Delay = 0;
 
 int left_width[pos_num];
 int right_width[pos_num];
-float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f,0.72f,0.15f,0.67f};
+float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f,0.72f,0.15f,0.57f};
 
 uint8 rightCircle_Alarm = 0;
 uint8 leftCircle_Alarm = 0;
@@ -96,6 +96,8 @@ uint8 leftCircle_Size = 0;//2小圆，1大圆，0未知
 uint8 crossRoad_Alarm = 0;
 uint8 crossRoad_Distance = 0;//0最近，6最远
 uint8 crossRoad_Distance_Group[7] = {0.37f,0.5f,0.5f,0.63f,0.63f,0.72f,0.8f};
+
+uint8 straight_Alarm = 0;
 
 void UART_ColCenter(void)
 {
@@ -4232,6 +4234,17 @@ uint8 Check_RoadWidth(void)
         Get_Width(i);
     }
 
+//直道
+    uint8 straight_flag = 1;
+    straight_flag&=abs(left_width[0]-left_width[1])<=3;
+    straight_flag&=abs(left_width[1]-left_width[6])<=3;
+    straight_flag&=abs(left_width[6]-left_width[2])<=3;
+    straight_flag&=abs(right_width[0]-right_width[1])<=3;
+    straight_flag&=abs(right_width[1]-right_width[6])<=3;
+    straight_flag&=abs(right_width[6]-right_width[2])<=3;
+    straight_Alarm = straight_flag;
+
+
 
 //十字路口
     uint8 crossRoad_flag[7] = {1,1,1,1,1,1,1};
@@ -4413,10 +4426,10 @@ uint8 Check_RoadWidth(void)
     {
         rightCircle_Size = 0;
     }
-    if (rightCircle_Alarm==1 && first_time == 1 && right_width[6]<15.0f)
+    if (rightCircle_Alarm==1 && first_time == 1 && right_width[6]<15.0f && right_width[6]>12.0f)
     {
         first_time = 0;
-        if (right_width[7]<30.0f)
+        if (right_width[7]<25.0f)
         {
             rightCircle_Size = 1;
         }
@@ -4437,10 +4450,10 @@ uint8 Check_RoadWidth(void)
     {
         leftCircle_Size = 0;
     }
-    if (leftCircle_Alarm==1 && first_time1 == 1 && left_width[6]<15.0f)
+    if (leftCircle_Alarm==1 && first_time1 == 1 && left_width[6]<15.0f&& left_width[6]>12.0f)
     {
         first_time1 = 0;
-        if (left_width[7]<30.0f)
+        if (left_width[7]<25.0f)
         {
             leftCircle_Size = 1;//大圆
         }

@@ -295,9 +295,9 @@ void Update_Speed_Mode(void)
             T_Line = 0.09f+0.09f;
 
             threeRoads_RightTime = 0.6f;//0.25f;
-            ThreeeRoad_Delay = 0.02f;
+            ThreeeRoad_Delay = 0.00f;
 
-            Highest_Distance = 0.1f;
+            Highest_Distance = 0.2f;
 
             BANGBANG_UP1 = 1.0;
             BANGBANG_DOWN1 = 1.0;

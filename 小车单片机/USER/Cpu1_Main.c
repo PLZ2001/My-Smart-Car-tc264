@@ -487,7 +487,7 @@ void core1_main(void)
 
 
                      Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-                     if (Check_Straight(0.65f))
+                     if (Check_Straight(0.65f)||straight_Alarm == 1)
                      {
                          classification_Result=6;
                          classification_Result_1=6;
@@ -940,7 +940,7 @@ void core1_main(void)
             static uint8 last_classification = 0;
             static uint8 OuterDecline_flag = 0;
             static int cnt_temp=0;
-            if ((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13 && classification_Result!=4))
+            if ((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13 /*&& classification_Result!=4*/))
             {
                 cnt_temp=0;
                 OuterDecline_flag = 1;
