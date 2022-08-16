@@ -342,6 +342,7 @@ void core1_main(void)
                 //小车处于右圆环状态
                 else if (flag_For_Right_Circle == 2)
                 {
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                     if (Check_Left_Straight(2,0,1) == 0 || Read_Timer_Status(13) == RUNNING)
 //                    if(Left_Straight_Score<=5.5f)
                     {
@@ -351,10 +352,12 @@ void core1_main(void)
                     {
                         classification_Result = 10;//10左直线
                     }
+                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 2)
                 {
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                     if (Check_Right_Straight(0,-2,1) == 0 || Read_Timer_Status(13) == RUNNING)
 //                    if(Right_Straight_Score<=5.5f)
                     {
@@ -364,6 +367,7 @@ void core1_main(void)
                     {
                         classification_Result = 11;//11右直线
                     }
+                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 else if (flag_For_T == 1)
                 {
