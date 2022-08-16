@@ -91,6 +91,8 @@ extern uint8 leftCircle_Size;//2Ð¡Ô²£¬1´óÔ²£¬0Î´Öª
 extern uint8 crossRoad_Distance;
 extern uint8 errorID;
 
+extern float last_valid_Col_Center;
+
 
 void UART_ColCenter(void);
 void UART_ColLeft(void);

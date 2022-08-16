@@ -100,6 +100,9 @@ float crossRoad_Distance_Group[7] = {0.37f,0.5f,0.5f,0.63f,0.63f,0.72f,0.8f};
 
 uint8 straight_Alarm = 0;
 
+float last_valid_Col_Center = -2.0f;
+
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -796,6 +799,8 @@ void DrawCenterLinewithConfig(float filter)
     int flag_left=0;
     int flag_right=0;
 
+    last_valid_Col_Center = -2.0f;
+
     for (int i=0;i<search_Lines;i++)
     {
         Col_Left[i] = -2;
@@ -1059,6 +1064,32 @@ void DrawCenterLinewithConfig(float filter)
                 Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(width_Inverse_Perspective/2);
             }
         }
+
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        {
+            Col_Center[i] = -2;
+        }
+
+
+        if ( Col_Center[i] >= 0)
+        {
+            if (last_valid_Col_Center < 0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
+        }
         //中心线计算完毕
     }
 }
@@ -1071,6 +1102,8 @@ void DrawCenterLinewithConfig_RightBased(float filter)
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
 
     int flag_right=0;
+
+    last_valid_Col_Center = -2.0f;
 
 
     for (int i=0;i<search_Lines;i++)
@@ -1272,6 +1305,31 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         {
 
         }
+
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        {
+            Col_Center[i] = -2;
+        }
+
+        if ( Col_Center[i] != -2)
+        {
+            if (last_valid_Col_Center <0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
+        }
         //中心线计算完毕
     }
 }
@@ -1282,6 +1340,8 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
 
     int flag_left=0;
+
+    last_valid_Col_Center = -2.0f;
 
     for (int i=0;i<search_Lines;i++)
     {
@@ -1485,6 +1545,32 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         else //左线非法，右线非法
         {
 
+        }
+
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        {
+            Col_Center[i] = -2;
+        }
+
+
+        if ( Col_Center[i] != -2)
+        {
+            if (last_valid_Col_Center <0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
         }
         //中心线计算完毕
     }

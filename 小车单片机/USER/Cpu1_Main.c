@@ -828,7 +828,7 @@ void core1_main(void)
                 }
                 if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//СԲ
                 {
-                    speed_Target_ratio = 0.9f;
+                    speed_Target_ratio = 0.85f;
                 }
             }
 
@@ -859,7 +859,7 @@ void core1_main(void)
             {
                 if (flag_For_Left_Circle == 2)
                 {
-                    speed_Target_ratio = 0.9f;
+                    speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
                     steeringPID_ratio_kp = 2.2f;
                     steeringPID_ratio_kd = 0.2f;
@@ -869,7 +869,7 @@ void core1_main(void)
 
                 if (flag_For_Left_Circle == 1)
                 {
-                    speed_Target_ratio = 0.9f;
+                    speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
                     steeringPID_ratio_kp = 2.9f;
                     steeringPID_ratio_kd = 0.2f;
@@ -908,7 +908,7 @@ void core1_main(void)
             {
                 if (flag_For_Right_Circle == 2)
                 {
-                    speed_Target_ratio = 0.9f;
+                    speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
                     steeringPID_ratio_kp = 2.2f;
                     steeringPID_ratio_kd = 0.2f;
@@ -919,7 +919,7 @@ void core1_main(void)
 
                 if (flag_For_Right_Circle==1)
                 {
-                    speed_Target_ratio = 0.9f;
+                    speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
                     steeringPID_ratio_kp = 2.9f;
                     steeringPID_ratio_kd = 0.2f;

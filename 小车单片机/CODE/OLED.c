@@ -319,7 +319,8 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(100,5,"%1.2f ",Right_Straight_Score);
 //                OLED_PRINTF(100,6,"%d ",center_dot);
 //                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
-                OLED_PRINTF(100,6,"%d %d ",rightCircle_Alarm||leftCircle_Alarm,leftCircle_Size==0?rightCircle_Size:leftCircle_Size);
+//                OLED_PRINTF(100,6,"%d %d ",rightCircle_Alarm||leftCircle_Alarm,leftCircle_Size==0?rightCircle_Size:leftCircle_Size);
+                OLED_PRINTF(100,6,"%3.0f ",last_valid_Col_Center);
 //                OLED_PRINTF(100,6,"%d  ",flag_For_ThreeRoad);
 //                OLED_PRINTF(100,6,"%d  ",crossRoad_Distance);
 //                OLED_PRINTF(100,6,"%d  ",errorID);
@@ -585,7 +586,7 @@ void my_oled_dis_bmp(void)
             dat = 0;
             uint8 temp2 = 0;
 
-            temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 1: 0));
+            temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 1: 0));
             for (int k = 0; k<pos_num;k++)
             {
                 temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+0);
@@ -594,7 +595,7 @@ void my_oled_dis_bmp(void)
 
             if( i<(temp-1) || !temp1 || temp1>=2)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+1);
@@ -604,7 +605,7 @@ void my_oled_dis_bmp(void)
 
             if( i<(temp-1) || !temp1 || temp1>=3)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+2);
@@ -613,7 +614,7 @@ void my_oled_dis_bmp(void)
             }
             if( i<(temp-1) || !temp1 || temp1>=4)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+3);
@@ -622,7 +623,7 @@ void my_oled_dis_bmp(void)
             }
             if( i<(temp-1) || !temp1 || temp1>=5)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+4);
@@ -631,7 +632,7 @@ void my_oled_dis_bmp(void)
             }
             if( i<(temp-1) || !temp1 || temp1>=6)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+5);
@@ -640,7 +641,7 @@ void my_oled_dis_bmp(void)
             }
             if( i<(temp-1) || !temp1 || temp1>=7)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+6);
@@ -649,7 +650,7 @@ void my_oled_dis_bmp(void)
             }
             if( i<(temp-1) || !temp1 || temp1>=8)
             {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0));
+                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0));
                 for (int k = 0; k<pos_num;k++)
                 {
                     temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+7);
