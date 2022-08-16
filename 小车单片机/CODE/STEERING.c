@@ -163,9 +163,9 @@ void Cal_Steering_Target(void)
     else
     {
         kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
-        if (kp>0.18)
+        if (kp>0.17)
         {
-            kp=0.18;
+            kp=0.17;
         }
         kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd- (steering_Error/1000)*(steering_Error/1000)*K_kd;
 //        kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;

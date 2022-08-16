@@ -254,15 +254,16 @@ void core1_main(void)
 
             }
 
-            if (Read_Timer(18)<ThreeeRoad_Delay && Read_Timer_Status(18) == RUNNING)
-            {
-                flag_For_ThreeRoad = 1;
-            }
-            else if (Read_Timer(18)>=ThreeeRoad_Delay && Read_Timer_Status(18) == RUNNING)
+
+            if (classification_Result!=4 && flag_For_ThreeRoad == 1 && Read_Timer(18)>=ThreeeRoad_Delay && Read_Timer_Status(18) == RUNNING)
             {
                 flag_For_ThreeRoad = 2;
             }
-            else
+            else if (flag_For_ThreeRoad == 1 && Read_Timer_Status(18) == RUNNING)
+            {
+                flag_For_ThreeRoad = 1;
+            }
+            else if (Read_Timer_Status(18) == PAUSED)
             {
                 flag_For_ThreeRoad = 0;
             }
@@ -932,8 +933,9 @@ void core1_main(void)
 
             if (flag_For_ThreeRoad == 1)
             {
-                steeringPID_ratio_kp = 0.05f;
-                steeringPID_ratio_kd = 0.05f;
+                SightForward_ratio = 0.6f;
+                steeringPID_ratio_kp = 0.5f;
+                steeringPID_ratio_kd = 0.5f;
             }
 
 
