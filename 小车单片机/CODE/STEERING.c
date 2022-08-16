@@ -329,14 +329,14 @@ void Cal_Steering_Target(void)
     }
 
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
-    if(steering_Target>0)
-    {
-        steering_Target = 0.86*steering_Target;
-    }
-    else if(steering_Target<0)
-    {
-        steering_Target = 1.23*steering_Target;
-    }
+//    if(steering_Target>0)
+//    {
+//        steering_Target = 0.86*steering_Target;
+//    }
+//    else if(steering_Target<0)
+//    {
+//        steering_Target = 1.23*steering_Target;
+//    }
     if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
     if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
 }

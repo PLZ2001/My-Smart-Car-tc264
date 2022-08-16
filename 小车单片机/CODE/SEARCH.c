@@ -342,7 +342,14 @@ void DrawCenterLine(void)
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
     {
-        DrawCenterLinewithConfig(0);
+        if (Check_Far_Road_And_Draw(5,0.7f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig(0);
+        }
     }
 
     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
@@ -3849,7 +3856,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
         Col_Center_Backup[i]=Col_Center[i];
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig_RightBased(0);
+    if (Check_Far_Road_And_Draw(8,0.7f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
     Right_Straight_Score = Get_Straight_Score(dot_num);
 
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
@@ -3858,7 +3872,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig_LeftBased(0);
+    if (Check_Far_Road_And_Draw(7,0.7f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
+    }
     Left_Straight_Score = Get_Straight_Score(dot_num);
 
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
@@ -3867,7 +3888,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig(0);
+    if (Check_Far_Road_And_Draw(5,0.7f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig(0);
+    }
     Unknown_Straight_Score = Get_Straight_Score(dot_num);
 
     for (int i=0;i<height_Inverse_Perspective_Max;i++)

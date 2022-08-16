@@ -333,6 +333,9 @@ void Key2_Action(void)
                 case 3:
                     ThreeeRoad_Delay  += 0.01f*up_Down;
                     break;
+                case 4:
+                    Circle_EN  = (Circle_EN==1?0:1);
+                    break;
                 default:
                     break;
             }

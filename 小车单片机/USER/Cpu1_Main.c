@@ -861,7 +861,7 @@ void core1_main(void)
                 {
                     speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.2f;
+                    steeringPID_ratio_kp = 2.0f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -910,7 +910,7 @@ void core1_main(void)
                 {
                     speed_Target_ratio = 0.85f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.2f;
+                    steeringPID_ratio_kp = 2.0f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -1087,15 +1087,15 @@ void core1_main(void)
             Cal_Steering_Target();//由误差（全局变量，待定义）根据位置式PD原理求转向目标Steering_Target(范围-30~30，负数左转，正数右转)
 
             static int cnt = 0;
-//            if (Real_Volt<7.0f)
-//            {
-//                cnt++;
-//            }
-//            else
-//            {
-//                cnt=0;
-//            }
-            if((Check_TRoad(0,0.1f-1.0f/6.0f,3) && zebra_status!=starting && is_Slope == 0)||cnt>70)
+            if (Real_Volt<7.0f)
+            {
+                cnt++;
+            }
+            else
+            {
+                cnt=0;
+            }
+            if((Check_TRoad(0,0.1f-1.0f/6.0f,3) && zebra_status!=starting && is_Slope == 0)||cnt>100)
             {
                 emergency_Stop=1;
             }
