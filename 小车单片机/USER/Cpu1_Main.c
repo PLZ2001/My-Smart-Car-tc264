@@ -660,7 +660,7 @@ void core1_main(void)
 
             if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5||classification_Result == 7||classification_Result == 8)
             {
-                speed_Status = Lowest;
+                speed_Status = Low;
                 Reset_Timer(6);
                 set_flag=1;
                 time_up[8] = 2.0f;
@@ -669,7 +669,7 @@ void core1_main(void)
             }
             else if (Read_Timer_Status(8) == RUNNING)
             {
-                speed_Status = Lowest;
+                speed_Status = Low;
                 set_flag=1;
                 if (Read_Timer(8)>time_up[8])
                 {
@@ -828,7 +828,7 @@ void core1_main(void)
                 }
                 if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//СԲ
                 {
-                    speed_Target_ratio = 0.7f;
+                    speed_Target_ratio = 0.9f;
                 }
             }
 
@@ -859,9 +859,9 @@ void core1_main(void)
             {
                 if (flag_For_Left_Circle == 2)
                 {
-                    speed_Target_ratio = 0.7f;
+                    speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.5f;
+                    steeringPID_ratio_kp = 2.2f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -869,9 +869,9 @@ void core1_main(void)
 
                 if (flag_For_Left_Circle == 1)
                 {
-                    speed_Target_ratio = 0.7f;
+                    speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.5f;
+                    steeringPID_ratio_kp = 2.9f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -908,9 +908,9 @@ void core1_main(void)
             {
                 if (flag_For_Right_Circle == 2)
                 {
-                    speed_Target_ratio = 0.7f;
+                    speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.5f;
+                    steeringPID_ratio_kp = 2.2f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -919,9 +919,9 @@ void core1_main(void)
 
                 if (flag_For_Right_Circle==1)
                 {
-                    speed_Target_ratio = 0.7f;
+                    speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.5f;
+                    steeringPID_ratio_kp = 2.9f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -938,8 +938,8 @@ void core1_main(void)
             if (flag_For_ThreeRoad == 1)
             {
                 SightForward_ratio = 0.6f;
-                steeringPID_ratio_kp = 0.5f;
-                steeringPID_ratio_kd = 0.5f;
+                steeringPID_ratio_kp = 1.5f;
+                steeringPID_ratio_kd = 1.5f;
             }
 
 

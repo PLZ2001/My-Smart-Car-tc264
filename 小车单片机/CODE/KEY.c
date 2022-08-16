@@ -152,7 +152,7 @@ void Key1_Action(void)
 //            break;
         case DR_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 4)
+            if (pointer_temp >= 5)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;

@@ -89,6 +89,7 @@ extern uint8 straight_Alarm;
 extern uint8 rightCircle_Size;//2小圆，1大圆，0未知
 extern uint8 leftCircle_Size;//2小圆，1大圆，0未知
 extern uint8 crossRoad_Distance;
+extern uint8 errorID;
 
 
 void UART_ColCenter(void);

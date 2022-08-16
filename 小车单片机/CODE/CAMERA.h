@@ -61,6 +61,7 @@ extern float ModelTable_36[CLASS_NUM_NEW][6][6];
 
 extern int invalid_lines;
 
+extern uint8 Circle_EN;
 
 
 void My_Init_Camera(void);

@@ -208,6 +208,7 @@ uint8 Long_Straight_Flag = 0;
 
 int invalid_lines = 0;//指示下面无效的行数
 
+uint8 Circle_EN = 1;
 
 void My_Init_Camera(void)
 {
@@ -1427,6 +1428,11 @@ void Classification_Classic36(uint8 window_ID,uint8 *classification_Result_addre
                 ;
             }
             else
+            {
+                score[k] = -72;
+            }
+
+            if (Circle_EN == 0)
             {
                 score[k] = -72;
             }
