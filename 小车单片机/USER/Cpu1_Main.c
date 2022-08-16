@@ -421,7 +421,7 @@ void core1_main(void)
 //                    {
 //                        flag_For_ThreeRoad = 0;
 //                    }
-                    if (Check_Straight(1.0f))
+                    if (/*Check_Straight(1.0f)*/straight_Alarm == 1||short_straight_Alarm == 1)
                     {
                         classification_Result = 6;//6直道
                     }
@@ -444,32 +444,32 @@ void core1_main(void)
 //                    Check_Classification(classification_Result,1);
 
                     //以下是新窗口的识别
-                    Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-                    if (Check_Straight(0.5f))
-                     {
-                         classification_Result_1 = 6;//6直道
-                     }
-                    else if (is_Slope != 0)
-                    {
-                        classification_Result_1 = 9;
-                        Check(&classification_Result_1,9);
-                    }
-                    else if (crossRoad_Alarm==1)
-                    {
-                        classification_Result_1 = 5;
-                        Helper_Window_Flag = 0;
-                    }
-                     else
-                     {
-                         Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
-                         Check(&classification_Result_1,classification_Result_1_2nd);
-                         Check(&classification_Result_1,9);
+//                    Set_Search_Range(0,height_Inverse_Perspective*6/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+//                    if (/*Check_Straight(0.5f)*/straight_Alarm == 1||short_straight_Alarm == 1)
+//                     {
+//                         classification_Result_1 = 6;//6直道
+//                     }
+//                    else if (is_Slope != 0)
+//                    {
+//                        classification_Result_1 = 9;
+//                        Check(&classification_Result_1,9);
+//                    }
+//                    else if (crossRoad_Alarm==1)
+//                    {
+//                        classification_Result_1 = 5;
+//                        Helper_Window_Flag = 0;
+//                    }
+//                     else
+//                     {
+//                         Classification_Classic36(1,&classification_Result_1,&classification_Result_1_2nd);//多分类算法Classification_25()，传统特征点法Classification_Classic()，模糊道路法Classification_Classic36()
+//                         Check(&classification_Result_1,classification_Result_1_2nd);
+//                         Check(&classification_Result_1,9);
 
-                     }
+//                     }
 
                      //以下是辅助窗口的识别
                      Set_Search_Range(height_Inverse_Perspective*2/10,height_Inverse_Perspective*8/10-height_Inverse_Perspective*2/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-                     if (Check_Straight(0.5f))
+                     if (/*Check_Straight(0.5f)*/straight_Alarm == 1||short_straight_Alarm == 1)
                       {
                           classification_Result_2 = 6;//6直道
                       }
@@ -491,24 +491,24 @@ void core1_main(void)
                       }
 
 
-                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-                     if (Check_Straight(0.65f)||straight_Alarm == 1)
-                     {
-                         classification_Result=6;
-                         classification_Result_1=6;
-                     }
-                     //改回默认窗口
-                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+//                     Set_Search_Range(0,height_Inverse_Perspective,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+//                     if (/*Check_Straight(0.65f)||*/straight_Alarm == 1)
+//                     {
+//                         classification_Result=6;
+//                         classification_Result_1=6;
+//                     }
+//                     //改回默认窗口
+//                     Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
 
                      //检查长直道是否满足
-                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6))
-                     {
-                         Long_Straight_Flag = 1;//长直道
-                     }
-                     else
-                     {
-                         Long_Straight_Flag = 0;//长直道
-                     }
+//                     if((classification_Result_1==6||classification_Result_1==5) && (classification_Result==6))
+//                     {
+//                         Long_Straight_Flag = 1;//长直道
+//                     }
+//                     else
+//                     {
+//                         Long_Straight_Flag = 0;//长直道
+//                     }
 
                      // 辅助窗口的作用
                      if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4||classification_Result_2==12||classification_Result_2==13)
@@ -704,8 +704,14 @@ void core1_main(void)
                 set_flag=1;
             }
 
+            if (short_straight_Alarm == 1)
+            {
+                speed_Status = High;
+                Reset_Timer(6);
+                set_flag=1;
+            }
 
-            if(Long_Straight_Flag == 1)
+            if(straight_Alarm == 1)
             {
                 speed_Status = Highest;
                 set_flag=1;

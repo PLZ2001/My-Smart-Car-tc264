@@ -99,6 +99,7 @@ uint8 crossRoad_Distance = 0;//0最近，6最远
 float crossRoad_Distance_Group[7] = {0.37f,0.5f,0.5f,0.63f,0.63f,0.72f,0.8f};
 
 uint8 straight_Alarm = 0;
+uint8 short_straight_Alarm = 0;
 
 float last_valid_Col_Center = -2.0f;
 
@@ -342,7 +343,7 @@ void DrawCenterLine(void)
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
     {
-        if (Check_Far_Road_And_Draw(5,0.5f))
+        if (Check_Far_Road_And_Draw(5,0.37f))
         {
             ;
         }
@@ -3888,7 +3889,7 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    if (Check_Far_Road_And_Draw(5,0.5f))
+    if (Check_Far_Road_And_Draw(5,0.37f))
     {
         ;
     }
@@ -4303,7 +4304,9 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                 Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
                   ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
-                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-6]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+6]!=1)
                 {
                     if ((i+firsti)<height_Inverse_Perspective/2)
                     {
@@ -4358,16 +4361,17 @@ uint8 Check_RoadWidth(void)
         Get_Width(i);
     }
 
-//直道
-
+    //直道
     //6 0 1 2
     uint8 straight_flag = 1;
     straight_flag&=abs(left_width[6]-left_width[0])<=3;
     straight_flag&=abs(left_width[0]-left_width[1])<=2;
     straight_flag&=abs(left_width[1]-left_width[2])<=2;
+    straight_flag&=abs(left_width[2]-left_width[7])<=2;
     straight_flag&=abs(right_width[6]-right_width[0])<=3;
     straight_flag&=abs(right_width[0]-right_width[1])<=2;
     straight_flag&=abs(right_width[1]-right_width[2])<=2;
+    straight_flag&=abs(right_width[2]-right_width[7])<=2;
     for (int i =0;i<3;i++)
     {
         straight_flag &= left_width[i]!=-2;
@@ -4375,7 +4379,33 @@ uint8 Check_RoadWidth(void)
     }
     straight_flag &= left_width[6]!=-2;
     straight_flag &= right_width[6]!=-2;
+    straight_flag &= left_width[7]!=-2;
+    straight_flag &= right_width[7]!=-2;
     straight_Alarm = straight_flag;
+
+    //短直道
+    //6 0 1 2
+    uint8 short_straight_flag = 1;
+    short_straight_flag&=abs(left_width[6]-left_width[0])<=2;
+    short_straight_flag&=abs(left_width[0]-left_width[1])<=2;
+//    short_straight_flag&=abs(left_width[1]-left_width[2])<=2;
+//    short_straight_flag&=abs(left_width[2]-left_width[7])<=2;
+    short_straight_flag&=abs(right_width[6]-right_width[0])<=2;
+    short_straight_flag&=abs(right_width[0]-right_width[1])<=2;
+//    short_straight_flag&=abs(right_width[1]-right_width[2])<=2;
+//    short_straight_flag&=abs(right_width[2]-right_width[7])<=2;
+    for (int i =0;i<2;i++)
+    {
+        short_straight_flag &= left_width[i]!=-2;
+        short_straight_flag &= right_width[i]!=-2;
+    }
+    short_straight_flag &= left_width[6]!=-2;
+    short_straight_flag &= right_width[6]!=-2;
+//    straight_flag &= left_width[7]!=-2;
+//    straight_flag &= right_width[7]!=-2;
+    short_straight_Alarm = short_straight_flag;
+
+
 
 
 

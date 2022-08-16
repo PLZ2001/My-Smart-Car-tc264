@@ -320,7 +320,8 @@ void Update_OLED_per10ms(void)
 //                OLED_PRINTF(100,6,"%d ",center_dot);
 //                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
 //                OLED_PRINTF(100,6,"%d %d ",rightCircle_Alarm||leftCircle_Alarm,leftCircle_Size==0?rightCircle_Size:leftCircle_Size);
-                OLED_PRINTF(100,6,"%3.0f ",last_valid_Col_Center);
+//                OLED_PRINTF(100,6,"%3.0f ",last_valid_Col_Center);
+                OLED_PRINTF(100,6,"%d ",short_straight_Alarm);
 //                OLED_PRINTF(100,6,"%d  ",flag_For_ThreeRoad);
 //                OLED_PRINTF(100,6,"%d  ",crossRoad_Distance);
 //                OLED_PRINTF(100,6,"%d  ",errorID);
