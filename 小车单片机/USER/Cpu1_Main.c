@@ -952,24 +952,24 @@ void core1_main(void)
             static uint8 last_classification = 0;
             static uint8 OuterDecline_flag = 0;
             static int cnt_temp=0;
-            if (classification_Result==4||((last_classification == 6 /*|| last_classification == 5 ||last_classification == 12||last_classification == 13*/) && (classification_Result!=6 /*&& classification_Result!=5 && classification_Result!=12&& classification_Result!=13*/)))
+            if (classification_Result==4||((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13)))
             {
                 cnt_temp=0;
                 OuterDecline_flag = 1;
 //                speed_Target_ratio = 0.1f;
-                OuterSide_Ratio_ratio = 0.8f;
+                OuterSide_Ratio_ratio = 0.77f;
                 InnerSide_Ratio_ratio = 1.1f;
             }
             if(OuterDecline_flag==1)
             {
 //                speed_Target_ratio = 0.1f;
-                OuterSide_Ratio_ratio = 0.8f;
+                OuterSide_Ratio_ratio = 0.77f;
                 InnerSide_Ratio_ratio = 1.1f;
             }
-            if (classification_Result!=6 /*&& classification_Result!=5 && classification_Result!=12 && classification_Result!=13*/ && classification_Result!=4)
+            if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13 && classification_Result!=4)
             {
                 cnt_temp++;
-                if (cnt_temp>20)
+                if (cnt_temp>25)
                 {
                     OuterDecline_flag=0;
                     cnt_temp=0;
