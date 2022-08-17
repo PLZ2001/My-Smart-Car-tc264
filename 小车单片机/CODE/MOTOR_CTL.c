@@ -67,8 +67,8 @@ void Differential_Motor(void)
     float last_steering_Target=0;
     if (steering_Error>=0)
     {
-        speed_Target2 = speed_Target + 0.15f*speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f+0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
-        speed_Target1 = speed_Target - /*0.8f**/speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f - 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
+        speed_Target2 = speed_Target + /*0.15f**/0.65f*speed_Target*OuterSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f+0*speed_Target*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;//左轮目标速度（m/s）
+        speed_Target1 = speed_Target - 0.75f*speed_Target*InnerSide_Ratio*Differential_Ratio*steering_Target*4.0f/1062.5f - 0*speed_Target*InnerSide_Ratio*Differential_Ratio*(steering_Target-last_steering_Target)*4.0f/1062.5f;
 //        speed_Target2 = speed_Target + steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);//左轮目标速度（m/s）
 //        speed_Target1 = speed_Target - 0.9*steering_Error/600*(speed_Target+Differential_Ratio)/(1.2f+1);
     }
@@ -297,7 +297,7 @@ void Update_Speed_Mode(void)
             threeRoads_RightTime = 0.6f;//0.25f;
             ThreeeRoad_Delay = 0.00f;
 
-            Highest_Distance = 0.1f;
+            Highest_Distance = 0.05f;
 
             BANGBANG_UP1 = 1.0;
             BANGBANG_DOWN1 = 1.0;

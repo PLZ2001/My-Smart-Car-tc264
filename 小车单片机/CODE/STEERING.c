@@ -114,7 +114,7 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
     //根据Col_Center和扫描范围search_Lines计算误差（全局变量）
 
     float steering_Error_tmp = 0;
-    float Col_Center_Init = width_Inverse_Perspective/2;
+    float Col_Center_Init = width_Inverse_Perspective/2.0f;
 
 
     int cnt = 0;
@@ -167,8 +167,8 @@ void Cal_Steering_Target(void)
         {
             kp=0.16;
         }
-        kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd- (steering_Error/1000)*(steering_Error/1000)*K_kd;
-//        kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;
+//        kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd- (steering_Error/1000)*(steering_Error/1000)*K_kd;
+        kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;
         if(kd<0)
         {
             kd=0;

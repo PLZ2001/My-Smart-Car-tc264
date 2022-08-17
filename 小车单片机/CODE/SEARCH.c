@@ -918,6 +918,10 @@ void DrawCenterLinewithConfig(float filter)
                 {
                     Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
                 }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)//查看此时是否是1区域（道路）
+                {
+                    break;
+                }
             }
 
         }
@@ -964,6 +968,10 @@ void DrawCenterLinewithConfig(float filter)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
                     Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
+                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+                {
+                    break;
                 }
             }
         }
@@ -1024,7 +1032,7 @@ void DrawCenterLinewithConfig(float filter)
 //        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         if (start_Col[0]>start_Col[1])
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
@@ -1073,10 +1081,18 @@ void DrawCenterLinewithConfig(float filter)
             }
         }
 
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        if (zebra_status==starting)
         {
-            Col_Center[i] = -2;
+            ;
         }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
+        }
+
 
 
         if ( Col_Center[i] >= 0)
@@ -1175,6 +1191,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 {
                     Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
                 }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+                {
+                    break;
+                }
             }
 
         }
@@ -1253,6 +1273,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             {
                 Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
             }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)//查看此时是否是1区域（道路）
+            {
+                break;
+            }
         }
         else
         {
@@ -1273,11 +1297,12 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         //下面是中心线计算
         if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //如果上一个中心线也合法
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //根据上一次的中心线、这一次左右线中值，用滤波计算这次的中心线
@@ -1314,9 +1339,16 @@ void DrawCenterLinewithConfig_RightBased(float filter)
 
         }
 
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        if (zebra_status==starting)
         {
-            Col_Center[i] = -2;
+            ;
+        }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
         }
 
         if ( Col_Center[i] != -2)
@@ -1465,6 +1497,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 {
                     Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
                 }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+                {
+                    break;
+                }
             }
 
 
@@ -1490,6 +1526,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             {
                 Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
             }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+            {
+                break;
+            }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)//如果右线发现1区域（道路）
         {
@@ -1514,11 +1554,12 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         //下面是中心线计算
         if (start_Col[0]>start_Col[1])
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //如果上一个中心线也合法
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //根据上一次的中心线、这一次左右线中值，用滤波计算这次的中心线
@@ -1555,9 +1596,16 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
 
         }
 
-        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+        if (zebra_status==starting)
         {
-            Col_Center[i] = -2;
+            ;
+        }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
         }
 
 
@@ -4192,7 +4240,7 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                           ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
                           ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
                         {
-                            if ((i+firsti)<height_Inverse_Perspective/2)
+                            if ((i+firsti)<height_Inverse_Perspective*3/4)
                             {
                                 return 0;
                             }
@@ -4240,10 +4288,11 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                           ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
                           ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
                         {
-                            if ((i+firsti)<height_Inverse_Perspective/2)
+                            if ((i+firsti)<height_Inverse_Perspective*3/4)
                             {
                                 return 0;
-                            }                        }
+                            }
+                        }
                     }
                     return 1;
                 }
@@ -4311,7 +4360,8 @@ uint8 Check_Far_Road_And_Draw(int mode,float ratio)
                     if ((i+firsti)<height_Inverse_Perspective/2)
                     {
                         return 0;
-                    }                }
+                    }
+                }
             }
             return 1;
         }
