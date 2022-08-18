@@ -9,6 +9,7 @@
 #include "MOTOR1.h"
 #include "MOTOR2.h"
 #include "ICM.h"
+#include "BEEP.h"
 //#include "EEPROM.h"
 
 
@@ -121,6 +122,7 @@ void Key0_Action(void)
 {
     if (OLED_EN)
     {
+//        BEEP(1.0f,2);
         pointer_temp = 0;
         up_Down = 1;
         OLED_Page++;

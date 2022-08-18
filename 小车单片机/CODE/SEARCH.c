@@ -68,7 +68,7 @@ uint8 Zebra_times=0;
 uint8 Zebra_times_Max=2;
 int zebra_direction = 0;
 int zebra_start_direction = 1;
-uint8 Zebra_Value = 10;
+uint8 Zebra_Value = 8;
 float Zebra_Detect = 0.61f;//0.57f;
 
 uint8 center_dot = X_WIDTH*0.5f;
@@ -157,9 +157,13 @@ void UART_ColRight(void)
 
 void DrawCenterLine(void)
 {
-    if (Helper_Window_Flag==1)
+    if (Helper_Window_Flag==2)
     {
         Set_Search_Range(height_Inverse_Perspective*2/10,height_Inverse_Perspective*8/10-height_Inverse_Perspective*2/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+    }
+    else if (Helper_Window_Flag==1)
+    {
+        Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
     else
     {
