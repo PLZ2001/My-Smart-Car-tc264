@@ -559,7 +559,7 @@ void Is_Emergency_Stop(void)
             {
                 cnt=0;
             }
-            if((Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)||cnt>5)
+            if((Check_TRoad(0,0.1f,3) && zebra_status!=starting && is_Slope == 0)||cnt>100)
             {
                 emergency_Stop=1;
             }
