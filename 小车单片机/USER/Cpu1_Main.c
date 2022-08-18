@@ -372,9 +372,10 @@ void core1_main(void)
                 }
                 else if (flag_For_T == 1)
                 {
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                     classification_Result = 14;
 //                    if (Check_TRoad(1,0.18f,3) == 1)
-                    if (Check_TRoad(1,T_Line-1.0f/6.0f,3) == 1)
+                    if (Check_TRoad(1,T_Line,3) == 1)
                     {
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
@@ -382,6 +383,7 @@ void core1_main(void)
                         time_up[14] = 0.5f;
                         Start_Timer(14);
                     }
+                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 else if (flag_For_T == 2)
                 {
@@ -515,7 +517,7 @@ void core1_main(void)
                      // 辅助窗口的作用
                      if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4||classification_Result_2==12||classification_Result_2==13)
                      {
-                         if (speed_Mode == Low_Mode&&(classification_Result_2==2||classification_Result_2==3))
+                         if ((classification_Result_2==2||classification_Result_2==3))
                          {
                              ;
                          }
@@ -636,6 +638,24 @@ void core1_main(void)
                 Reset_Timer(6);
             }
 
+//            if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5||classification_Result == 7||classification_Result == 8)
+//            {
+//                speed_Status = Low;
+//                Reset_Timer(6);
+//                set_flag=1;
+//                time_up[8] = 2.0f;
+//                Reset_Timer(8);
+//                Start_Timer(8);
+//            }
+//            else if (Read_Timer_Status(8) == RUNNING)
+//            {
+//                speed_Status = Low;
+//                set_flag=1;
+//                if (Read_Timer(8)>time_up[8])
+//                {
+//                    Reset_Timer(8);
+//                }
+//            }
 
             static uint8 status_switch_1=0;
             if(steering_Target>37||steering_Target<-37)
@@ -677,24 +697,7 @@ void core1_main(void)
                 set_flag=1;
             }
 
-            if(classification_Result == 12||classification_Result == 13 ||classification_Result == 5||classification_Result == 7||classification_Result == 8)
-            {
-                speed_Status = Low;
-                Reset_Timer(6);
-                set_flag=1;
-                time_up[8] = 2.0f;
-                Reset_Timer(8);
-                Start_Timer(8);
-            }
-            else if (Read_Timer_Status(8) == RUNNING)
-            {
-                speed_Status = Low;
-                set_flag=1;
-                if (Read_Timer(8)>time_up[8])
-                {
-                    Reset_Timer(8);
-                }
-            }
+
 
 
             if(flag_For_T == 1)//T字
@@ -896,7 +899,7 @@ void core1_main(void)
                 {
                     speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.8f;
+                    steeringPID_ratio_kp = 2.6f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -945,7 +948,7 @@ void core1_main(void)
                 {
                     speed_Target_ratio = 0.9f;
                     SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.8f;
+                    steeringPID_ratio_kp = 2.6f;
                     steeringPID_ratio_kd = 0.2f;
                     OuterSide_Ratio_ratio = 1.3f;
                     InnerSide_Ratio_ratio = 0.7f;
@@ -1037,10 +1040,10 @@ void core1_main(void)
             }
             if (zebra_status == finishing)
             {
-                OuterSide_Ratio_ratio = 5.0f;
-                InnerSide_Ratio_ratio = 5.0f;
+                OuterSide_Ratio_ratio = 3.0f;
+                InnerSide_Ratio_ratio = 3.0f;
                 SightForward_ratio =0.7f;
-                steeringPID_ratio_kp = 2.5f;
+                steeringPID_ratio_kp = 2.0f;
             }
 
             if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
@@ -1120,7 +1123,7 @@ void core1_main(void)
                 case Lowest_ForZebra:
                 {
                     SightForward = SightForward_Lowest_ForT*SightForward_ratio;
-                    speed_Target = 1.35f*Stop;
+                    speed_Target = 0.85f*Stop;
                     OuterSide_Ratio = OuterSide_Ratio_Lowest_ForT*OuterSide_Ratio_ratio;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
                     Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);

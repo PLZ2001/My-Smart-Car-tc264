@@ -142,7 +142,29 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
         }
     }
 
-    steering_Error = steering_Error_tmp;
+    static float last_steering_Error = 0;
+    static float last_sight_forward = 0;
+    static int cnt_temp=0;
+    if (((steering_Error_tmp>150.0f)&&(steering_Error_tmp - last_steering_Error<-30.0f))
+            ||((steering_Error_tmp<-150.0f)&&(steering_Error_tmp - last_steering_Error>30.0f))
+            ||(steering_Error_tmp - last_steering_Error>60.0f)
+            ||(steering_Error_tmp - last_steering_Error<-60.0f))
+    {
+        cnt_temp++;
+        if (cnt_temp>=2||(last_sight_forward!=SightForward))
+        {
+            cnt_temp=0;
+            steering_Error = steering_Error_tmp;
+            last_steering_Error = steering_Error;
+        }
+    }
+    else
+    {
+        cnt_temp=0;
+        steering_Error = steering_Error_tmp;
+        last_steering_Error = steering_Error;
+    }
+    last_sight_forward = SightForward;
 
 }
 
@@ -154,8 +176,10 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
+
+
     float K_kp=2.8f,K_kd=3.0f;
-    if (classification_Result==2||classification_Result==3)
+    if (classification_Result==2||classification_Result==3||zebra_status == finishing)
     {
         kp = Steering_PID.KP;
         kd = Steering_PID.KD;
@@ -264,8 +288,8 @@ void Cal_Steering_Target(void)
         if (steering_Target_Remember_flag==0)
         {
             steering_Target=0;
-            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
-            if (Check_TRoad(1,0.12f-1.0f/6.0f,7) == 1)
+            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+            if (Check_TRoad(1,0.12f,7) == 1)
             {
                 if(zebra_start_direction==1)
                 {
@@ -280,6 +304,7 @@ void Cal_Steering_Target(void)
                     steering_Target_Remember_flag=1;
                 }
             }
+            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
         }
         else
         {
