@@ -106,7 +106,7 @@ void core1_main(void)
 //            if (steering_Target<=46 && steering_Target>=-46)
 //            if (steering_Error<=300 && steering_Error>=-300 && is_Slope==0)
             Check_Zebra(Zebra_Detect);
-            if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4 &&classification_Result!=5 &&classification_Result!=12 &&classification_Result!=13)
+            if (Check_Fake_Zebra(3) && (Left_Straight_Score>=3.0f||Unknown_Straight_Score>=3.0f||Right_Straight_Score>=3.0f) && is_Slope==0 && classification_Result!=2 &&classification_Result!=3 &&classification_Result!=4 &&classification_Result!=5)
             {
                 if (White2Black_cnt>=Zebra_Value && White2Black_cnt<=18 && zebra_status == finding)
                 {
@@ -114,7 +114,7 @@ void core1_main(void)
                     if (Zebra_times<Zebra_times_Max)
                     {
                         zebra_status = banning;
-                        time_up[11] = 1.0f;
+                        time_up[11] = 0.5f;
                         Reset_Timer(11);
                         Start_Timer(11);
                     }
@@ -973,29 +973,33 @@ void core1_main(void)
             static uint8 last_classification = 0;
             static uint8 OuterDecline_flag = 0;
             static int cnt_temp=0;
-            if (classification_Result==4||((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13)))
+            if (speed_Mode==High_Mode)
             {
-                cnt_temp=0;
-                OuterDecline_flag = 1;
-//                speed_Target_ratio = 0.1f;
-                OuterSide_Ratio_ratio = 0.77f;
-                InnerSide_Ratio_ratio = 1.1f;
-            }
-            if(OuterDecline_flag==1)
-            {
-//                speed_Target_ratio = 0.1f;
-                OuterSide_Ratio_ratio = 0.77f;
-                InnerSide_Ratio_ratio = 1.1f;
-            }
-            if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13 && classification_Result!=4)
-            {
-                cnt_temp++;
-                if (cnt_temp>25)
+                if (classification_Result==4||((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13)))
                 {
-                    OuterDecline_flag=0;
                     cnt_temp=0;
+                    OuterDecline_flag = 1;
+    //                speed_Target_ratio = 0.1f;
+                    OuterSide_Ratio_ratio = 0.77f;
+                    InnerSide_Ratio_ratio = 1.1f;
+                }
+                if(OuterDecline_flag==1)
+                {
+    //                speed_Target_ratio = 0.1f;
+                    OuterSide_Ratio_ratio = 0.77f;
+                    InnerSide_Ratio_ratio = 1.1f;
+                }
+                if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13 && classification_Result!=4)
+                {
+                    cnt_temp++;
+                    if (cnt_temp>25)
+                    {
+                        OuterDecline_flag=0;
+                        cnt_temp=0;
+                    }
                 }
             }
+
 
 
             static int last_zebra_status = 0;
@@ -1123,10 +1127,10 @@ void core1_main(void)
                 case Lowest_ForZebra:
                 {
                     SightForward = SightForward_Lowest_ForT*SightForward_ratio;
-                    speed_Target = 0.85f*Stop;
+                    speed_Target = 1.0f*Stop;
                     OuterSide_Ratio = OuterSide_Ratio_Lowest_ForT*OuterSide_Ratio_ratio;
                     InnerSide_Ratio = InnerSide_Ratio_Lowest_ForT*InnerSide_Ratio_ratio;
-                    Change_Steering_PID(Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);
+                    Change_Steering_PID(2.0f*Steering_PID_Lowest_ForT[0]*steeringPID_ratio_kp,Steering_PID_Lowest_ForT[1],Steering_PID_Lowest_ForT[2]*steeringPID_ratio_kd);
                     break;
                 }
             }

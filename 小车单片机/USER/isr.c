@@ -143,14 +143,14 @@ IFX_INTERRUPT(cc61_pit_ch1_isr, 0, CCU6_1_CH1_ISR_PRIORITY)
 	enableInterrupts();//开启中断嵌套
 	PIT_CLEAR_FLAG(CCU6_1, PIT_CH1);
 
-	if (UART_EN == TRUE)
-    {
-        UART(Read);
-    }
-	else
-	{
-	    UART(Emergency_Read);
-	}
+//	if (UART_EN == TRUE)
+//    {
+//        UART(Read);
+//    }
+//	else
+//	{
+//	    UART(Emergency_Read);
+//	}
 
 }
 
@@ -237,36 +237,36 @@ IFX_INTERRUPT(uart0_rx_isr, 0, UART0_RX_INT_PRIO)
 	enableInterrupts();//开启中断嵌套
     IfxAsclin_Asc_isrReceive(&uart0_handle);
 
-    if (UART_EN == TRUE)
-    {
-        if (dat >= CACHE_LENGTH + RECEIVE_LENGTH + data_Buffer)
-        {
-            dat = RECEIVE_LENGTH + data_Buffer - 1;
-            uint16 i = 0;
-            for (i=0;i<RECEIVE_LENGTH-1;i++)
-            {
-                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
-            }
-            UART_Flag_RX = TRUE;
-        }
-        uart_query(DEBUG_UART, dat);
-        dat += 1;
-    }
-    else
-    {
-        if (dat >= CACHE_LENGTH + EMERGENCY_RECEIVE_LENGTH + data_Buffer)
-        {
-            dat = EMERGENCY_RECEIVE_LENGTH + data_Buffer - 1;
-            uint16 i = 0;
-            for (i=0;i<EMERGENCY_RECEIVE_LENGTH-1;i++)
-            {
-                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
-            }
-            UART_Flag_RX = TRUE;
-        }
-        uart_query(DEBUG_UART, dat);
-        dat += 1;
-    }
+//    if (UART_EN == TRUE)
+//    {
+//        if (dat >= CACHE_LENGTH + RECEIVE_LENGTH + data_Buffer)
+//        {
+//            dat = RECEIVE_LENGTH + data_Buffer - 1;
+//            uint16 i = 0;
+//            for (i=0;i<RECEIVE_LENGTH-1;i++)
+//            {
+//                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
+//            }
+//            UART_Flag_RX = TRUE;
+//        }
+//        uart_query(DEBUG_UART, dat);
+//        dat += 1;
+//    }
+//    else
+//    {
+//        if (dat >= CACHE_LENGTH + EMERGENCY_RECEIVE_LENGTH + data_Buffer)
+//        {
+//            dat = EMERGENCY_RECEIVE_LENGTH + data_Buffer - 1;
+//            uint16 i = 0;
+//            for (i=0;i<EMERGENCY_RECEIVE_LENGTH-1;i++)
+//            {
+//                data_Buffer[i] = data_Buffer[i+1+CACHE_LENGTH];
+//            }
+//            UART_Flag_RX = TRUE;
+//        }
+//        uart_query(DEBUG_UART, dat);
+//        dat += 1;
+//    }
 
 }
 IFX_INTERRUPT(uart0_er_isr, 0, UART0_ER_INT_PRIO)
