@@ -20,7 +20,7 @@ float speed_Target1 = 0;//目标速度（m/s），更新函数Set_Speed_Target(uint8 val)
 //其他变量
 float speed_Output1 = 0;//输出速度（m/s）
 float PID_KP1=7.0f/1.0f;//7.0f/3.0f;//7.0f/0.5f;//7.0f/3.0f;
-float PID_KI1=0.3f;//0.45f;//0.15f;//0.04f;//0.01f;
+float PID_KI1=0.3f;//0.3f;//0.15f;//0.04f;//0.01f;
 float PID_KD1=0.0f;//0.0f;
 
 enum PID_Mode1 PID_mode1 = PID_CLOSED_LOOP1;//PID模式选择
@@ -160,7 +160,7 @@ void Cal_Speed_Output1(void)
         if (flag == 0)
         {
 //            flag++;
-            if (speed_Error[0]<0.5 && speed_Error[0]>-0.5)
+            if (speed_Error[0]>0.5 && speed_Error[0]<-0.5)
             {
                 float delta_Speed = PID_KP1*(speed_Error[0]-speed_Error[1]) + PID_KD1*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
                 speed_Output1 = speed_Output1 + delta_Speed;

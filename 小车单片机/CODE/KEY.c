@@ -9,6 +9,7 @@
 #include "MOTOR1.h"
 #include "MOTOR2.h"
 #include "ICM.h"
+#include "BEEP.h"
 //#include "EEPROM.h"
 
 
@@ -121,6 +122,7 @@ void Key0_Action(void)
 {
     if (OLED_EN)
     {
+//        BEEP(1.0f,2);
         pointer_temp = 0;
         up_Down = 1;
         OLED_Page++;
@@ -152,7 +154,7 @@ void Key1_Action(void)
 //            break;
         case DR_Page:
             pointer_temp += 1;
-            if (pointer_temp >= 4)
+            if (pointer_temp >= 5)
             {
                 pointer_temp = 0;
                 up_Down = -up_Down;
@@ -332,6 +334,9 @@ void Key2_Action(void)
                     break;
                 case 3:
                     ThreeeRoad_Delay  += 0.01f*up_Down;
+                    break;
+                case 4:
+                    Circle_EN  = (Circle_EN==1?0:1);
                     break;
                 default:
                     break;

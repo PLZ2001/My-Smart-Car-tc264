@@ -27,8 +27,8 @@ uint8 is_Slope = 0;//1表示检测到坡道，0表示没有
 float Lazer_Data=819.1f;
 uint8 Lazer_On = 1;
 
-float SlopeSpeed1 = 0.4f;
-float SlopeSpeed2 = 0.4f;
+float SlopeSpeed1 = 0.6f;
+float SlopeSpeed2 = 0.6f;
 float SlopeSpeed3 = 0.7f;
 
 float Slope_Distance = 70.0f;

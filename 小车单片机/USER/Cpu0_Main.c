@@ -34,6 +34,7 @@
 #include "ICM.h"
 #include "ADC.h"
 #include "LED.h"
+#include "BEEP.h"
 //#include "EEPROM.h"
 
 
@@ -73,6 +74,7 @@ int core0_main(void)
 
 
     My_Init_LED();
+    My_Init_BEEP();
     //My_Init_Wifi();//我的初始化WIFI通信
 
     //等待所有核心初始化完毕

@@ -6,6 +6,7 @@
 #include "OLED.h"
 #include "ICM.h"
 
+uint8 errorID = 0;
 
 //需要串口通信输出去，但不用传过来的变量
 float Col_Center[height_Inverse_Perspective_Max] = {-2};//按从下往上的顺序存储中心线线的列号结果，不合法的全部为-2
@@ -83,6 +84,26 @@ float T_Line = 0.18f;
 uint8 ThreeeRoad_Delay_Flag = 0;
 float ThreeeRoad_Delay = 0;
 
+
+int left_width[pos_num];
+int right_width[pos_num];
+float pos[pos_num] = {0.2f,0.37f,0.5f,0.63f,0.8f,0.72f,0.15f,0.57f};
+
+uint8 rightCircle_Alarm = 0;
+uint8 leftCircle_Alarm = 0;
+uint8 rightCircle_Size = 0;//2小圆，1大圆，0未知
+uint8 leftCircle_Size = 0;//2小圆，1大圆，0未知
+
+uint8 crossRoad_Alarm = 0;
+uint8 crossRoad_Distance = 0;//0最近，6最远
+float crossRoad_Distance_Group[7] = {0.37f,0.5f,0.5f,0.63f,0.63f,0.72f,0.8f};
+
+uint8 straight_Alarm = 0;
+uint8 short_straight_Alarm = 0;
+
+float last_valid_Col_Center = -2.0f;
+
+
 void UART_ColCenter(void)
 {
     uart_putchar(DEBUG_UART,0x00);
@@ -136,13 +157,17 @@ void UART_ColRight(void)
 
 void DrawCenterLine(void)
 {
-    if (Helper_Window_Flag==1)
+    if (Helper_Window_Flag==2)
     {
-        Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+        Set_Search_Range(height_Inverse_Perspective*2/10,height_Inverse_Perspective*8/10-height_Inverse_Perspective*2/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+    }
+    else if (Helper_Window_Flag==1)
+    {
+        Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
     else
     {
-        Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+        Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
     }
 
 //    static uint8 first_time = 0;
@@ -215,7 +240,16 @@ void DrawCenterLine(void)
     // 对于5十字路口，可以采用，特征是使用卷积核判断两个拐点
     else if (classification_Result == 5)
     {
-        DrawCenterLinewithConfig_CrossRoad();
+        if (Check_Far_Road_And_Draw(5,crossRoad_Distance_Group[crossRoad_Distance]))
+        {
+            ;
+        }
+        else
+        {
+//            DrawCenterLinewithConfig_CrossRoad();
+            DrawCenterLinewithConfig(0);
+
+        }
     }
     // 对于4三岔路口可以采用，特征是靠右行驶
 //    else if (classification_Result == 4 && flag_For_ThreeRoad == 1)
@@ -233,7 +267,14 @@ void DrawCenterLine(void)
     // 对于8靠右（临时使用）可以采用，特征是靠右行驶
     else if (classification_Result == 8)
     {
-        DrawCenterLinewithConfig_RightBased(0);
+        if (Check_Far_Road_And_Draw(8,0.7f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig_RightBased(0);
+        }
     }
     // 对于3右环岛可以采用，特征是靠右行驶
     else if (classification_Result == 3)
@@ -286,7 +327,14 @@ void DrawCenterLine(void)
     // 对于7靠左（临时使用）可以采用，特征是靠左行驶
     else if (classification_Result == 7)
     {
-        DrawCenterLinewithConfig_LeftBased(0);
+        if (Check_Far_Road_And_Draw(7,0.7f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig_LeftBased(0);
+        }
     }
     else if (classification_Result == 13)
     {
@@ -299,8 +347,18 @@ void DrawCenterLine(void)
     // 对于0左弯、1右弯以及剩余还没写好的道路元素，可以采用，特征是滤波是负数，用于超前转向，以免冲出弯道
     else
     {
-        DrawCenterLinewithConfig(0);
+        if (Check_Far_Road_And_Draw(5,0.37f))
+        {
+            ;
+        }
+        else
+        {
+            DrawCenterLinewithConfig(0);
+        }
     }
+
+    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+
 }
 
 uint8 Check_Straight(float ratio)
@@ -753,6 +811,8 @@ void DrawCenterLinewithConfig(float filter)
     int flag_left=0;
     int flag_right=0;
 
+    last_valid_Col_Center = -2.0f;
+
     for (int i=0;i<search_Lines;i++)
     {
         Col_Left[i] = -2;
@@ -862,6 +922,10 @@ void DrawCenterLinewithConfig(float filter)
                 {
                     Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
                 }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)//查看此时是否是1区域（道路）
+                {
+                    break;
+                }
             }
 
         }
@@ -908,6 +972,10 @@ void DrawCenterLinewithConfig(float filter)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
                     Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
+                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+                {
+                    break;
                 }
             }
         }
@@ -968,7 +1036,7 @@ void DrawCenterLinewithConfig(float filter)
 //        if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         if (start_Col[0]>start_Col[1])
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
@@ -1016,6 +1084,40 @@ void DrawCenterLinewithConfig(float filter)
                 Col_Center[i] = filter*(width_Inverse_Perspective/2)+(1-filter)*(width_Inverse_Perspective/2);
             }
         }
+
+        if (zebra_status==starting)
+        {
+            ;
+        }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
+        }
+
+
+
+        if ( Col_Center[i] >= 0)
+        {
+            if (last_valid_Col_Center < 0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
+        }
         //中心线计算完毕
     }
 }
@@ -1028,6 +1130,8 @@ void DrawCenterLinewithConfig_RightBased(float filter)
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
 
     int flag_right=0;
+
+    last_valid_Col_Center = -2.0f;
 
 
     for (int i=0;i<search_Lines;i++)
@@ -1079,7 +1183,7 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.3*road_width:2*road_width))
                 {
                     break;
                 }
@@ -1090,6 +1194,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)
                 {
                     Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
+                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+                {
+                    break;
                 }
             }
 
@@ -1132,10 +1240,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Right_Circle==1?0.7*road_width:2*road_width))
-                {
-                    break;
-                }
+//                if (cnt_temp>((flag_For_Right_Circle==1||flag_For_Right_Circle==2)?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
                 start_Col[1] = start_Col[1] - 1;//则右线持续向右扫描直到不再是1区域（道路），有可能是0或255区域
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]+1] == 0)
                 {
@@ -1169,6 +1277,10 @@ void DrawCenterLinewithConfig_RightBased(float filter)
             {
                 Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
             }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)//查看此时是否是1区域（道路）
+            {
+                break;
+            }
         }
         else
         {
@@ -1189,11 +1301,12 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         //下面是中心线计算
         if (start_Col[0]>start_Col[1] || start_Col[1] - start_Col[0] > 2*road_width)
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //如果上一个中心线也合法
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //根据上一次的中心线、这一次左右线中值，用滤波计算这次的中心线
@@ -1229,6 +1342,38 @@ void DrawCenterLinewithConfig_RightBased(float filter)
         {
 
         }
+
+        if (zebra_status==starting)
+        {
+            ;
+        }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
+        }
+
+        if ( Col_Center[i] != -2)
+        {
+            if (last_valid_Col_Center <0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
+        }
         //中心线计算完毕
     }
 }
@@ -1239,6 +1384,8 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
     int start_Col[2] = {width_Inverse_Perspective/2-5,width_Inverse_Perspective/2+5};//标记当前在处理哪一列，start_Col(1)指左线，start_Col(2)指右线，默认从中心两侧5像素开始
 
     int flag_left=0;
+
+    last_valid_Col_Center = -2.0f;
 
     for (int i=0;i<search_Lines;i++)
     {
@@ -1291,10 +1438,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
-                {
-                    break;
-                }
+//                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.7*road_width:2*road_width))
+//                {
+//                    break;
+//                }
                 start_Col[0] = start_Col[0] + 1;//则左线持续向左扫描直到不再是1区域（道路），有可能是0或255区域
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]-1] == 0)//查看此时是否是0区域（背景）
                 {
@@ -1342,7 +1489,7 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             }
             else
             {
-                if (cnt_temp>(flag_For_Left_Circle==1?0.7*road_width:2*road_width))
+                if (cnt_temp>((flag_For_Left_Circle==1||flag_For_Left_Circle==2)?0.3*road_width:2*road_width))
                 {
                     break;
                 }
@@ -1353,6 +1500,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
                 if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 1)//查看此时是否是1区域（道路）
                 {
                     Col_Left[i] = start_Col[0];//只有是1区域的才可以将列号存储到左线里
+                }
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[0]] == 255)
+                {
+                    break;
                 }
             }
 
@@ -1379,6 +1530,10 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
             {
                 Col_Right[i] = start_Col[1];//只有是1区域的才可以将列号存储到右线里
             }
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 255)
+            {
+                break;
+            }
         }
         else if (mt9v03x_image_cutted_thresholding_inversePerspective[start_Row][start_Col[1]] == 1)//如果右线发现1区域（道路）
         {
@@ -1403,11 +1558,12 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         //下面是中心线计算
         if (start_Col[0]>start_Col[1])
         {
-            continue;
+            break;//continue;
         }
         //中心线计算有4种情况：左线合法(!=-2)或非法(==-2)）、右线合法(!=-2)或非法(==-2)）
         if (Col_Right[i]!=-2 && Col_Left[i]!= -2) //左线合法，右线合法
         {
+            road_width = Col_Right[i] - Col_Left[i];
             if (Col_Center[i-1]!=-2) //如果上一个中心线也合法
             {
                 Col_Center[i] = filter*Col_Center[i-1]+(1-filter)*0.5*(Col_Right[i] + Col_Left[i]); //根据上一次的中心线、这一次左右线中值，用滤波计算这次的中心线
@@ -1442,6 +1598,39 @@ void DrawCenterLinewithConfig_LeftBased(float filter)
         else //左线非法，右线非法
         {
 
+        }
+
+        if (zebra_status==starting)
+        {
+            ;
+        }
+        else
+        {
+            if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-i][(int)(Col_Center[i]+0.5f)]!=1)
+            {
+                Col_Center[i] = -2;
+            }
+        }
+
+
+        if ( Col_Center[i] != -2)
+        {
+            if (last_valid_Col_Center <0)
+            {
+                last_valid_Col_Center = Col_Center[i];
+            }
+            else
+            {
+                if (fabsf(Col_Center[i]-last_valid_Col_Center)>1.0f*road_width)
+                {
+                    Col_Center[i] = -2;
+                    break;
+                }
+                else
+                {
+                    last_valid_Col_Center = Col_Center[i];
+                }
+            }
         }
         //中心线计算完毕
     }
@@ -2750,11 +2939,11 @@ uint8 Check_LeftCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 88 && arccosValue > 0)
+        if (arccosValue < (leftCircle_Alarm == 1?100:88) && arccosValue > 0)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            if (leftCircle_Alarm == 1||mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (second_Dot[1]-third_Dot[1]>=5)
+                if (leftCircle_Alarm == 1||second_Dot[1]-third_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -2797,11 +2986,11 @@ uint8 Check_RightCircle_New2(void)
 
         arccosValue = (3.1415926/2 - cosValue - 1.0f/6.0f * cosValue*cosValue*cosValue)/3.1415926*180;
 
-        if (arccosValue < 88 && arccosValue > 0)
+        if (arccosValue < (rightCircle_Alarm == 1?100:88) && arccosValue > 0)
         {
-            if (mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
+            if (rightCircle_Alarm == 1 ||mt9v03x_image_cutted_thresholding_inversePerspective[(uint8)round(0.5*(third_Dot[0]+second_Dot[0]))][(uint8)round(0.5*(third_Dot[1]+second_Dot[1]))]==1)
             {
-                if (third_Dot[1]-second_Dot[1]>=5)
+                if (rightCircle_Alarm == 1||third_Dot[1]-second_Dot[1]>=5)
                 {
                     return 1;
                 }
@@ -3720,7 +3909,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
         Col_Center_Backup[i]=Col_Center[i];
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig_RightBased(0);
+    if (Check_Far_Road_And_Draw(8,0.7f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig_RightBased(0);
+    }
     Right_Straight_Score = Get_Straight_Score(dot_num);
 
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
@@ -3729,7 +3925,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig_LeftBased(0);
+    if (Check_Far_Road_And_Draw(7,0.7f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig_LeftBased(0);
+    }
     Left_Straight_Score = Get_Straight_Score(dot_num);
 
     road_width = (0.4/Camera_Height/ratioOfPixelToHG);
@@ -3738,7 +3941,14 @@ uint8 Select_Left_Unknown_or_Right(int dot_num)
     {
         Col_Center[i] = -2;
     }
-    DrawCenterLinewithConfig(0);
+    if (Check_Far_Road_And_Draw(5,0.37f))
+    {
+        ;
+    }
+    else
+    {
+        DrawCenterLinewithConfig(0);
+    }
     Unknown_Straight_Score = Get_Straight_Score(dot_num);
 
     for (int i=0;i<height_Inverse_Perspective_Max;i++)
@@ -3920,7 +4130,7 @@ uint8 Check_Fake_Zebra(int max)
 
 uint8 Check_RightCircle_New4(float ratio)
 {
-    if (Check_Circle_New4_EN == 0)
+    if (Check_Circle_New4_EN == 0 || rightCircle_Alarm == 1)
     {
         return 1;
     }
@@ -3957,7 +4167,7 @@ uint8 Check_RightCircle_New4(float ratio)
 
 uint8 Check_LeftCircle_New4(float ratio)
 {
-    if (Check_Circle_New4_EN == 0)
+    if (Check_Circle_New4_EN == 0 || leftCircle_Alarm == 1)
     {
         return 1;
     }
@@ -3991,3 +4201,490 @@ uint8 Check_LeftCircle_New4(float ratio)
     search_Lines = height_Inverse_Perspective;
     return 1;
 }
+
+uint8 Check_Far_Road_And_Draw(int mode,float ratio)
+{
+    if (mode==7)
+    {
+        int j;
+        int line = height_Inverse_Perspective*(1.0f-ratio);
+        int left=-2,right=-2;
+        for (j = 0;j < width_Inverse_Perspective-1;j++ )
+        {
+            if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+            {
+                left = j+1;
+            }
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+            {
+                right = j;
+                if (right!=-2&&left!=-2&&(right-left<road_width+road_width/2)&&(right-left>road_width/2)&& (left+right)/2<width_Inverse_Perspective/2)
+                {
+                    //存储底部中点坐标
+                    int i;
+                    for (i=0;i<search_Lines;i++) //寻找视野底部
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+                        {
+                            Col_Center[i] = (float)(width_Inverse_Perspective/2);
+                            break;
+                        }
+                    }
+
+
+                    int firsti = i;
+
+                    //补全拐点间中线和底部中线之间的连线
+                    float k = ((left + right)/2.0f  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - line);
+
+                    for (int i=1;i<search_Lines - firsti;i++)
+                    {
+                        Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
+                        {
+                            if ((i+firsti)<height_Inverse_Perspective*3/4)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+    else if (mode == 8)
+    {
+        int j;
+        int line = height_Inverse_Perspective*(1.0f-ratio);
+        int left=-2,right=-2;
+        for (j = width_Inverse_Perspective-2; j >= 0 ;j-- )
+        {
+            if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+            {
+                left = j+1;
+                if (right!=-2&&left!=-2&&(right-left<road_width+road_width/2)&&(right-left>road_width/2) && (left+right)/2>width_Inverse_Perspective/2)
+                {
+                    //存储底部中点坐标
+                    int i;
+                    for (i=0;i<search_Lines;i++) //寻找视野底部
+                    {
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+                        {
+                            Col_Center[i] = (float)(width_Inverse_Perspective/2);
+                            break;
+                        }
+                    }
+
+
+                    int firsti = i;
+
+                    //补全拐点间中线和底部中线之间的连线
+                    float k = ((left + right)/2.0f  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - line);
+
+                    for (int i=1;i<search_Lines - firsti;i++)
+                    {
+                        Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+                        if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                          ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1)
+                        {
+                            if ((i+firsti)<height_Inverse_Perspective*3/4)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                    return 1;
+                }
+            }
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+            {
+                right = j;
+            }
+        }
+        return 0;
+    }
+    else if (mode == 5)
+    {
+        int j;
+        int line = height_Inverse_Perspective*(1.0f-ratio);
+        int left=-2,right=-2;
+        if (mt9v03x_image_cutted_thresholding_inversePerspective[line][width_Inverse_Perspective/2] == 0)
+        {
+            return 0;
+        }
+        for (j = width_Inverse_Perspective/2; j >= 0 ;j-- )
+        {
+            if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+            {
+                left = j+1;
+                break;
+            }
+        }
+        for (j = width_Inverse_Perspective/2; j <width_Inverse_Perspective-1;j++)
+        {
+            if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+            {
+                right = j;
+                break;
+            }
+        }
+        if (right!=-2&&left!=-2&&(right-left<road_width+road_width/2)&&(right-left>road_width/2))
+        {
+            //存储底部中点坐标
+            int i;
+            for (i=0;i<search_Lines;i++) //寻找视野底部
+            {
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[search_Lines-1-i][width_Inverse_Perspective/2] != 255)
+                {
+                    Col_Center[i] = (float)(width_Inverse_Perspective/2);
+                    break;
+                }
+            }
+
+
+            int firsti = i;
+
+            //补全拐点间中线和底部中线之间的连线
+            float k = ((left + right)/2.0f  -  width_Inverse_Perspective/2)/(search_Lines-firsti-1 - line);
+
+            for (int i=1;i<search_Lines - firsti;i++)
+            {
+                Col_Center[i+firsti] = width_Inverse_Perspective/2 + k*i;
+                if (mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-3]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+3]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]-6]!=1
+                  ||mt9v03x_image_cutted_thresholding_inversePerspective[height_Inverse_Perspective-1-(i+firsti)][(int)Col_Center[i+firsti]+6]!=1)
+                {
+                    if ((i+firsti)<height_Inverse_Perspective/2)
+                    {
+                        return 0;
+                    }
+                }
+            }
+            return 1;
+        }
+        return 0;
+    }
+
+}
+
+
+
+void Get_Width(int index)
+{
+    int line = (int)(height_Inverse_Perspective*(1.0f-pos[index]));
+    if (mt9v03x_image_cutted_thresholding_inversePerspective[line][width_Inverse_Perspective/2] == 0)
+    {
+        return ;
+    }
+
+    for (int j = width_Inverse_Perspective/2; j >= 0 ;j-- )
+    {
+        if((mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 255) && mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 1)
+        {
+            left_width[index] = width_Inverse_Perspective/2-(j+1);
+            break;
+        }
+    }
+
+
+    for (int j = width_Inverse_Perspective/2; j<width_Inverse_Perspective-1;j++ )
+    {
+        if(mt9v03x_image_cutted_thresholding_inversePerspective[line][j] == 1 && (mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 0||mt9v03x_image_cutted_thresholding_inversePerspective[line][j+1] == 255))
+        {
+            right_width[index] = j-width_Inverse_Perspective/2;
+            break;
+        }
+    }
+
+    return;
+}
+
+uint8 Check_RoadWidth(void)
+{
+    for (int i = 0;i<pos_num;i++)
+    {
+        left_width[i]=-2;
+        right_width[i]=-2;
+        Get_Width(i);
+    }
+
+    //直道
+    //6 0 1 2
+    uint8 straight_flag = 1;
+    straight_flag&=abs(left_width[6]-left_width[0])<=3;
+    straight_flag&=abs(left_width[0]-left_width[1])<=2;
+    straight_flag&=abs(left_width[1]-left_width[2])<=2;
+    straight_flag&=abs(left_width[2]-left_width[7])<=2;
+    straight_flag&=abs(right_width[6]-right_width[0])<=3;
+    straight_flag&=abs(right_width[0]-right_width[1])<=2;
+    straight_flag&=abs(right_width[1]-right_width[2])<=2;
+    straight_flag&=abs(right_width[2]-right_width[7])<=2;
+    for (int i =0;i<3;i++)
+    {
+        straight_flag &= left_width[i]!=-2;
+        straight_flag &= right_width[i]!=-2;
+    }
+    straight_flag &= left_width[6]!=-2;
+    straight_flag &= right_width[6]!=-2;
+    straight_flag &= left_width[7]!=-2;
+    straight_flag &= right_width[7]!=-2;
+    straight_Alarm = straight_flag;
+
+    //短直道
+    //6 0 1 2
+    uint8 short_straight_flag = 1;
+    short_straight_flag&=abs(left_width[6]-left_width[0])<=2;
+    short_straight_flag&=abs(left_width[0]-left_width[1])<=1;
+    short_straight_flag&=abs(left_width[1]-left_width[2])<=1;
+//    short_straight_flag&=abs(left_width[2]-left_width[7])<=2;
+    short_straight_flag&=abs(right_width[6]-right_width[0])<=2;
+    short_straight_flag&=abs(right_width[0]-right_width[1])<=1;
+    short_straight_flag&=abs(right_width[1]-right_width[2])<=1;
+//    short_straight_flag&=abs(right_width[2]-right_width[7])<=2;
+    for (int i =0;i<3;i++)
+    {
+        short_straight_flag &= left_width[i]!=-2;
+        short_straight_flag &= right_width[i]!=-2;
+    }
+    short_straight_flag &= left_width[6]!=-2;
+    short_straight_flag &= right_width[6]!=-2;
+//    straight_flag &= left_width[7]!=-2;
+//    straight_flag &= right_width[7]!=-2;
+    short_straight_Alarm = short_straight_flag;
+
+
+
+
+
+//十字路口
+    uint8 crossRoad_flag[7] = {1,1,1,1,1,1,1};
+    crossRoad_flag[0]&=left_width[0]>=16;
+    crossRoad_flag[0]&=right_width[0]>=16;
+    crossRoad_flag[0]&=left_width[1]+5<left_width[0];
+    crossRoad_flag[0]&=left_width[2]+5<left_width[0];
+    crossRoad_flag[0]&=right_width[1]+5<right_width[0];
+    crossRoad_flag[0]&=right_width[2]+5<right_width[0];
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[0] &= left_width[i]!=-2;
+        crossRoad_flag[0] &= right_width[i]!=-2;
+    }
+
+
+    crossRoad_flag[1]&=left_width[0]>=16;
+    crossRoad_flag[1]&=right_width[0]>=16;
+    crossRoad_flag[1]&=left_width[1]>left_width[2]+5;
+    crossRoad_flag[1]&=left_width[0]>left_width[2]+5;
+    crossRoad_flag[1]&=right_width[1]>right_width[2]+5;
+    crossRoad_flag[1]&=right_width[0]>right_width[2]+5;
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[1] &= left_width[i]!=-2;
+        crossRoad_flag[1] &= right_width[i]!=-2;
+    }
+
+
+    crossRoad_flag[2]&=left_width[0]<=15;
+    crossRoad_flag[2]&=right_width[0]<=15;
+    crossRoad_flag[2]&=left_width[1]>left_width[0]+5;
+    crossRoad_flag[2]&=left_width[1]>left_width[2]+5;
+    crossRoad_flag[2]&=right_width[1]>right_width[0]+5;
+    crossRoad_flag[2]&=right_width[1]>right_width[2]+5;
+    for (int i =0;i<3;i++)
+    {
+        crossRoad_flag[2] &= left_width[i]!=-2;
+        crossRoad_flag[2] &= right_width[i]!=-2;
+    }
+
+    crossRoad_flag[3]&=left_width[0]<=15;
+    crossRoad_flag[3]&=right_width[0]<=15;
+    crossRoad_flag[3]&=left_width[1]>left_width[0]+5;
+    crossRoad_flag[3]&=left_width[1]>left_width[3]+5;
+    crossRoad_flag[3]&=right_width[1]>right_width[0]+5;
+    crossRoad_flag[3]&=right_width[1]>right_width[3]+5;
+    crossRoad_flag[3]&=left_width[2]>left_width[0]+5;
+    crossRoad_flag[3]&=left_width[2]>left_width[3]+5;
+    crossRoad_flag[3]&=right_width[2]>right_width[0]+5;
+    crossRoad_flag[3]&=right_width[2]>right_width[3]+5;
+    for (int i =0;i<4;i++)
+    {
+        crossRoad_flag[3] &= left_width[i]!=-2;
+        crossRoad_flag[3] &= right_width[i]!=-2;
+    }
+
+//    crossRoad_flag[4]&=left_width[0]<=15;
+//    crossRoad_flag[4]&=right_width[0]<=15;
+//    crossRoad_flag[4]&=left_width[2]>left_width[0];
+    crossRoad_flag[4]&=left_width[2]>left_width[1]+5;
+    crossRoad_flag[4]&=left_width[2]>left_width[3]+5;
+//    crossRoad_flag[4]&=right_width[2]>right_width[0];
+    crossRoad_flag[4]&=right_width[2]>right_width[1]+5;
+    crossRoad_flag[4]&=right_width[2]>right_width[3]+5;
+    for (int i =1;i<4;i++)
+    {
+        crossRoad_flag[4] &= left_width[i]!=-2;
+        crossRoad_flag[4] &= right_width[i]!=-2;
+    }
+
+
+//    crossRoad_flag[5]&=left_width[0]<=15;
+//    crossRoad_flag[5]&=right_width[0]<=15;
+//    crossRoad_flag[5]&=left_width[2]>left_width[0];
+    crossRoad_flag[5]&=left_width[2]>left_width[1]+5;
+    crossRoad_flag[5]&=left_width[2]>left_width[5]+5;
+//    crossRoad_flag[5]&=right_width[2]>right_width[0];
+    crossRoad_flag[5]&=right_width[2]>right_width[1]+5;
+    crossRoad_flag[5]&=right_width[2]>right_width[5]+5;
+//    crossRoad_flag[5]&=left_width[3]>left_width[0];
+    crossRoad_flag[5]&=left_width[3]>left_width[1]+5;
+    crossRoad_flag[5]&=left_width[3]>left_width[5]+5;
+//    crossRoad_flag[5]&=right_width[3]>right_width[0];
+    crossRoad_flag[5]&=right_width[3]>right_width[1]+5;
+    crossRoad_flag[5]&=right_width[3]>right_width[5]+5;
+    for (int i =1;i<4;i++)
+    {
+        crossRoad_flag[5] &= left_width[i]!=-2;
+        crossRoad_flag[5] &= right_width[i]!=-2;
+    }
+    crossRoad_flag[5] &= left_width[5]!=-2;
+    crossRoad_flag[5] &= right_width[5]!=-2;
+
+//    crossRoad_flag[6]&=left_width[0]<=15;
+//    crossRoad_flag[6]&=right_width[0]<=15;
+//    crossRoad_flag[6]&=left_width[3]>left_width[0];
+//    crossRoad_flag[6]&=left_width[3]>left_width[1];
+    crossRoad_flag[6]&=left_width[3]>left_width[2]+5;
+    crossRoad_flag[6]&=left_width[3]>left_width[4]+5;
+//    crossRoad_flag[6]&=right_width[3]>right_width[0];
+//    crossRoad_flag[6]&=right_width[3]>right_width[1];
+    crossRoad_flag[6]&=right_width[3]>right_width[2]+5;
+    crossRoad_flag[6]&=right_width[3]>right_width[4]+5;
+//    crossRoad_flag[6]&=left_width[5]>left_width[0];
+//    crossRoad_flag[6]&=left_width[5]>left_width[1];
+    crossRoad_flag[6]&=left_width[5]>left_width[2]+5;
+    crossRoad_flag[6]&=left_width[5]>left_width[4]+5;
+//    crossRoad_flag[6]&=right_width[5]>right_width[0];
+//    crossRoad_flag[6]&=right_width[5]>right_width[1];
+    crossRoad_flag[6]&=right_width[5]>right_width[2]+5;
+    crossRoad_flag[6]&=right_width[5]>right_width[4]+5;
+    for (int i =2;i<6;i++)
+    {
+        crossRoad_flag[6] &= left_width[i]!=-2;
+        crossRoad_flag[6] &= right_width[i]!=-2;
+    }
+
+    for (int i=6;i>=0;i--)
+    {
+        if (crossRoad_flag[i]==1)
+        {
+            crossRoad_Distance=i;
+        }
+    }
+
+    crossRoad_Alarm = crossRoad_flag[0]||crossRoad_flag[1]||crossRoad_flag[2]||crossRoad_flag[3]||crossRoad_flag[4]||crossRoad_flag[5]||crossRoad_flag[6];
+
+
+    if (classification_Result!=2 && classification_Result!=3)
+    {
+        uint8 right_circle_flag=1;
+        for (int i =0;i<pos_num;i++)
+        {
+            right_circle_flag &= left_width[i]!=-2;
+            right_circle_flag &= right_width[i]!=-2;
+        }
+        right_circle_flag &= abs(left_width[0]-left_width[1])<=2;
+        right_circle_flag &= abs(left_width[1]-left_width[2])<=2;
+        right_circle_flag &= abs(left_width[2]-left_width[3])<=2;
+        right_circle_flag &= abs(left_width[3]-left_width[4])<=2;
+        right_circle_flag &= right_width[0]>right_width[1];
+//        right_circle_flag &= right_width[1]>=right_width[2];
+        right_circle_flag &= right_width[3]>=right_width[2];
+        right_circle_flag &= !(right_width[1]==right_width[2]&&right_width[1]==right_width[3]);
+        right_circle_flag &= right_width[4]>right_width[3];
+        right_circle_flag &= right_width[4]+right_width[0]>33.0f;
+        right_circle_flag &= Left_Straight_Score>5.30f;
+        right_circle_flag &= Unknown_Straight_Score>5.00f;
+        rightCircle_Alarm |= right_circle_flag;
+
+
+
+
+        uint8 left_circle_flag=1;
+        for (int i =0;i<pos_num;i++)
+        {
+            left_circle_flag &= left_width[i]!=-2;
+            left_circle_flag &= right_width[i]!=-2;
+        }
+        left_circle_flag &= abs(right_width[0]-right_width[1])<=2;
+        left_circle_flag &= abs(right_width[1]-right_width[2])<=2;
+        left_circle_flag &= abs(right_width[2]-right_width[3])<=2;
+        left_circle_flag &= abs(right_width[3]-right_width[4])<=2;
+        left_circle_flag &= left_width[0]>left_width[1];
+//        left_circle_flag &= left_width[1]>=left_width[2];
+        left_circle_flag &= left_width[3]>=left_width[2];
+        left_circle_flag &= !(left_width[1]==left_width[2]&&left_width[1]==left_width[3]);
+        left_circle_flag &= left_width[4]>left_width[3];
+        left_circle_flag &= left_width[4]+left_width[0]>33.0f;
+        left_circle_flag &= Right_Straight_Score>5.30f;
+        left_circle_flag &= Unknown_Straight_Score>5.00f;
+        leftCircle_Alarm |= left_circle_flag;
+
+    }
+
+    static uint8 first_time=1;
+    if (rightCircle_Alarm==1 && first_time == 1)
+    {
+        rightCircle_Size = 0;
+    }
+    if (rightCircle_Alarm==1 && first_time == 1 && right_width[6]<15.0f && right_width[6]>12.0f)
+    {
+        first_time = 0;
+        if (right_width[7]<25.0f)
+        {
+            rightCircle_Size = 1;
+        }
+        else
+        {
+            rightCircle_Size = 2;
+        }
+    }
+    else if (rightCircle_Alarm==0)
+    {
+        first_time = 1;
+//        rightCircle_Size = 0;
+    }
+
+
+    static uint8 first_time1=1;
+    if (leftCircle_Alarm==1 && first_time1 == 1)
+    {
+        leftCircle_Size = 0;
+    }
+    if (leftCircle_Alarm==1 && first_time1 == 1 && left_width[6]<15.0f&& left_width[6]>12.0f)
+    {
+        first_time1 = 0;
+        if (left_width[7]<25.0f)
+        {
+            leftCircle_Size = 1;//大圆
+        }
+        else
+        {
+            leftCircle_Size = 2;//小圆
+        }
+    }
+    else if (leftCircle_Alarm==0)
+    {
+        first_time1 = 1;
+//        leftCircle_Size = 0;
+    }
+
+
+}
+
