@@ -87,7 +87,7 @@ void core1_main(void)
             InsertTimer1Point(3);
 
             //窗口默认处于中下位置
-            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
             Helper_Window_Flag = 0;
 
             //计算左中右的笔直程度
@@ -354,7 +354,7 @@ void core1_main(void)
                     {
                         classification_Result = 10;//10左直线
                     }
-                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 //小车处于左圆环状态
                 else if (flag_For_Left_Circle == 2)
@@ -369,7 +369,7 @@ void core1_main(void)
                     {
                         classification_Result = 11;//11右直线
                     }
-                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 else if (flag_For_T == 1)
                 {
@@ -384,7 +384,7 @@ void core1_main(void)
                         time_up[14] = 0.5f;
                         Start_Timer(14);
                     }
-                    Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
+                    Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
                 }
                 else if (flag_For_T == 2)
                 {
@@ -1112,7 +1112,7 @@ void core1_main(void)
                      {
                          speed_Target_ratio = 0.9f;
                          SightForward_ratio = 0.6f;
-                         steeringPID_ratio_kp = 2.3f;//1.8f;
+                         steeringPID_ratio_kp = 2.1f;//1.8f;
                          steeringPID_ratio_kd = 0.6f;//0.2f;
                          OuterSide_Ratio_ratio = 1.5f;//1.3f;
                          InnerSide_Ratio_ratio = 1.1f;//0.7f;
@@ -1122,7 +1122,7 @@ void core1_main(void)
                      {
                          speed_Target_ratio = 0.9f;
                          SightForward_ratio = 0.6f;
-                         steeringPID_ratio_kp = 2.3f;//2.6f;
+                         steeringPID_ratio_kp = 2.1f;//2.6f;
                          steeringPID_ratio_kd = 0.6f;//0.2f;
                          OuterSide_Ratio_ratio = 1.5f;//1.3f;
                          InnerSide_Ratio_ratio = 1.1f;//0.7f;

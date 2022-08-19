@@ -219,7 +219,7 @@ void Update_Speed_Mode(void)
 
             T_Time = 0.12f;
 
-            T_Line = 0.15f;
+            T_Line = 0.12f;//0.15f;
 
             threeRoads_RightTime = 0.6f;//0.25f;
             ThreeeRoad_Delay = 0;//0.07f+0.02f;
