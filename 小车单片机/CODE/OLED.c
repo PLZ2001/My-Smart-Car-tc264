@@ -180,7 +180,7 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
                     OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
-                    OLED_PRINTF(0,4,"Circle_EN:%d ",Circle_EN);
+
                 }
                 else if (pointer_temp == 1)
                 {
@@ -188,7 +188,6 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,1,"->DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
                     OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
-                    OLED_PRINTF(0,4,"Circle_EN:%d ",Circle_EN);
                 }
                 else if (pointer_temp == 2)
                 {
@@ -196,7 +195,6 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"->Circle4:%d ",Check_Circle_New4_EN);
                     OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
-                    OLED_PRINTF(0,4,"Circle_EN:%d ",Circle_EN);
                 }
                 else if (pointer_temp == 3)
                 {
@@ -204,15 +202,6 @@ void Update_OLED_per10ms(void)
                     OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
                     OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
                     OLED_PRINTF(0,3,"->3Road_Delay:%.2f ",ThreeeRoad_Delay);
-                    OLED_PRINTF(0,4,"Circle_EN:%d ",Circle_EN);
-                }
-                else if (pointer_temp == 4)
-                {
-                    OLED_PRINTF(0,0,"DR_Max:%01.02f ",Max_DR);
-                    OLED_PRINTF(0,1,"DR_Min:%01.02f ",Min_DR);
-                    OLED_PRINTF(0,2,"Circle4:%d ",Check_Circle_New4_EN);
-                    OLED_PRINTF(0,3,"3Road_Delay:%.2f ",ThreeeRoad_Delay);
-                    OLED_PRINTF(0,4,"->Circle_EN:%d ",Circle_EN);
                 }
                 if (up_Down == 1)
                 {
@@ -291,12 +280,6 @@ void Update_OLED_per10ms(void)
 //                    OLED_PRINTF(0,3,"SUB");
 //                }
 //                break;
-            case Width_Page:
-                for (int i =0;i<pos_num;i++)
-                {
-                    OLED_PRINTF(0,i,"%d  %d  ",left_width[pos_num-1-i],right_width[pos_num-1-i]);
-                }
-                break;
             case Camera_Page2:
                 if (OLED_Camera_flag==1&&flag_for_ICM_Init==1)
                 {
@@ -318,13 +301,7 @@ void Update_OLED_per10ms(void)
                 OLED_PRINTF(100,4,"%1.2f ",Unknown_Straight_Score);
                 OLED_PRINTF(100,5,"%1.2f ",Right_Straight_Score);
 //                OLED_PRINTF(100,6,"%d ",center_dot);
-//                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
-//                OLED_PRINTF(100,6,"%d %d ",rightCircle_Alarm||leftCircle_Alarm,leftCircle_Size==0?rightCircle_Size:leftCircle_Size);
-//                OLED_PRINTF(100,6,"%3.0f ",last_valid_Col_Center);
-                OLED_PRINTF(100,6,"%d ",short_straight_Alarm);
-//                OLED_PRINTF(100,6,"%d  ",flag_For_ThreeRoad);
-//                OLED_PRINTF(100,6,"%d  ",crossRoad_Distance);
-//                OLED_PRINTF(100,6,"%d  ",errorID);
+                OLED_PRINTF(100,6,"%d  ",thresholding_Value);
                 OLED_PRINTF(100,7,"%d ",classification_Result);
 //                OLED_PRINTF(100,7,"%d  ",thresholding_Value);
 //                OLED_PRINTF(100,7,"%d  ",classification_Result);
@@ -585,79 +562,15 @@ void my_oled_dis_bmp(void)
         for(j=0; j<width_Inverse_Perspective; j++)
         {
             dat = 0;
-            uint8 temp2 = 0;
 
-            temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 1: 0));
-            for (int k = 0; k<pos_num;k++)
-            {
-                temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+0);
-            }
-            dat |= temp2<<0;
-
-            if( i<(temp-1) || !temp1 || temp1>=2)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+1);
-                }
-                dat |= temp2<<1;
-            }
-
-            if( i<(temp-1) || !temp1 || temp1>=3)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+2);
-                }
-                dat |= temp2<<2;
-            }
-            if( i<(temp-1) || !temp1 || temp1>=4)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+3);
-                }
-                dat |= temp2<<3;
-            }
-            if( i<(temp-1) || !temp1 || temp1>=5)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+4);
-                }
-                dat |= temp2<<4;
-            }
-            if( i<(temp-1) || !temp1 || temp1>=6)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+5);
-                }
-                dat |= temp2<<5;
-            }
-            if( i<(temp-1) || !temp1 || temp1>=7)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+6);
-                }
-                dat |= temp2<<6;
-            }
-            if( i<(temp-1) || !temp1 || temp1>=8)
-            {
-                temp2 = (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 0: 1):(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0));
-                for (int k = 0; k<pos_num;k++)
-                {
-                    temp2 = temp2 && ((int)(height_Inverse_Perspective*(1.0f-pos[k])))!=(i*8+7);
-                }
-                dat |= temp2<<7;
-            }
+            dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+0)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+0][j] == 1? 1: 0))<<0;
+            if( i<(temp-1) || !temp1 || temp1>=2)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+1)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+1][j] == 1? 1: 0))<<1;
+            if( i<(temp-1) || !temp1 || temp1>=3)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+2)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+2][j] == 1? 1: 0))<<2;
+            if( i<(temp-1) || !temp1 || temp1>=4)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+3)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+3][j] == 1? 1: 0))<<3;
+            if( i<(temp-1) || !temp1 || temp1>=5)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+4)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+4][j] == 1? 1: 0))<<4;
+            if( i<(temp-1) || !temp1 || temp1>=6)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+5)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+5][j] == 1? 1: 0))<<5;
+            if( i<(temp-1) || !temp1 || temp1>=7)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+6)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+6][j] == 1? 1: 0))<<6;
+            if( i<(temp-1) || !temp1 || temp1>=8)dat |= (Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]>=j-0.5 && Col_Center[height_Inverse_Perspective - 1 - (i*8+7)]<j+0.5?0:(mt9v03x_image_cutted_thresholding_inversePerspective[i*8+7][j] == 1? 1: 0))<<7;
 
             oled_wrdat(dat);
         }

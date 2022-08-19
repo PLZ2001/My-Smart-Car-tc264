@@ -9,7 +9,7 @@
 
 float steering_Error = 0;//当前图像下的实际中线与理想正中线的误差
 float d_steering_Error = 0;
-uint32 STEERING_DUTY_CENTER=772;//769;//767;//765;//773;//747;//763;//777;//755;//771;//763;//773;//751;//775;//757;//773;//767;//771;//749;//767;//747;//777;//763;//777;//771;//781;//769;//739;//765;//781;//757;//767;//751;//767;//751;//763;//777;//745;//751;//781;//763;//777;//743;//779;//773;//779;//765;//777;//771;//761;//747;//777;//749;//769;//753;//775;//739;//771;//743;//773;//767;//773;//755;//777;//763;//775;//773;//767;//773;//757;//773;//767;//757;//773;//757;//773;//763;//772;//754;//772;//764;//776;//764;//776;//768;//760;//774;//762;//772;//756;//772;//762;//774;//768;//748;//760;//750;//768;//758;//772;//764;//754;//772;//758;//774;//762;//772;//764;//752;//766;//754;//770;//756;//772;//766;//756;//772;//760;//772;//778;//768;//774;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
+uint32 STEERING_DUTY_CENTER=772;//774;//748;//774;//762;//756;//772;//766;//760;//774;//756;//754;//769;//759;//771;//779;//774;//770;//;773;//765;//779;//781;//755;//775;//765;//777;//671;//667;//661;//669;//643;//652;//646;//667;//639;//653;//644;//646;//664;//652;//665;//647;//1500;//1772;
 
 float SightForward = 0.25f;//0.54f;
 float SightForward_Highest = 0.25f;
@@ -98,13 +98,6 @@ void Set_Steering(void)
 {
     uint32 duty;
     duty = STEERING_DUTY_MAX/STEERING_MAX*(steering_Target>0?steering_Target:(-steering_Target));
-//    if (speed_Mode==High_Mode)
-//    {
-//        if (steering_Target<0)
-//        {
-//            duty = (uint32)(0.95f*duty);
-//        }
-//    }
     if (duty>STEERING_DUTY_MAX)//保护电机
     {
         duty = STEERING_DUTY_MAX;
@@ -138,40 +131,18 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
             {
                 cnt_start = i;
             }
-            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.3f-0.7f)+1.3f;//改
+            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.1f-0.9f)+1.1f;
             steering_Error_tmp = steering_Error_tmp + (Col_Center[i] - Col_Center_Init)*ratio;
             last_Col_Center = Col_Center[i];
         }
         else if (Col_Center[i] == -2 && cnt>=1)
         {
-            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.3f-0.7f)+1.3f;
+            float ratio = (i-cnt_start)*1.0f/(cnt_start-search_Lines*Cal_Steering_Range_of_Img)*(1.1f-0.9f)+1.1f;
             steering_Error_tmp = steering_Error_tmp + (last_Col_Center - Col_Center_Init)*ratio;
         }
     }
 
-    static float last_steering_Error = 0;
-    static float last_sight_forward = 0;
-    static int cnt_temp=0;
-    if (((steering_Error_tmp>150.0f)&&(steering_Error_tmp - last_steering_Error<-30.0f))
-            ||((steering_Error_tmp<-150.0f)&&(steering_Error_tmp - last_steering_Error>30.0f))
-            ||(steering_Error_tmp - last_steering_Error>60.0f)
-            ||(steering_Error_tmp - last_steering_Error<-60.0f))
-    {
-        cnt_temp++;
-        if (cnt_temp>=2||(last_sight_forward!=SightForward))
-        {
-            cnt_temp=0;
-            steering_Error = steering_Error_tmp;
-            last_steering_Error = steering_Error;
-        }
-    }
-    else
-    {
-        cnt_temp=0;
-        steering_Error = steering_Error_tmp;
-        last_steering_Error = steering_Error;
-    }
-    last_sight_forward = SightForward;
+    steering_Error = steering_Error_tmp;
 
 }
 
@@ -183,29 +154,10 @@ void Cal_Steering_Target(void)
     Steering_PID.current_error = steering_Error;
     d_steering_Error = Steering_PID.current_error-Steering_PID.last_error;
 
-
-
-    float K_kp=2.8f,K_kd=3.0f;
-    if (classification_Result==2||classification_Result==3||zebra_status == finishing)
-    {
-        kp = Steering_PID.KP;
-        kd = Steering_PID.KD;
-    }
-    else
-    {
-        kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
-        if (kp>0.16)
-        {
-            kp=0.16;
-        }
-//        kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd- (steering_Error/1000)*(steering_Error/1000)*K_kd;
-        kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;
-        if(kd<0)
-        {
-            kd=0;
-        }
-    }
-
+    float K_kp=0.4f,K_kd=0.4f;
+    kp = Steering_PID.KP + (steering_Error/1000)*(steering_Error/1000)*K_kp;
+//    kd = Steering_PID.KD + (d_steering_Error/100)*(d_steering_Error/100)*K_kd;
+    kd = Steering_PID.KD - (steering_Error/1000)*(steering_Error/1000)*K_kd;
     //"0左弯", "1右弯", "2左环岛", "3右环岛", "4三岔路口", "5十字路口","6直道","7靠左（临时使用）","8靠右（临时使用）", "9未知"
 
     switch(classification_Result){
@@ -295,7 +247,6 @@ void Cal_Steering_Target(void)
         if (steering_Target_Remember_flag==0)
         {
             steering_Target=0;
-            Set_Search_Range(height_Inverse_Perspective*4/10,height_Inverse_Perspective-height_Inverse_Perspective*4/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
             if (Check_TRoad(1,0.12f,7) == 1)
             {
                 if(zebra_start_direction==1)
@@ -311,18 +262,13 @@ void Cal_Steering_Target(void)
                     steering_Target_Remember_flag=1;
                 }
             }
-            Set_Search_Range(height_Inverse_Perspective*3/10,height_Inverse_Perspective*9/10-height_Inverse_Perspective*3/10,width_Inverse_Perspective/4,width_Inverse_Perspective-width_Inverse_Perspective/4*2);
         }
         else
         {
             steering_Target = steering_Target_Remember;
         }
-        static uint8 ready_run = 0;
-        if ((steering_Target == STEERING_MAX+10 || steering_Target == STEERING_MIN-10)  && (Left_Straight_Score<=1.7f&&Unknown_Straight_Score<=1.7f&&Right_Straight_Score<=1.7f))
-        {
-            ready_run = 1;
-        }
-        if ((steering_Target == STEERING_MAX+10 || steering_Target == STEERING_MIN-10)  && ready_run == 1&&(Left_Straight_Score>=2.0f||Unknown_Straight_Score>=2.0f||Right_Straight_Score>=2.0f))
+
+        if ((steering_Target == STEERING_MAX+10 || steering_Target == STEERING_MIN-10)  && (Left_Straight_Score>=2.55f||Unknown_Straight_Score>=2.55f||Right_Straight_Score>=2.55f))
         {
             zebra_status=finding;
         }
@@ -353,7 +299,7 @@ void Cal_Steering_Target(void)
 //
         if (Left_Straight_Score<=1.50f&&Unknown_Straight_Score<=1.50f&&Right_Straight_Score<=1.50f)
         {
-//            if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
+            if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
             {
                 Stop=0;
             }
@@ -361,26 +307,8 @@ void Cal_Steering_Target(void)
     }
 
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
-
-//    if(steering_Target>0)
-//    {
-//        steering_Target = 0.86*steering_Target;
-//    }
-//    else if(steering_Target<0)
-//    {
-//        steering_Target = 1.23*steering_Target;
-//    }
-
-//    if (speed_Mode==High_Mode)
-//    {
-//        if(steering_Target>STEERING_MAX) steering_Target = STEERING_MAX;
-//        if(steering_Target<STEERING_MIN) steering_Target = STEERING_MIN;
-//    }
-//    else
-    {
-        if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
-        if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
-    }
+    if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
+    if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
 }
 
 
