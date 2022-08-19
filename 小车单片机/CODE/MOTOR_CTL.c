@@ -229,7 +229,7 @@ void Update_Speed_Mode(void)
             T_Line = 0.09f+0.09f;
 
             threeRoads_RightTime = 0.25f;
-            ThreeeRoad_Delay = 0.03f;
+            ThreeeRoad_Delay = 0.00f;
 
             Highest_Distance = 0.05f;
 
@@ -268,7 +268,7 @@ void Update_Speed_Mode(void)
             speed_Target_Lowest_ForT = 2.4f;//¼´2.1
             SightForward_Lowest_ForT = 0.40f;
             OuterSide_Ratio_Lowest_ForT = 2.5f;
-            InnerSide_Ratio_Lowest_ForT = 4.00f;
+            InnerSide_Ratio_Lowest_ForT = 3.5f;
             //Steering_PID_Lowest_ForT[0]=2.50f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.10f;
             Steering_PID_Lowest_ForT[0]=0.13f;Steering_PID_Lowest_ForT[1]=0;Steering_PID_Lowest_ForT[2]=0.8f;
 

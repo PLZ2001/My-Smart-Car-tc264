@@ -289,7 +289,7 @@ void Basic_Classification(void)
                 else if (flag_For_Right_Circle == 2)
                 {
                     rt_mutex_release(search_range_mutex);
-                    if (Check_Left_Straight(2,0,1) == 0 || Read_Timer_Status(13) == RUNNING)
+                    if (Check_Left_Straight(2,-1,1) == 0 || Read_Timer_Status(13) == RUNNING)
                     {
                         classification_Result_TEMP = 3;//8;
                     }
@@ -302,7 +302,7 @@ void Basic_Classification(void)
                 else if (flag_For_Left_Circle == 2)
                 {
                     rt_mutex_release(search_range_mutex);
-                    if (Check_Right_Straight(0,-2,1) == 0 || Read_Timer_Status(13) == RUNNING)
+                    if (Check_Right_Straight(1,-2,1) == 0 || Read_Timer_Status(13) == RUNNING)
                     {
                         classification_Result_TEMP = 2;//7;
                     }
@@ -315,7 +315,7 @@ void Basic_Classification(void)
                 {
                     rt_mutex_release(search_range_mutex);
                     classification_Result_TEMP = 14;
-                    if (Check_TRoad(1,T_Line,3) == 1)
+                    if (Check_TRoad(1,T_Line,5) == 1)
                     {
                         flag_For_T = 2;
                         time_up[7] = 0.2f;
