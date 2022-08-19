@@ -517,7 +517,7 @@ void core1_main(void)
                      // 辅助窗口的作用
                      if (classification_Result_2==2||classification_Result_2==3||classification_Result_2==5||classification_Result_2==4||classification_Result_2==12||classification_Result_2==13)
                      {
-                         if ((classification_Result_2==2||classification_Result_2==3))
+                         if ((classification_Result_2==2||classification_Result_2==3)&&(speed_Mode==Low_Mode||speed_Mode==Highest_Mode))
                          {
                              ;
                          }
@@ -848,112 +848,338 @@ void core1_main(void)
                 }
             }
 
-            if (rightCircle_Alarm==1||leftCircle_Alarm==1)
+            if (speed_Mode==High_Mode)
             {
-                if (rightCircle_Size==1||leftCircle_Size==1)//大圆
-                {
-                    speed_Target_ratio = 0.9f;
-                }
-                if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//小圆
-                {
-                    speed_Target_ratio = 0.85f;
-                }
+                if (rightCircle_Alarm==1||leftCircle_Alarm==1)
+                 {
+                     if (rightCircle_Size==1||leftCircle_Size==1)//大圆
+                     {
+                         speed_Target_ratio = 0.9f;
+                     }
+                     if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//小圆
+                     {
+                         speed_Target_ratio = 0.85f;
+                     }
+                 }
+
+
+                 if (leftCircle_Size==1)//大圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.1f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.25f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if (leftCircle_Size==2||leftCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.4f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
+
+                 if (rightCircle_Size==1)//大圆
+                 {
+                     //右圆环奇怪的偏小
+
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.1f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Right_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.25f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if(rightCircle_Size==2||rightCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+
+                     if (flag_For_Right_Circle==1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.4f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
+            }
+            else if (speed_Mode==Highest_Mode)
+            {
+                if (rightCircle_Alarm==1||leftCircle_Alarm==1)
+                 {
+                     if (rightCircle_Size==1||leftCircle_Size==1)//大圆
+                     {
+                         speed_Target_ratio = 0.9f;
+                     }
+                     if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//小圆
+                     {
+                         speed_Target_ratio = 0.85f;
+                     }
+                 }
+
+
+                 if (leftCircle_Size==1)//大圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.3f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.45f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if (leftCircle_Size==2||leftCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.6f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
+
+                 if (rightCircle_Size==1)//大圆
+                 {
+                     //右圆环奇怪的偏小
+
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.3f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Right_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.45f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if(rightCircle_Size==2||rightCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+
+                     if (flag_For_Right_Circle==1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.6f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
+            }
+            else
+            {
+                if (rightCircle_Alarm==1||leftCircle_Alarm==1)
+                 {
+                     if (rightCircle_Size==1||leftCircle_Size==1)//大圆
+                     {
+                         speed_Target_ratio = 0.9f;
+                     }
+                     if (rightCircle_Size==2||leftCircle_Size==2||leftCircle_Size==0||rightCircle_Size==0)//小圆
+                     {
+                         speed_Target_ratio = 0.85f;
+                     }
+                 }
+
+
+                 if (leftCircle_Size==1)//大圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.3f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.45f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if (leftCircle_Size==2||leftCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Left_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Left_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.6f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
+
+                 if (rightCircle_Size==1)//大圆
+                 {
+                     //右圆环奇怪的偏小
+
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.3f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+                     if (flag_For_Right_Circle == 1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.45f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 0.9f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+                 else if(rightCircle_Size==2||rightCircle_Size==0)//小圆
+                 {
+                     if (flag_For_Right_Circle == 2)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 1.8f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+
+
+                     if (flag_For_Right_Circle==1)
+                     {
+                         speed_Target_ratio = 0.9f;
+                         SightForward_ratio = 0.6f;
+                         steeringPID_ratio_kp = 2.6f;
+                         steeringPID_ratio_kd = 0.2f;
+                         OuterSide_Ratio_ratio = 1.3f;
+                         InnerSide_Ratio_ratio = 0.7f;
+                     }
+                 }
+
             }
 
 
-            if (leftCircle_Size==1)//大圆
-            {
-                if (flag_For_Left_Circle == 2)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.3f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 0.9f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-
-                if (flag_For_Left_Circle == 1)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.45f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 0.9f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-            }
-            else if (leftCircle_Size==2||leftCircle_Size==0)//小圆
-            {
-                if (flag_For_Left_Circle == 2)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.9f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 1.3f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-
-                if (flag_For_Left_Circle == 1)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.6f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 1.3f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-            }
-
-
-            if (rightCircle_Size==1)//大圆
-            {
-                //右圆环奇怪的偏小
-
-                if (flag_For_Right_Circle == 2)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.3f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 0.9f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-
-                if (flag_For_Right_Circle == 1)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.45f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 0.9f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-            }
-            else if(rightCircle_Size==2||rightCircle_Size==0)//小圆
-            {
-                if (flag_For_Right_Circle == 2)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 1.9f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 1.3f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-
-
-                if (flag_For_Right_Circle==1)
-                {
-                    speed_Target_ratio = 0.9f;
-                    SightForward_ratio = 0.6f;
-                    steeringPID_ratio_kp = 2.6f;
-                    steeringPID_ratio_kd = 0.2f;
-                    OuterSide_Ratio_ratio = 1.3f;
-                    InnerSide_Ratio_ratio = 0.7f;
-                }
-            }
 
 //            if (classification_Result==2||classification_Result==3)
 //            {
@@ -975,7 +1201,7 @@ void core1_main(void)
             static int cnt_temp=0;
             if (speed_Mode==High_Mode)
             {
-                if (classification_Result==4||((last_classification == 6 || last_classification == 5 ||last_classification == 12||last_classification == 13) && (classification_Result!=6 && classification_Result!=5 && classification_Result!=12&& classification_Result!=13)))
+                if (classification_Result==4||((last_classification == 6 /*|| last_classification == 5 ||last_classification == 12||last_classification == 13*/) && (classification_Result!=6 /*&& classification_Result!=5 && classification_Result!=12&& classification_Result!=13*/)))
                 {
                     cnt_temp=0;
                     OuterDecline_flag = 1;
@@ -989,7 +1215,7 @@ void core1_main(void)
                     OuterSide_Ratio_ratio = 0.77f;
                     InnerSide_Ratio_ratio = 1.1f;
                 }
-                if (classification_Result!=6 && classification_Result!=5 && classification_Result!=12 && classification_Result!=13 && classification_Result!=4)
+                if (classification_Result!=6 /*&& classification_Result!=5 && classification_Result!=12 && classification_Result!=13*/ && classification_Result!=4)
                 {
                     cnt_temp++;
                     if (cnt_temp>25)
@@ -1075,7 +1301,7 @@ void core1_main(void)
             }
             if (classification_Result==4)
             {
-                speed_Status = Low;
+                speed_Status = Lowest;
             }
             switch(speed_Status)
             {

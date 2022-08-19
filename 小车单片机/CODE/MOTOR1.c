@@ -160,7 +160,7 @@ void Cal_Speed_Output1(void)
         if (flag == 0)
         {
 //            flag++;
-            if (speed_Error[0]<0.5 && speed_Error[0]>-0.5)
+            if (speed_Error[0]>0.5 && speed_Error[0]<-0.5)
             {
                 float delta_Speed = PID_KP1*(speed_Error[0]-speed_Error[1]) + PID_KD1*(speed_Error[0]-2*speed_Error[1]+speed_Error[2]);
                 speed_Output1 = speed_Output1 + delta_Speed;

@@ -98,6 +98,13 @@ void Set_Steering(void)
 {
     uint32 duty;
     duty = STEERING_DUTY_MAX/STEERING_MAX*(steering_Target>0?steering_Target:(-steering_Target));
+//    if (speed_Mode==High_Mode)
+//    {
+//        if (steering_Target<0)
+//        {
+//            duty = (uint32)(0.95f*duty);
+//        }
+//    }
     if (duty>STEERING_DUTY_MAX)//保护电机
     {
         duty = STEERING_DUTY_MAX;
@@ -114,7 +121,7 @@ void Cal_Steering_Error(float Cal_Steering_Range_of_Img)
     //根据Col_Center和扫描范围search_Lines计算误差（全局变量）
 
     float steering_Error_tmp = 0;
-    float Col_Center_Init = width_Inverse_Perspective/2.0f;
+    float Col_Center_Init = width_Inverse_Perspective/2;
 
 
     int cnt = 0;
@@ -346,7 +353,7 @@ void Cal_Steering_Target(void)
 //
         if (Left_Straight_Score<=1.50f&&Unknown_Straight_Score<=1.50f&&Right_Straight_Score<=1.50f)
         {
-            if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
+//            if (Left_Straight_Score>=1.0f&&Unknown_Straight_Score>=1.0f&&Right_Straight_Score>=1.0f)
             {
                 Stop=0;
             }
@@ -354,6 +361,7 @@ void Cal_Steering_Target(void)
     }
 
     //if(steering_Target<0) steering_Target = steering_Target*1.1;
+
 //    if(steering_Target>0)
 //    {
 //        steering_Target = 0.86*steering_Target;
@@ -362,8 +370,17 @@ void Cal_Steering_Target(void)
 //    {
 //        steering_Target = 1.23*steering_Target;
 //    }
-    if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
-    if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
+
+//    if (speed_Mode==High_Mode)
+//    {
+//        if(steering_Target>STEERING_MAX) steering_Target = STEERING_MAX;
+//        if(steering_Target<STEERING_MIN) steering_Target = STEERING_MIN;
+//    }
+//    else
+    {
+        if(steering_Target>STEERING_MAX+10) steering_Target = STEERING_MAX+10;
+        if(steering_Target<STEERING_MIN-10) steering_Target = STEERING_MIN-10;
+    }
 }
 
 
