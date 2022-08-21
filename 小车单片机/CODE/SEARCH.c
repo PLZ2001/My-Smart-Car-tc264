@@ -4648,7 +4648,7 @@ uint8 Check_RoadWidth(void)
         first_time = 0;
         if (right_width[7]<25.0f)
         {
-            rightCircle_Size = 1;
+            rightCircle_Size = 2;//1;
         }
         else
         {
@@ -4672,7 +4672,7 @@ uint8 Check_RoadWidth(void)
         first_time1 = 0;
         if (left_width[7]<25.0f)
         {
-            leftCircle_Size = 1;//´óÔ²
+            leftCircle_Size = 2;//1;//´óÔ²
         }
         else
         {
