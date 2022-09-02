@@ -115,7 +115,7 @@ void mt9v03x_dma(void);
 /*! 注意 当帧率过高时 如果设置的曝光时间过长 帧率可能会自适应下调 */
 /*! 例如使用100帧时 最大曝光时间超过317 会导致帧率下降 */
 /*! 曝光时间越长 图像越亮 */
-#define CAMERA_MAX_EXPOSURE_TIME 250
+#define CAMERA_MAX_EXPOSURE_TIME 250//20//250
 #define CAMERA_MIN_EXPOSURE_TIME  1
 
 /*! 非自动曝光模式下 可以调节曝光时间来调节图像整体亮度 调节范围 0–32765 */

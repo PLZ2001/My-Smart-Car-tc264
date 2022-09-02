@@ -213,8 +213,8 @@ void Update_Speed_Mode(void)
         case Low_Mode:
         {
 
-            Min_DR = 1.85f;//1.75f;
-            Max_DR = 1.85;//1.75f;
+            Min_DR = 1.85f+0.05f;//1.75f;
+            Max_DR = 1.85f+0.05f;//1.75f;
             Differential_Ratio = Volt_DR;
 
             T_Time = 0.12f;
@@ -231,21 +231,21 @@ void Update_Speed_Mode(void)
             BANGBANG_UP2 = 1.0;
             BANGBANG_DOWN2 = 1.0;
 
-            speed_Target_Highest = 3.7f+0.5f;//¼´3.3
+            speed_Target_Highest = 3.7f+0.5f+0.8f;//¼´3.3
             SightForward_Highest = 0.35f;
             OuterSide_Ratio_Highest = 0.9f;
             InnerSide_Ratio_Highest = 1.1f;
             Steering_PID_Highest[0]=0.14f;Steering_PID_Highest[1]=0;Steering_PID_Highest[2]=1.0f;
 
 
-            speed_Target_High = 3.2f+0.2f;//¼´2.8
+            speed_Target_High = 3.2f+0.2f+0.4f;//¼´2.8
             SightForward_High = 0.35f;
             OuterSide_Ratio_High = 0.9f;
             InnerSide_Ratio_High = 1.1f;//1.15f;
             Steering_PID_High[0]=0.14f;Steering_PID_High[1]=0;Steering_PID_High[2]=1.0f;
 
 
-            speed_Target_Low = 3.1f;//¼´2.7
+            speed_Target_Low = 3.1f+0.3f;//¼´2.7
             SightForward_Low = 0.35f;
             OuterSide_Ratio_Low = 0.9f;
             InnerSide_Ratio_Low = 1.1f;//1.25;
